@@ -1,3 +1,4 @@
+#pragma once
 #include "header.h"
 
 struct MayBay
@@ -15,14 +16,6 @@ struct listMB
 };
 typedef struct listMB LISTMB;
 
-struct Date
-{
-    int min;
-    int hour;
-    int day;
-    int month;
-    int year;
-};
 struct Ve
 {
     char ViTriNgoi[5];
