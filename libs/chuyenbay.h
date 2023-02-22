@@ -25,19 +25,19 @@ private:
     string MaCB = "", NoiDen = "";
     Date NgayGio;
     int TrangThai = 1, SoVeToiDa = 0;
-    MAYBAY MayBaySuDung;
+    MayBay *MayBaySuDung = new MayBay();
     VeMayBay DSVe[MAXVe];
 
 public:
     int SoVeDatDat = 0;
     ChuyenBay();
     ChuyenBay(string _MaCB, string _NoiDen,
-              Date _NgayGio, MAYBAY &_MayBay);
+              Date _NgayGio, MayBay _MayBay);
     string getMaCB();
     string getNoiDen();
     Date getNgayGio();
     int getTrangThai();
-    MAYBAY getMayBay();
+    MayBay getMayBay();
     void showDSVe();
 };
 
@@ -92,14 +92,14 @@ HanhKhach VeMayBay::getHanhKhach()
 ChuyenBay::ChuyenBay() {}
 
 ChuyenBay::ChuyenBay(string _MaCB, string _NoiDen,
-                     Date _NgayGio, MAYBAY _MayBay)
+                     Date _NgayGio, MayBay _MayBay)
 {
-    this->MayBaySuDung = _MayBay;
+    this->MayBaySuDung = &_MayBay;
     this->NgayGio = _NgayGio;
     this->MaCB = _MaCB;
     this->NoiDen = _NoiDen;
     this->SoVeToiDa =
-        this->MayBaySuDung->getSODAY() * this->MayBaySuDung->getSODONG();
+        this->MayBaySuDung->getSoDay() * MayBaySuDung->getSoDong();
 }
 
 string ChuyenBay::getMaCB()
@@ -122,7 +122,7 @@ int ChuyenBay::getTrangThai()
     return this->TrangThai;
 }
 
-MAYBAY ChuyenBay::getMayBay()
+MayBay ChuyenBay::getMayBay()
 {
     return *this->MayBaySuDung;
 }

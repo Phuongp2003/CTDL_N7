@@ -1,74 +1,70 @@
 #pragma once
 #include "header.h"
-#include <cstring>
+#include <string>
 #define MAXMB 300
 
-class MAYBAY //@brief MayBay @note abc
+class MayBay //@brief MayBay @note abc
 {
 private:
-    string SOHIEUMB; // @note xây dựng hàm chỉ cho phép nhập 16 kí tự
-    string LOAIMB;  // @note
-    int SODAY;
-    int SODONG;
+    char *SoHieuMB; // @note xây dựng hàm chỉ cho phép nhập 16 kí tự
+    char *LoaiMB;   // @note
+    int SoDay;
+    int SoDong;
+
 public:
-    MAYBAY();
-    MAYBAY(string SOHIEUMB,string LOAIMB, int SODAY,int SODONG);
-    void setSOHIEUMB(string SOHIEUMB);
-    string getSOHIEUMB();
-    void setLOAIMB(string LOAIMB);
-    string getLOAIMB();
-    void setSODAY(int SODAY);
-    int getSODAY();
-    void setSODONG(int SODONG);
-    int getSODONG();
-    ~MAYBAY();
-
+    MayBay();
+    MayBay(char *SoHieuMB, char *LoaiMB, int SoDay, int SoDong);
+    void setSoHieuMB(char *SoHieuMB);
+    char *getSoHieuMB();
+    void setLoaiMB(char *LoaiMB);
+    char *getLoaiMB();
+    void setSoDay(int SoDay);
+    int getSoDay();
+    void setSoDong(int SoDong);
+    int getSoDong();
+    ~MayBay();
 };
-
-MAYBAY::MAYBAY(string SOHIEUMB,string LOAIMB, int SODAY,int SODONG)
+MayBay::MayBay() {}
+MayBay::MayBay(char *SoHieuMB, char *LoaiMB, int SoDay, int SoDong)
 {
-    this->SOHIEUMB = SOHIEUMB;
-    this->LOAIMB = LOAIMB;
-    this->SODAY = SODAY;
-    this->SODONG = SODONG;
+    this->SoHieuMB = SoHieuMB;
+    this->LoaiMB = LoaiMB;
+    this->SoDay = SoDay;
+    this->SoDong = SoDong;
 }
 
-
-
-void MAYBAY::setSOHIEUMB(string SOHIEUMB)
+void MayBay::setSoHieuMB(char *SoHieuMB)
 {
-    this->SOHIEUMB=SOHIEUMB;
+    this->SoHieuMB = SoHieuMB;
 }
-string MAYBAY::getSOHIEUMB()
+char *MayBay::getSoHieuMB()
 {
-    return SOHIEUMB;
+    return SoHieuMB;
 }
-void MAYBAY::setLOAIMB(string LOAIMB)
+void MayBay::setLoaiMB(char *LoaiMB)
 {
-    this->LOAIMB=LOAIMB;
+    this->LoaiMB = LoaiMB;
 }
-string MAYBAY::getLOAIMB()
+char *MayBay::getLoaiMB()
 {
-    return LOAIMB;
+    return LoaiMB;
 }
-void MAYBAY::setSODAY(int SODAY)
+void MayBay::setSoDay(int SoDay)
 {
-    this->SODAY=SODAY;
+    this->SoDay = SoDay;
 }
-int MAYBAY::getSODAY()
+int MayBay::getSoDay()
 {
-    return SODAY;
+    return SoDay;
 }
-void MAYBAY::setSODONG(int SODONG)
+void MayBay::setSoDong(int SoDong)
 {
-    this->SODONG=SODONG;
+    this->SoDong = SoDong;
 }
-int MAYBAY:: getSODONG()
+int MayBay::getSoDong()
 {
-    return SODONG;
+    return SoDong;
 }
-
-
 
 // typedef struct MAYBAY MB;
 // struct listMB
