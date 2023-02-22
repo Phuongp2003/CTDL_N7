@@ -13,7 +13,7 @@
 // struct -----------------------------------------------------------------
 
 // Hành khách
-struct Hanh_Khach;
+struct HanhKhach;
 struct Node; // @brief Node hành khách
 // Máy bay
 class MAYBAY;
@@ -23,7 +23,7 @@ class VeMayBay;
 
 // function ---------------------------------------------------------------
 
-Node *create(Hanh_Khach hk);
-Node *insert(Node *root, Hanh_Khach hk);
+Node *create(HanhKhach hk);
+Node *insert(Node *root, HanhKhach hk);
 void inOrderTraversal(Node *root);
 Node *searchByCMND(Node *root, string cmnd);
