@@ -1,5 +1,5 @@
 #pragma once
-#include "hanh_khach.h"
+#include "hanhkhach.h"
 #include "header.h"
 #include "maybay.h"
 #include "ngaythang.h"
@@ -8,15 +8,15 @@ class VeMayBay
 {
 private:
     string IDVe = "A00";
-    Hanh_Khach HanhKhachMuaVe;
+    HanhKhach HanhKhachMuaVe;
 
 public:
     VeMayBay();
-    VeMayBay(string IDVe, Hanh_Khach HanhKhachMuaVe);
+    VeMayBay(string IDVe, HanhKhach HanhKhachMuaVe);
     void setIDVe(string ID);
     string getIDVe();
-    void setHanhKhach(Hanh_Khach HanhKhachMuaVe);
-    Hanh_Khach getHanhKhach();
+    void setHanhKhach(HanhKhach HanhKhachMuaVe);
+    HanhKhach getHanhKhach();
 };
 
 class ChuyenBay
@@ -61,7 +61,7 @@ public:
 
 VeMayBay::VeMayBay() {}
 
-VeMayBay::VeMayBay(string IDVe, Hanh_Khach HanhKhachMuaVe)
+VeMayBay::VeMayBay(string IDVe, HanhKhach HanhKhachMuaVe)
 {
     // this->IDVe = IDVe;
     // this->HanhKhachMuaVe = HanhKhachMuaVe;
@@ -77,12 +77,12 @@ string VeMayBay::getIDVe()
     return this->IDVe;
 }
 
-void VeMayBay::setHanhKhach(Hanh_Khach HanhKhachMuaVe)
+void VeMayBay::setHanhKhach(HanhKhach HanhKhachMuaVe)
 {
     this->HanhKhachMuaVe = HanhKhachMuaVe;
 }
 
-Hanh_Khach VeMayBay::getHanhKhach()
+HanhKhach VeMayBay::getHanhKhach()
 {
     return this->HanhKhachMuaVe;
 }
