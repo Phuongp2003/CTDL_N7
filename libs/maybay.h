@@ -1,20 +1,22 @@
 #pragma once
 #include "header.h"
+#include <cstring>
 #define MAXMB 300
 
 class MAYBAY //@brief MayBay @note abc
 {
 private:
-    char SOHIEUMB[16];
-    char LOAIMB[41];
+    string SOHIEUMB; // @note xây dựng hàm chỉ cho phép nhập 16 kí tự
+    string LOAIMB;  // @note
     int SODAY;
     int SODONG;
 public:
-    MAYBAY(char _SOHIEUMB[16],char _LOAIMB[41], int _SODAY,int _SODONG);
-    void setSOHIEUMB(char SOHIEUMB);
-    char getSOHIEUMB();
-    void setLOAIMB(char LOAIMB);
-    char getLOAIMB();
+    MAYBAY();
+    MAYBAY(string SOHIEUMB,string LOAIMB, int SODAY,int SODONG);
+    void setSOHIEUMB(string SOHIEUMB);
+    string getSOHIEUMB();
+    void setLOAIMB(string LOAIMB);
+    string getLOAIMB();
     void setSODAY(int SODAY);
     int getSODAY();
     void setSODONG(int SODONG);
@@ -23,29 +25,29 @@ public:
 
 };
 
-MAYBAY::MAYBAY(char _SOHIEUMB[16],char _LOAIMB[41], int _SODAY,int _SODONG)
+MAYBAY::MAYBAY(string SOHIEUMB,string LOAIMB, int SODAY,int SODONG)
 {
-    this->SOHIEUMB = _SOHIEUMB; 
-    this->LOAIMB = _LOAIMB;
-    this->SODAY = _SODAY;
-    this->SODONG = _SODONG;
+    this->SOHIEUMB = SOHIEUMB;
+    this->LOAIMB = LOAIMB;
+    this->SODAY = SODAY;
+    this->SODONG = SODONG;
 }
 
 
 
-void MAYBAY::setSOHIEUMB(char SOHIEUMB)
+void MAYBAY::setSOHIEUMB(string SOHIEUMB)
 {
     this->SOHIEUMB=SOHIEUMB;
 }
-char MAYBAY::getSOHIEUMB()
+string MAYBAY::getSOHIEUMB()
 {
     return SOHIEUMB;
 }
-void MAYBAY::setLOAIMB(char LOAIMB)
+void MAYBAY::setLOAIMB(string LOAIMB)
 {
     this->LOAIMB=LOAIMB;
 }
-char MAYBAY::getLOAIMB()
+string MAYBAY::getLOAIMB()
 {
     return LOAIMB;
 }
@@ -68,24 +70,10 @@ int MAYBAY:: getSODONG()
 
 
 
-
-
-{
-}
-
-typedef struct MAYBAY MB;
-struct listMB
-{
-    int n;
-    MayBay *nodes[MAXMB];
-};
-typedef struct listMB LISTMB;
-<<<<<<< HEAD
-=======
-
-struct Ve
-{
-    char ViTriNgoi[5];
-    char CMND[11];
-};
->>>>>>> 1b529a247d788913221165da0f226152d3386c9c
+// typedef struct MAYBAY MB;
+// struct listMB
+// {
+//     int n;
+//     MAYBAY *nodes[MAXMB];
+// };
+// typedef struct listMB LISTMB;

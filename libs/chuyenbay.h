@@ -1,3 +1,4 @@
+#pragma once
 #include "hanh_khach.h"
 #include "header.h"
 #include "maybay.h"
@@ -24,19 +25,19 @@ private:
     string MaCB = "", NoiDen = "";
     Date NgayGio;
     int TrangThai = 1, SoVeToiDa = 0;
-    MayBay *MayBaySuDung = new MayBay();
+    MAYBAY MayBaySuDung;
     VeMayBay DSVe[MAXVe];
 
 public:
     int SoVeDatDat = 0;
     ChuyenBay();
     ChuyenBay(string _MaCB, string _NoiDen,
-              Date _NgayGio, MayBay _MayBay);
+              Date _NgayGio, MAYBAY &_MayBay);
     string getMaCB();
     string getNoiDen();
     Date getNgayGio();
     int getTrangThai();
-    MayBay getMayBay();
+    MAYBAY getMayBay();
     void showDSVe();
 };
 
@@ -62,8 +63,8 @@ VeMayBay::VeMayBay() {}
 
 VeMayBay::VeMayBay(string IDVe, Hanh_Khach HanhKhachMuaVe)
 {
-    this->IDVe = IDVe;
-    this->HanhKhachMuaVe = HanhKhachMuaVe;
+    // this->IDVe = IDVe;
+    // this->HanhKhachMuaVe = HanhKhachMuaVe;
 }
 
 void VeMayBay::setIDVe(string ID)
@@ -91,14 +92,14 @@ Hanh_Khach VeMayBay::getHanhKhach()
 ChuyenBay::ChuyenBay() {}
 
 ChuyenBay::ChuyenBay(string _MaCB, string _NoiDen,
-                     Date _NgayGio, MayBay _MayBay)
+                     Date _NgayGio, MAYBAY _MayBay)
 {
-    this->MayBaySuDung = &_MayBay;
+    this->MayBaySuDung = _MayBay;
     this->NgayGio = _NgayGio;
     this->MaCB = _MaCB;
     this->NoiDen = _NoiDen;
     this->SoVeToiDa =
-        this->MayBaySuDung->soDay * this->MayBaySuDung->soDong;
+        this->MayBaySuDung->getSODAY() * this->MayBaySuDung->getSODONG();
 }
 
 string ChuyenBay::getMaCB()
@@ -121,7 +122,7 @@ int ChuyenBay::getTrangThai()
     return this->TrangThai;
 }
 
-MayBay ChuyenBay::getMayBay()
+MAYBAY ChuyenBay::getMayBay()
 {
     return *this->MayBaySuDung;
 }

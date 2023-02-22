@@ -3,22 +3,20 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
+// using namespace std;
 
 // Hằng số ----------------------------------------------------------------
-
+#define string std::string
 #define MAXMB 300
 #define MAXVe 100
 
 // struct -----------------------------------------------------------------
 
-// ngày tháng
-struct Date;
 // Hành khách
 struct Hanh_Khach;
 struct Node; // @brief Node hành khách
 // Máy bay
-struct MayBay;
+class MAYBAY;
 struct listMB;
 // Chuyến bay
 class VeMayBay;
