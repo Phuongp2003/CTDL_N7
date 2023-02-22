@@ -1,8 +1,8 @@
 #pragma once
 #include "header.h"
-const int MAXMB = 300;
-#define MAXMB 300;
-class MAYBAY #@brief MayBay;@note abc;
+#define MAXMB 300
+
+class MAYBAY //@brief MayBay @note abc
 {
 private:
     char SOHIEUMB[16];
@@ -10,49 +10,58 @@ private:
     int SODAY;
     int SODONG;
 public:
-    MAYBAY(char SOHIEUMB[16],char LOAIMB[41], int SODAY,int SODONG);
-    ~MayBay();
+    MAYBAY(char _SOHIEUMB[16],char _LOAIMB[41], int _SODAY,int _SODONG);
+    void setSOHIEUMB(char SOHIEUMB);
+    char getSOHIEUMB();
+    void setLOAIMB(char LOAIMB);
+    char getLOAIMB();
+    void setSODAY(int SODAY);
+    int getSODAY();
+    void setSODONG(int SODONG);
+    int getSODONG();
+    ~MAYBAY();
+
 };
 
-MAYBAY::MAYBAY(char SOHIEUMB[16],char LOAIMB[41], int SODAY,int SODONG)
+MAYBAY::MAYBAY(char _SOHIEUMB[16],char _LOAIMB[41], int _SODAY,int _SODONG)
 {
-    this->SOHIEUMB = SOHIEUMB; 
-    this->LOAIMB = LOAIMB;
-    this->SODAY = SODAY;
-    this->SODONG = SODONG;
+    this->SOHIEUMB = _SOHIEUMB; 
+    this->LOAIMB = _LOAIMB;
+    this->SODAY = _SODAY;
+    this->SODONG = _SODONG;
 }
 
 
 
-MAYBAY::void setSOHIEUMB(char SOHIEUMB)
+void MAYBAY::setSOHIEUMB(char SOHIEUMB)
 {
     this->SOHIEUMB=SOHIEUMB;
 }
-MAYBAY::char getSOHIEUMB()
+char MAYBAY::getSOHIEUMB()
 {
     return SOHIEUMB;
 }
-MAYBAY::void setLOAIMB(char LOAIMB)
+void MAYBAY::setLOAIMB(char LOAIMB)
 {
     this->LOAIMB=LOAIMB;
 }
-MAYBAY::char getLOAIMB()
+char MAYBAY::getLOAIMB()
 {
     return LOAIMB;
 }
-MAYBAY::void setSODAY(int SODAY)
+void MAYBAY::setSODAY(int SODAY)
 {
     this->SODAY=SODAY;
 }
-MAYBAY::int getSODAY()
+int MAYBAY::getSODAY()
 {
     return SODAY;
 }
-MAYBAY::void setSODONG(int SODONG)
+void MAYBAY::setSODONG(int SODONG)
 {
     this->SODONG=SODONG;
 }
-MAYBAY::int getSODONG()
+int MAYBAY:: getSODONG()
 {
     return SODONG;
 }
