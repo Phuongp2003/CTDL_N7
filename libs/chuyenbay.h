@@ -53,6 +53,10 @@ public:
     bool hasNext();
     NODE_ChuyenBay *getNext();
     void setNext(NODE_ChuyenBay *cb_next);
+    ChuyenBay TimCB(string _MaCB)
+    {
+        return this->node;
+    }
 };
 
 //============================================================================
