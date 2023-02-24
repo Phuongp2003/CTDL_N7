@@ -1,0 +1,4 @@
+chuyenbay.h:
+    -Danh sách luôn sắp xếp theo mã chuyến bay
+    -Bản mẫu ChuyenBay chứa MaCB, VeMayBay chứa CMND
+    
