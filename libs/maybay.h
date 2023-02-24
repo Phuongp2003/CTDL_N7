@@ -73,3 +73,5 @@ int MayBay::getSoDong()
 //     MAYBAY *nodes[MAXMB];
 // };
 // typedef struct listMB LISTMB;
+
+void nhap();
