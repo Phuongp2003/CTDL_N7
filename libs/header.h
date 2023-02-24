@@ -20,7 +20,7 @@ using namespace std;
 // struct -----------------------------------------------------------------
 
 // ngày tháng
-struct Date;
+class Date;
 // Hành khách
 class HanhKhach;
 class Node; // @brief Node hành khách
