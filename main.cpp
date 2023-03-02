@@ -1,4 +1,5 @@
 #include "libs/libs.h"
+#include <array>
 #include <windows.h>
 
 using namespace std;
@@ -14,7 +15,7 @@ int main()
      Date *ngayBay = new Date(20, 10, 30, 3, 2023);
      MayBay *mBay = new MayBay(sohieuMB, loaiMB, 5, 5);
      HanhKhach *hk = new HanhKhach(cmnd, ho, ten, 1);
-     VeMayBay *veBay = new VeMayBay("A12", hk);
+     VeMayBay *veBay = new VeMayBay(idVe, hk);
      ChuyenBay *cBay = new ChuyenBay(IDChuyenBay, noiden, ngayBay, mBay);
 
      cout << "Thong tin chuyen bay: " << endl;
