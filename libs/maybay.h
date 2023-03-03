@@ -1,8 +1,9 @@
 #pragma once
 #include "header.h"
 #include <string>
+#include"libs.h"
+#include"chuyenbay.h"
 #define MAXMB 300
-
 class MayBay
 {
 private:
@@ -25,12 +26,19 @@ public:
     int getSoCho();
     void show_MB();
     bool Kiemtrasocho(int socho);
+    void DSChoNgoi();
+    int getSoLuotBay(NODE_ChuyenBay *nodeCB);
     ~MayBay();
 };
+
+MayBay *mb = new MayBay[300];
+
+
 MayBay::MayBay() {}
 MayBay::MayBay(const char *_SoHieuMB, const char *LoaiMB, int SoDay, int SoDong)
 {
-    strcpy(this->SoHieuMB, _SoHieuMB);
+    strncpy(this->SoHieuMB, _SoHieuMB,16);
+    this->SoHieuMB[16]='\0';
     // this->SoHieuMB = SoHieuMB;
     strcpy(this->LoaiMB, LoaiMB);
     this->SoDay = SoDay;
@@ -39,7 +47,10 @@ MayBay::MayBay(const char *_SoHieuMB, const char *LoaiMB, int SoDay, int SoDong)
 
 void MayBay::setSoHieuMB(const char *SoHieuMB)
 {
-    strcpy(this->SoHieuMB, SoHieuMB);
+    
+    strncpy(this->SoHieuMB, SoHieuMB,16);
+    this->SoHieuMB[16]='\0';
+    // strcpy(this->SoHieuMB, SoHieuMB);
 }
 char *MayBay::getSoHieuMB()
 {
@@ -82,7 +93,50 @@ bool MayBay::Kiemtrasocho(int socho)
 {
     return socho >= 20;
 }
+string inttostring(int x){
+    string p="";
+    while(x>0){
+        
+        int res=x%10;
+        p=char(res+48)+p;
+        x=x/10;
+    }
+    return p;
+}
+void MayBay::DSChoNgoi(){
+    string p;
+    string a[SoDay][SoDong];
+    for(int i=0;i<SoDay;i++){
+        p=char(i+65);
+        
+        for(int j=0;j<SoDong;j++){
+            string temp=p;
+            if(j<=8){
+                p=p+char(48);
+            }
+                p=p+inttostring(j+1);
+            
+            a[i][j]=p;
+            p=temp;
+            // cout<<p<<endl;
+            cout<<a[i][j]<<" ";
+        }
+        cout<<endl;
+        
 
+    }
+
+}
+int MayBay::getSoLuotBay(NODE_ChuyenBay *nodeCB){
+    NODE_ChuyenBay *node=nodeCB;
+    int soluot=0;
+    while(node->getNext()!=NULL){
+        if(node->getCB()->getTrangThai()==3) soluot++;
+        node=node->getNext();
+
+    }
+    return soluot;
+}
 MayBay::~MayBay() {}
 
 // typedef struct MAYBAY MB;
@@ -104,7 +158,7 @@ private:
 public:
     DSMB();
     // void setsize(int size);
-    // int getsize();
+    int getsize();
     void getDSMB();
     bool Is_Empty(DSMB &DS);
     bool Is_Full(DSMB &DS);
@@ -113,6 +167,7 @@ public:
     void Delete_MB(DSMB &DS, int index);
     int Find_MB(DSMB &DS, const char *SoHieuMB);
     void Delete_DSMB(DSMB &DS);
+    ~DSMB();
 };
 DSMB::DSMB()
 {
@@ -120,17 +175,17 @@ DSMB::DSMB()
 // void DSMB::setsize(int size){
 //     this->size=size;
 // }
-// int DSMB::getsize(){
-//     return size;
-// }
+int DSMB::getsize(){
+    return size;
+}
 
-// void DSMB::getDSMB()
-// {
-//     for (int i = 0; i < size(); i++)
-//     {
-//         data[i]->show_MB();
-//     }
-// };
+void DSMB::getDSMB()
+{
+    for (int i = 0; i < size; i++)
+    {
+        data[i]->show_MB();
+    }
+};
 bool DSMB::Is_Empty(DSMB &DS)
 {
     return (DS.size == 0 ? true : false);
@@ -164,12 +219,12 @@ void DSMB::Delete_MB(DSMB &DS, int index)
     }
     DS.size--;
 }
-int DSMB::Find_MB(DSMB &DS, const char *SoHieuMB)
+int DSMB::Find_MB(DSMB &DS, const char *SoHieuMB)   //Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
 {
     for (int i = 0; i < DS.size; i++)
     {
-        if (DS.data[i]->getSoHieuMB() == SoHieuMB)
-            return i + 1;
+        if (strcmp(DS.data[i]->getSoHieuMB(),SoHieuMB) == 0)
+            return i ;
     }
     return -1;
 }
@@ -179,4 +234,10 @@ void DSMB::Delete_DSMB(DSMB &DS)
     {
         delete DS.data[i];
     }
+}
+
+DSMB::~DSMB(){}
+
+void nhapMB(){
+    
 }
