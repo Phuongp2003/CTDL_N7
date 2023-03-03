@@ -77,6 +77,7 @@ public:
     void themChuyenBay(ChuyenBay *cb);
     void xoaChuyenBaynext();
     ChuyenBay *TimCB(string _MaCB);
+    ChuyenBay *getCB();
 };
 
 //============================================================================
@@ -242,5 +243,7 @@ ChuyenBay *NODE_ChuyenBay::TimCB(string _MaCB)
         return this->node;
     return NULL;
 }
-
+ChuyenBay *NODE_ChuyenBay::getCB(){
+    return node;
+}
 #endif
