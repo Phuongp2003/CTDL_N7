@@ -89,18 +89,17 @@ void ChuyenBay::setDSVeMB()
     if (MayBaySuDung == NULL)
         return;
 
-    for (int i = 0; i < this->MayBaySuDung->getSoDong(); i++)
+    for (int i = 0; i < this->MayBaySuDung->getSoDay(); i++)
     {
-        for (int j = 0; j < this->MayBaySuDung->getSoDay(); j++)
+        for (int j = 0; j < this->MayBaySuDung->getSoDong(); j++)
         {
-            int id = i * this->MayBaySuDung->getSoDay() + j;
             string tmp;
             tmp[0] = IDChu[i];
-            tmp[1] = IDSo[this->MayBaySuDung->getSoDay() % 10];
-            tmp[2] = IDSo[this->MayBaySuDung->getSoDay() -
-                          ((this->MayBaySuDung->getSoDay() % 10) * 10)];
+            tmp[1] = IDSo[this->MayBaySuDung->getSoDong() % 10];
+            tmp[2] = IDSo[this->MayBaySuDung->getSoDong() -
+                          ((this->MayBaySuDung->getSoDong() % 10) * 10)];
             tmp[3] = '\0';
-            DSVe[id]->setIDVe(tmp);
+            DSVe[i * this->MayBaySuDung->getSoDong() + j]->setIDVe(tmp);
         }
     }
 }
