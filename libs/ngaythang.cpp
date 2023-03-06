@@ -79,3 +79,4 @@ bool Date::checkGio(int Gio,int Phut){
     if(Gio >=0 && Gio<=23 && Phut>=0 && Phut<=59) return true;
     else return false;
 }
+//d
