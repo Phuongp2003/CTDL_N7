@@ -12,22 +12,44 @@ Date::Date(int _Gio, int _Phut, int _Ngay, int _Thang, int _Nam)
     this->Nam = _Nam;
 }
 
-void Date::setGio(int _Gio, int _Phut)
+void Date::setGio(int _Gio)
 {
     this->Gio = _Gio;
-    this->Phut = _Phut;
 }
+
 int Date::getGio(){
     return Gio;
 }
-void Date::setNgay(int _Ngay, int _Thang, int _Nam)
+void Date::setPhut(int Phut)
+{
+    this->Phut = Phut;
+}
+int Date::getPhut(){
+    return Phut;
+}
+void Date::setNgay(int _Ngay)
 {
     this->Ngay = _Ngay;
-    this->Thang = _Thang;
-    this->Nam = _Nam;
+
 }
 int Date::getNgay(){
     return Ngay;
+}
+void Date::setThang(int Thang)
+{
+    this->Thang = Thang;
+
+}
+int Date::getThang(){
+    return Thang;
+}
+void Date::setNam(int Nam)
+{
+    this->Nam = Nam;
+
+}
+int Date::getNam(){
+    return Nam;
 }
 void Date::showTG()
 {
