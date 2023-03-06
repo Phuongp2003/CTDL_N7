@@ -54,10 +54,10 @@ ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
     this->SoVeToiDa =
         this->MayBaySuDung->getSoDay() * MayBaySuDung->getSoDong();
     this->TrangThai = ConVe;
-    DSVe = new VeMayBay *[SoVeToiDa];
+    DSVe = new VeMayBay[SoVeToiDa];
     for (int i = 0; i < this->SoVeToiDa; i++)
     {
-        DSVe[i] = new VeMayBay();
+        DSVe[i] = VeMayBay();
     }
 }
 
@@ -91,6 +91,11 @@ MayBay *ChuyenBay::getMayBay()
     return this->MayBaySuDung;
 }
 
+void ChuyenBay::setNgayGio(Date _NgayGio)
+{
+    this->NgayGio = _NgayGio;
+}
+
 void ChuyenBay::setDSVeMB()
 {
     if (MayBaySuDung == NULL)
@@ -107,14 +112,13 @@ void ChuyenBay::setDSVeMB()
             tmp[2] = IDSo[(j + 1) % 10];
             tmp[3] = '\0';
             tmp_str = tmp;
-            DSVe[i * this->MayBaySuDung->getSoDong() + j]->setIDVe(tmp_str);
+            DSVe[i * this->MayBaySuDung->getSoDong() + j].setIDVe(tmp_str);
         }
     }
 }
-
-void ChuyenBay::setNgayGio(Date _NgayGio)
+VeMayBay *ChuyenBay::getDSVe()
 {
-    this->NgayGio = _NgayGio;
+    return this->DSVe;
 }
 
 /**
@@ -124,8 +128,8 @@ void ChuyenBay::showDSVe()
 {
     for (int i = 0; i < SoVeToiDa; i++)
     {
-        cout << i << ". " << this->DSVe[i]->getIDVe() << " ";
-        if (this->DSVe[i]->getHanhKhach() == NULL)
+        cout << i << ". " << this->DSVe[i].getIDVe() << " ";
+        if (this->DSVe[i].getHanhKhach() == NULL)
             cout << "Con ve" << endl;
         else
             cout << "Da dat" << endl;

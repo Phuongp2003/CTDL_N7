@@ -70,7 +70,7 @@ private:
     int TrangThai, SoVeToiDa;
     // char *idMayBay;
     MayBay *MayBaySuDung = NULL;
-    VeMayBay **DSVe;
+    VeMayBay *DSVe;
     int SoVeDaDat = 0;
     ChuyenBay *next;
 
@@ -95,8 +95,9 @@ public:
     int getTrangThai();
     MayBay *getMayBay();
     void setDSVeMB();
-    void showDSVe();
 
+    void showDSVe();
+    VeMayBay *getDSVe();
     void ThucHienCB();
     // node
 };
