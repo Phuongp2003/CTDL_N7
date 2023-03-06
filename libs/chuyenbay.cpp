@@ -7,6 +7,7 @@ VeMayBay::VeMayBay()
 {
     IDVe = "A00";
     HanhKhachMuaVe = NULL;
+    TrangThai = true;
 }
 
 VeMayBay::VeMayBay(string IDVe, HanhKhach *HanhKhachMuaVe)
@@ -33,6 +34,11 @@ void VeMayBay::setHanhKhach(HanhKhach *HanhKhachMuaVe)
 HanhKhach *VeMayBay::getHanhKhach()
 {
     return this->HanhKhachMuaVe;
+}
+
+bool VeMayBay::getTrangThai()
+{
+    return this->TrangThai;
 }
 
 // hàm của ChuyenBay
@@ -84,6 +90,11 @@ void ChuyenBay::setTrangThai(int _TrangThai)
 int ChuyenBay::getTrangThai()
 {
     return this->TrangThai;
+}
+
+int ChuyenBay::getSoVeToiDa()
+{
+    return this->SoVeToiDa;
 }
 
 MayBay *ChuyenBay::getMayBay()

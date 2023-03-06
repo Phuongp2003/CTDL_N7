@@ -51,6 +51,7 @@ class VeMayBay
 private:
     string IDVe;
     HanhKhach *HanhKhachMuaVe;
+    bool TrangThai; // false là đã đặt
 
 public:
     VeMayBay();
@@ -59,6 +60,7 @@ public:
     string getIDVe();
     void setHanhKhach(HanhKhach *HanhKhachMuaVe);
     HanhKhach *getHanhKhach();
+    bool getTrangThai();
 };
 
 class ChuyenBay
@@ -93,6 +95,7 @@ public:
      */
     void setTrangThai(int _TrangThai);
     int getTrangThai();
+    int getSoVeToiDa();
     MayBay *getMayBay();
     void setDSVeMB();
 
