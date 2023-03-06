@@ -6,6 +6,7 @@ using namespace std;
 VeMayBay::VeMayBay()
 {
     IDVe = "A00";
+    HanhKhachMuaVe = NULL;
 }
 
 VeMayBay::VeMayBay(string IDVe, HanhKhach *HanhKhachMuaVe)
@@ -44,7 +45,7 @@ ChuyenBay::ChuyenBay()
 }
 
 ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
-                     Date *_NgayGio, MayBay *_MayBay)
+                     Date _NgayGio, MayBay *_MayBay)
 {
     this->MayBaySuDung = _MayBay;
     this->NgayGio = _NgayGio;
@@ -52,6 +53,12 @@ ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
     this->NoiDen = _NoiDen;
     this->SoVeToiDa =
         this->MayBaySuDung->getSoDay() * MayBaySuDung->getSoDong();
+    this->TrangThai = ConVe;
+    DSVe = new VeMayBay *[SoVeToiDa];
+    for (int i = 0; i < this->SoVeToiDa; i++)
+    {
+        DSVe[i] = new VeMayBay();
+    }
 }
 
 char *ChuyenBay::getMaCB()
@@ -64,7 +71,7 @@ string ChuyenBay::getNoiDen()
     return this->NoiDen;
 }
 
-Date *ChuyenBay::getNgayGio()
+Date ChuyenBay::getNgayGio()
 {
     return this->NgayGio;
 }
@@ -93,18 +100,19 @@ void ChuyenBay::setDSVeMB()
     {
         for (int j = 0; j < this->MayBaySuDung->getSoDong(); j++)
         {
-            string tmp;
+            string tmp_str;
+            char tmp[4];
             tmp[0] = IDChu[i];
-            tmp[1] = IDSo[this->MayBaySuDung->getSoDong() % 10];
-            tmp[2] = IDSo[this->MayBaySuDung->getSoDong() -
-                          ((this->MayBaySuDung->getSoDong() % 10) * 10)];
+            tmp[1] = IDSo[(j + 1) / 10];
+            tmp[2] = IDSo[(j + 1) % 10];
             tmp[3] = '\0';
-            DSVe[i * this->MayBaySuDung->getSoDong() + j]->setIDVe(tmp);
+            tmp_str = tmp;
+            DSVe[i * this->MayBaySuDung->getSoDong() + j]->setIDVe(tmp_str);
         }
     }
 }
 
-void ChuyenBay::setNgayGio(Date *_NgayGio)
+void ChuyenBay::setNgayGio(Date _NgayGio)
 {
     this->NgayGio = _NgayGio;
 }
@@ -114,33 +122,41 @@ void ChuyenBay::setNgayGio(Date *_NgayGio)
  */
 void ChuyenBay::showDSVe()
 {
-    for (int i = 0; i < SoVeDaDat; i++)
+    for (int i = 0; i < SoVeToiDa; i++)
     {
-        HanhKhach *tmp;
-        tmp = DSVe[i]->getHanhKhach();
-        cout << i << ". " << DSVe[i]->getIDVe()
-             << ", CMND: " << tmp->getCmnd()
-             << "Ho va Ten: " << tmp->getHo() << " " << tmp->getTen()
-             << endl;
+        cout << i << ". " << this->DSVe[i]->getIDVe() << " ";
+        if (this->DSVe[i]->getHanhKhach() == NULL)
+            cout << "Con ve" << endl;
+        else
+            cout << "Da dat" << endl;
     }
 }
-
-bool ChuyenBay::hasNext()
+/**
+ * @brief Đây là hàm thử nghiệm
+ *
+ */
+void ChuyenBay::ThucHienCB()
 {
-    if (this->next == NULL)
+    this->TrangThai = HoanTat;
+    this->MayBaySuDung->TangSLTHCB();
+}
+
+bool DanhSachCB::hasNext(Node *currNode)
+{
+    if (currNode->next == NULL)
         return true;
     return false;
 }
 
-void ChuyenBay::setNext(ChuyenBay *node)
+void DanhSachCB::setNext(Node *currNode, Node *node)
 {
-    node->next = this->next;
-    this->next = node;
+    node->next = currNode->next;
+    currNode->next = node;
 }
 
-ChuyenBay *ChuyenBay::getNext()
+DanhSachCB::Node *DanhSachCB::getNext(Node *currNode)
 {
-    return this->next;
+    return currNode;
 }
 // Hàm của DanhSachCB
 
@@ -149,84 +165,77 @@ DanhSachCB::DanhSachCB()
     this->head = NULL;
 }
 
-DanhSachCB::DanhSachCB(ChuyenBay *cb)
+DanhSachCB::DanhSachCB(Node *node)
 {
-    this->head = cb;
-}
-
-// ChuyenBay *DanhSachCB::getCBay()
-// {
-//     return this->cBay;
-// }
-
-void DanhSachCB::push(ChuyenBay *currNode, ChuyenBay *node)
-{
-    node->setNext(currNode->getNext());
-    currNode->setNext(node);
-}
-
-void DanhSachCB::push_back(ChuyenBay *node)
-{
-    node->setNext(NULL);
-    ChuyenBay *tmp = this->head;
-    while (tmp->hasNext())
-    {
-        tmp = tmp->getNext();
-    }
-    tmp->setNext(node);
-}
-
-void DanhSachCB::push_front(ChuyenBay *node)
-{
-    node->setNext(this->head);
     this->head = node;
 }
 
-void DanhSachCB::pop(ChuyenBay *node)
+void DanhSachCB::push(Node *currNode, Node *node)
+{
+    setNext(currNode, node);
+}
+
+void DanhSachCB::push_back(Node *node)
+{
+    setNext(node, NULL);
+    Node *tmp = this->head;
+    while (hasNext(tmp))
+    {
+        tmp = getNext(tmp);
+    }
+    setNext(tmp, node);
+}
+
+void DanhSachCB::push_front(Node *node)
+{
+    setNext(node, this->head);
+    this->head = node;
+}
+
+void DanhSachCB::pop(Node *node)
 {
     if (node == this->head)
     {
         this->pop_first();
         return;
     }
-    else if (!node->hasNext())
+    else if (!hasNext(node))
     {
         this->pop_back();
         return;
     }
 
-    ChuyenBay *tmp = this->head;
-    while (tmp->getNext() != node)
+    Node *tmp = this->head;
+    while (getNext(tmp) != node)
     {
-        tmp = tmp->getNext();
+        tmp = getNext(tmp);
     }
-    tmp->setNext(node->getNext());
+    setNext(tmp, getNext(node));
 }
 
 void DanhSachCB::pop_first()
 {
-    this->head = this->head->getNext();
-    ChuyenBay *tmp = this->head;
+    this->head = getNext(this->head);
 }
 
 void DanhSachCB::pop_back()
 {
-    ChuyenBay *tmp = this->head;
-    while (tmp->getNext()->hasNext())
+    Node *tmp = this->head;
+    while (hasNext(getNext(tmp)))
     {
-        tmp = tmp->getNext();
+        tmp = getNext(tmp);
     }
-    tmp->setNext(NULL);
+    setNext(tmp, NULL);
 }
 
 ChuyenBay *DanhSachCB::TimCB(string _MaCB)
 {
-    ChuyenBay *tmp = this->head;
-    while (tmp->hasNext())
+    Node *tmp = this->head;
+    while (hasNext(tmp))
     {
-        if (tmp->getMaCB() == _MaCB)
+        if (tmp->node->getMaCB() == _MaCB)
         {
-            return tmp;
+            return tmp->node;
         }
     }
 
