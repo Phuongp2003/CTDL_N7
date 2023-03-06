@@ -45,7 +45,7 @@ ChuyenBay::ChuyenBay()
 }
 
 ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
-                     Date *_NgayGio, MayBay *_MayBay)
+                     Date _NgayGio, MayBay *_MayBay)
 {
     this->MayBaySuDung = _MayBay;
     this->NgayGio = _NgayGio;
@@ -71,7 +71,7 @@ string ChuyenBay::getNoiDen()
     return this->NoiDen;
 }
 
-Date *ChuyenBay::getNgayGio()
+Date ChuyenBay::getNgayGio()
 {
     return this->NgayGio;
 }
@@ -112,7 +112,7 @@ void ChuyenBay::setDSVeMB()
     }
 }
 
-void ChuyenBay::setNgayGio(Date *_NgayGio)
+void ChuyenBay::setNgayGio(Date _NgayGio)
 {
     this->NgayGio = _NgayGio;
 }
@@ -130,6 +130,15 @@ void ChuyenBay::showDSVe()
         else
             cout << "Da dat" << endl;
     }
+}
+/**
+ * @brief Đây là hàm thử nghiệm
+ *
+ */
+void ChuyenBay::ThucHienCB()
+{
+    this->TrangThai = HoanTat;
+    this->MayBaySuDung->TangSLTHCB();
 }
 
 bool DanhSachCB::hasNext(Node *currNode)

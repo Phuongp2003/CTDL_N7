@@ -65,7 +65,7 @@ class ChuyenBay
 {
 private:
     char MaCB[15];
-    Date *NgayGio;
+    Date NgayGio;
     string NoiDen;
     int TrangThai, SoVeToiDa;
     // char *idMayBay;
@@ -82,11 +82,11 @@ public:
      */
     ChuyenBay();
     ChuyenBay(const char *_MaCB, string _NoiDen,
-              Date *_NgayGio, MayBay *_MayBay);
+              Date _NgayGio, MayBay *_MayBay);
     char *getMaCB();
     string getNoiDen();
-    Date *getNgayGio();
-    void setNgayGio(Date *_NgayGio);
+    Date getNgayGio();
+    void setNgayGio(Date _NgayGio);
     /**
      *
      * @param _GiaTri 0-Huỷ chuyến, 1-Còn vé, 2-Hết vé, 3-Hoàn tất
@@ -96,6 +96,8 @@ public:
     MayBay *getMayBay();
     void setDSVeMB();
     void showDSVe();
+
+    void ThucHienCB();
     // node
 };
 
