@@ -3,6 +3,9 @@
 #include "header.h"
 #include "maybay.h"
 #include "ngaythang.h"
+
+using std::string;
+
 #define HuyChuyen 0
 #define ConVe 1
 #define HetVe 2
@@ -65,7 +68,7 @@ private:
     Date *NgayGio;
     string NoiDen;
     int TrangThai, SoVeToiDa;
-    char *idMayBay;
+    // char *idMayBay;
     MayBay *MayBaySuDung = NULL;
     VeMayBay **DSVe;
     int SoVeDaDat = 0;
@@ -94,34 +97,33 @@ public:
     void setDSVeMB();
     void showDSVe();
     // node
-    bool hasNext();
-    void setNext(ChuyenBay *node);
-    ChuyenBay *getNext();
 };
 
 class DanhSachCB
 {
 private:
-    ChuyenBay *head;
+    struct Node
+    {
+        ChuyenBay *node;
+        Node *next;
+    };
+    Node *head;
     int size;
 
 public:
     DanhSachCB();
-    DanhSachCB(ChuyenBay *cb);
-    ChuyenBay *getCBay();
-    /**
-     * @brief Thêm sau node hiện tại
-     *
-     * @param node node điền vào sau
-     */
-    void DanhSachCB::push(ChuyenBay *currNode, ChuyenBay *node);
-    void push_back(ChuyenBay *node);
-    void push_front(ChuyenBay *node);
+    DanhSachCB(Node *cb);
+    bool hasNext(Node *currNode);
+    void setNext(Node *currNode, Node *node);
+    Node *getNext(Node *currNode);
+    void push(Node *currNode, Node *node);
+    void push_back(Node *node);
+    void push_front(Node *node);
     /**
      * @brief xoá chuyến bay hiện chọn
      *
      */
-    void pop(ChuyenBay *node);
+    void pop(Node *node);
     void pop_first();
     void pop_back();
     ChuyenBay *TimCB(string _MaCB);
