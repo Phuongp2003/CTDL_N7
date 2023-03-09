@@ -99,7 +99,7 @@ public:
     MayBay *getMayBay();
     void setDSVeMB();
 
-    void showDSVe();
+    void showDSVeTrong();
     VeMayBay *getDSVe();
     void ThucHienCB();
     // node

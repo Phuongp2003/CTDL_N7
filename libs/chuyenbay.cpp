@@ -135,15 +135,21 @@ VeMayBay *ChuyenBay::getDSVe()
 /**
  * @note hàm chỉ làm mẫu, lúc xuất chỉnh trên UI sau
  */
-void ChuyenBay::showDSVe()
+void ChuyenBay::showDSVeTrong()
 {
+    HanhKhach *hanhKhach;
     for (int i = 0; i < SoVeToiDa; i++)
     {
-        cout << i << ". " << this->DSVe[i].getIDVe() << " ";
-        if (this->DSVe[i].getHanhKhach() == NULL)
-            cout << "Con ve" << endl;
-        else
-            cout << "Da dat" << endl;
+        hanhKhach = DSVe[i].getHanhKhach();
+        if (this->DSVe[i].getTrangThai())
+        {
+            cout << i + 1
+                 << DSVe[i].getIDVe()
+                 << hanhKhach->getCmnd()
+                 << hanhKhach->getHo()
+                 << hanhKhach->getTen()
+                 << hanhKhach->getPhai();
+        }
     }
 }
 /**
