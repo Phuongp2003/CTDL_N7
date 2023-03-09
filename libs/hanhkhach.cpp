@@ -132,24 +132,29 @@ void DsHanhKhach::showDsHanhKhach(string maCb)
         cout << "Khong ton tai chuyen bay";
         return;
     }
+
     cout << "DANH SACH HANH KHACH THUOC CHUYEN BAY " << cbCanTim->getMaCB();
+
+    Date ngayGio = cbCanTim->getNgayGio();
     cout << "\nNgay gio khoi hanh: "
-         << cbCanTim->getNgayGio().getNgay() << "/"
-         << cbCanTim->getNgayGio().getThang() << "/"
-         << cbCanTim->getNgayGio().getNam() << " "
-         << cbCanTim->getNgayGio().getGio() << ":"
-         << cbCanTim->getNgayGio().getPhut() << ". "
+         << ngayGio.getThang() << "/"
+         << ngayGio.getNgay() << "/"
+         << ngayGio.getNam() << " "
+         << ngayGio.getGio() << ":"
+         << ngayGio.getPhut() << ". "
          << "Noi den: " << cbCanTim->getNoiDen() << "\n\n";
+         
     cout << "STT\tSO VE\tSO CMND\t\tHO TEN\t\t\tPHAI";
     
+    VeMayBay *dsVe = cbCanTim->getDSVe();
     for (int i = 0; i < cbCanTim->getSoVeToiDa(); i++) {
-        if (!cbCanTim->getDSVe()[i].getTrangThai()) {
+        if (!dsVe[i].getTrangThai()) {
             cout << i + 1 << '\t'
-                 << cbCanTim->getDSVe()->getIDVe() << '\t'
-                 << cbCanTim->getDSVe()->getHanhKhach()->getCmnd() << '\t'
-                 << cbCanTim->getDSVe()->getHanhKhach()->getHo() << ' '
-                 << cbCanTim->getDSVe()->getHanhKhach()->getTen() << '\t'
-                 << cbCanTim->getDSVe()->getHanhKhach()->getPhai() << '\t';
+                 << dsVe[i].getIDVe() << '\t'
+                 << dsVe[i].getHanhKhach()->getCmnd() << '\t'
+                 << dsVe[i].getHanhKhach()->getHo() << ' '
+                 << dsVe[i].getHanhKhach()->getTen() << '\t'
+                 << dsVe[i].getHanhKhach()->getPhai() << '\t';
         }
     }
 }
