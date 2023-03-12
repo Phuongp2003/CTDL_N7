@@ -33,6 +33,8 @@ public:
     void DSChoNgoi();
     void TangSLTHCB();
     int getSoLuotBay();
+    
+    MayBay* getMB();
     ~MayBay();
 };
 
@@ -66,6 +68,7 @@ public:
     void Delete_MB(DSMB &DS, int index);
     int Find_MB(DSMB &DS, const char *SoHieuMB);
     void Delete_DSMB(DSMB &DS);
+    MayBay* getMB(int index);
     ~DSMB();
 };
 

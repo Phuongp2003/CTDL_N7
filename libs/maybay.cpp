@@ -178,9 +178,7 @@ void DSMB::Delete_DSMB(DSMB &DS)
         delete DS.data[i];
     }
 }
-
-DSMB::~DSMB() {}
-
-void nhapMB()
-{
+MayBay* DSMB::getMB(int index){
+    return data[index];
 }
+DSMB::~DSMB() {}
