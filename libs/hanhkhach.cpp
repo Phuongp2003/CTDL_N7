@@ -25,9 +25,12 @@ string HanhKhach::getTen() const
 
 string HanhKhach::getPhai() const
 {
-    if (_phai == 0) {
+    if (_phai == 0)
+    {
         return "Nam";
-    } else return "Nu";
+    }
+    else
+        return "Nu";
 }
 
 void HanhKhach::setCmnd(string cmnd)
@@ -52,54 +55,71 @@ void HanhKhach::setPhai(int phai)
 
 //------------------------------------------------------------
 
+NodeHK::NodeHK() {}
+
+NodeHK::NodeHK(HanhKhach hanhKhach)
+    : _hanhKhach(hanhKhach), left(NULL), right(NULL) {}
+
+HanhKhach NodeHK::getHanhKhach() const
+{
+    return _hanhKhach;
+}
+
+NodeHK *NodeHK::getLeft() const
+{
+    return left;
+}
+
+NodeHK *NodeHK::getRight() const
+{
+    return right;
+}
+
+//------------------------------------------------------------
+
 DsHanhKhach::DsHanhKhach() : root(NULL) {}
 
 void DsHanhKhach::insert(HanhKhach hanhKhach)
 {
-    Node *newNode = new Node;
-    newNode->_hanhKhach = hanhKhach;
-    newNode->left = newNode->right = NULL;
-
     if (root == NULL)
     {
-        root = newNode;
+        root = new NodeHK(hanhKhach);
         return;
     }
 
-    Node *current = root;
     int compareCmnd;
     while (true)
     {
-        compareCmnd = hanhKhach.getCmnd().compare(current->_hanhKhach.getCmnd());
+        compareCmnd = hanhKhach.getCmnd().compare(root->getHanhKhach().getCmnd());
 
         if (compareCmnd < 0)
         {
-            if (current->left == NULL)
+            if (root->getLeft() == NULL)
             {
-                current->left = newNode;
+                root->setLeft(new NodeHK(hanhKhach));
                 break;
             }
             else
             {
-                current = current->left;
+                root = root->getLeft();
             }
         }
         else
         {
-            if (current->right == NULL)
+            if (root->getRight() == NULL)
             {
-                current->right = newNode;
+                root->setRight(new NodeHK(hanhKhach));
                 break;
             }
             else
             {
-                current = current->right;
+                root = root->getRight();
             }
         }
     }
 }
 
-DsHanhKhach::Node *DsHanhKhach::search(string cmnd)
+NodeHK *DsHanhKhach::search(string cmnd)
 {
     if (root == NULL)
     {
@@ -110,13 +130,18 @@ DsHanhKhach::Node *DsHanhKhach::search(string cmnd)
 
     while (root != NULL)
     {
-        compareCmnd = cmnd.compare(root->_hanhKhach.getCmnd());
-        if (compareCmnd == 0) {
+        compareCmnd = cmnd.compare(root->getHanhKhach().getCmnd());
+        if (compareCmnd == 0)
+        {
             return root;
-        } else if (compareCmnd < 0) {
-            root = root->left;
-        } else {
-            root = root->right;
+        }
+        else if (compareCmnd < 0)
+        {
+            root = root->getLeft();
+        }
+        else
+        {
+            root = root->getRight();
         }
     }
 
@@ -128,7 +153,8 @@ void DsHanhKhach::showDsHanhKhach(string maCb)
     DanhSachCB chuyenBay;
     ChuyenBay *cbCanTim = chuyenBay.TimCB(maCb);
 
-    if (cbCanTim == NULL) {
+    if (cbCanTim == NULL)
+    {
         cout << "Khong ton tai chuyen bay";
         return;
     }
@@ -143,12 +169,14 @@ void DsHanhKhach::showDsHanhKhach(string maCb)
          << ngayGio.getGio() << ":"
          << ngayGio.getPhut() << ". "
          << "Noi den: " << cbCanTim->getNoiDen() << "\n\n";
-         
+
     cout << "STT\tSO VE\tSO CMND\t\tHO TEN\t\t\tPHAI";
-    
+
     VeMayBay *dsVe = cbCanTim->getDSVe();
-    for (int i = 0; i < cbCanTim->getSoVeToiDa(); i++) {
-        if (!dsVe[i].getTrangThai()) {
+    for (int i = 0; i < cbCanTim->getSoVeToiDa(); i++)
+    {
+        if (!dsVe[i].getTrangThai())
+        {
             cout << i + 1 << '\t'
                  << dsVe[i].getIDVe() << '\t'
                  << dsVe[i].getHanhKhach()->getCmnd() << '\t'
