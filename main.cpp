@@ -1,16 +1,15 @@
-#include "libs/libs.h"
-#include "windows.h"
+#include "header/libs.h"
+// #include "windows.h"
 
 using namespace std;
 
 int main()
 {
+     DSMB *DanhSachMB = new DSMB();
      MayBay **mb;
      mb = new MayBay *[10];
-     for (int i = 0; i < 10; i++)
-     {
-          mb[i] = new MayBay("MB" + i, "boing" + i, 4 + i, 20 - i);
-     }
+     mb[0] = new MayBay("MB01", "boing", 4, 20);
+     DanhSachMB->Insert_MB(mb[0]);
      Date *date = new Date[10];
      for (int i = 0; i < 10; i++)
      {
@@ -18,18 +17,18 @@ int main()
      }
      ChuyenBay **cb;
      cb = new ChuyenBay *[10];
-     for (int i = 0; i < 10; i++)
-     {
-          cb[i] = new ChuyenBay("MB" + i, "Lien Khuong", date[i], mb[i]);
-     }
-     ChuyenBay *cbp = new ChuyenBay("MH2", "Ha Noi", date[0], mb[0]);
+     cb[0] = new ChuyenBay("MH01", "Lien Khuong", date[0], "MB01");
+     ChuyenBay *cbp = new ChuyenBay("MH2", "Ha Noi", date[0], "MB01");
 
-     cb[0]->setDSVeMB();
+     cb[0]->setDSVeMB(DanhSachMB);
      cb[0]->showDSVe();
-     cb[0]->ThucHienCB();
-     cbp->ThucHienCB();
+     cb[0]->ThucHienCB(DanhSachMB);
+     cbp->ThucHienCB(DanhSachMB);
      cout << endl
           << "SLB: " << mb[0]->getSoLuotBay() << endl;
-     system("pause");
+     // system("pause");Segmentation fault
+     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "First Screen");
+     CreateScreen();
+     CloseWindow();
      return 0;
 }

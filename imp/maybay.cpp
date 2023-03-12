@@ -1,4 +1,4 @@
-#include "maybay.h"
+#include "../header/maybay.h"
 
 using namespace std;
 
@@ -102,7 +102,7 @@ void MayBay::DSChoNgoi()
 
 void MayBay::TangSLTHCB()
 {
-    SoLuotTHCB++;
+    this->SoLuotTHCB++;
 }
 
 int MayBay::getSoLuotBay()
@@ -129,58 +129,57 @@ void DSMB::getDSMB()
         data[i]->show_MB();
     }
 };
-bool DSMB::Is_Empty(DSMB &DS)
+bool DSMB::Is_Empty()
 {
-    return (DS.size == 0 ? true : false);
+    return (size == 0 ? true : false);
 }
 
-bool DSMB::Is_Full(DSMB &DS)
+bool DSMB::Is_Full()
 {
-    return (DS.size >= MAXMB ? true : false);
+    return (size >= MAXMB ? true : false);
 }
 
-MayBay *DSMB::New_MB(MayBay &maybay)
+MayBay *DSMB::New_MB(MayBay *maybay)
 {
     MayBay *p = new MayBay;
-    *p = maybay;
+    p = maybay;
     return p;
 }
 
-void DSMB::Insert_MB(DSMB &DS, MayBay &maybay)
+void DSMB::Insert_MB(MayBay *maybay)
 {
-    if (DS.size == MAXMB)
+    if (size == MAXMB)
         return;
-    DS.data[DS.size] = New_MB(maybay);
-    DS.size++;
+    data[size] = New_MB(maybay);
+    size++;
 }
-void DSMB::Delete_MB(DSMB &DS, int index)
+void DSMB::Delete_MB(int index)
 {
-    delete DS.data[index];
-    for (int i = index; i < DS.size - 1; i++)
+    delete data[index];
+    for (int i = index; i < size - 1; i++)
     {
-        DS.data[index] = DS.data[i + 1];
+        data[index] = data[i + 1];
     }
-    DS.size--;
+    size--; //
 }
-int DSMB::Find_MB(DSMB &DS, const char *SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
+int DSMB::Find_MB(const char *SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
 {
-    for (int i = 0; i < DS.size; i++)
+    for (int i = 0; i < this->size; i++)
     {
-        if (strcmp(DS.data[i]->getSoHieuMB(), SoHieuMB) == 0)
+        if (*this->data[i]->getSoHieuMB() == *SoHieuMB)
             return i;
     }
     return -1;
 }
-void DSMB::Delete_DSMB(DSMB &DS)
+void DSMB::Delete_DSMB()
 {
-    for (int i = 0; i < DS.size; i++)
+    for (int i = 0; i < size; i++)
     {
-        delete DS.data[i];
+        delete data[i];
     }
 }
-
-DSMB::~DSMB() {}
-
-void nhapMB()
+MayBay *DSMB::getMB(int index)
 {
+    return data[index];
 }
+DSMB::~DSMB() {}

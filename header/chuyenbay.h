@@ -50,16 +50,16 @@ class VeMayBay
 {
 private:
     string IDVe;
-    HanhKhach *HanhKhachMuaVe;
+    string CMND;
     bool TrangThai; // false là đã đặt
 
 public:
     VeMayBay();
-    VeMayBay(string IDVe, HanhKhach *HanhKhachMuaVe);
+    VeMayBay(string IDVe, string CMND);
     void setIDVe(string ID);
     string getIDVe();
-    void setHanhKhach(HanhKhach *HanhKhachMuaVe);
-    HanhKhach *getHanhKhach();
+    void setHanhKhach(string CMND);
+    string getHanhKhach();
     bool getTrangThai();
 };
 
@@ -71,10 +71,9 @@ private:
     string NoiDen;
     int TrangThai, SoVeToiDa;
     // char *idMayBay;
-    MayBay *MayBaySuDung = NULL;
+    char IDMayBay[16];
     VeMayBay *DSVe;
     int SoVeDaDat = 0;
-    ChuyenBay *next;
 
 public:
     /**
@@ -84,7 +83,7 @@ public:
      */
     ChuyenBay();
     ChuyenBay(const char *_MaCB, string _NoiDen,
-              Date _NgayGio, MayBay *_MayBay);
+              Date _NgayGio, char *_MaMayBay);
     char *getMaCB();
     string getNoiDen();
     Date getNgayGio();
@@ -96,40 +95,44 @@ public:
     void setTrangThai(int _TrangThai);
     int getTrangThai();
     int getSoVeToiDa();
-    MayBay *getMayBay();
-    void setDSVeMB();
+    char *getMaMayBay();
+    void setDSVeMB(DSMB *DanhSachCB);
 
     void showDSVe();
     VeMayBay *getDSVe();
-    void ThucHienCB();
+    void ThucHienCB(DSMB *DanhSachCB);
     // node
+};
+class Node_CB
+{
+private:
+    ChuyenBay *node;
+    Node_CB *next;
+
+public:
+    ChuyenBay *getNode();
+    bool hasNext();
+    void setNext(Node_CB *node);
+    Node_CB *getNext();
 };
 
 class DanhSachCB
 {
 private:
-    struct Node
-    {
-        ChuyenBay *node;
-        Node *next;
-    };
-    Node *head;
+    Node_CB *head;
     int size;
 
 public:
     DanhSachCB();
-    DanhSachCB(Node *cb);
-    bool hasNext(Node *currNode);
-    void setNext(Node *currNode, Node *node);
-    Node *getNext(Node *currNode);
-    void push(Node *currNode, Node *node);
-    void push_back(Node *node);
-    void push_front(Node *node);
+    DanhSachCB(Node_CB *cb);
+    void push(Node_CB *currNode, Node_CB *node);
+    void push_back(Node_CB *node);
+    void push_front(Node_CB *node);
     /**
      * @brief xoá chuyến bay hiện chọn
      *
      */
-    void pop(Node *node);
+    void pop(Node_CB *node);
     void pop_first();
     void pop_back();
     ChuyenBay *TimCB(string _MaCB);
