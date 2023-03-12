@@ -1,5 +1,5 @@
-#include "hanhkhach.h"
-#include "chuyenbay.h"
+#include "../header/hanhkhach.h"
+#include "../header/chuyenbay.h"
 
 using namespace std;
 
@@ -177,12 +177,15 @@ void DsHanhKhach::showDsHanhKhach(string maCb)
     {
         if (!dsVe[i].getTrangThai())
         {
+            NodeHK *tmp;
+            tmp = this->search(dsVe[i].getHanhKhach());
+
             cout << i + 1 << '\t'
                  << dsVe[i].getIDVe() << '\t'
-                 << dsVe[i].getHanhKhach()->getCmnd() << '\t'
-                 << dsVe[i].getHanhKhach()->getHo() << ' '
-                 << dsVe[i].getHanhKhach()->getTen() << '\t'
-                 << dsVe[i].getHanhKhach()->getPhai() << '\t';
+                 << tmp->getHanhKhach().getCmnd() << '\t'
+                 << tmp->getHanhKhach().getHo() << ' '
+                 << tmp->getHanhKhach().getTen() << '\t'
+                 << tmp->getHanhKhach().getPhai() << '\t';
         }
     }
 }

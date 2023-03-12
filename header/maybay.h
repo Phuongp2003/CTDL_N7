@@ -33,6 +33,8 @@ public:
     void DSChoNgoi();
     void TangSLTHCB();
     int getSoLuotBay();
+
+    MayBay *getMB();
     ~MayBay();
 };
 
@@ -59,14 +61,15 @@ public:
     // void setsize(int size);
     int getsize();
     void getDSMB();
-    bool Is_Empty(DSMB &DS);
-    bool Is_Full(DSMB &DS);
-    MayBay *New_MB(MayBay &maybay);
-    void Insert_MB(DSMB &DS, MayBay &maybay);
-    void Delete_MB(DSMB &DS, int index);
-    int Find_MB(DSMB &DS, const char *SoHieuMB);
-    void Delete_DSMB(DSMB &DS);
+    bool Is_Empty();
+    bool Is_Full();
+    MayBay *New_MB(MayBay *maybay);
+    void Insert_MB(MayBay *maybay);
+    void Delete_MB(int index);
+    int Find_MB(const char *SoHieuMB);
+    void Delete_DSMB();
+    MayBay *getMB(int index);
     ~DSMB();
 };
-
+//
 #endif

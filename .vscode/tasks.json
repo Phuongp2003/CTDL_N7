@@ -1,0 +1,43 @@
+{
+    
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: g++.exe build active file",
+            "command": "g++",
+            "args": [
+                "-g",
+                "${file}",
+                "imp/**.cpp",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "-L",
+                "lib/",
+                "-lraylib",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm",
+                "-static-libgcc",
+                "-static-libstdc++",
+                "-lpthread",
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "compiler: g++.exe"
+        }
+    ],
+    "label": "Activate Test Explorer",
+    "type": "shell",
+    "command": "echo ${command:test-explorer.reload}",
+    "problemMatcher": [],
+    "runOptions": {
+      "runOn": "folderOpen" // This will cause the triggering. Have to run manually once!
+    }
+
+}

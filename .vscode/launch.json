@@ -1,0 +1,44 @@
+{
+  "configurations": [
+  {
+    "name": "(gdb) Launch",
+    "type": "cppdbg",
+    "request": "launch",
+    "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+    "args": 
+    [
+      "&",
+      "pause",
+      "&",
+      "exit"
+    ],
+    // "program": "c:/Windows/System32/cmd.exe",
+    // "args": [
+    //   // "g++",
+    //   // "-g",
+    //   // "${file}",
+    //   // "-o",
+    //   // "${fileDirname}\\${fileBasenameNoExtension}.exe",
+    //   // "-static-libgcc",
+    //   // "-static-libstdc++",
+    //   // "-lpthread",
+    //   "/k",
+    //   "${fileDirname}\\${fileBasenameNoExtension}.exe",
+    //   "&",
+    //   "pause",
+    //   "&",
+    //   "exit"
+    // ],
+    "stopAtEntry": false,
+    "cwd": "${fileDirname}",
+    "environment": [],
+    "externalConsole": true,
+    "MIMode": "gdb",
+    "miDebuggerPath": "gdb",
+    "setupCommands": [
+        
+    ]
+
+    }
+  ]
+}
