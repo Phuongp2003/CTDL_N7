@@ -75,6 +75,14 @@ NodeHK *NodeHK::getRight() const
     return right;
 }
 
+void NodeHK::setLeft(NodeHK *pLeft) {
+    left = pLeft;
+}
+
+void NodeHK::setRight(NodeHK *pRight) {
+    right = pRight;
+}
+
 //------------------------------------------------------------
 
 DsHanhKhach::DsHanhKhach() : root(NULL) {}
