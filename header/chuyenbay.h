@@ -98,7 +98,7 @@ public:
     char *getMaMayBay();
     void setDSVeMB(DSMB *DanhSachCB);
 
-    void showDSVeTrong();
+    void showDSVe();
     VeMayBay *getDSVe();
     void ThucHienCB(DSMB *DanhSachCB);
     // node

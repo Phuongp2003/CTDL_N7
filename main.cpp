@@ -2,7 +2,7 @@
 // #include "windows.h"
 
 using namespace std;
-void CreateScreen()
+int main()
 {
      DSMB *DanhSachMB = new DSMB();
      MayBay **mb;
