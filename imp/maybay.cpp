@@ -153,33 +153,34 @@ void DSMB::Insert_MB(MayBay *maybay)
     data[size] = New_MB(maybay);
     size++;
 }
-void DSMB::Delete_MB(int index)
+void DSMB::Delete_MB(DSMB &DS, int index)
 {
-    delete data[index];
-    for (int i = index; i < size - 1; i++)
+    delete DS.data[index];
+    for (int i = index; i < DS.size - 1; i++)
     {
-        data[index] = data[i + 1];
+        DS.data[index] = DS.data[i + 1];
     }
-    size--; //
+    DS.size--;
 }
-int DSMB::Find_MB(const char *SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
+int DSMB::Find_MB(DSMB &DS, const char *SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
 {
-    for (int i = 0; i < this->size; i++)
+    for (int i = 0; i < DS.size; i++)
     {
-        if (*this->data[i]->getSoHieuMB() == *SoHieuMB)
+        if (strcmp(DS.data[i]->getSoHieuMB(), SoHieuMB) == 0)
             return i;
     }
     return -1;
 }
-void DSMB::Delete_DSMB()
+void DSMB::Delete_DSMB(DSMB &DS)
 {
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < DS.size; i++)
     {
-        delete data[i];
+        delete DS.data[i];
     }
 }
-MayBay *DSMB::getMB(int index)
-{
-    return data[index];
-}
+
 DSMB::~DSMB() {}
+
+void nhapMB()
+{
+}
