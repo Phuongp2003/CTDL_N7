@@ -23,7 +23,7 @@ using namespace std;
 class Date;
 // Hành khách
 class HanhKhach;
-class Node; // @brief Node hành khách
+class NodeHK; // @brief Node hành khách
 // Máy bay
 class MAYBAY;
 // Chuyến bay

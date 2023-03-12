@@ -25,7 +25,7 @@ int main()
      ChuyenBay *cbp = new ChuyenBay("MH2", "Ha Noi", date[0], mb[0]);
 
      cb[0]->setDSVeMB();
-     cb[0]->showDSVe();
+     cb[0]->showDSVeTrong();
      cb[0]->ThucHienCB();
      cbp->ThucHienCB();
      cout << endl

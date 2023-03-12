@@ -10,7 +10,7 @@ private:
     string _cmnd;
     string _ho;
     string _ten;
-    int _phai;  //  0 la nam, 1 la nu
+    int _phai; //  0 la nam, 1 la nu
 
 public:
     HanhKhach();
@@ -27,21 +27,34 @@ public:
     void setPhai(int);
 };
 
+class NodeHK
+{
+private:
+    HanhKhach _hanhKhach;
+    NodeHK *left;
+    NodeHK *right;
+
+public:
+    NodeHK();
+    NodeHK(HanhKhach);
+
+    HanhKhach getHanhKhach() const;
+    NodeHK *getLeft() const;
+    NodeHK *getRight() const;
+
+    void setLeft(NodeHK *);
+    void setRight(NodeHK *);
+};
+
 class DsHanhKhach
 {
 private:
-    struct Node
-    {
-        HanhKhach _hanhKhach;
-        Node *left;
-        Node *right;
-    };
-    Node *root;
+    NodeHK *root;
 
 public:
     DsHanhKhach();
     void insert(HanhKhach);
-    Node *search(string);
+    NodeHK *search(string);
     void showDsHanhKhach(string);
 };
 
