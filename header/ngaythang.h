@@ -1,9 +1,5 @@
 #pragma once
 #include "header.h"
-
-#ifndef NGAYTHANG
-#define NGAYTHANG
-
 class Date
 {
 private:
@@ -29,7 +25,5 @@ public:
     void showTG();
     bool checkNgay(int ,int,int);
     bool checkGio(int,int);
-
+    bool checkNgayGio();
 };
-
-#endif
