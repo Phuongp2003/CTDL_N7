@@ -23,7 +23,7 @@ public:
     void setNam(int);
     int getNam();
     void showTG();
-    bool checkNgay(int ,int,int);
-    bool checkGio(int,int);
+    bool checkNgay();
+    bool checkGio();
     bool checkNgayGio();
 };
