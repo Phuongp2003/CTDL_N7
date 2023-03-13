@@ -66,7 +66,7 @@ bool laNamNhuan(int nInput)
     }
     return false;
 }
-bool Date::checkNgay(int Ngay, int Thang, int Nam)
+bool Date::checkNgay()
 {
     switch (Thang)
     {
@@ -107,7 +107,7 @@ bool Date::checkNgay(int Ngay, int Thang, int Nam)
     }
     return false;
 }
-bool Date::checkGio(int Gio, int Phut)
+bool Date::checkGio()
 {
     if (Gio >= 0 && Gio <= 23 && Phut >= 0 && Phut <= 59)
         return true;
