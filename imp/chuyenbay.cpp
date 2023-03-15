@@ -35,6 +35,11 @@ string VeMayBay::getHanhKhach()
     return this->CMND;
 }
 
+bool VeMayBay::setTrangThai(bool TrangThai)
+{
+    this->TrangThai=TrangThai;
+}
+
 bool VeMayBay::getTrangThai()
 {
     return this->TrangThai;

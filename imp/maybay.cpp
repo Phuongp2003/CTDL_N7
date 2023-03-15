@@ -131,12 +131,12 @@ void DSMB::getDSMB()
 };
 bool DSMB::Is_Empty()
 {
-    return (size == 0 ? true : false);
+    return size == 0;
 }
 
 bool DSMB::Is_Full()
 {
-    return (size >= MAXMB ? true : false);
+    return size == MAXMB;
 }
 
 MayBay *DSMB::New_MB(MayBay *maybay)
@@ -148,7 +148,7 @@ MayBay *DSMB::New_MB(MayBay *maybay)
 
 void DSMB::Insert_MB(MayBay *maybay)
 {
-    if (size == MAXMB)
+    if (Is_Full()==true)
         return;
     data[size] = New_MB(maybay);
     size++;

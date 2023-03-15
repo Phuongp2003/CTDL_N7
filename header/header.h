@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include<ctime>
 
 using std::string;
 // using namespace std;

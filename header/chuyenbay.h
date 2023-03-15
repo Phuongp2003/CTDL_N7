@@ -60,6 +60,7 @@ public:
     string getIDVe();
     void setHanhKhach(string CMND);
     string getHanhKhach();
+    bool setTrangThai(bool TrangThai);
     bool getTrangThai();
 };
 
