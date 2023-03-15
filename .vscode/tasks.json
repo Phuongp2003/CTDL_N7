@@ -4,16 +4,16 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "C/C++: g++.exe build active file",
+            "label": "build_project",
             "command": "g++",
             "args": [
                 "-g",
-                "${file}",
-                "imp/**.cpp",
+                "${workspaceRoot}/main.cpp",
+                "${workspaceRoot}/imp/**.cpp",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "${workspaceRoot}/main.exe",
                 "-L",
-                "lib/",
+                "${workspaceRoot}/lib/",
                 "-lraylib",
                 "-lopengl32",
                 "-lgdi32",

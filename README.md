@@ -1,5 +1,9 @@
+#T4, ??? 15/03/2023
+--------
+    -File task và launch giờ đã chạy toàn cục
+    -Dòng 23 file launch.json dùng để build và chạy cùng 1 lúc, tắt comment để dùng
+
 #CN, ??? 12/03/2023
-Thay đổi
 --------
     -Cập nhật map mới:
     main
@@ -47,7 +51,6 @@ Thay đổi
 
 
 #T6, 8h00 03/02/2003
-Thay đổi
 --------
 
     -Chuyển next sang class ChuyenBay
