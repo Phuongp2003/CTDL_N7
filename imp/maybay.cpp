@@ -139,18 +139,18 @@ bool DSMB::Is_Full()
     return size == MAXMB;
 }
 
-MayBay *DSMB::New_MB(MayBay *maybay)
-{
-    MayBay *p = new MayBay;
-    p = maybay;
-    return p;
-}
+// MayBay *DSMB::New_MB(MayBay *maybay)
+// {
+//     MayBay *p = new MayBay;
+//     p = maybay;
+//     return p;
+// }
 
 void DSMB::Insert_MB(MayBay *maybay)
 {
     if (Is_Full()==true)
         return;
-    data[size] = New_MB(maybay);
+    data[size] = maybay;
     size++;
 }
 void DSMB::Delete_MB(int index)
@@ -162,7 +162,7 @@ void DSMB::Delete_MB(int index)
     }
     size--; //
 }
-int DSMB::Find_MB(const char *SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
+int DSMB::Find_MB(char *SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
 {
     for (int i = 0; i < this->size; i++)
     {
