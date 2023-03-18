@@ -1,49 +1,6 @@
 #include "../header/chuyenbay.h"
+#include "../header/vemaybay.h"
 using namespace std;
-// hàm của DSVe
-
-VeMayBay::VeMayBay()
-{
-    IDVe = "A00";
-    CMND = "\0";
-    TrangThai = true;
-}
-
-VeMayBay::VeMayBay(string IDVe, string CMND)
-{
-    this->IDVe = IDVe;
-    this->CMND = CMND;
-}
-
-void VeMayBay::setIDVe(string ID)
-{
-    this->IDVe = ID;
-}
-
-string VeMayBay::getIDVe()
-{
-    return this->IDVe;
-}
-
-void VeMayBay::setHanhKhach(string CMND)
-{
-    this->CMND = CMND;
-}
-
-string VeMayBay::getHanhKhach()
-{
-    return this->CMND;
-}
-
-bool VeMayBay::setTrangThai(bool TrangThai)
-{
-    this->TrangThai=TrangThai;
-}
-
-bool VeMayBay::getTrangThai()
-{
-    return this->TrangThai;
-}
 
 // hàm của ChuyenBay
 
@@ -88,11 +45,6 @@ int ChuyenBay::getTrangThai()
     return this->TrangThai;
 }
 
-int ChuyenBay::getSoVeToiDa()
-{
-    return this->SoVeToiDa;
-}
-
 char *ChuyenBay::getMaMayBay()
 {
     return this->IDMayBay;
@@ -103,48 +55,44 @@ void ChuyenBay::setNgayGio(Date _NgayGio)
     this->NgayGio = _NgayGio;
 }
 
-void ChuyenBay::setDSVeMB(DSMB *DanhSachMB)
-{
-    MayBay *tmp;
-    tmp = DanhSachMB->getMB(DanhSachMB->Find_MB(this->IDMayBay));
-    int SDay, SDong;
-    SDay = tmp->getSoDay();
-    SDong = tmp->getSoDong();
-    this->SoVeToiDa = SDay * SDong;
-    DSVe = new VeMayBay[this->SoVeToiDa];
-    for (int i = 0; i < SDay; i++)
-    {
-        for (int j = 0; j < SDong; j++)
-        {
-            string tmp_str;
-            tmp_str += IDChu[i];
-            tmp_str += IDSo[(j + 1) / 10];
-            tmp_str += IDSo[(j + 1) % 10];
-            tmp_str += '\0';
-            // tmp_str = tmp_str;
-            DSVe[i * SDong + j].setIDVe(tmp_str);
-        }
-    }
-}
-VeMayBay *ChuyenBay::getDSVe()
-{
-    return this->DSVe;
-}
+// void ChuyenBay::setDSVeMB(DSMB *DanhSachMB)
+// {
+//     MayBay *tmp;
+//     tmp = DanhSachMB->getMB(DanhSachMB->Find_MB(this->IDMayBay));
+//     int SDay, SDong;
+//     SDay = tmp->getSoDay();
+//     SDong = tmp->getSoDong();
+//     DSVe->setSoVeToiDa(SDay * SDong);
+//     DSVe = new VeMayBay[DSVe->getSoVeToiDa()];
+//     for (int i = 0; i < SDay; i++)
+//     {
+//         for (int j = 0; j < SDong; j++)
+//         {
+//             string tmp_str;
+//             tmp_str += IDChu[i];
+//             tmp_str += IDSo[(j + 1) / 10];
+//             tmp_str += IDSo[(j + 1) % 10];
+//             tmp_str += '\0';
+//             // tmp_str = tmp_str;
+//             DSVe[i * SDong + j].setIDVe(tmp_str);
+//         }
+//     }
+// }
 
 /**
  * @note hàm chỉ làm mẫu, lúc xuất chỉnh trên UI sau
  */
-void ChuyenBay::showDSVe()
-{
-    for (int i = 0; i < SoVeToiDa; i++)
-    {
-        cout << i << ". " << this->DSVe[i].getIDVe() << " ";
-        if (this->DSVe[i].getHanhKhach() == "\0")
-            cout << "Con ve" << endl;
-        else
-            cout << "Da dat" << endl;
-    }
-}
+// void ChuyenBay::showDSVe()
+// {
+//     for (int i = 0; i < DSVe->getSoVeToiDa(); i++)
+//     {
+//         cout << i << ". " << this->DSVe[i].getIDVe() << " ";
+//         if (DSVe[i].getHanhKhach() == "\0")
+//             cout << "Con ve" << endl;
+//         else
+//             cout << "Da dat" << endl;
+//     }
+// }
 /**
  * @brief Đây là hàm thử nghiệm
  *

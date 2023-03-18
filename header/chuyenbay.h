@@ -3,6 +3,7 @@
 #include "header.h"
 #include "maybay.h"
 #include "ngaythang.h"
+#include  "vemaybay.h"
 
 using std::string;
 
@@ -46,23 +47,7 @@ const char IDChu[26] = {
 const char IDSo[10] = {'0', '1', '2', '3', '4',
                        '5', '6', '7', '8', '9'};
 
-class VeMayBay
-{
-private:
-    string IDVe;
-    string CMND;
-    bool TrangThai; // false là đã đặt
 
-public:
-    VeMayBay();
-    VeMayBay(string IDVe, string CMND);
-    void setIDVe(string ID);
-    string getIDVe();
-    void setHanhKhach(string CMND);
-    string getHanhKhach();
-    bool setTrangThai(bool TrangThai);
-    bool getTrangThai();
-};
 
 class ChuyenBay
 {
@@ -70,11 +55,10 @@ private:
     char MaCB[15];
     Date NgayGio;
     string NoiDen;
-    int TrangThai, SoVeToiDa;
+    int TrangThai;
     // char *idMayBay;
     char IDMayBay[16];
-    VeMayBay *DSVe;
-    int SoVeDaDat = 0;
+    DSVeMayBay *DSVe;
 
 public:
     /**
