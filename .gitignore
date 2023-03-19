@@ -1,3 +1,5 @@
 main.exe
 test.cpp
 test.exe
+/tmp
+.gitignore
