@@ -3,18 +3,81 @@
 using std::cout;
 using std::endl;
 using std::string;
-using std::to_string;
 
-float per1000(int number)
+//==================================================================================================================================
+// Define
+
+struct BoMauNut
 {
-    return (float)number / 1000;
+    Color isnotHovered;
+    Color isHovered;
+    Color isPressed;
+    Color text1;
+    Color text2;
+    Color Rounder;
+};
+
+BoMauNut HomeButtonColor{
+    {153, 255, 153, 255},
+    {80, 255, 80, 255},
+    {50, 50, 255, 255},
+    BLACK,
+    WHITE,
+    GREEN};
+
+BoMauNut MauThanhQuanLy{
+    {87, 87, 255, 255},
+    {25, 25, 255, 255},
+    {253, 255, 133, 255},
+    WHITE,
+    BLACK,
+    {25, 25, 255, 255},
+
+};
+
+//==================================================================================================================================
+// Setup
+/**
+ * @brief vị trí con trỏ trỏ đến trang hiển thị
+ * @note 0. Trang chủ\n
+ * @note 1. Máy bay
+ * @note 2. Chuyến bay
+ * @note 3. Vé
+ * @note 4. Hành khách
+ * @note 5. Giới thiệu
+ */
+int current_page = 0;
+
+Vector2 StartPos{per1000(10) * SCREEN_WIDTH, per1000(40) * SCREEN_HEIGHT};
+
+Font FontArial;
+Image LogoPTIT;
+Texture2D PNG_logo; // Load ảnh vào biến (ram)
+Image HomeIcon;
+Texture2D PNG_home;
+
+void LoadResources()
+{
+    FontArial = LoadFontEx("../src/font/arial.ttf", 50, 0, 9812);
+
+    LogoPTIT = LoadImage("../src/img/Logo_PTIT_University.png"); // load ảnh
+    ImageResize(&LogoPTIT, 698, 690);                            // Chỉnh size ảnh
+    PNG_logo = LoadTextureFromImage(LogoPTIT);
+
+    HomeIcon = LoadImage("../src/img/house_icon.png");
+    ImageResize(&HomeIcon, 60, 50);
+    PNG_home = LoadTextureFromImage(HomeIcon);
 }
 
-char *intTochar(int number)
+void UnloadResources()
 {
-    string str = to_string(number);
-    char *result = &str[0];
-    return result;
+    UnloadFont(FontArial);
+
+    UnloadImage(LogoPTIT);
+    UnloadImage(HomeIcon);
+
+    UnloadTexture(PNG_logo);
+    UnloadTexture(PNG_home);
 }
 
 void SetSizeWindow()
@@ -49,7 +112,495 @@ void SetSizeWindow()
         H = 795;
     }
     SetWindowSize(W, H);
-    SetWindowPosition(120, 75);
+    SetWindowPosition(50, 50);
+}
+
+//==================================================================================================================================
+// Graphics
+
+//---Home page----------------------------------------------------------------------------------------------------------------------
+void CreateHomeBackground()
+{
+    ClearBackground(DARKBLUE);
+    const int home_tittle_h = 60;
+    Rectangle mainScreen = {StartPos.x,
+                            StartPos.y + home_tittle_h,
+                            SCREEN_WIDTH,
+                            SCREEN_HEIGHT - home_tittle_h};
+    DrawRectangleRec(mainScreen, WHITE);
+}
+
+void CreateHomePage()
+{
+    const int png_screen_w = 698;
+    const int split_screen_w = 4;
+    const int button_screen_w = 798;
+    const int home_tittle_h = 60;
+    const int button_tittle = 80;
+    const int button_tittle_margin_top = 50;
+    const int button_tittle_margin_bot = 10;
+    const int button_margin_topbot = 20;
+    const int button_width = 600;
+    const int button_height = 60;
+    const int empty_space_button_screen_left = 98;
+
+    // Màn hình chứa ảnh
+    Rectangle pngScreen = {StartPos.x,
+                           StartPos.y + home_tittle_h,
+                           png_screen_w,
+                           SCREEN_HEIGHT - home_tittle_h};
+    // Thanh chia màn hình
+    Rectangle splitScreen = {pngScreen.x + png_screen_w,
+                             pngScreen.y,
+                             split_screen_w,
+                             SCREEN_HEIGHT - home_tittle_h};
+    // Màn hình chứa nút chọn chức năng
+    Rectangle buttonScreen = {splitScreen.x + splitScreen.width,
+                              splitScreen.y,
+                              button_screen_w,
+                              SCREEN_HEIGHT - home_tittle_h};
+
+    // Tiêu dề
+    const char *home_tittle = "ĐỒ ÁN QUẢN LÝ MÁY BAY - NHÓM 7 - KHOÁ D21",
+               *button_tille = "CÁC CHỨC NĂNG",
+               *button1_tittle = "QUẢN LÝ MÁY BAY",
+               *button2_tittle = "QUẢN LÝ CHUYẾN BAY",
+               *button3_tittle = "QUẢN LÝ VÉ",
+               *button4_tittle = "QUẢN LÝ HÀNH KHÁCH",
+               *button5_tittle = "GIỚI THIỆU VỀ SẢN PHẨM";
+
+    // Vị trí tiêu đề
+    Vector2 tittleHomePos =
+        {CenterDataSetter(SCREEN_WIDTH, StartPos.x, MeasureTextEx(FontArial, home_tittle, 50, 0).x),
+         StartPos.y};
+    Vector2 tittleButtonPos =
+        {CenterDataSetter(button_screen_w, buttonScreen.x, MeasureTextEx(FontArial, button_tille, 40, 0).x),
+         buttonScreen.y + button_tittle_margin_top};
+
+    // Vị trí ảnh
+    Vector2 pngPos = {pngScreen.x, pngScreen.y};
+    Vector2 buttonPos[5] =
+        {
+            {CenterDataSetter(button_screen_w, buttonScreen.x, button_width),
+             tittleButtonPos.y + button_tittle + button_tittle_margin_bot + button_margin_topbot},
+            {CenterDataSetter(button_screen_w, buttonScreen.x, button_width),
+             buttonPos[0].y + button_height + button_margin_topbot * 2},
+            {CenterDataSetter(button_screen_w, buttonScreen.x, button_width),
+             buttonPos[1].y + button_height + button_margin_topbot * 2},
+            {CenterDataSetter(button_screen_w, buttonScreen.x, button_width),
+             buttonPos[2].y + button_height + button_margin_topbot * 2},
+            {CenterDataSetter(button_screen_w, buttonScreen.x, button_width),
+             buttonPos[3].y + button_height + button_margin_topbot * 2}
+
+        };
+
+    // tạo màn hình theo chỉ số tĩnh
+    {
+        CreateHomeBackground();
+        DrawTexture(PNG_logo, pngScreen.x, pngScreen.y, RED);
+        DrawRectangleRec(splitScreen, GRAY);
+        DrawTextEx(FontArial, home_tittle, tittleHomePos, 50, 0, RED);
+        DrawTextEx(FontArial, button_tille, tittleButtonPos, 40, 0, BLUE);
+
+        DrawTextureEx(PNG_logo, pngPos, 0, 1, WHITE);
+        // DrawRectangleRec(buttonScreen, BLUE);
+        if (CreateButton(buttonPos[0].x, buttonPos[0].y, button_width, button_height, true, button1_tittle, FontArial, HomeButtonColor))
+            current_page = 1;
+        if (CreateButton(buttonPos[1].x, buttonPos[1].y, button_width, button_height, true, button2_tittle, FontArial, HomeButtonColor))
+            current_page = 2;
+        if (CreateButton(buttonPos[2].x, buttonPos[2].y, button_width, button_height, true, button3_tittle, FontArial, HomeButtonColor))
+            current_page = 3;
+        if (CreateButton(buttonPos[3].x, buttonPos[3].y, button_width, button_height, true, button4_tittle, FontArial, HomeButtonColor))
+            current_page = 4;
+        if (CreateButton(buttonPos[4].x, buttonPos[4].y, button_width, button_height, true, button5_tittle, FontArial, HomeButtonColor))
+            current_page = 5;
+    }
+}
+
+// ---Các trang thành phần----------------------------------------------------------------------------------------------------------
+void CreatePageBackground()
+{
+    ClearBackground(DARKBLUE);
+    const int home_tittle_h = 60;
+    Rectangle mainScreen = {StartPos.x,
+                            StartPos.y + home_tittle_h,
+                            SCREEN_WIDTH - 1,
+                            SCREEN_HEIGHT - home_tittle_h};
+    Rectangle splitScreen = {mainScreen.x + 1199,
+                             mainScreen.y,
+                             2, // dày 2
+                             SCREEN_HEIGHT - home_tittle_h};
+    DrawRectangleRec(mainScreen, WHITE);
+    DrawRectangleRec(splitScreen, BLACK);
+}
+
+// =-MayBay
+void CreatePage_QLMB()
+{
+    CreatePageBackground();
+    // CreateTable_QLMB();
+}
+
+void CreateTable_QLMB()
+{
+}
+
+// =-ChuyenBay
+
+void CreatePage_QLCB()
+{
+    CreatePageBackground();
+    const char *test = CreateTextInputBox();
+    char hello[27] = "\0";
+    strcpy(hello, test);
+    if (hello[0] != '\0')
+        cout << hello << endl;
+    // CreateTable();
+}
+
+void CreatePage_QLVe()
+{
+    CreatePageBackground();
+    // CreateTable();
+}
+void CreatePage_QLHK()
+{
+    CreatePageBackground();
+    // CreateTable();
+}
+
+void CreatePage_GioiThieu()
+{
+    CreatePageBackground();
+}
+
+void CreateTable(int soCot, int soHang, float tittleCellH, float cellH, float cellW[])
+{
+    const int empty_spaces_left = 60;
+    const int empty_spaces_right = 59; // dont care
+}
+
+void ThanhQuanLy()
+{
+    const int button_width = 360;
+    const int button_height = 50;
+
+    const char
+        *button1_tittle = "QUẢN LÝ MÁY BAY",
+        *button2_tittle = "QUẢN LÝ CHUYẾN BAY",
+        *button3_tittle = "QUẢN LÝ VÉ",
+        *button4_tittle = "QUẢN LÝ HÀNH KHÁCH";
+
+    Vector2 buttonPos[6] =
+        {
+            {StartPos.x, StartPos.y},
+            {buttonPos[0].x + 60, StartPos.y},
+            {buttonPos[1].x + button_width, StartPos.y},
+            {buttonPos[2].x + button_width, StartPos.y},
+            {buttonPos[3].x + button_width, StartPos.y}};
+    if (CreateButtonWithPicture(buttonPos[0].x, buttonPos[0].y, 60, button_height, false, PNG_home, MauThanhQuanLy))
+        current_page = 0;
+    if (current_page != 1)
+    {
+        if (CreateButton(buttonPos[1].x, buttonPos[1].y, button_width, button_height, false, button1_tittle, FontArial, MauThanhQuanLy))
+            current_page = 1;
+    }
+    else
+    {
+        DrawRectangleRec({buttonPos[1].x, buttonPos[1].y, button_width, button_height}, MauThanhQuanLy.isPressed);
+        DrawTextEx(FontArial,
+                   button1_tittle,
+                   {CenterDataSetter(button_width, buttonPos[1].x, MeasureTextEx(FontArial, button1_tittle, button_height / 2.0f, 0).x),
+                    button_height / 5.0f + buttonPos[1].y},
+                   button_height / 2.0f, 0, MauThanhQuanLy.text2);
+    };
+    if (current_page != 2)
+    {
+        if (CreateButton(buttonPos[2].x, buttonPos[2].y, button_width, button_height, false, button2_tittle, FontArial, MauThanhQuanLy))
+            current_page = 2;
+    }
+    else
+    {
+        DrawRectangleRec({buttonPos[2].x, buttonPos[2].y, button_width, button_height}, MauThanhQuanLy.isPressed);
+        DrawTextEx(FontArial,
+                   button2_tittle,
+                   {CenterDataSetter(button_width, buttonPos[2].x, MeasureTextEx(FontArial, button2_tittle, button_height / 2.0f, 0).x),
+                    button_height / 5.0f + buttonPos[2].y},
+                   button_height / 2.0f, 0, MauThanhQuanLy.text2);
+    };
+    if (current_page != 3)
+    {
+        if (CreateButton(buttonPos[3].x, buttonPos[3].y, button_width, button_height, false, button3_tittle, FontArial, MauThanhQuanLy))
+            current_page = 3;
+    }
+    else
+    {
+        DrawRectangleRec({buttonPos[3].x, buttonPos[3].y, button_width, button_height}, MauThanhQuanLy.isPressed);
+        DrawTextEx(FontArial,
+                   button3_tittle,
+                   {CenterDataSetter(button_width, buttonPos[3].x, MeasureTextEx(FontArial, button3_tittle, button_height / 2.0f, 0).x),
+                    button_height / 5.0f + buttonPos[3].y},
+                   button_height / 2.0f, 0, MauThanhQuanLy.text2);
+    };
+    if (current_page != 4)
+    {
+        if (CreateButton(buttonPos[4].x, buttonPos[4].y, button_width, button_height, false, button4_tittle, FontArial, MauThanhQuanLy))
+            current_page = 4;
+    }
+    else
+    {
+        DrawRectangleRec({buttonPos[4].x, buttonPos[4].y, button_width, button_height}, MauThanhQuanLy.isPressed);
+        DrawTextEx(FontArial,
+                   button4_tittle,
+                   {CenterDataSetter(button_width, buttonPos[4].x, MeasureTextEx(FontArial, button4_tittle, button_height / 2.0f, 0).x),
+                    button_height / 5.0f + buttonPos[4].y},
+                   button_height / 2.0f, 0, MauThanhQuanLy.text2);
+    };
+}
+
+// ---Các hàm hỗ trợ ngoài vìa------------------------------------------------------------------------------------------------------
+
+float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width)
+{
+    return (doDai_khung_chua / 2.0f) + vi_tri_khung_chua - (obj_width / 2.0f);
+}
+
+bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau)
+{
+    Rectangle Button = {pos_x, pos_y, width, height};
+    Vector2 MousePos = {0.0f, 0.0f};
+    Vector2 TextPos = {CenterDataSetter(width, pos_x, MeasureTextEx(font, titlle, height / 2.0f, 0).x),
+                       height / 5.0f + pos_y};
+    // DrawRectangleRec(Button, BoMau.isnotHovered);
+    if (BoTron)
+    {
+        DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isnotHovered);
+        DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text1);
+        DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, BoMau.Rounder);
+        MousePos = GetVMousePosition();
+
+        if (CheckCollisionPointRec(MousePos, Button))
+        {
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+            {
+                DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isPressed);
+                DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text2);
+            }
+            else
+            {
+                DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isHovered);
+                DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text1);
+            }
+            DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, BoMau.Rounder);
+
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+                return true;
+            else
+                return false;
+        }
+    }
+    else
+    {
+        DrawRectangleRec(Button, BoMau.isnotHovered);
+        DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text1);
+        DrawRectangleRoundedLines(Button, 0, 0, 2, BoMau.Rounder);
+        MousePos = GetVMousePosition();
+
+        if (CheckCollisionPointRec(MousePos, Button))
+        {
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+            {
+                DrawRectangleRec(Button, BoMau.isPressed);
+                DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text2);
+            }
+            else
+            {
+                DrawRectangleRec(Button, BoMau.isHovered);
+                DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text1);
+            }
+            DrawRectangleRoundedLines(Button, 0, 0, 2, BoMau.Rounder);
+
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+                return true;
+            else
+                return false;
+        }
+    }
+    return false;
+}
+
+bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height, bool BoTron, Texture2D Picture, BoMauNut BoMau)
+{
+    Rectangle Button = {pos_x, pos_y, width, height};
+    Vector2 MousePos = {0.0f, 0.0f};
+    // DrawRectangleRec(Button, BoMau.isnotHovered);
+    if (BoTron)
+    {
+        DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isnotHovered);
+        DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isnotHovered);
+        DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, BoMau.Rounder);
+        MousePos = GetVMousePosition();
+
+        if (CheckCollisionPointRec(MousePos, Button))
+        {
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+            {
+                DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isPressed);
+                DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isPressed);
+            }
+            else
+            {
+                DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isHovered);
+                DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isHovered);
+            }
+            DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, BoMau.Rounder);
+
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+                return true;
+            else
+                return false;
+        }
+    }
+    else
+    {
+        DrawRectangleRec(Button, BoMau.isnotHovered);
+        DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isnotHovered);
+        DrawRectangleRoundedLines(Button, 0, 0, 2, BoMau.Rounder);
+        MousePos = GetVMousePosition();
+
+        if (CheckCollisionPointRec(MousePos, Button))
+        {
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+            {
+                DrawRectangleRec(Button, BoMau.isPressed);
+                DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isPressed);
+            }
+            else
+            {
+                DrawRectangleRec(Button, BoMau.isHovered);
+                DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isHovered);
+            }
+            DrawRectangleRoundedLines(Button, 0, 0, 2, BoMau.Rounder);
+
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+                return true;
+            else
+                return false;
+        }
+    }
+    return false;
+}
+
+// Chưa hoàn chỉnh
+const char *CreateTextInputBox()
+{
+    static char name[120] = "\0";
+    char name_cpy[120] = "\0";
+    char *resuit = new char[120];
+    static bool mouseClickOnText = false;
+    static bool Done = false;
+    static int letterCount = 0;
+    static int framesCounter = 0;
+    static int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0;
+    static int indexPoint = 0;
+
+    Rectangle textBox = {300, 300, 700, 40};
+    Vector2 textBoxPos = {textBox.x + 5, CenterDataSetter(40, textBox.y, MeasureTextEx(FontArial, name, 30, 0).y)};
+
+    strcpy(name_cpy, name);
+    name_cpy[letterCount + indexPoint] = '\0';
+
+    Vector2 textBoxDot = {textBox.x + MeasureTextEx(FontArial, name_cpy, 30, 0).x, CenterDataSetter(40, textBox.y, MeasureTextEx(FontArial, name_cpy, 30, 0).y)};
+    if (CheckCollisionPointRec(GetVMousePosition(), textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        mouseClickOnText = true;
+    else if (IsKeyPressed(KEY_ENTER))
+    {
+        mouseClickOnText = false;
+        strcpy(resuit, name);
+        name[0] = '\0';
+        indexPoint = 0;
+        letterCount = 0;
+        Done = true;
+    }
+    else if (!CheckCollisionPointRec(GetVMousePosition(), textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        mouseClickOnText = false;
+
+    if (CheckCollisionPointRec(GetVMousePosition(), textBox))
+    {
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    }
+    else
+    {
+        SetMouseCursor(1);
+    }
+
+    if (mouseClickOnText)
+    {
+        framesCounter++;
+        int key = GetCharPressed();
+        while (key > 0)
+        {
+            if ((key >= 32) && (key <= 125) && (letterCount < 27))
+            {
+                for (int i = letterCount; i > letterCount + indexPoint; i--)
+                {
+                    name[i] = name[i - 1];
+                }
+                name[letterCount + indexPoint] = char(key);
+                name[letterCount + 1] = '\0';
+                letterCount++;
+            }
+
+            key = GetCharPressed();
+        }
+        if (IsKeyDown(KEY_BACKSPACE))
+            fHold_BS++;
+        else
+            fHold_BS = 0;
+        if (IsKeyDown(KEY_RIGHT))
+            fHold_RIGHT++;
+        else
+            fHold_RIGHT = 0;
+        if (IsKeyDown(KEY_LEFT))
+            fHold_LEFT++;
+        else
+            fHold_LEFT = 0;
+        if ((IsKeyDown(KEY_BACKSPACE) && letterCount + indexPoint > 0 && (fHold_BS > 150) && (fHold_BS % 10 == 0)) ||
+            IsKeyPressed(KEY_BACKSPACE) && letterCount + indexPoint > 0)
+        {
+            for (int i = letterCount + indexPoint - 1; i < letterCount; i++)
+            {
+                name[i] = name[i + 1];
+            }
+            letterCount--;
+            if (letterCount < 0)
+                letterCount = 0;
+            name[letterCount] = '\0';
+        }
+        if ((IsKeyDown(KEY_LEFT) && (letterCount + indexPoint) > 0 && (fHold_LEFT > 150) && (fHold_LEFT % 10 == 0)) ||
+            (IsKeyPressed(KEY_LEFT) && (letterCount + indexPoint) > 0))
+        {
+            indexPoint--;
+        }
+        if ((IsKeyDown(KEY_RIGHT) && indexPoint < 0 && (fHold_RIGHT > 150) && (fHold_RIGHT % 10 == 0)) ||
+            (IsKeyPressed(KEY_RIGHT) && indexPoint < 0))
+        {
+            indexPoint++;
+        }
+    }
+    else
+        framesCounter = 0;
+    DrawRectangleRec(textBox, GRAY);
+    DrawTextEx(FontArial, name, textBoxPos, 30, 0, BLACK);
+    // cout << "index: " << indexPoint << endl;
+    if (mouseClickOnText && ((framesCounter % 300 >= 120)))
+        DrawTextEx(FontArial, "|", textBoxDot, 30, 0, MAROON);
+    if (Done)
+    {
+        Done = false;
+        return resuit;
+    }
+    return "\0";
 }
 
 Vector2 GetVMousePosition()
@@ -65,107 +616,67 @@ Vector2 GetVMousePosition()
     return virtualMouse;
 }
 
-bool CreateButton(float pos_x, float pos_y, float width, float height, char *titlle, Font font)
+float per1000(int number)
 {
-    Rectangle Button = {pos_x, pos_y, width, height};
-    Vector2 MousePos = {0.0f, 0.0f};
-    Vector2 TextPos = {(width / 2.0f) + pos_x - (MeasureTextEx(font, titlle, height / 2.0f, 0).x / 2.0f), height / 5.0f + pos_y};
-    Color isHovered = {153, 255, 153, 255};
-    Color isnotHovered = {153, 255, 153, 200};
-    Color isPressed = {4, 0, 255, 255};
-    int btnState = 0;
-    bool btnAction = false;
-    DrawRectangleRec(Button, isnotHovered);
-    DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BLACK);
-    MousePos = GetVMousePosition();
-
-    if (CheckCollisionPointRec(MousePos, Button))
-    {
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-        {
-            DrawRectangleRec(Button, isPressed);
-            DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, WHITE);
-        }
-        else
-        {
-            DrawRectangleRec(Button, isHovered);
-            DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BLACK);
-        }
-
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-            return true;
-        else
-            return false;
-    }
-    return false;
+    return (float)number / 1000;
 }
 
-void CreateHomePage()
+//==================================================================================================================================
+// main function
+void mainGraphics()
 {
-    const int png_screen_w = 698;
-    const int split_screen_w = 4;
-    const int button_screen_w = 798;
-    const int home_tittle_h = 60;
-    const int button_tittle = 80;
-
-    const float empty_space_left = per1000(10) * WINDOW_WIDTH;
-    const float empty_space_top = per1000(40) * WINDOW_HEIGHT;
-
-    Font ARIAL_font = LoadFontEx("../src/font/arial.ttf", 50, 0, 250);
-    Font Futura = LoadFontEx("../src/font/Futura_Light_Italic.ttf", 50, 0, 250);
-    Image LogoPTIT = LoadImage("../src/img/Logo_PTIT_University.png"); // load ảnh
+    LoadResources();
 
     SetWindowState(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     SetWindowMinSize(700, 400);
     SetSizeWindow();
-    // Màn hình trình bày chính
-    Rectangle mainScreen = {per1000(10) * WINDOW_WIDTH,
-                            per1000(40) * WINDOW_HEIGHT + home_tittle_h,
-                            SCREEN_WIDTH,
-                            SCREEN_HEIGHT - home_tittle_h};
-    // Thanh chia màn hình
-    Rectangle splitScreen = {per1000(10) * WINDOW_WIDTH + png_screen_w,
-                             per1000(40) * WINDOW_HEIGHT + home_tittle_h,
-                             split_screen_w,
-                             SCREEN_HEIGHT - home_tittle_h};
-    // Màn hình chứa ảnh
-    Rectangle pngScreen = {per1000(10) * WINDOW_WIDTH,
-                           per1000(40) * WINDOW_HEIGHT + home_tittle_h,
-                           png_screen_w,
-                           SCREEN_HEIGHT - home_tittle_h};
-    // Màn hình chứa nút chọn chức năng
-    Rectangle buttonScreen = {per1000(10) * WINDOW_WIDTH + png_screen_w + split_screen_w,
-                              per1000(40) * WINDOW_HEIGHT + home_tittle_h + button_tittle,
-                              button_screen_w,
-                              SCREEN_HEIGHT - home_tittle_h - button_tittle};
-
-    // Rectangle
-
-    // Vị trí tiêu đề
-    Vector2 tittleHomePos = {200, 10};
-    Vector2 pngPos = {pngScreen.x, pngScreen.y};
-
-    ImageResize(&LogoPTIT, pngScreen.width, pngScreen.height); // Chỉnh size ảnh
-
     RenderTexture2D renderTexture = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT); // Load nội dung màn hình như một ảnh
-
-    Texture2D PNG_logo = LoadTextureFromImage(LogoPTIT); // Load ảnh vào biến (ram)
     while (!WindowShouldClose())
     {
-        // tạo màn hình theo chỉ số tĩnh
         BeginTextureMode(renderTexture);
-        ClearBackground(DARKBLUE);
-        DrawRectangleRec(mainScreen, WHITE);
-        DrawTexture(PNG_logo, pngScreen.x, pngScreen.y, RED);
-        DrawRectangleRec(splitScreen, GRAY);
-        DrawTextEx(ARIAL_font, "DO AN QUAN LY MAY BAY - NHOM 7", tittleHomePos, 50, 0, BLACK);
-        DrawTextureEx(PNG_logo, pngPos, 0, 1, WHITE);
-        // DrawRectangleRec(buttonScreen, BLUE);
-        if (CreateButton(buttonScreen.x + 40, buttonScreen.y + 30, buttonScreen.width / 2, buttonScreen.height / 10, "QUAN LY VE MAY BAY", ARIAL_font))
-            cout << "Button is pressed" << endl;
+        // Cách thao tác trên đồ hoạ
+
+        if (current_page != 0)
+            ThanhQuanLy();
+        switch (current_page)
+        {
+        case 0:
+        {
+            CreateHomePage();
+            break;
+        }
+        case 1:
+        {
+            CreatePage_QLMB();
+            break;
+        }
+        case 2:
+        {
+            CreatePage_QLCB();
+            break;
+        }
+        case 3:
+        {
+            CreatePage_QLVe();
+            break;
+        }
+        case 4:
+        {
+            CreatePage_QLHK();
+            break;
+        }
+        case 5:
+        {
+            CreatePage_GioiThieu();
+            break;
+        }
+        default:
+        {
+            current_page = 0;
+        }
+        }
+
         EndTextureMode();
-        cout << buttonScreen.x + 40 << " " << buttonScreen.y + 30 << " " << buttonScreen.x + 40 + buttonScreen.width / 2 << " " << buttonScreen.y + 30 + buttonScreen.height / 10 << " / "
-             << GetMouseX() << " " << GetMouseY() << endl;
         BeginDrawing();
         // xuất màn hình tĩnh theo chỉ sô động6
         DrawTexturePro(
@@ -177,107 +688,6 @@ void CreateHomePage()
             WHITE);
         EndDrawing();
     }
-    UnloadFont(ARIAL_font);
-}
-
-// Chưa hoàn chỉnh
-//----------------------------------------------------------------
-void CreateTextInputBox()
-{
-    Font ARIAL_font = LoadFontEx("C:/Windows/Fonts/arial.ttf", 200, 0, 250);
-    Font Futura = LoadFontEx("../src/font/Futura_Light_Italic.ttf", 200, 0, 250);
-
-    char name[120] = "\0";
-    char name_cpy[120] = "\0";
-    bool mouseOnText = false;
-    int letterCount = 0;
-    int framesCounter = 0;
-    int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0;
-    int indexPoint = 0;
-    Rectangle textBox = {300, 300, 700, 56};
-    Vector2 textBoxPos = {textBox.x + 5, textBox.y + 8};
-    Vector2 textBoxPos2 = {textBox.x + 5, textBox.y + 8 + 50};
-    while (!WindowShouldClose())
-    {
-        strcpy(name_cpy, name);
-        name_cpy[letterCount + indexPoint] = '\0';
-        Vector2 textBoxDot = {textBox.x + MeasureTextEx(ARIAL_font, name_cpy, 30, 0).x, textBox.y + 8};
-        if (CheckCollisionPointRec(GetMousePosition(), textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-            mouseOnText = true;
-        else if (IsKeyPressed(KEY_ENTER))
-            mouseOnText = false;
-
-        if (CheckCollisionPointRec(GetMousePosition(), textBox))
-            SetMouseCursor(MOUSE_CURSOR_IBEAM);
-        if (mouseOnText)
-        {
-            int key = GetCharPressed();
-            while (key > 0)
-            {
-                if ((key >= 32) && (key <= 125) && (letterCount < 27))
-                {
-                    for (int i = letterCount; i > letterCount + indexPoint; i--)
-                    {
-                        name[i] = name[i - 1];
-                    }
-                    name[letterCount + indexPoint] = char(key);
-                    name[letterCount + 1] = '\0';
-                    letterCount++;
-                }
-
-                key = GetCharPressed();
-            }
-            if (IsKeyDown(KEY_BACKSPACE))
-                fHold_BS++;
-            else
-                fHold_BS = 0;
-            if (IsKeyDown(KEY_RIGHT))
-                fHold_RIGHT++;
-            else
-                fHold_RIGHT = 0;
-            if (IsKeyDown(KEY_LEFT))
-                fHold_LEFT++;
-            else
-                fHold_LEFT = 0;
-            if ((IsKeyDown(KEY_BACKSPACE) && letterCount + indexPoint > 0 && (fHold_BS > 200) && (fHold_BS % 20 == 0)) ||
-                IsKeyPressed(KEY_BACKSPACE) && letterCount + indexPoint > 0)
-            {
-                for (int i = letterCount + indexPoint - 1; i < letterCount; i++)
-                {
-                    name[i] = name[i + 1];
-                }
-                letterCount--;
-                if (letterCount < 0)
-                    letterCount = 0;
-                name[letterCount] = '\0';
-                if (IsKeyUp(KEY_BACKSPACE))
-                    break;
-            }
-            if ((IsKeyDown(KEY_LEFT) && (letterCount + indexPoint) > 0 && (fHold_LEFT > 200) && (fHold_LEFT % 50 == 0)) ||
-                (IsKeyPressed(KEY_LEFT) && (letterCount + indexPoint) > 0))
-            {
-                indexPoint--;
-            }
-            if ((IsKeyDown(KEY_RIGHT) && indexPoint < 0 && (fHold_RIGHT > 200) && (fHold_RIGHT % 50 == 0)) ||
-                (IsKeyPressed(KEY_RIGHT) && indexPoint < 0))
-            {
-                indexPoint++;
-            }
-        }
-        if (mouseOnText)
-            framesCounter++;
-        else
-            framesCounter = 0;
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawRectangle(0, 80, 1280, 680, DARKBLUE);
-        DrawRectangleRec(textBox, GRAY);
-        DrawTextEx(Futura, name, textBoxPos, 30, 0, BLACK);
-        // cout << "index: " << indexPoint << endl;
-        if (mouseOnText && ((framesCounter % 300 >= 120)))
-            DrawTextEx(ARIAL_font, "|", textBoxDot, 30, 0, MAROON);
-
-        EndDrawing();
-    }
+    UnloadRenderTexture(renderTexture);
+    UnloadResources();
 }
