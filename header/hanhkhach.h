@@ -31,6 +31,7 @@ class NodeHK
 {
 private:
     HanhKhach _hanhKhach;
+    int _height;
     NodeHK *left;
     NodeHK *right;
 
@@ -39,9 +40,11 @@ public:
     NodeHK(HanhKhach);
 
     HanhKhach getHanhKhach() const;
+    int getHeight() const;
     NodeHK *getLeft() const;
     NodeHK *getRight() const;
 
+    void setHeight(int);
     void setLeft(NodeHK *);
     void setRight(NodeHK *);
 };
@@ -53,6 +56,12 @@ private:
 
 public:
     DsHanhKhach();
+    int getHeightTree(NodeHK *);
+    int getBalaceFactor(NodeHK *);
+    void updateHeight(NodeHK *);
+    NodeHK *rotateLeft(NodeHK *);
+    NodeHK *rotateRight(NodeHK *);
+    void balance(NodeHK *);
     void insert(HanhKhach);
     NodeHK *search(string);
     void showDsHanhKhach(string);

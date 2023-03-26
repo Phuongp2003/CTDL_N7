@@ -58,11 +58,16 @@ void HanhKhach::setPhai(int phai)
 NodeHK::NodeHK() {}
 
 NodeHK::NodeHK(HanhKhach hanhKhach)
-    : _hanhKhach(hanhKhach), left(NULL), right(NULL) {}
+    : _hanhKhach(hanhKhach), _height(1), left(NULL), right(NULL) {}
 
 HanhKhach NodeHK::getHanhKhach() const
 {
     return _hanhKhach;
+}
+
+int NodeHK::getHeight() const
+{
+    return _height;
 }
 
 NodeHK *NodeHK::getLeft() const
@@ -75,17 +80,101 @@ NodeHK *NodeHK::getRight() const
     return right;
 }
 
-void NodeHK::setLeft(NodeHK *pLeft) {
+void NodeHK::setHeight(int height)
+{
+    _height = height;
+}
+
+void NodeHK::setLeft(NodeHK *pLeft)
+{
     left = pLeft;
 }
 
-void NodeHK::setRight(NodeHK *pRight) {
+void NodeHK::setRight(NodeHK *pRight)
+{
     right = pRight;
 }
 
 //------------------------------------------------------------
 
 DsHanhKhach::DsHanhKhach() : root(NULL) {}
+
+int DsHanhKhach::getHeightTree(NodeHK *node)
+{
+    if (node == NULL)
+    {
+        return 0;
+    }
+    return node->getHeight();
+}
+
+int DsHanhKhach::getBalaceFactor(NodeHK *node)
+{
+    if (node == NULL)
+    {
+        return 0;
+    }
+    return getHeightTree(node->getLeft()) - getHeightTree(node->getRight() + 1);
+}
+
+int max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+
+void DsHanhKhach::updateHeight(NodeHK *node)
+{
+    int maxHeight = max(getHeightTree(node->getLeft()), getHeightTree(node->getRight()));
+    node->setHeight(maxHeight);
+}
+
+NodeHK *DsHanhKhach::rotateLeft(NodeHK *node)
+{
+    NodeHK *x = node->getRight();
+    NodeHK *y = x->getLeft();
+
+    x->setLeft(node);
+    node->setRight(y);
+
+    updateHeight(node);
+    updateHeight(x);
+
+    return x;
+}
+
+NodeHK *DsHanhKhach::rotateRight(NodeHK *node)
+{
+    NodeHK *x = node->getLeft();
+    NodeHK *y = node->getRight();
+
+    x->setRight(node);
+    node->setLeft(y);
+
+    updateHeight(node);
+    updateHeight(x);
+
+    return x;
+}
+
+void DsHanhKhach::balance(NodeHK *node)
+{
+    if (getBalaceFactor(node) > 1)
+    {
+        if (getBalaceFactor(node->getLeft()) < 0)
+        {
+            node->setLeft(rotateLeft(node->getLeft()));
+        }
+        node->setLeft(rotateRight(node));
+    }
+    else if (getBalaceFactor(node) < -1)
+    {
+        if (getBalaceFactor(node->getRight()) > 0)
+        {
+            node->setRight(rotateRight(node->getRight()));
+        }
+        node->setRight(rotateLeft(node));
+    }
+}
 
 void DsHanhKhach::insert(HanhKhach hanhKhach)
 {
@@ -125,6 +214,9 @@ void DsHanhKhach::insert(HanhKhach hanhKhach)
             }
         }
     }
+
+    updateHeight(root);
+    balance(root);
 }
 
 NodeHK *DsHanhKhach::search(string cmnd)
