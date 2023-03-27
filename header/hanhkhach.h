@@ -1,8 +1,7 @@
 #pragma once
+#include "chuyenbay.h"
 #include "header.h"
-
-#ifndef HANHKHACH
-#define HANHKHACH
+#include "vemaybay.h"
 
 class HanhKhach
 {
@@ -67,4 +66,5 @@ public:
     void showDsHanhKhach(string);
 };
 
-#endif
+// function
+int max(int a, int b);

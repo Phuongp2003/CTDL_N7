@@ -1,7 +1,4 @@
 #include "../header/hanhkhach.h"
-#include "../header/chuyenbay.h"
-
-using namespace std;
 
 HanhKhach::HanhKhach() : _cmnd(""), _ho(""), _ten(""), _phai(-1) {}
 
@@ -272,8 +269,8 @@ void DsHanhKhach::showDsHanhKhach(string maCb)
 
     cout << "STT\tSO VE\tSO CMND\t\tHO TEN\t\t\tPHAI";
 
-    VeMayBay *dsVe = cbCanTim->getDSVe();
-    for (int i = 0; i < cbCanTim->getSoVeToiDa(); i++)
+    VeMayBay *dsVe = cbCanTim->getDSVe()->getDSVeMB();
+    for (int i = 0; i < cbCanTim->getDSVe()->getSoVeToiDa(); i++)
     {
         if (!dsVe[i].getTrangThai())
         {

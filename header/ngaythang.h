@@ -27,3 +27,6 @@ public:
     bool checkGio();
     bool checkNgayGio();
 };
+
+// function
+bool laNamNhuan(int nInput);

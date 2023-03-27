@@ -1,5 +1,4 @@
 #include "../header/ngaythang.h"
-using namespace std;
 
 Date::Date() {}
 
@@ -116,23 +115,34 @@ bool Date::checkGio()
 }
 bool Date::checkNgayGio()
 {
-  time_t now = time(0);
-  tm *ltm = localtime(&now);
-  bool t_nam = 0;
-  bool t_thang = 0;
-  bool t_ngay = 0;
-  bool t_gio = 0;
-  bool t_phut = 0;
-  if (Nam < 1900 + ltm->tm_year) t_nam = false;
-  else t_nam = true;
-  if (Thang >= 1 + ltm->tm_mon) t_thang = true;
-  else t_thang = false;
-  if (Ngay >= (ltm->tm_mday) + 1) t_ngay = true;
-  else t_ngay = false;
-  if (Gio >= ltm->tm_hour) t_gio = true;
-  else t_gio =  false;
-  if (Phut >= (ltm->tm_min) + 1) t_phut = true;
-  else t_phut = false;
-  if(t_nam && t_thang && t_ngay && t_gio && t_phut) return true;//là thời gian nhập vào hợp lý
-  return false;
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    bool t_nam = 0;
+    bool t_thang = 0;
+    bool t_ngay = 0;
+    bool t_gio = 0;
+    bool t_phut = 0;
+    if (Nam < 1900 + ltm->tm_year)
+        t_nam = false;
+    else
+        t_nam = true;
+    if (Thang >= 1 + ltm->tm_mon)
+        t_thang = true;
+    else
+        t_thang = false;
+    if (Ngay >= (ltm->tm_mday) + 1)
+        t_ngay = true;
+    else
+        t_ngay = false;
+    if (Gio >= ltm->tm_hour)
+        t_gio = true;
+    else
+        t_gio = false;
+    if (Phut >= (ltm->tm_min) + 1)
+        t_phut = true;
+    else
+        t_phut = false;
+    if (t_nam && t_thang && t_ngay && t_gio && t_phut)
+        return true; // là thời gian nhập vào hợp lý
+    return false;
 }

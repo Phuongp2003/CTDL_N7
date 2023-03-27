@@ -1,9 +1,5 @@
 #include "../header/dohoa.h"
 
-using std::cout;
-using std::endl;
-using std::string;
-
 //==================================================================================================================================
 // Define
 
@@ -238,11 +234,14 @@ void CreatePageBackground()
 void CreatePage_QLMB()
 {
     CreatePageBackground();
-    // CreateTable_QLMB();
+    CreateTable_QLMB();
 }
 
 void CreateTable_QLMB()
 {
+    DrawTextEx(FontArial, "DANH SÁCH MÁY BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
+    float cellW[5] = {100, 300, 380, 150, 150};
+    CreateTable(5, cellW);
 }
 
 // =-ChuyenBay
@@ -274,10 +273,50 @@ void CreatePage_GioiThieu()
     CreatePageBackground();
 }
 
-void CreateTable(int soCot, int soHang, float tittleCellH, float cellH, float cellW[])
+/**
+ * @brief Create a Table object
+ *
+ * @param cellW tổng các phần tử phải bằng 1080
+ *
+ * @note Số hàng luôn bằng 10, chiều cao ô luôn là 40, ô tiêu đề là 50
+ */
+void CreateTable(int soCot, float cellW[])
 {
     const int empty_spaces_left = 60;
-    const int empty_spaces_right = 59; // dont care
+    const int empty_spaces_top = 60 + 100 + 80;
+    const int firstLineH = 50;
+    const int lineH = 40;
+    const int total_table_w = 1080;
+
+    Vector2 Point_row[2][soCot + 1];
+    Point_row[0][0] = {StartPos.x + empty_spaces_left, StartPos.y + empty_spaces_top};
+    Point_row[1][0] = {StartPos.x + empty_spaces_left, StartPos.y + empty_spaces_top + firstLineH + lineH * 10};
+    DrawLineEx(Point_row[0][0], Point_row[1][0], 2, BROWN);
+
+    for (int i = 1; i <= soCot + 1; i++)
+    {
+        Point_row[0][i] = {Point_row[0][i - 1].x + cellW[i - 1], Point_row[0][0].y};
+        Point_row[1][i] = {Point_row[1][i - 1].x + cellW[i - 1], Point_row[1][0].y};
+        DrawLineEx(Point_row[0][i], Point_row[1][i], 2, BROWN);
+    }
+
+    Vector2 Point_line[11][2];
+    Point_line[0][0] = {StartPos.x + empty_spaces_left, StartPos.y + empty_spaces_top};
+    Point_line[0][1] = {StartPos.x + empty_spaces_left + total_table_w, StartPos.y + empty_spaces_top};
+
+    DrawLineEx(Point_line[0][0], Point_line[0][1], 2, BROWN);
+
+    Point_line[1][0] = {Point_line[0][0].x, Point_line[0][0].y + firstLineH};
+    Point_line[1][1] = {Point_line[0][1].x, Point_line[0][1].y + firstLineH};
+
+    DrawLineEx(Point_line[1][0], Point_line[1][1], 2, BROWN);
+
+    for (int i = 2; i <= 11; i++)
+    {
+        Point_line[i][0] = {Point_line[0][0].x, Point_line[i - 1][0].y + lineH};
+        Point_line[i][1] = {Point_line[0][1].x, Point_line[i - 1][1].y + lineH};
+        DrawLineEx(Point_line[i][0], Point_line[i][1], 2, BROWN);
+    }
 }
 
 void ThanhQuanLy()

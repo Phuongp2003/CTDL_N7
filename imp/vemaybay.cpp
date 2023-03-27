@@ -1,5 +1,4 @@
 #include "../header/vemaybay.h"
-using namespace std;
 // hàm của DSVe
 
 VeMayBay::VeMayBay()
@@ -35,9 +34,9 @@ string VeMayBay::getHanhKhach()
     return this->CMND;
 }
 
-bool VeMayBay::setTrangThai(bool TrangThai)
+void VeMayBay::setTrangThai(bool TrangThai)
 {
-    this->TrangThai=TrangThai;
+    this->TrangThai = TrangThai;
 }
 
 bool VeMayBay::getTrangThai()
@@ -45,22 +44,31 @@ bool VeMayBay::getTrangThai()
     return this->TrangThai;
 }
 // ham DSvemaybay
-DSVeMayBay::DSVeMayBay(){}
-void DSVeMayBay::setSoVeToiDa(int SoVeToiDa){
-    this->SoVeToiDa=SoVeToiDa;
+DSVeMayBay::DSVeMayBay()
+{
+    this->SoVeToiDa = 0;
+    this->SoVeDaDat = 0;
 }
-int DSVeMayBay::getSoVeToiDa(){
+
+void DSVeMayBay::setSoVeToiDa(int SoVeToiDa)
+{
+    this->SoVeToiDa = SoVeToiDa;
+}
+int DSVeMayBay::getSoVeToiDa()
+{
     return SoVeToiDa;
 }
 
-VeMayBay* DSVeMayBay::getDSVeMB(){
+VeMayBay *DSVeMayBay::getDSVeMB()
+{
     return DSVeMB;
 }
-void DSVeMayBay::setDSVe(MayBay *MB){
+void DSVeMayBay::setDSVe(MayBay *MB)
+{
     int SDay, SDong;
     SDay = MB->getSoDay();
     SDong = MB->getSoDong();
-    SoVeToiDa=SDay * SDong;
+    SoVeToiDa = SDay * SDong;
     DSVeMB = new VeMayBay[SoVeToiDa];
     for (int i = 0; i < SDay; i++)
     {
@@ -77,4 +85,4 @@ void DSVeMayBay::setDSVe(MayBay *MB){
     }
 }
 
-DSVeMayBay::~DSVeMayBay(){}
+DSVeMayBay::~DSVeMayBay() {}

@@ -1,5 +1,4 @@
 #include "../header/chuyenbay.h"
-#include "../header/vemaybay.h"
 using namespace std;
 
 // hàm của ChuyenBay
@@ -55,44 +54,11 @@ void ChuyenBay::setNgayGio(Date _NgayGio)
     this->NgayGio = _NgayGio;
 }
 
-// void ChuyenBay::setDSVeMB(DSMB *DanhSachMB)
-// {
-//     MayBay *tmp;
-//     tmp = DanhSachMB->getMB(DanhSachMB->Find_MB(this->IDMayBay));
-//     int SDay, SDong;
-//     SDay = tmp->getSoDay();
-//     SDong = tmp->getSoDong();
-//     DSVe->setSoVeToiDa(SDay * SDong);
-//     DSVe = new VeMayBay[DSVe->getSoVeToiDa()];
-//     for (int i = 0; i < SDay; i++)
-//     {
-//         for (int j = 0; j < SDong; j++)
-//         {
-//             string tmp_str;
-//             tmp_str += IDChu[i];
-//             tmp_str += IDSo[(j + 1) / 10];
-//             tmp_str += IDSo[(j + 1) % 10];
-//             tmp_str += '\0';
-//             // tmp_str = tmp_str;
-//             DSVe[i * SDong + j].setIDVe(tmp_str);
-//         }
-//     }
-// }
+DSVeMayBay *ChuyenBay::getDSVe()
+{
+    return this->DSVe;
+}
 
-/**
- * @note hàm chỉ làm mẫu, lúc xuất chỉnh trên UI sau
- */
-// void ChuyenBay::showDSVe()
-// {
-//     for (int i = 0; i < DSVe->getSoVeToiDa(); i++)
-//     {
-//         cout << i << ". " << this->DSVe[i].getIDVe() << " ";
-//         if (DSVe[i].getHanhKhach() == "\0")
-//             cout << "Con ve" << endl;
-//         else
-//             cout << "Da dat" << endl;
-//     }
-// }
 /**
  * @brief Đây là hàm thử nghiệm
  *
@@ -105,25 +71,25 @@ void ChuyenBay::ThucHienCB(DSMB *DanhSachMB)
     tmp->TangSLTHCB();
 }
 
-ChuyenBay *Node_CB::getNode()
+ChuyenBay *NodeCB::getNode()
 {
     return this->node;
 }
 
-bool Node_CB::hasNext()
+bool NodeCB::hasNext()
 {
     if (this->next != NULL)
         return true;
     return false;
 }
 
-void Node_CB::setNext(Node_CB *node)
+void NodeCB::setNext(NodeCB *node)
 {
     node->next = this->next;
     this->next = node;
 }
 
-Node_CB *Node_CB::getNext()
+NodeCB *NodeCB::getNext()
 {
     return this->next;
 }
@@ -134,20 +100,20 @@ DanhSachCB::DanhSachCB()
     this->head = NULL;
 }
 
-DanhSachCB::DanhSachCB(Node_CB *node)
+DanhSachCB::DanhSachCB(NodeCB *node)
 {
     this->head = node;
 }
 
-void DanhSachCB::push(Node_CB *currNode, Node_CB *node)
+void DanhSachCB::push(NodeCB *currNode, NodeCB *node)
 {
     currNode->setNext(node);
 }
 
-void DanhSachCB::push_back(Node_CB *node)
+void DanhSachCB::push_back(NodeCB *node)
 {
     node->setNext(NULL);
-    Node_CB *tmp = this->head;
+    NodeCB *tmp = this->head;
     while (tmp->hasNext())
     {
         tmp = tmp->getNext();
@@ -155,13 +121,13 @@ void DanhSachCB::push_back(Node_CB *node)
     tmp->setNext(node);
 }
 
-void DanhSachCB::push_front(Node_CB *node)
+void DanhSachCB::push_front(NodeCB *node)
 {
     this->head->setNext(node);
     this->head = node;
 }
 
-void DanhSachCB::pop(Node_CB *node)
+void DanhSachCB::pop(NodeCB *node)
 {
     if (node == this->head)
     {
@@ -174,7 +140,7 @@ void DanhSachCB::pop(Node_CB *node)
         return;
     }
 
-    Node_CB *tmp = this->head;
+    NodeCB *tmp = this->head;
     while (tmp->getNext() != node)
     {
         tmp = tmp->getNext();
@@ -189,7 +155,7 @@ void DanhSachCB::pop_first()
 
 void DanhSachCB::pop_back()
 {
-    Node_CB *tmp = this->head;
+    NodeCB *tmp = this->head;
     while (tmp->getNext()->hasNext())
     {
         tmp = tmp->getNext();
@@ -199,7 +165,7 @@ void DanhSachCB::pop_back()
 
 ChuyenBay *DanhSachCB::TimCB(string _MaCB)
 {
-    Node_CB *tmp = this->head;
+    NodeCB *tmp = this->head;
     while (tmp->hasNext())
     {
         if (tmp->getNode()->getMaCB() == _MaCB)

@@ -4,7 +4,6 @@
 #include "maybay.h"
 #include "ngaythang.h"
 
-using std::string;
 class VeMayBay
 {
 private:
@@ -19,20 +18,22 @@ public:
     string getIDVe();
     void setHanhKhach(string CMND);
     string getHanhKhach();
-    bool setTrangThai(bool TrangThai);
+    void setTrangThai(bool TrangThai);
     bool getTrangThai();
 };
+
 class DSVeMayBay
 {
 private:
     VeMayBay *DSVeMB;
     int SoVeToiDa;
-    int SoVeDaDat = 0;
+    int SoVeDaDat;
+
 public:
     DSVeMayBay();
     void setSoVeToiDa(int SoVeToiDa);
     int getSoVeToiDa();
-    VeMayBay* getDSVeMB();
+    VeMayBay *getDSVeMB();
     void setDSVe(MayBay *MB);
     ~DSVeMayBay();
 };

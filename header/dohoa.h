@@ -34,6 +34,8 @@ void CreateTable_QLHK();
 void CreatePage_GioiThieu();
 
 void ThanhQuanLy(); // done
+void CreateTable(int soCot, float cellW[]);
+void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[], float cellH);
 
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width);                                           // done
 bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau); // done

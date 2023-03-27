@@ -1,11 +1,7 @@
 #pragma once
 #include "chuyenbay.h"
 #include "header.h"
-#include <string>
 #define MAXMB 300
-
-#ifndef MAYBAY
-#define MAYBAY
 
 class MayBay
 {
@@ -71,7 +67,3 @@ public:
     MayBay *getMB(int index);
     ~DSMB();
 };
-
-DSMB *DanhSachMB = new DSMB();
-//
-#endif

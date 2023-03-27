@@ -12,10 +12,8 @@
 #include <string>
 
 using std::string;
-// using namespace std;
-// #define cout std::cout
-// #define cin std::cin
-// #define endl std::endl
+using std::cout;
+using std::endl;
 
 // Hằng số ----------------------------------------------------------------
 
@@ -23,49 +21,26 @@ using std::string;
 #define MAXVe 100
 #define ENTER 13
 
-// struct -----------------------------------------------------------------
+// class -----------------------------------------------------------------
 
 // ngày tháng
 class Date;
 // Hành khách
 class HanhKhach;
-class Node; // @brief Node hành khách
+class NodeHK;
+class DSHankHach;
+
 // Máy bay
 class MayBay;
 class DSMB;
+
 // Chuyến bay
 class ChuyenBay;
+class NodeCB;
 class DanhSachCB;
+
+// Vé máy bay
 class VeMayBay;
+class DSVeMayBay;
 
-// function ---------------------------------------------------------------
-
-// Xử lý xâu
-
-// template <class T>
-// T InputXau(T &xau)
-// {
-//     char tmp[40];
-//     int i = 0;
-//     while ((tmp[i] = getch()) != ENTER)
-//     {
-//         if ((tmp[i] >= '0' && tmp[i] <= '9') ||
-//             (tmp[i] >= 'a' && tmp[i] <= 'z') ||
-//             (tmp[i] >= 'A' && tmp[i] <= 'Z') ||
-//             (tmp[i] == ' '))
-//         {
-//             std::cout << tmp[i];
-//             i++;
-//         }
-//         else if (tmp[i] == 8 && i >= 0)
-//         {
-//             int x_tmp = wherex(), y_tmp = wherey();
-//             gotoxy(x_tmp - 1, y_tmp);
-//             std::cout << " ";
-//             gotoxy(x_tmp - 1, y_tmp);
-//             i--;
-//         }
-//     }
-//     tmp[i] = '\0';
-//     return tmp;
-// }
+// Định nghĩa function ở file header của các file

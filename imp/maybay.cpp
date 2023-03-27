@@ -1,7 +1,5 @@
 #include "../header/maybay.h"
 
-using namespace std;
-
 MayBay::MayBay() {}
 MayBay::MayBay(const char *_SoHieuMB, const char *LoaiMB, int SoDay, int SoDong)
 {

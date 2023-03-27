@@ -3,7 +3,7 @@
 #include "header.h"
 #include "maybay.h"
 #include "ngaythang.h"
-#include  "vemaybay.h"
+#include "vemaybay.h"
 
 using std::string;
 
@@ -11,9 +11,6 @@ using std::string;
 #define ConVe 1
 #define HetVe 2
 #define HoanTat 3
-
-#ifndef CHUYENBAY
-#define CHUYENBAY
 
 const char IDChu[26] = {
     'A',
@@ -47,8 +44,6 @@ const char IDChu[26] = {
 const char IDSo[10] = {'0', '1', '2', '3', '4',
                        '5', '6', '7', '8', '9'};
 
-
-
 class ChuyenBay
 {
 private:
@@ -79,48 +74,46 @@ public:
      */
     void setTrangThai(int _TrangThai);
     int getTrangThai();
-    int getSoVeToiDa();
     char *getMaMayBay();
     void setDSVeMB(DSMB *DanhSachCB);
 
     void showDSVe();
-    VeMayBay *getDSVe();
+    DSVeMayBay *getDSVe();
     void ThucHienCB(DSMB *DanhSachCB);
     // node
 };
-class Node_CB
+
+class NodeCB
 {
 private:
     ChuyenBay *node;
-    Node_CB *next;
+    NodeCB *next;
 
 public:
     ChuyenBay *getNode();
     bool hasNext();
-    void setNext(Node_CB *node);
-    Node_CB *getNext();
+    void setNext(NodeCB *node);
+    NodeCB *getNext();
 };
 
 class DanhSachCB
 {
 private:
-    Node_CB *head;
+    NodeCB *head;
     int size;
 
 public:
     DanhSachCB();
-    DanhSachCB(Node_CB *cb);
-    void push(Node_CB *currNode, Node_CB *node);
-    void push_back(Node_CB *node);
-    void push_front(Node_CB *node);
+    DanhSachCB(NodeCB *cb);
+    void push(NodeCB *currNode, NodeCB *node);
+    void push_back(NodeCB *node);
+    void push_front(NodeCB *node);
     /**
      * @brief xoá chuyến bay hiện chọn
      *
      */
-    void pop(Node_CB *node);
+    void pop(NodeCB *node);
     void pop_first();
     void pop_back();
     ChuyenBay *TimCB(string _MaCB);
 };
-
-#endif
