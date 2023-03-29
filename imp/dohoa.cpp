@@ -21,6 +21,14 @@ BoMauNut HomeButtonColor{
     WHITE,
     GREEN};
 
+BoMauNut ArrowKey{
+    {175, 175, 175, 255},
+    {100, 100, 100, 255},
+    {50, 50, 50, 250},
+    BLACK,
+    BLACK,
+    BLACK};
+
 BoMauNut MauThanhQuanLy{
     {87, 87, 255, 255},
     {25, 25, 255, 255},
@@ -49,12 +57,19 @@ Vector2 StartPos{per1000(10) * SCREEN_WIDTH, per1000(40) * SCREEN_HEIGHT};
 Font FontArial;
 Image LogoPTIT;
 Texture2D PNG_logo; // Load ảnh vào biến (ram)
+
 Image HomeIcon;
 Texture2D PNG_home;
 
+Image ArrowLeft;
+Texture2D PNG_arrowLeft;
+Texture2D PNG_arrowRight;
+
 void LoadResources()
 {
-    FontArial = LoadFontEx("../src/font/arial.ttf", 50, 0, 9812);
+    FontArial = LoadFontEx("../src/font/arial.ttf", 96, 0, 9812);
+    GenTextureMipmaps(&FontArial.texture);
+    SetTextureFilter(FontArial.texture, TEXTURE_FILTER_TRILINEAR);
 
     LogoPTIT = LoadImage("../src/img/Logo_PTIT_University.png"); // load ảnh
     ImageResize(&LogoPTIT, 698, 690);                            // Chỉnh size ảnh
@@ -63,6 +78,13 @@ void LoadResources()
     HomeIcon = LoadImage("../src/img/house_icon.png");
     ImageResize(&HomeIcon, 60, 50);
     PNG_home = LoadTextureFromImage(HomeIcon);
+
+    ArrowLeft = LoadImage("../src/img/arrow_left.png");
+    ImageResize(&ArrowLeft, 30, 30);
+    PNG_arrowLeft = LoadTextureFromImage(ArrowLeft);
+    ImageRotateCW(&ArrowLeft);
+    ImageRotateCW(&ArrowLeft);
+    PNG_arrowRight = LoadTextureFromImage(ArrowLeft);
 }
 
 void UnloadResources()
@@ -71,9 +93,12 @@ void UnloadResources()
 
     UnloadImage(LogoPTIT);
     UnloadImage(HomeIcon);
+    UnloadImage(ArrowLeft);
 
     UnloadTexture(PNG_logo);
     UnloadTexture(PNG_home);
+    UnloadTexture(PNG_arrowLeft);
+    UnloadTexture(PNG_arrowRight);
 }
 
 void SetSizeWindow()
@@ -105,7 +130,7 @@ void SetSizeWindow()
     if (MONITOR_WIDTH > 1700)
     {
         W = 1530;
-        H = 795;
+        H = 820;
     }
     SetWindowSize(W, H);
     SetWindowPosition(50, 50);
@@ -231,17 +256,74 @@ void CreatePageBackground()
 }
 
 // =-MayBay
-void CreatePage_QLMB()
+void CreatePage_QLMB(DSMB listMB)
 {
     CreatePageBackground();
+
+    // tittle
+    DrawTextEx(FontArial, "DANH SÁCH MÁY BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
+
+    // search
+    // Rectangle searchBox = {StartPos.x + 60, StartPos.y + 60 + 100, 1080, 80};
+    // DrawRectangleRec(searchBox, GRAY);
+    // DrawTextEx(FontArial, "Search", {searchBox.x, searchBox.y}, 60, 0, BLUE);
+
+    Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
+    DrawRectangleRec(searchText, WHITE);
+    DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
+    DrawTextEx(FontArial, "Search", {searchText.x, searchText.y}, 40, 0, BLUE);
+    if (CreateButton(searchText.x + searchText.width, searchText.y, 200, 50, false, "TÌM KIẾM", FontArial, ArrowKey))
+    {
+        cout << "TKiem" << endl;
+    }
+
+    // table
+    float cellW[5] = {100, 300, 380, 150, 150};
     CreateTable_QLMB();
+
+    // data
+    static int current_page = 1;
+    int n_page = 1 + listMB.getsize() / 10;
+    showList_QLMB(listMB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+
+    // page and switch page
+    current_page = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
 }
 
 void CreateTable_QLMB()
 {
-    DrawTextEx(FontArial, "DANH SÁCH MÁY BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
+    const char *cell_tittle[5] = {"STT", "Mã máy bay", "Tên máy bay", "Số dòng", "Số dãy"};
+
     float cellW[5] = {100, 300, 380, 150, 150};
-    CreateTable(5, cellW);
+    CreateTable({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 5, cellW, 1080);
+
+    Vector2 *tittle_pos = GetTittlePos({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 5, cellW, cell_tittle);
+
+    for (int i = 0; i < 5; i++)
+    {
+        DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
+    }
+}
+
+void showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW[])
+{
+    int size = listMB.getsize();
+    int i = (current_page - 1) * 10;
+    int j;
+    if (current_page * 10 < size)
+        j = current_page * 10;
+    else
+        j = size;
+
+    for (i; i < j; i++)
+    {
+        MayBay *MB = listMB.getMB(i);
+        DrawTextEx(FontArial, intTochar(i + 1, 2), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, 2)), 30, 0, BLACK);
+        DrawTextEx(FontArial, MB->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (i % 10) + 1, MB->getSoHieuMB()), 30, 0, BLACK);
+        DrawTextEx(FontArial, MB->getLoaiMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 3, (i % 10) + 1, MB->getLoaiMB()), 30, 0, BLACK);
+        DrawTextEx(FontArial, intTochar(MB->getSoDay(), 2), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (i % 10) + 1, intTochar(MB->getSoDay(), 2)), 30, 0, BLACK);
+        DrawTextEx(FontArial, intTochar(MB->getSoDong(), 2), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (i % 10) + 1, intTochar(MB->getSoDong(), 2)), 30, 0, BLACK);
+    }
 }
 
 // =-ChuyenBay
@@ -260,8 +342,16 @@ void CreatePage_QLCB()
 void CreatePage_QLVe()
 {
     CreatePageBackground();
-    // CreateTable();
+    CreateTable_QLVe();
 }
+
+void CreateTable_QLVe()
+{
+    DrawTextEx(FontArial, "DANH SÁCH VÉ", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
+    float cellW[3] = {100, 200, 400};
+    CreateTable({CenterDataSetter(1080, StartPos.x + 60, 700), StartPos.y + 60 + 100 + 80}, 3, cellW, 700);
+}
+
 void CreatePage_QLHK()
 {
     CreatePageBackground();
@@ -280,29 +370,31 @@ void CreatePage_GioiThieu()
  *
  * @note Số hàng luôn bằng 10, chiều cao ô luôn là 40, ô tiêu đề là 50
  */
-void CreateTable(int soCot, float cellW[])
+void CreateTable(Vector2 vitriBang, int soCot, float cellW[], float total_cellW)
 {
     const int empty_spaces_left = 60;
     const int empty_spaces_top = 60 + 100 + 80;
     const int firstLineH = 50;
     const int lineH = 40;
-    const int total_table_w = 1080;
 
     Vector2 Point_row[2][soCot + 1];
-    Point_row[0][0] = {StartPos.x + empty_spaces_left, StartPos.y + empty_spaces_top};
-    Point_row[1][0] = {StartPos.x + empty_spaces_left, StartPos.y + empty_spaces_top + firstLineH + lineH * 10};
+    Point_row[0][0] = {vitriBang.x - 1, vitriBang.y};
+    Point_row[1][0] = {vitriBang.x - 1, vitriBang.y + firstLineH + lineH * 10};
     DrawLineEx(Point_row[0][0], Point_row[1][0], 2, BROWN);
 
-    for (int i = 1; i <= soCot + 1; i++)
+    for (int i = 1; i < soCot; i++)
     {
         Point_row[0][i] = {Point_row[0][i - 1].x + cellW[i - 1], Point_row[0][0].y};
         Point_row[1][i] = {Point_row[1][i - 1].x + cellW[i - 1], Point_row[1][0].y};
         DrawLineEx(Point_row[0][i], Point_row[1][i], 2, BROWN);
     }
+    Point_row[0][soCot] = {Point_row[0][soCot - 1].x + cellW[soCot - 1] + 1, Point_row[0][0].y};
+    Point_row[1][soCot] = {Point_row[1][soCot - 1].x + cellW[soCot - 1] + 1, Point_row[1][0].y};
+    DrawLineEx(Point_row[0][soCot], Point_row[1][soCot], 2, BROWN);
 
     Vector2 Point_line[11][2];
-    Point_line[0][0] = {StartPos.x + empty_spaces_left, StartPos.y + empty_spaces_top};
-    Point_line[0][1] = {StartPos.x + empty_spaces_left + total_table_w, StartPos.y + empty_spaces_top};
+    Point_line[0][0] = {vitriBang.x - 1, vitriBang.y};
+    Point_line[0][1] = {vitriBang.x - 1 + total_cellW + 2, vitriBang.y};
 
     DrawLineEx(Point_line[0][0], Point_line[0][1], 2, BROWN);
 
@@ -317,6 +409,76 @@ void CreateTable(int soCot, float cellW[])
         Point_line[i][1] = {Point_line[0][1].x, Point_line[i - 1][1].y + lineH};
         DrawLineEx(Point_line[i][0], Point_line[i][1], 2, BROWN);
     }
+
+    Rectangle hightlight_tittle = {vitriBang.x, vitriBang.y, total_cellW - 2, firstLineH};
+    DrawRectangleRoundedLines(hightlight_tittle, 0, 0, 3, BLACK);
+
+    Rectangle hightlight_table = {vitriBang.x, vitriBang.y, total_cellW - 2, firstLineH + 10 * lineH};
+    DrawRectangleRoundedLines(hightlight_table, 0, 0, 3, BLACK);
+}
+
+Vector2 GetCellTextPos_Left(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y)
+{
+    Vector2 ans;
+    float cellPosX[soCot];
+    cellPosX[0] = vitriBang.x;
+    for (int i = 1; i < soCot; i++)
+    {
+        cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
+    }
+    ans = {cellPosX[vi_tri_x - 1] + 10,
+           CenterDataSetter(40, StartPos.y + 60 + 100 + 80 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, "A", 30, 0).y)};
+    return ans;
+}
+
+Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text)
+{
+    Vector2 ans;
+    float cellPosX[soCot];
+    cellPosX[0] = vitriBang.x;
+    for (int i = 1; i < soCot; i++)
+    {
+        cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
+    }
+    ans = {CenterDataSetter(cellW[vi_tri_x - 1], cellPosX[vi_tri_x - 1], MeasureTextEx(FontArial, text, 30, 0).x),
+           CenterDataSetter(40, vitriBang.y + 50 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, "A", 30, 0).y)};
+    return ans;
+}
+
+Vector2 GetCellTextPos_Right(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text)
+{
+    Vector2 ans;
+    float cellPosX[soCot];
+    cellPosX[0] = vitriBang.x;
+    for (int i = 1; i < soCot; i++)
+    {
+        cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
+    }
+    ans = {cellPosX[vi_tri_x - 1] + cellW[vi_tri_x - 1] - MeasureTextEx(FontArial, text, 30, 0).x - 10,
+           CenterDataSetter(50, StartPos.y + 60 + 100 + 80 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, "A", 40, 0).y)};
+    return ans;
+}
+
+Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[], const char *cell_tittle[])
+{
+    Vector2 *ans = new Vector2[soCot];
+    float cellPosX[soCot];
+    cellPosX[0] = vitriBang.x;
+    for (int i = 1; i < soCot; i++)
+    {
+        cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
+    }
+
+    float pos_y_table_title = CenterDataSetter(50, StartPos.y + 60 + 100 + 80, MeasureTextEx(FontArial, "A", 40, 0).y);
+    float pos_x_table_title[5];
+
+    for (int i = 0; i < 5; i++)
+    {
+        pos_x_table_title[i] = CenterDataSetter(cellW[i], cellPosX[i], MeasureTextEx(FontArial, cell_tittle[i], 40, 0).x);
+        ans[i] = {pos_x_table_title[i],
+                  pos_y_table_title};
+    }
+    return ans;
 }
 
 void ThanhQuanLy()
@@ -402,6 +564,76 @@ void ThanhQuanLy()
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width)
 {
     return (doDai_khung_chua / 2.0f) + vi_tri_khung_chua - (obj_width / 2.0f);
+}
+
+int SwitchPage(int current_page, int n_page, Vector2 pos)
+{
+    Rectangle textBox = {pos.x + 50, pos.y, 160, 50};
+    Rectangle pg1 = {textBox.x + textBox.width + 2, textBox.y, 70 - 4, 50};
+    Rectangle pg2 = {textBox.x + textBox.width + 70 + 2, textBox.y, 70 - 4, 50};
+    int status = 0;
+
+    // char *n1 = new char[2], *n2 = new char[2];
+    char n1[3], n2[3];
+    strcpy(n1, intTochar(current_page, 2));
+    n1[2] = '\0';
+    strcpy(n2, intTochar(n_page, 2));
+    n2[2] = '\0';
+    char *text = "trang";
+
+    if (current_page > 1)
+    {
+        if (CreateButtonWithPicture(pos.x + 10, pos.y + 10, 30, 30, false, PNG_arrowLeft, ArrowKey))
+            status = -1;
+    }
+    else
+    {
+        DrawRectangle(pos.x + 10, pos.y + 10, 30, 30, ArrowKey.isPressed);
+        DrawTexture(PNG_arrowLeft, pos.x + 10, pos.y + 10, ArrowKey.isPressed);
+    }
+
+    DrawRectangleRec(textBox, ArrowKey.isnotHovered);
+    DrawTextEx(FontArial,
+               text,
+               {CenterDataSetter(160, textBox.x, MeasureTextEx(FontArial, text, 30, 0).x), CenterDataSetter(50, textBox.y, MeasureTextEx(FontArial, "A", 30, 0).y)},
+               30,
+               0,
+               BLACK);
+
+    DrawRectangleRec(pg1, WHITE);
+    DrawRectangleRoundedLines(pg1, 0, 1, 2, BROWN);
+    DrawRectangleRec(pg2, WHITE);
+    DrawRectangleRoundedLines(pg2, 0, 1, 2, BROWN);
+
+    DrawTextEx(FontArial,
+               n1,
+               {CenterDataSetter(70, pg1.x, MeasureTextEx(FontArial, n1, 30, 0).x), CenterDataSetter(50, pg1.y, MeasureTextEx(FontArial, "A", 30, 0).y)},
+               30,
+               0,
+               BLACK);
+    DrawTextEx(FontArial,
+               n2,
+               {CenterDataSetter(70, pg2.x, MeasureTextEx(FontArial, n2, 30, 0).x), CenterDataSetter(50, pg2.y, MeasureTextEx(FontArial, "A", 30, 0).y)},
+               30,
+               0,
+               BLACK);
+
+    if (current_page < n_page)
+    {
+        if (CreateButtonWithPicture(pos.x + 50 + 300 + 10, pos.y + 10, 30, 30, false, PNG_arrowRight, ArrowKey))
+            status = 1;
+    }
+    else
+    {
+        DrawRectangle(pos.x + 50 + 300 + 10, pos.y + 10, 30, 30, ArrowKey.isPressed);
+        DrawTexture(PNG_arrowRight, pos.x + 50 + 300 + 10, pos.y + 10, ArrowKey.isPressed);
+    }
+    if (status == -1)
+        return current_page - 1;
+    else if (status == 1)
+        return current_page + 1;
+    else
+        return current_page;
 }
 
 bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau)
@@ -604,7 +836,7 @@ const char *CreateTextInputBox()
             fHold_LEFT++;
         else
             fHold_LEFT = 0;
-        if ((IsKeyDown(KEY_BACKSPACE) && letterCount + indexPoint > 0 && (fHold_BS > 150) && (fHold_BS % 10 == 0)) ||
+        if ((IsKeyDown(KEY_BACKSPACE) && letterCount + indexPoint > 0 && (fHold_BS > 60) && (fHold_BS % 3 == 0)) ||
             IsKeyPressed(KEY_BACKSPACE) && letterCount + indexPoint > 0)
         {
             for (int i = letterCount + indexPoint - 1; i < letterCount; i++)
@@ -616,12 +848,12 @@ const char *CreateTextInputBox()
                 letterCount = 0;
             name[letterCount] = '\0';
         }
-        if ((IsKeyDown(KEY_LEFT) && (letterCount + indexPoint) > 0 && (fHold_LEFT > 150) && (fHold_LEFT % 10 == 0)) ||
+        if ((IsKeyDown(KEY_LEFT) && (letterCount + indexPoint) > 0 && (fHold_LEFT > 60) && (fHold_LEFT % 3 == 0)) ||
             (IsKeyPressed(KEY_LEFT) && (letterCount + indexPoint) > 0))
         {
             indexPoint--;
         }
-        if ((IsKeyDown(KEY_RIGHT) && indexPoint < 0 && (fHold_RIGHT > 150) && (fHold_RIGHT % 10 == 0)) ||
+        if ((IsKeyDown(KEY_RIGHT) && indexPoint < 0 && (fHold_RIGHT > 60) && (fHold_RIGHT % 3 == 0)) ||
             (IsKeyPressed(KEY_RIGHT) && indexPoint < 0))
         {
             indexPoint++;
@@ -632,7 +864,7 @@ const char *CreateTextInputBox()
     DrawRectangleRec(textBox, GRAY);
     DrawTextEx(FontArial, name, textBoxPos, 30, 0, BLACK);
     // cout << "index: " << indexPoint << endl;
-    if (mouseClickOnText && ((framesCounter % 300 >= 120)))
+    if (mouseClickOnText && ((framesCounter % 120 >= 15)))
         DrawTextEx(FontArial, "|", textBoxDot, 30, 0, MAROON);
     if (Done)
     {
@@ -655,6 +887,26 @@ Vector2 GetVMousePosition()
     return virtualMouse;
 }
 
+char *intTochar(int value, int size)
+{
+    char *ans = new char[size];
+    for (int i = 0; i < size; i++)
+    {
+        int _10 = 1;
+        for (int j = i + 1; j < size; j++)
+        {
+            _10 *= 10;
+        }
+        if (value / _10 == 0)
+            ans[i] = '0';
+        else
+            ans[i] = (value / _10) + 48;
+        value = value % _10;
+    }
+    ans[size] = '\0';
+    return ans;
+}
+
 float per1000(int number)
 {
     return (float)number / 1000;
@@ -664,8 +916,18 @@ float per1000(int number)
 // main function
 void mainGraphics()
 {
+    DSMB *listMB = new DSMB();
+    MayBay *MB[34];
+    for (int i = 0; i < 34; i++)
+    {
+        MB[i] = new MayBay("MB01", "boing", i * 3, i * 5);
+        listMB->Insert_MB(MB[i]);
+    }
+
     LoadResources();
 
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    SetTargetFPS(60); // max framerate per second set to 60
     SetWindowState(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     SetWindowMinSize(700, 400);
     SetSizeWindow();
@@ -686,7 +948,7 @@ void mainGraphics()
         }
         case 1:
         {
-            CreatePage_QLMB();
+            CreatePage_QLMB(*listMB);
             break;
         }
         case 2:
