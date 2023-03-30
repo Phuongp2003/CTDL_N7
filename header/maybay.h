@@ -13,7 +13,7 @@ private:
     int SoDong;
     int SoLuotTHCB;
 
-public:
+public://
     MayBay();
     MayBay(const char *SoHieuMB, const char *LoaiMB, int SoDay, int SoDong);
     void setSoHieuMB(const char *SoHieuMB);
@@ -69,5 +69,5 @@ public:
 
     void Delete_DSMB();
     MayBay *getMB(int index);
-    ~DSMB();
+    ~DSMB();//
 };

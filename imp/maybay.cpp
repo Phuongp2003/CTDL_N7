@@ -54,7 +54,7 @@ void MayBay::setSoDong(int SoDong)
 }
 int MayBay::getSoDong()
 {
-    return SoDong;
+    return SoDong;//
 }
 int MayBay::getSoCho()
 {
