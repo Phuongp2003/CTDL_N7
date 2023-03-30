@@ -2,6 +2,7 @@
 #include "chuyenbay.h"
 #include "header.h"
 #define MAXMB 300
+// DSMB *DanhSach;
 
 class MayBay
 {
@@ -12,7 +13,7 @@ private:
     int SoDong;
     int SoLuotTHCB;
 
-public:
+public://
     MayBay();
     MayBay(const char *SoHieuMB, const char *LoaiMB, int SoDay, int SoDong);
     void setSoHieuMB(const char *SoHieuMB);
@@ -49,7 +50,7 @@ public:
 class DSMB
 {
 private:
-    int size = 0;
+    int size=0;
     MayBay *data[MAXMB];
 
 public:
@@ -62,8 +63,11 @@ public:
     // MayBay *New_MB(MayBay *maybay);
     void Insert_MB(MayBay *maybay);
     void Delete_MB(int index);
-    int Find_MB(char *SoHieuMB);
+    int Find_MB(char *_SoHieuMB);
+    int vitri(const char *a,const char *b);
+    DSMB* Find_DSMB(const char *SoHieuMB);
+
     void Delete_DSMB();
     MayBay *getMB(int index);
-    ~DSMB();
+    ~DSMB();//
 };
