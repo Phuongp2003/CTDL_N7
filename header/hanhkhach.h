@@ -2,6 +2,9 @@
 #include "chuyenbay.h"
 #include "header.h"
 #include "vemaybay.h"
+#include <fstream>
+
+using namespace std;
 
 class HanhKhach
 {
@@ -66,6 +69,10 @@ public:
     void inOrderTraversal(NodeHK *);
     void printInOrder();
     void showDsHanhKhach(string);
+    void writeToFile(ofstream &, NodeHK *);
+    void writeToFile();
+    void readFromFile(ifstream &);
+    void readFromFile();
 };
 
 // function

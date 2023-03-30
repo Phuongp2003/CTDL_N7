@@ -1,4 +1,5 @@
 #include "../header/hanhkhach.h"
+#include <sstream>
 
 HanhKhach::HanhKhach() : _cmnd(""), _ho(""), _ten(""), _phai(-1) {}
 
@@ -303,5 +304,62 @@ void DsHanhKhach::showDsHanhKhach(string maCb)
                  << tmp->getHanhKhach().getTen() << '\t'
                  << tmp->getHanhKhach().getPhai() << '\t';
         }
+    }
+}
+
+void DsHanhKhach::writeToFile(ofstream &file, NodeHK *node)
+{
+    if (node == NULL)
+    {
+        return;
+    }
+    HanhKhach hanhKhach = node->getHanhKhach();
+    file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|' << hanhKhach.getTen() << '|' << hanhKhach.getPhai() << '\n';
+    writeToFile(file, node->getLeft());
+    writeToFile(file, node->getRight());
+    file.close();
+}
+
+void DsHanhKhach::writeToFile()
+{
+    ofstream file("test.txt", ios::trunc);
+    if (file.is_open())
+    {
+        writeToFile(file, root);
+    }
+    else
+    {
+        cout << "Error";
+    }
+}
+
+void DsHanhKhach::readFromFile(ifstream &file)
+{
+    string line;
+    string cmnd, ho, ten, phai_str;
+    int phai;
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+        getline(ss, cmnd, '|');
+        getline(ss, ho, '|');
+        getline(ss, ten, '|');
+        getline(ss, phai_str, '|');
+        phai = phai_str == "Nam" ? 0 : 1;
+        insert(HanhKhach(cmnd, ho, ten, phai));
+    }
+    file.close();
+}
+
+void DsHanhKhach::readFromFile()
+{
+    ifstream file("test.txt");
+    if (file.is_open())
+    {
+        readFromFile(file);
+    }
+    else
+    {
+        cout << "Error";
     }
 }
