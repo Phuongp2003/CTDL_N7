@@ -1,12 +1,20 @@
 #include "../header/maybay.h"
 
-MayBay::MayBay() {}
+MayBay::MayBay() {
+    strcpy(SoHieuMB, "");
+
+    strcpy(LoaiMB, "");
+    SoDay=0;
+    SoDong=0;
+    SoLuotTHCB = 0;
+}
 MayBay::MayBay(const char *_SoHieuMB, const char *LoaiMB, int SoDay, int SoDong)
 {
     strncpy(this->SoHieuMB, _SoHieuMB, 16);
     this->SoHieuMB[16] = '\0';
     // this->SoHieuMB = SoHieuMB;
-    strcpy(this->LoaiMB, LoaiMB);
+    strncpy(this->LoaiMB, LoaiMB, 41);
+    this->LoaiMB[41] = '\0';
     this->SoDay = SoDay;
     this->SoDong = SoDong;
     SoLuotTHCB = 0;
@@ -21,15 +29,16 @@ void MayBay::setSoHieuMB(const char *SoHieuMB)
 }
 char *MayBay::getSoHieuMB()
 {
-    return SoHieuMB;
+    return this->SoHieuMB;
 }
 void MayBay::setLoaiMB(const char *LoaiMB)
 {
-    strcpy(this->LoaiMB, LoaiMB);
+    strncpy(this->LoaiMB, LoaiMB, 41);
+    this->LoaiMB[41] = '\0';
 }
 char *MayBay::getLoaiMB()
 {
-    return LoaiMB;
+    return this->LoaiMB;
 }
 void MayBay::setSoDay(int SoDay)
 {
@@ -37,7 +46,7 @@ void MayBay::setSoDay(int SoDay)
 }
 int MayBay::getSoDay()
 {
-    return SoDay;
+    return this->SoDay;
 }
 void MayBay::setSoDong(int SoDong)
 {
@@ -55,6 +64,7 @@ int MayBay::getSoCho()
 void MayBay::show_MB()
 {
     cout << getSoHieuMB() << " " << getLoaiMB() << " " << getSoDay() << " " << getSoDong() << endl;
+    
 }
 bool MayBay::Kiemtrasocho(int socho)
 {
@@ -111,18 +121,17 @@ int MayBay::getSoLuotBay()
 MayBay::~MayBay() {}
 DSMB::DSMB()
 {
+    size = 0;
 }
-// void DSMB::setsize(int size){
-//     this->size=size;
-// }
+
 int DSMB::getsize()
 {
-    return size;
+    return this->size;
 }
 
 void DSMB::getDSMB()
 {
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < this->size; i++)
     {
         data[i]->show_MB();
     }
@@ -154,24 +163,45 @@ void DSMB::Insert_MB(MayBay *maybay)
 void DSMB::Delete_MB(int index)
 {
     delete data[index];
-    for (int i = index; i < size - 1; i++)
+    for (int i = index; i < this->size - 1; i++)
     {
         data[index] = data[i + 1];
     }
-    size--; //
+    this->size--; //
 }
-int DSMB::Find_MB(char *SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
+int DSMB::Find_MB(char *_SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
 {
     for (int i = 0; i < this->size; i++)
     {
-        if (*this->data[i]->getSoHieuMB() == *SoHieuMB)
+        if (*this->data[i]->getSoHieuMB() == *_SoHieuMB)
             return i;
     }
     return -1;
 }
+int DSMB::vitri(const char *a,const char *b){
+    int d=-1;
+    if(strstr(a,b)!=NULL)
+    d=strlen(a)-strlen(strstr(a,b));
+    return d;
+}
+//khi tìm và lấy cả danh sách máy bay thì stringsearch không được là == ""
+DSMB* DSMB::Find_DSMB(const char *String_Search){
+    DSMB *dsmb=new DSMB();
+    for(int j=0;j<size;j++)
+    {
+        if(vitri(data[j]->getSoHieuMB(),String_Search) ==0 )
+        {
+            dsmb->Insert_MB(getMB(j));
+        }
+        
+    }
+    if(dsmb->getsize()==0) return NULL;
+    return dsmb;
+}
+
 void DSMB::Delete_DSMB()
 {
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < this->size; i++)
     {
         delete data[i];
     }
