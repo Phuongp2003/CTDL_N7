@@ -63,6 +63,8 @@ public:
     void balance(NodeHK *);
     void insert(HanhKhach);
     NodeHK *search(string);
+    void inOrderTraversal(NodeHK *);
+    void printInOrder();
     void showDsHanhKhach(string);
 };
 
