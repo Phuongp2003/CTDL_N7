@@ -1,4 +1,5 @@
 #include "../header/hanhkhach.h"
+#include <sstream>
 
 HanhKhach::HanhKhach() : _cmnd(""), _ho(""), _ten(""), _phai(-1) {}
 
@@ -111,7 +112,7 @@ int DsHanhKhach::getBalaceFactor(NodeHK *node)
     {
         return 0;
     }
-    return getHeightTree(node->getLeft()) - getHeightTree(node->getRight() + 1);
+    return getHeightTree(node->getLeft()) - getHeightTree(node->getRight());
 }
 
 int max(int a, int b)
@@ -121,7 +122,7 @@ int max(int a, int b)
 
 void DsHanhKhach::updateHeight(NodeHK *node)
 {
-    int maxHeight = max(getHeightTree(node->getLeft()), getHeightTree(node->getRight()));
+    int maxHeight = max(getHeightTree(node->getLeft()), getHeightTree(node->getRight())) + 1;
     node->setHeight(maxHeight);
 }
 
@@ -142,7 +143,7 @@ NodeHK *DsHanhKhach::rotateLeft(NodeHK *node)
 NodeHK *DsHanhKhach::rotateRight(NodeHK *node)
 {
     NodeHK *x = node->getLeft();
-    NodeHK *y = node->getRight();
+    NodeHK *y = x->getRight();
 
     x->setRight(node);
     node->setLeft(y);
@@ -182,32 +183,33 @@ void DsHanhKhach::insert(HanhKhach hanhKhach)
     }
 
     int compareCmnd;
+    NodeHK *current = root;
     while (true)
     {
-        compareCmnd = hanhKhach.getCmnd().compare(root->getHanhKhach().getCmnd());
+        compareCmnd = hanhKhach.getCmnd().compare(current->getHanhKhach().getCmnd());
 
         if (compareCmnd < 0)
         {
-            if (root->getLeft() == NULL)
+            if (current->getLeft() == NULL)
             {
-                root->setLeft(new NodeHK(hanhKhach));
+                current->setLeft(new NodeHK(hanhKhach));
                 break;
             }
             else
             {
-                root = root->getLeft();
+                current = current->getLeft();
             }
         }
         else
         {
-            if (root->getRight() == NULL)
+            if (current->getRight() == NULL)
             {
-                root->setRight(new NodeHK(hanhKhach));
+                current->setRight(new NodeHK(hanhKhach));
                 break;
             }
             else
             {
-                root = root->getRight();
+                current = current->getRight();
             }
         }
     }
@@ -243,6 +245,24 @@ NodeHK *DsHanhKhach::search(string cmnd)
     }
 
     return NULL;
+}
+
+void DsHanhKhach::inOrderTraversal(NodeHK *node)
+{
+    if (node == NULL)
+    {
+        return;
+    }
+    HanhKhach hanhKhach = node->getHanhKhach();
+    inOrderTraversal(node->getLeft());
+    cout << hanhKhach.getCmnd() << ' ' << hanhKhach.getHo() << hanhKhach.getTen() << hanhKhach.getPhai() << '|';
+    inOrderTraversal(node->getRight());
+}
+
+void DsHanhKhach::printInOrder()
+{
+    inOrderTraversal(root);
+    cout << endl;
 }
 
 void DsHanhKhach::showDsHanhKhach(string maCb)
@@ -284,5 +304,62 @@ void DsHanhKhach::showDsHanhKhach(string maCb)
                  << tmp->getHanhKhach().getTen() << '\t'
                  << tmp->getHanhKhach().getPhai() << '\t';
         }
+    }
+}
+
+void DsHanhKhach::writeToFile(ofstream &file, NodeHK *node)
+{
+    if (node == NULL)
+    {
+        return;
+    }
+    HanhKhach hanhKhach = node->getHanhKhach();
+    file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|' << hanhKhach.getTen() << '|' << hanhKhach.getPhai() << '\n';
+    writeToFile(file, node->getLeft());
+    writeToFile(file, node->getRight());
+    file.close();
+}
+
+void DsHanhKhach::writeToFile()
+{
+    ofstream file("test.txt", ios::trunc);
+    if (file.is_open())
+    {
+        writeToFile(file, root);
+    }
+    else
+    {
+        cout << "Error";
+    }
+}
+
+void DsHanhKhach::readFromFile(ifstream &file)
+{
+    string line;
+    string cmnd, ho, ten, phai_str;
+    int phai;
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+        getline(ss, cmnd, '|');
+        getline(ss, ho, '|');
+        getline(ss, ten, '|');
+        getline(ss, phai_str, '|');
+        phai = phai_str == "Nam" ? 0 : 1;
+        insert(HanhKhach(cmnd, ho, ten, phai));
+    }
+    file.close();
+}
+
+void DsHanhKhach::readFromFile()
+{
+    ifstream file("test.txt");
+    if (file.is_open())
+    {
+        readFromFile(file);
+    }
+    else
+    {
+        cout << "Error";
     }
 }
