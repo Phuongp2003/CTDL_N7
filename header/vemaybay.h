@@ -33,7 +33,10 @@ public:
     DSVeMayBay();
     void setSoVeToiDa(int SoVeToiDa);
     int getSoVeToiDa();
+    int getSoVeDaDat();
+    int getSoVeConLai();
     VeMayBay *getDSVeMB();
     void setDSVe(MayBay *MB);
+    VeMayBay getVe(int index);
     ~DSVeMayBay();
 };

@@ -17,6 +17,7 @@ ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
     strcpy(this->MaCB, _MaCB);
     this->NoiDen = _NoiDen;
     this->TrangThai = ConVe;
+
 }
 
 char *ChuyenBay::getMaCB()
@@ -58,6 +59,11 @@ DSVeMayBay *ChuyenBay::getDSVe()
 {
     return this->DSVe;
 }
+// VeMayBay* ChuyenBay::GetDSVeTrong()
+// {
+//     VeMayBay *DSVeTrong=new VeMayBay[DSVe->getSoVeToiDa()];
+//     for(int )
+// }
 
 /**
  * @brief Đây là hàm thử nghiệm
@@ -126,7 +132,10 @@ void DanhSachCB::push_front(NodeCB *node)
     this->head->setNext(node);
     this->head = node;
 }
-
+NodeCB* DanhSachCB::getHead()
+{
+    return head;
+}
 void DanhSachCB::pop(NodeCB *node)
 {
     if (node == this->head)
@@ -176,3 +185,43 @@ ChuyenBay *DanhSachCB::TimCB(string _MaCB)
 
     return NULL;
 }
+DanhSachCB DanhSachCB::TimDSCB(Date date,string noiden)
+{
+    NodeCB *tmp = this->head;
+    DanhSachCB *DS = new DanhSachCB();
+    while (tmp != NULL)
+    {
+        if((tmp->getNode()->getNgayGio().getNgay() == date.getNgay()) 
+        && (tmp->getNode()->getNgayGio().getThang() == date.getThang()) 
+        && (tmp->getNode()->getNgayGio().getNam() == date.getNam()) 
+        && (tmp->getNode()->getNoiDen() == noiden) 
+        && ((tmp->getNode()->getDSVe()->getSoVeConLai() !=0))) 
+        {
+            if (DS->getHead() == NULL)
+                DS->push_front(tmp);
+            else
+                DS->push_back(tmp);
+        }
+        tmp = tmp->getNext();
+    }
+    return *DS;
+}
+
+
+// DanhSachCB DanhSachCB::LocDSCB(string _keyword)
+// {
+//     NodeCB *tmp = this->head;
+//     DanhSachCB *result = new DanhSachCB();
+//     while (tmp != NULL)
+//     {
+//         if (tmp->getNode()->getMaCB() == _keyword)
+//         {
+//             if (result->getHead() == NULL)
+//                 result->push_front(tmp);
+//             else
+//                 result->push_back(tmp);
+//         }
+//         tmp = tmp->getNext();
+//     }
+//     return *result;
+// }

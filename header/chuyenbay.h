@@ -75,10 +75,11 @@ public:
     void setTrangThai(int _TrangThai);
     int getTrangThai();
     char *getMaMayBay();
-    void setDSVeMB(DSMB *DanhSachCB);
+    // void setDSVeMB(DSMB *DanhSachCB);
 
-    void showDSVe();
+    // void showDSVe();
     DSVeMayBay *getDSVe();
+    
     void ThucHienCB(DSMB *DanhSachCB);
     // node
 };
@@ -105,6 +106,7 @@ private:
 public:
     DanhSachCB();
     DanhSachCB(NodeCB *cb);
+    NodeCB *getHead();
     void push(NodeCB *currNode, NodeCB *node);
     void push_back(NodeCB *node);
     void push_front(NodeCB *node);
@@ -116,4 +118,7 @@ public:
     void pop_first();
     void pop_back();
     ChuyenBay *TimCB(string _MaCB);
+    DanhSachCB TimDSCB(Date date,string noiden);
+    
+    DanhSachCB LocDSCB(string _keyword);
 };
