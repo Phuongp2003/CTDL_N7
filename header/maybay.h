@@ -69,5 +69,7 @@ public:
 
     void Delete_DSMB();
     MayBay *getMB(int index);
+    void ReadFromFile(ifstream &file);
+    void WritetoFile(ofstream &file);
     ~DSMB();//
 };

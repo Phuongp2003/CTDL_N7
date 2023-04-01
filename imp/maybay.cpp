@@ -1,4 +1,5 @@
 #include "../header/maybay.h"
+#include <sstream>
 
 MayBay::MayBay() {
     strcpy(SoHieuMB, "");
@@ -210,4 +211,38 @@ MayBay *DSMB::getMB(int index)
 {
     return data[index];
 }
-DSMB::~DSMB() {}
+void DSMB::ReadFromFile(ifstream &file){
+    if(file.is_open())
+    {
+        std::string sohieumb, loaimb, soday, sodong;
+        std::string line = "";
+        while(std::getline(file, line)){
+            std::stringstream s(line);
+            std::getline(s, sohieumb, '|');
+            getline(s, loaimb, '|');
+            getline(s, soday, '|');
+            getline(s, sodong, '|');
+            Insert_MB(new MayBay(sohieumb.c_str(), loaimb.c_str(), stoi(soday), stoi(sodong)));
+        }
+    }
+    else cout<<"Error"<<endl;
+
+}
+void DSMB::WritetoFile(ofstream &file){
+    if (file.is_open())
+    {
+        for(int i=0;i<size;i++){
+            file<<data[i]->getSoHieuMB()<<"|"<<data[i]->getLoaiMB()<<"|"<<data[i]->getSoDay()<<"|"<<data[i]->getSoDong()<<"|"<<"\n";
+        }
+    }
+    else
+    {
+        cout << "Error";
+    }
+    file.close();
+}
+DSMB::~DSMB() {
+    for(int i = 0; i<size; i++){
+        delete data[i];
+    }
+}
