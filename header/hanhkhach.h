@@ -58,20 +58,12 @@ private:
 
 public:
     DsHanhKhach();
-    int getHeightTree(NodeHK *);
-    int getBalaceFactor(NodeHK *);
-    void updateHeight(NodeHK *);
-    NodeHK *rotateLeft(NodeHK *);
-    NodeHK *rotateRight(NodeHK *);
-    void balance(NodeHK *);
-    void insert(HanhKhach);
+    bool insert(HanhKhach);
     NodeHK *search(string);
     void inOrderTraversal(NodeHK *);
     void printInOrder();
     void showDsHanhKhach(string);
-    void writeToFile(ofstream &, NodeHK *);
-    void writeToFile();
-    void readFromFile(ifstream &);
+    void writeToFile(NodeHK *);
     void readFromFile();
 };
 
