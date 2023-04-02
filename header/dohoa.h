@@ -27,6 +27,7 @@ void CreateHomePage();       // done
 void CreatePageBackground(); // done
 
 void CreatePage_QLMB(DSMB listMB);
+void XuLy_QLMB(DSMB listMB);
 void CreateTable_QLMB();
 void showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW[]);
 
@@ -53,7 +54,11 @@ float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float ob
 int SwitchPage(int current_page, int n_page, Vector2 pos);
 bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau); // done
 bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height, bool BoTron, Texture2D Picture, BoMauNut BoMau);  // done
-const char *CreateTextInputBox();
+const char *CreateTextInputBox(Vector2 pos, float width,
+                               float height, const char *tittle,
+                               bool showPreResult, bool returnIfDone,
+                               Color MauSac, Color MauVien, Color MauChu);
+// const char *CreateTextInputBox(Vector2 pos, float width, float height, const char *tittle, bool showPreResult, Color MauSac, Color MauVien, Color MauChu);
 
 Vector2 GetVMousePosition();          // done
 char *intTochar(int value, int size); // done

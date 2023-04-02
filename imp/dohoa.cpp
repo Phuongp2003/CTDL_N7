@@ -245,14 +245,34 @@ void CreatePageBackground()
     const int home_tittle_h = 60;
     Rectangle mainScreen = {StartPos.x,
                             StartPos.y + home_tittle_h,
-                            SCREEN_WIDTH - 1,
+                            1199,
+                            SCREEN_HEIGHT - home_tittle_h};
+    Rectangle funcScreen = {StartPos.x + 1201,
+                            StartPos.y + home_tittle_h,
+                            299,
                             SCREEN_HEIGHT - home_tittle_h};
     Rectangle splitScreen = {mainScreen.x + 1199,
                              mainScreen.y,
                              2, // dày 2
                              SCREEN_HEIGHT - home_tittle_h};
     DrawRectangleRec(mainScreen, WHITE);
+    DrawRectangleRoundedLines(mainScreen, 0, 1, 2, RED);
+    DrawRectangleRec(funcScreen, WHITE);
+    DrawRectangleRoundedLines(funcScreen, 0, 1, 2, RED);
+
     DrawRectangleRec(splitScreen, BLACK);
+
+    DrawRectangle(funcScreen.x + 29, funcScreen.y + 105, 240, 60, GRAY);
+    DrawRectangle(funcScreen.x + 29, funcScreen.y + 180, 240, 60, GRAY);
+    DrawRectangle(funcScreen.x + 29, funcScreen.y + 255, 240, 60, GRAY);
+
+    DrawTextEx(FontArial,
+               "Chức năng",
+               {CenterDataSetter(300, funcScreen.x - 1, MeasureTextEx(FontArial, "Chức năng", 55, 0).x),
+                CenterDataSetter(70, funcScreen.y + 10, MeasureTextEx(FontArial, "a", 55, 0).y)},
+               55,
+               0,
+               BLUE);
 }
 
 // =-MayBay
@@ -263,18 +283,52 @@ void CreatePage_QLMB(DSMB listMB)
     // tittle
     DrawTextEx(FontArial, "DANH SÁCH MÁY BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
 
-    // search
-    // Rectangle searchBox = {StartPos.x + 60, StartPos.y + 60 + 100, 1080, 80};
-    // DrawRectangleRec(searchBox, GRAY);
-    // DrawTextEx(FontArial, "Search", {searchBox.x, searchBox.y}, 60, 0, BLUE);
+    // mini function
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Thêm máy bay", FontArial, ArrowKey))
+    {
+        cout << "Them" << endl;
+    }
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Hiệu chỉnh máy bay", FontArial, ArrowKey))
+    {
+        cout << "Sua" << endl;
+    }
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, "Xóa máy bay", FontArial, ArrowKey))
+    {
+        cout << "Xoa" << endl;
+    }
+    XuLy_QLMB(listMB);
+}
 
+void XuLy_QLMB(DSMB listMB)
+{
+    static bool isSearch = false;
+    static DSMB *searchResult = new DSMB();
+    // search
     Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
     DrawRectangleRec(searchText, WHITE);
     DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
     DrawTextEx(FontArial, "Search", {searchText.x, searchText.y}, 40, 0, BLUE);
+    static char *prev_key_word = new char[259];
+    const char *key_word =
+        CreateTextInputBox({StartPos.x + 60, StartPos.y + 60 + 100 + 15}, 880, 50,
+                           "Nhập nội dung tìm kiếm",
+                           true, false,
+                           WHITE, BLACK, BLACK);
+    if (strcmp(prev_key_word, key_word) != 0)
+    {
+
+        strcpy(prev_key_word, key_word);
+        if (key_word[0] != 0)
+        {
+            *searchResult = listMB.Find_DSMB(key_word);
+            isSearch = true;
+        }
+        else
+            isSearch = false;
+    }
     if (CreateButton(searchText.x + searchText.width, searchText.y, 200, 50, false, "TÌM KIẾM", FontArial, ArrowKey))
     {
-        cout << "TKiem" << endl;
+        cout << "Tim kiem" << endl;
     }
 
     // table
@@ -283,8 +337,17 @@ void CreatePage_QLMB(DSMB listMB)
 
     // data
     static int current_page = 1;
-    int n_page = 1 + listMB.getsize() / 10;
-    showList_QLMB(listMB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+    int n_page; // 1 + (spt/10)
+    if (!isSearch)
+    {
+        n_page = 1 + (listMB.getsize() - 1) / 10;
+        showList_QLMB(listMB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+    }
+    else
+    {
+        n_page = 1 + (searchResult->getsize() - 1) / 10;
+        showList_QLMB(*searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+    }
 
     // page and switch page
     current_page = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
@@ -331,11 +394,11 @@ void showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW
 void CreatePage_QLCB()
 {
     CreatePageBackground();
-    const char *test = CreateTextInputBox();
-    char hello[27] = "\0";
-    strcpy(hello, test);
-    if (hello[0] != '\0')
-        cout << hello << endl;
+    // const char *test = CreateTextInputBox({60, 270}, 1080, 60, "test", true, WHITE, BROWN, BLACK);
+    // char hello[27] = "\0";
+    // strcpy(hello, test);
+    // if (hello[0] != '\0')
+    //     cout << hello << endl;
     // CreateTable();
 }
 
@@ -579,7 +642,7 @@ int SwitchPage(int current_page, int n_page, Vector2 pos)
     n1[2] = '\0';
     strcpy(n2, intTochar(n_page, 2));
     n2[2] = '\0';
-    char *text = "trang";
+    char *text = (char *)"trang";
 
     if (current_page > 1)
     {
@@ -763,35 +826,42 @@ bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height
 }
 
 // Chưa hoàn chỉnh
-const char *CreateTextInputBox()
+const char *CreateTextInputBox(Vector2 pos, float width, float height, const char *tittle, bool showPreResult, bool returnIfDone, Color MauSac, Color MauVien, Color MauChu)
 {
     static char name[120] = "\0";
     char name_cpy[120] = "\0";
-    char *resuit = new char[120];
+    char *result = new char[120];
+    const int font_size = height * per1000(700);
+    static bool done;
     static bool mouseClickOnText = false;
-    static bool Done = false;
     static int letterCount = 0;
     static int framesCounter = 0;
     static int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0;
     static int indexPoint = 0;
 
-    Rectangle textBox = {300, 300, 700, 40};
-    Vector2 textBoxPos = {textBox.x + 5, CenterDataSetter(40, textBox.y, MeasureTextEx(FontArial, name, 30, 0).y)};
+    Rectangle textBox = {pos.x, pos.y, width, height};
+    Vector2 textBoxPos = {textBox.x + 5, CenterDataSetter(textBox.height, textBox.y, MeasureTextEx(FontArial, name, font_size, 0).y)};
 
     strcpy(name_cpy, name);
     name_cpy[letterCount + indexPoint] = '\0';
 
-    Vector2 textBoxDot = {textBox.x + MeasureTextEx(FontArial, name_cpy, 30, 0).x, CenterDataSetter(40, textBox.y, MeasureTextEx(FontArial, name_cpy, 30, 0).y)};
+    Vector2 textBoxDot = {textBox.x + MeasureTextEx(FontArial, name_cpy, font_size, 0).x, CenterDataSetter(textBox.height, textBox.y, MeasureTextEx(FontArial, name_cpy, font_size, 0).y)};
+    strcpy(result, name);
     if (CheckCollisionPointRec(GetVMousePosition(), textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
         mouseClickOnText = true;
+        done = false;
+    }
     else if (IsKeyPressed(KEY_ENTER))
     {
         mouseClickOnText = false;
-        strcpy(resuit, name);
-        name[0] = '\0';
-        indexPoint = 0;
-        letterCount = 0;
-        Done = true;
+        if (!showPreResult)
+        {
+            name[0] = '\0';
+            indexPoint = 0;
+            letterCount = 0;
+        }
+        done = true;
     }
     else if (!CheckCollisionPointRec(GetVMousePosition(), textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         mouseClickOnText = false;
@@ -861,16 +931,24 @@ const char *CreateTextInputBox()
     }
     else
         framesCounter = 0;
-    DrawRectangleRec(textBox, GRAY);
-    DrawTextEx(FontArial, name, textBoxPos, 30, 0, BLACK);
+    DrawRectangleRec(textBox, MauSac);
+    DrawRectangleRoundedLines(textBox, 0, 1, 2, MauVien);
+    if (name[0] != '\0')
+        DrawTextEx(FontArial, name, textBoxPos, font_size, 0, MauChu);
+    else
+        DrawTextEx(FontArial, tittle, textBoxPos, font_size, 0, MauChu);
     // cout << "index: " << indexPoint << endl;
     if (mouseClickOnText && ((framesCounter % 120 >= 15)))
-        DrawTextEx(FontArial, "|", textBoxDot, 30, 0, MAROON);
-    if (Done)
+        DrawTextEx(FontArial, "|", textBoxDot, font_size, 0, MAROON);
+    if (!returnIfDone)
+        return result;
+    else
     {
-        Done = false;
-        return resuit;
-    }
+        if (done)
+            return result;
+        else
+            return "\0";
+    };
     return "\0";
 }
 
@@ -920,10 +998,14 @@ void mainGraphics()
     MayBay *MB[34];
     for (int i = 0; i < 34; i++)
     {
-        MB[i] = new MayBay("MB01", "boing", i * 3, i * 5);
+        MB[i] = new MayBay(intTochar(i * 11, 4), "boing", i * 3, i * 2);
         listMB->Insert_MB(MB[i]);
     }
-
+    DSMB searchR = listMB->Find_DSMB("011");
+    for (int i = 0; i < searchR.getsize(); i++)
+    {
+        searchR.getDSMB();
+    }
     LoadResources();
 
     SetConfigFlags(FLAG_MSAA_4X_HINT);

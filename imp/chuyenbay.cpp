@@ -17,7 +17,6 @@ ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
     strcpy(this->MaCB, _MaCB);
     this->NoiDen = _NoiDen;
     this->TrangThai = ConVe;
-
 }
 
 char *ChuyenBay::getMaCB()
@@ -132,7 +131,7 @@ void DanhSachCB::push_front(NodeCB *node)
     this->head->setNext(node);
     this->head = node;
 }
-NodeCB* DanhSachCB::getHead()
+NodeCB *DanhSachCB::getHead()
 {
     return head;
 }
@@ -185,17 +184,13 @@ ChuyenBay *DanhSachCB::TimCB(string _MaCB)
 
     return NULL;
 }
-DanhSachCB DanhSachCB::TimDSCB(Date date,string noiden)
+DanhSachCB DanhSachCB::TimDSCB(Date date, string noiden)
 {
     NodeCB *tmp = this->head;
     DanhSachCB *DS = new DanhSachCB();
     while (tmp != NULL)
     {
-        if((tmp->getNode()->getNgayGio().getNgay() == date.getNgay()) 
-        && (tmp->getNode()->getNgayGio().getThang() == date.getThang()) 
-        && (tmp->getNode()->getNgayGio().getNam() == date.getNam()) 
-        && (tmp->getNode()->getNoiDen() == noiden) 
-        && ((tmp->getNode()->getDSVe()->getSoVeConLai() !=0))) 
+        if ((tmp->getNode()->getNgayGio().getNgay() == date.getNgay()) && (tmp->getNode()->getNgayGio().getThang() == date.getThang()) && (tmp->getNode()->getNgayGio().getNam() == date.getNam()) && (tmp->getNode()->getNoiDen() == noiden) && ((tmp->getNode()->getDSVe()->getSoVeConLai() != 0)))
         {
             if (DS->getHead() == NULL)
                 DS->push_front(tmp);
@@ -207,21 +202,45 @@ DanhSachCB DanhSachCB::TimDSCB(Date date,string noiden)
     return *DS;
 }
 
+DanhSachCB DanhSachCB::LocDSCB(string _keyword)
+{
+    NodeCB *tmp = this->head;
+    DanhSachCB *result = new DanhSachCB();
+    while (tmp != NULL)
+    {
+        if (isGotStr(tmp->getNode()->getMaCB(), _keyword))
+        {
+            if (result->getHead() == NULL)
+                result->push_front(tmp);
+            else
+                result->push_back(tmp);
+        }
+        tmp = tmp->getNext();
+    }
+    return *result;
+}
 
-// DanhSachCB DanhSachCB::LocDSCB(string _keyword)
-// {
-//     NodeCB *tmp = this->head;
-//     DanhSachCB *result = new DanhSachCB();
-//     while (tmp != NULL)
-//     {
-//         if (tmp->getNode()->getMaCB() == _keyword)
-//         {
-//             if (result->getHead() == NULL)
-//                 result->push_front(tmp);
-//             else
-//                 result->push_back(tmp);
-//         }
-//         tmp = tmp->getNext();
-//     }
-//     return *result;
-// }
+bool isGotStr(string _string, string _keyword)
+{
+    if (_string.length() < _keyword.length())
+        return false;
+    bool status = false;
+    for (int i = 0; i <= _string.length() - _keyword.length(); i++)
+    {
+        if (_string[i] == _keyword[0])
+        {
+            status = true;
+            for (int j = i + 1; j < i + _keyword.length(); j++)
+            {
+                if (_string[j] != _keyword[j - i])
+                {
+                    status = false;
+                    continue;
+                }
+            }
+        }
+        if (status == true)
+            return true;
+    }
+    return false;
+}
