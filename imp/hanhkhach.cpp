@@ -97,102 +97,24 @@ void NodeHK::setRight(NodeHK *pRight)
 
 DsHanhKhach::DsHanhKhach() : root(NULL) {}
 
-int DsHanhKhach::getHeightTree(NodeHK *node)
-{
-    if (node == NULL)
-    {
-        return 0;
-    }
-    return node->getHeight();
-}
-
-int DsHanhKhach::getBalaceFactor(NodeHK *node)
-{
-    if (node == NULL)
-    {
-        return 0;
-    }
-    return getHeightTree(node->getLeft()) - getHeightTree(node->getRight());
-}
-
-int max(int a, int b)
-{
-    return (a > b) ? a : b;
-}
-
-void DsHanhKhach::updateHeight(NodeHK *node)
-{
-    int maxHeight = max(getHeightTree(node->getLeft()), getHeightTree(node->getRight())) + 1;
-    node->setHeight(maxHeight);
-}
-
-NodeHK *DsHanhKhach::rotateLeft(NodeHK *node)
-{
-    NodeHK *x = node->getRight();
-    NodeHK *y = x->getLeft();
-
-    x->setLeft(node);
-    node->setRight(y);
-
-    updateHeight(node);
-    updateHeight(x);
-
-    return x;
-}
-
-NodeHK *DsHanhKhach::rotateRight(NodeHK *node)
-{
-    NodeHK *x = node->getLeft();
-    NodeHK *y = x->getRight();
-
-    x->setRight(node);
-    node->setLeft(y);
-
-    updateHeight(node);
-    updateHeight(x);
-
-    return x;
-}
-
-void DsHanhKhach::balance(NodeHK *node)
-{
-    if (getBalaceFactor(node) > 1)
-    {
-        if (getBalaceFactor(node->getLeft()) < 0)
-        {
-            node->setLeft(rotateLeft(node->getLeft()));
-        }
-        node->setLeft(rotateRight(node));
-    }
-    else if (getBalaceFactor(node) < -1)
-    {
-        if (getBalaceFactor(node->getRight()) > 0)
-        {
-            node->setRight(rotateRight(node->getRight()));
-        }
-        node->setRight(rotateLeft(node));
-    }
-}
-
-void DsHanhKhach::insert(HanhKhach hanhKhach)
+bool DsHanhKhach::insert(HanhKhach hanhKhach)
 {
     if (root == NULL)
     {
         root = new NodeHK(hanhKhach);
-        return;
+        writeToFile(root);
+        return true;
     }
 
-    int compareCmnd;
     NodeHK *current = root;
     while (true)
     {
-        compareCmnd = hanhKhach.getCmnd().compare(current->getHanhKhach().getCmnd());
-
-        if (compareCmnd < 0)
+        if (stoi(hanhKhach.getCmnd()) < stoi(current->getHanhKhach().getCmnd()))
         {
             if (current->getLeft() == NULL)
             {
                 current->setLeft(new NodeHK(hanhKhach));
+                writeToFile(current->getLeft());
                 break;
             }
             else
@@ -200,11 +122,12 @@ void DsHanhKhach::insert(HanhKhach hanhKhach)
                 current = current->getLeft();
             }
         }
-        else
+        else if (stoi(hanhKhach.getCmnd()) > stoi(current->getHanhKhach().getCmnd()))
         {
             if (current->getRight() == NULL)
             {
                 current->setRight(new NodeHK(hanhKhach));
+                writeToFile(current->getRight());
                 break;
             }
             else
@@ -212,10 +135,13 @@ void DsHanhKhach::insert(HanhKhach hanhKhach)
                 current = current->getRight();
             }
         }
+        else
+        {
+            current = NULL;
+            break;
+        }
     }
-
-    updateHeight(root);
-    balance(root);
+    return (current == NULL) ? false : true;
 }
 
 NodeHK *DsHanhKhach::search(string cmnd)
@@ -225,22 +151,22 @@ NodeHK *DsHanhKhach::search(string cmnd)
         return NULL;
     }
 
-    int compareCmnd;
+    NodeHK *current = root;
+    HanhKhach hanhKhach = current->getHanhKhach();
 
-    while (root != NULL)
+    while (current != NULL)
     {
-        compareCmnd = cmnd.compare(root->getHanhKhach().getCmnd());
-        if (compareCmnd == 0)
+        if (stoi(cmnd) == stoi(current->getHanhKhach().getCmnd()))
         {
-            return root;
+            return current;
         }
-        else if (compareCmnd < 0)
+        else if (stoi(cmnd) < stoi(current->getHanhKhach().getCmnd()))
         {
-            root = root->getLeft();
+            current = current->getLeft();
         }
         else
         {
-            root = root->getRight();
+            current = current->getRight();
         }
     }
 
@@ -255,14 +181,13 @@ void DsHanhKhach::inOrderTraversal(NodeHK *node)
     }
     HanhKhach hanhKhach = node->getHanhKhach();
     inOrderTraversal(node->getLeft());
-    cout << hanhKhach.getCmnd() << ' ' << hanhKhach.getHo() << hanhKhach.getTen() << hanhKhach.getPhai() << '|';
+    cout << hanhKhach.getCmnd() << " | " << hanhKhach.getHo() << " " << hanhKhach.getTen() << " | " << hanhKhach.getPhai() << "\n";
     inOrderTraversal(node->getRight());
 }
 
 void DsHanhKhach::printInOrder()
 {
     inOrderTraversal(root);
-    cout << endl;
 }
 
 void DsHanhKhach::showDsHanhKhach(string maCb)
@@ -307,56 +232,41 @@ void DsHanhKhach::showDsHanhKhach(string maCb)
     }
 }
 
-void DsHanhKhach::writeToFile(ofstream &file, NodeHK *node)
+void DsHanhKhach::writeToFile(NodeHK *node)
 {
-    if (node == NULL)
-    {
-        return;
-    }
-    HanhKhach hanhKhach = node->getHanhKhach();
-    file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|' << hanhKhach.getTen() << '|' << hanhKhach.getPhai() << '\n';
-    writeToFile(file, node->getLeft());
-    writeToFile(file, node->getRight());
-    file.close();
-}
-
-void DsHanhKhach::writeToFile()
-{
-    ofstream file("test.txt", ios::trunc);
+    ofstream file;
+    file.open("../dataHK.txt", ios::out | ios::app);
     if (file.is_open())
     {
-        writeToFile(file, root);
+        HanhKhach hanhKhach = node->getHanhKhach();
+        string phai = (hanhKhach.getPhai() == "Nam") ? "0" : "1";
+        file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|' << hanhKhach.getTen() << '|' << phai << '\n';
+        file.close();
     }
     else
-    {
         cout << "Error";
-    }
-}
-
-void DsHanhKhach::readFromFile(ifstream &file)
-{
-    string line;
-    string cmnd, ho, ten, phai_str;
-    int phai;
-    while (getline(file, line))
-    {
-        stringstream ss(line);
-        getline(ss, cmnd, '|');
-        getline(ss, ho, '|');
-        getline(ss, ten, '|');
-        getline(ss, phai_str, '|');
-        phai = phai_str == "Nam" ? 0 : 1;
-        insert(HanhKhach(cmnd, ho, ten, phai));
-    }
-    file.close();
 }
 
 void DsHanhKhach::readFromFile()
 {
-    ifstream file("test.txt");
+    ifstream file;
+    file.open("../test.txt");
     if (file.is_open())
     {
-        readFromFile(file);
+        string line;
+        string cmnd, ho, ten, phai_str;
+        int phai;
+        while (getline(file, line))
+        {
+            stringstream ss(line);
+            getline(ss, cmnd, '|');
+            getline(ss, ho, '|');
+            getline(ss, ten, '|');
+            getline(ss, phai_str, '|');
+            phai = phai_str == "Nam" ? 0 : 1;
+            insert(HanhKhach(cmnd, ho, ten, phai));
+        }
+        file.close();
     }
     else
     {
