@@ -37,6 +37,14 @@ public:
     int getSoVeConLai();
     VeMayBay *getDSVeMB();
     void setDSVe(MayBay *MB);
+    void setVe(VeMayBay Ve);
     VeMayBay getVe(int index);
+    DSVeMayBay getDSVeTrong();
     ~DSVeMayBay();
 };
+    
+
+
+
+
+

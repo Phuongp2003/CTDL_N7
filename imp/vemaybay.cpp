@@ -96,8 +96,20 @@ void DSVeMayBay::setDSVe(MayBay *MB)
         }
     }
 }
+void DSVeMayBay::setVe(VeMayBay Ve) {
+    DSVeMB[SoVeToiDa] = Ve;
+    SoVeToiDa++;
+}
 VeMayBay DSVeMayBay::getVe(int index)
 {
     return DSVeMB[index];
+}
+DSVeMayBay DSVeMayBay::getDSVeTrong() {
+    DSVeMayBay *result = new DSVeMayBay();
+    for (int i = 0; i < SoVeToiDa; i++) {
+        if (DSVeMB[i].getTrangThai() == true)
+            result->setVe(DSVeMB[i]);
+    }
+    return *result;
 }
 DSVeMayBay::~DSVeMayBay() {}
