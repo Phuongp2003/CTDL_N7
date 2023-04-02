@@ -57,7 +57,8 @@ bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height
 const char *CreateTextInputBox(Vector2 pos, float width,
                                float height, const char *tittle,
                                bool showPreResult, bool returnIfDone,
-                               Color MauSac, Color MauVien, Color MauChu);
+                               Color MauSac, Color MauVien, Color MauChu,
+                               int mode);
 // const char *CreateTextInputBox(Vector2 pos, float width, float height, const char *tittle, bool showPreResult, Color MauSac, Color MauVien, Color MauChu);
 
 Vector2 GetVMousePosition();          // done

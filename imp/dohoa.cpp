@@ -313,7 +313,8 @@ void XuLy_QLMB(DSMB listMB)
         CreateTextInputBox({StartPos.x + 60, StartPos.y + 60 + 100 + 15}, 880, 50,
                            "Nhập nội dung tìm kiếm",
                            true, false,
-                           WHITE, BLACK, BLACK);
+                           WHITE, BLACK, BLACK,
+                           2);
     if (strcmp(prev_key_word, key_word) != 0)
     {
 
@@ -351,6 +352,8 @@ void XuLy_QLMB(DSMB listMB)
 
     // page and switch page
     current_page = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+    if (current_page > n_page)
+        current_page = 1;
 }
 
 void CreateTable_QLMB()
@@ -445,15 +448,12 @@ void CreateTable(Vector2 vitriBang, int soCot, float cellW[], float total_cellW)
     Point_row[1][0] = {vitriBang.x - 1, vitriBang.y + firstLineH + lineH * 10};
     DrawLineEx(Point_row[0][0], Point_row[1][0], 2, BROWN);
 
-    for (int i = 1; i < soCot; i++)
+    for (int i = 1; i <= soCot; i++)
     {
         Point_row[0][i] = {Point_row[0][i - 1].x + cellW[i - 1], Point_row[0][0].y};
         Point_row[1][i] = {Point_row[1][i - 1].x + cellW[i - 1], Point_row[1][0].y};
         DrawLineEx(Point_row[0][i], Point_row[1][i], 2, BROWN);
     }
-    Point_row[0][soCot] = {Point_row[0][soCot - 1].x + cellW[soCot - 1] + 1, Point_row[0][0].y};
-    Point_row[1][soCot] = {Point_row[1][soCot - 1].x + cellW[soCot - 1] + 1, Point_row[1][0].y};
-    DrawLineEx(Point_row[0][soCot], Point_row[1][soCot], 2, BROWN);
 
     Vector2 Point_line[11][2];
     Point_line[0][0] = {vitriBang.x - 1, vitriBang.y};
@@ -504,7 +504,7 @@ Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_t
         cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
     }
     ans = {CenterDataSetter(cellW[vi_tri_x - 1], cellPosX[vi_tri_x - 1], MeasureTextEx(FontArial, text, 30, 0).x),
-           CenterDataSetter(40, vitriBang.y + 50 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, "A", 30, 0).y)};
+           CenterDataSetter(40, vitriBang.y + 50 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, text, 30, 0).y)};
     return ans;
 }
 
@@ -626,7 +626,7 @@ void ThanhQuanLy()
 
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width)
 {
-    return (doDai_khung_chua / 2.0f) + vi_tri_khung_chua - (obj_width / 2.0f);
+    return doDai_khung_chua / 2.0f + vi_tri_khung_chua - obj_width / 2.0f;
 }
 
 int SwitchPage(int current_page, int n_page, Vector2 pos)
@@ -825,8 +825,18 @@ bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height
     return false;
 }
 
-// Chưa hoàn chỉnh
-const char *CreateTextInputBox(Vector2 pos, float width, float height, const char *tittle, bool showPreResult, bool returnIfDone, Color MauSac, Color MauVien, Color MauChu)
+/**
+ * @brief Create a Text Input Box object
+ *
+ * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ)
+ * @warning chữ luôn in hoa
+ * @return const char* Những kí tự đã có, hoặc các kí tự đã có sau khi nhấn enter nếu returnIfDone = true
+ */
+const char *CreateTextInputBox(Vector2 pos, float width, float height,
+                               const char *tittle,
+                               bool showPreResult, bool returnIfDone,
+                               Color MauSac, Color MauVien, Color MauChu,
+                               int mode)
 {
     static char name[120] = "\0";
     char name_cpy[120] = "\0";
@@ -881,15 +891,56 @@ const char *CreateTextInputBox(Vector2 pos, float width, float height, const cha
         int key = GetCharPressed();
         while (key > 0)
         {
-            if ((key >= 32) && (key <= 125) && (letterCount < 27))
+            switch (mode)
             {
-                for (int i = letterCount; i > letterCount + indexPoint; i--)
+            case 1:
+            {
+                if ((key >= 32) && (key <= 125) && (letterCount < 27))
                 {
-                    name[i] = name[i - 1];
+                    if (((key >= 'a') && (key <= 'z')))
+                        key -= 32;
+                    for (int i = letterCount; i > letterCount + indexPoint; i--)
+                    {
+                        name[i] = name[i - 1];
+                    }
+                    name[letterCount + indexPoint] = char(key);
+                    name[letterCount + 1] = '\0';
+                    letterCount++;
                 }
-                name[letterCount + indexPoint] = char(key);
-                name[letterCount + 1] = '\0';
-                letterCount++;
+                break;
+            };
+            case 2:
+            {
+                if (((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) || ((key >= 'A') && (key <= 'Z')) && (letterCount < 27))
+                {
+                    if (((key >= 'a') && (key <= 'z')))
+                        key -= 32;
+                    for (int i = letterCount; i > letterCount + indexPoint; i--)
+                    {
+                        name[i] = name[i - 1];
+                    }
+                    name[letterCount + indexPoint] = char(key);
+                    name[letterCount + 1] = '\0';
+                    letterCount++;
+                }
+                break;
+            }
+            case 3:
+            {
+                if (((key >= 'a') && (key <= 'z')) || ((key >= 'A') && (key <= 'Z')) && (letterCount < 27))
+                {
+                    if (((key >= 'a') && (key <= 'z')))
+                        key -= 32;
+                    for (int i = letterCount; i > letterCount + indexPoint; i--)
+                    {
+                        name[i] = name[i - 1];
+                    }
+                    name[letterCount + indexPoint] = char(key);
+                    name[letterCount + 1] = '\0';
+                    letterCount++;
+                }
+                break;
+            }
             }
 
             key = GetCharPressed();
@@ -994,13 +1045,10 @@ float per1000(int number)
 // main function
 void mainGraphics()
 {
+    ifstream DataMB("../data/dataMB.txt", ios::out);
     DSMB *listMB = new DSMB();
-    MayBay *MB[34];
-    for (int i = 0; i < 34; i++)
-    {
-        MB[i] = new MayBay(intTochar(i * 11, 4), "boing", i * 3, i * 2);
-        listMB->Insert_MB(MB[i]);
-    }
+    listMB->ReadFromFile(DataMB);
+
     DSMB searchR = listMB->Find_DSMB("011");
     for (int i = 0; i < searchR.getsize(); i++)
     {
