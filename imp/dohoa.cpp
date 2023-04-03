@@ -239,7 +239,7 @@ void CreateHomePage()
 }
 
 // ---Các trang thành phần----------------------------------------------------------------------------------------------------------
-void CreatePageBackground()
+void CreatePageBackground(int SoHang)
 {
     ClearBackground(DARKBLUE);
     const int home_tittle_h = 60;
@@ -261,24 +261,30 @@ void CreatePageBackground()
     DrawRectangleRoundedLines(funcScreen, 0, 1, 2, RED);
 
     DrawRectangleRec(splitScreen, BLACK);
-
-    DrawRectangle(funcScreen.x + 29, funcScreen.y + 105, 240, 60, GRAY);
-    DrawRectangle(funcScreen.x + 29, funcScreen.y + 180, 240, 60, GRAY);
-    DrawRectangle(funcScreen.x + 29, funcScreen.y + 255, 240, 60, GRAY);
-
-    DrawTextEx(FontArial,
+    for(int i=0;i<SoHang;i++)
+    {
+        DrawRectangle(funcScreen.x + 29, funcScreen.y + 105+75*i, 240, 60, GRAY);
+        // DrawRectangle(funcScreen.x + 29, funcScreen.y + 180, 240, 60, GRAY);
+        // DrawRectangle(funcScreen.x + 29, funcScreen.y + 255, 240, 60, GRAY);
+    }
+    
+    if(SoHang !=0)
+    {
+        DrawTextEx(FontArial,
                "Chức năng",
                {CenterDataSetter(300, funcScreen.x - 1, MeasureTextEx(FontArial, "Chức năng", 55, 0).x),
                 CenterDataSetter(70, funcScreen.y + 10, MeasureTextEx(FontArial, "a", 55, 0).y)},
                55,
                0,
                BLUE);
+    }
+    
 }
 
 // =-MayBay
 void CreatePage_QLMB(DSMB listMB)
 {
-    CreatePageBackground();
+    CreatePageBackground(3);
 
     // tittle
     DrawTextEx(FontArial, "DANH SÁCH MÁY BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
@@ -396,18 +402,58 @@ void showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW
 
 void CreatePage_QLCB()
 {
-    CreatePageBackground();
+    CreatePageBackground(5);
     // const char *test = CreateTextInputBox({60, 270}, 1080, 60, "test", true, WHITE, BROWN, BLACK);
     // char hello[27] = "\0";
     // strcpy(hello, test);
     // if (hello[0] != '\0')
     //     cout << hello << endl;
     // CreateTable();
+
+    // tittle
+    DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
+
+    // mini function
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Thêm chuyến bay", FontArial, ArrowKey))
+    {
+        cout << "Them" << endl;
+    }
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Hiệu chỉnh CB", FontArial, ArrowKey))
+    {
+        cout << "Sua" << endl;
+    }
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, "Xóa chuyến bay", FontArial, ArrowKey))
+    {
+        cout << "Xoa" << endl;
+    }
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, "Xem danh sach vé", FontArial, ArrowKey))
+    {
+        cout << "XemDSVe" << endl;
+    }
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, "Đặt vé", FontArial, ArrowKey))
+    {
+        cout << "Dat ve" << endl;
+    }
+    CreateTable_QLCB();
+}
+
+void CreateTable_QLCB()
+{
+    const char *cell_tittle[6] = {"STT", "Mã CB", "Số hiệu MB","Ngày giờ", "Nơi đến","TT"};
+
+    float cellW[6] = {90, 230, 230, 200, 180,150};
+    CreateTable({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 6, cellW, 1080);
+    Vector2 *tittle_pos = GetTittlePos({StartPos.x+60 , StartPos.y + 60 + 100 + 80}, 6, cellW, cell_tittle);
+
+    for (int i = 0; i < 6; i++)
+    {
+        DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
+    }
 }
 
 void CreatePage_QLVe()
 {
-    CreatePageBackground();
+    CreatePageBackground(3);
     CreateTable_QLVe();
 }
 
@@ -420,13 +466,97 @@ void CreateTable_QLVe()
 
 void CreatePage_QLHK()
 {
-    CreatePageBackground();
+    CreatePageBackground(2);
+    DrawTextEx(FontArial, "DANH SÁCH HÀNH KHÁCH", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
+
+    // mini function
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Quản lý vé", FontArial, ArrowKey))
+    {
+        cout << "quan ly ve" << endl;
+    }
+    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Huỷ vé", FontArial, ArrowKey))
+    {
+        cout << "huy ve" << endl;
+    }
+    
+
+    CreateTable_QLHK();
     // CreateTable();
+}
+// void XuLy_QLHK(DsHanhKhach listHK)
+// {
+//     static bool isSearch = false;
+//     static DsHanhKhach *searchResult = new DsHanhKhach();
+//     // search
+//     Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
+//     DrawRectangleRec(searchText, WHITE);
+//     DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
+//     DrawTextEx(FontArial, "Search", {searchText.x, searchText.y}, 40, 0, BLUE);
+//     static char *prev_key_word = new char[259];
+//     const char *key_word =
+//         CreateTextInputBox({StartPos.x + 60, StartPos.y + 60 + 100 + 15}, 880, 50,
+//                            "Nhập nội dung tìm kiếm",
+//                            true, false,
+//                            WHITE, BLACK, BLACK);
+//     if (strcmp(prev_key_word, key_word) != 0)
+//     {
+
+//         strcpy(prev_key_word, key_word);
+//         if (key_word[0] != 0)
+//         {
+//             *searchResult = listHK.search(key_word);
+//             isSearch = true;
+//             // current_page=1;
+//         }
+//         else
+//             isSearch = false;
+//     }
+//     if (CreateButton(searchText.x + searchText.width, searchText.y, 200, 50, false, "TÌM KIẾM", FontArial, ArrowKey))
+//     {
+//         cout << "Tim kiem" << endl;
+//     }
+
+//     // table
+//     float cellW[5] = {100, 300, 380, 150, 150};
+//     CreateTable_QLHK();
+
+//     // data
+//     static int current_page = 1;
+//     int n_page; // 1 + (spt/10)
+//     if (!isSearch)
+//     {
+//         n_page = 1 + (ListHK.getsize() - 1) / 10;
+//         showList_QLMB(ListHK, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+//     }
+//     else
+//     {
+//         n_page = 1 + (searchResult->getsize() - 1) / 10;
+//         showList_QLMB(*searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+//     }
+
+//     // page and switch page
+//     current_page = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+// }
+
+void CreateTable_QLHK()
+{
+    const char *cell_tittle[5] = {"STT", "CMND", "Họ","Tên", "Phái"};
+
+    float cellW[5] = {100, 300, 380, 200, 100};
+    CreateTable({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 5, cellW, 1080);
+
+    Vector2 *tittle_pos = GetTittlePos({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 5, cellW, cell_tittle);
+
+    for (int i = 0; i < 5; i++)
+    {
+        DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
+    }
+
 }
 
 void CreatePage_GioiThieu()
 {
-    CreatePageBackground();
+    CreatePageBackground(0);
 }
 
 /**
@@ -535,7 +665,7 @@ Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[], const char *c
     float pos_y_table_title = CenterDataSetter(50, StartPos.y + 60 + 100 + 80, MeasureTextEx(FontArial, "A", 40, 0).y);
     float pos_x_table_title[5];
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < soCot; i++)//
     {
         pos_x_table_title[i] = CenterDataSetter(cellW[i], cellPosX[i], MeasureTextEx(FontArial, cell_tittle[i], 40, 0).x);
         ans[i] = {pos_x_table_title[i],
