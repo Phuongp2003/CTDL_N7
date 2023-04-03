@@ -6,18 +6,18 @@
 #include <conio.h>
 #include <ctime>
 #include <dos.h>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include<sstream>
-#include<fstream>
 
-using std::string;
 using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ofstream;
+using std::string;
 
 // Hằng số ----------------------------------------------------------------
 
@@ -48,3 +48,8 @@ class VeMayBay;
 class DSVeMayBay;
 
 // Định nghĩa function ở file header của các file
+
+// Các hàm xử lí nhỏ
+char *intTochar(int value, int size); // done
+float per1000(int number);            // done
+bool isGotStr(string _string, string _keyword);

@@ -2,7 +2,6 @@
 
 //==================================================================================================================================
 // Define
-
 struct BoMauNut
 {
     Color isnotHovered;
@@ -11,6 +10,33 @@ struct BoMauNut
     Color text1;
     Color text2;
     Color Rounder;
+};
+struct Button
+{
+    float x;
+    float y;
+    float w;
+    float h;
+    bool BoTron = false;
+    bool gotNothing = true;
+    bool gotText = false;
+    const char *tittle = "";
+    Font font;
+    bool gotPic = false;
+    Texture2D picture;
+    BoMauNut BoMau;
+};
+
+struct InputTextBox
+{
+    Rectangle textBox;
+    const char *tittle = "";
+    bool showPreResult = true;
+    bool returnIfDone = false;
+    Color MauNen = WHITE;
+    Color MauVien = BLACK;
+    Color MauChu = BLACK;
+    int mode = 1;
 };
 
 BoMauNut HomeButtonColor{
@@ -157,7 +183,7 @@ void CreateHomePage()
     const int split_screen_w = 4;
     const int button_screen_w = 798;
     const int home_tittle_h = 60;
-    const int button_tittle = 80;
+    const int button_tittle_h = 80;
     const int button_tittle_margin_top = 50;
     const int button_tittle_margin_bot = 10;
     const int button_margin_topbot = 20;
@@ -183,12 +209,13 @@ void CreateHomePage()
 
     // Tiêu dề
     const char *home_tittle = "ĐỒ ÁN QUẢN LÝ MÁY BAY - NHÓM 7 - KHOÁ D21",
-               *button_tille = "CÁC CHỨC NĂNG",
-               *button1_tittle = "QUẢN LÝ MÁY BAY",
-               *button2_tittle = "QUẢN LÝ CHUYẾN BAY",
-               *button3_tittle = "QUẢN LÝ VÉ",
-               *button4_tittle = "QUẢN LÝ HÀNH KHÁCH",
-               *button5_tittle = "GIỚI THIỆU VỀ SẢN PHẨM";
+               *button_tille = "CÁC CHỨC NĂNG";
+    char *button_tittle[5];
+    button_tittle[0] = "QUẢN LÝ MÁY BAY";
+    button_tittle[1] = "QUẢN LÝ CHUYẾN BAY";
+    button_tittle[2] = "QUẢN LÝ VÉ";
+    button_tittle[3] = "QUẢN LÝ HÀNH KHÁCH";
+    button_tittle[4] = "GIỚI THIỆU VỀ SẢN PHẨM";
 
     // Vị trí tiêu đề
     Vector2 tittleHomePos =
@@ -203,7 +230,7 @@ void CreateHomePage()
     Vector2 buttonPos[5] =
         {
             {CenterDataSetter(button_screen_w, buttonScreen.x, button_width),
-             tittleButtonPos.y + button_tittle + button_tittle_margin_bot + button_margin_topbot},
+             tittleButtonPos.y + button_tittle_h + button_tittle_margin_bot + button_margin_topbot},
             {CenterDataSetter(button_screen_w, buttonScreen.x, button_width),
              buttonPos[0].y + button_height + button_margin_topbot * 2},
             {CenterDataSetter(button_screen_w, buttonScreen.x, button_width),
@@ -224,17 +251,25 @@ void CreateHomePage()
         DrawTextEx(FontArial, button_tille, tittleButtonPos, 40, 0, BLUE);
 
         DrawTextureEx(PNG_logo, pngPos, 0, 1, WHITE);
-        // DrawRectangleRec(buttonScreen, BLUE);
-        if (CreateButton(buttonPos[0].x, buttonPos[0].y, button_width, button_height, true, button1_tittle, FontArial, HomeButtonColor))
-            current_page = 1;
-        if (CreateButton(buttonPos[1].x, buttonPos[1].y, button_width, button_height, true, button2_tittle, FontArial, HomeButtonColor))
-            current_page = 2;
-        if (CreateButton(buttonPos[2].x, buttonPos[2].y, button_width, button_height, true, button3_tittle, FontArial, HomeButtonColor))
-            current_page = 3;
-        if (CreateButton(buttonPos[3].x, buttonPos[3].y, button_width, button_height, true, button4_tittle, FontArial, HomeButtonColor))
-            current_page = 4;
-        if (CreateButton(buttonPos[4].x, buttonPos[4].y, button_width, button_height, true, button5_tittle, FontArial, HomeButtonColor))
-            current_page = 5;
+
+        Button button[5];
+        for (int i = 0; i < 5; i++)
+        {
+            button[i].x = buttonPos[i].x;
+            button[i].y = buttonPos[i].y;
+            button[i].w = button_width;
+            button[i].h = button_height;
+            button[i].BoTron = true;
+            button[i].gotNothing = false;
+            button[i].gotText = true;
+            button[i].tittle = button_tittle[i];
+            button[i].font = FontArial;
+            button[i].BoMau = HomeButtonColor;
+            if (CreateButton(button[i]))
+            {
+                current_page = i + 1;
+            }
+        }
     }
 }
 
@@ -261,24 +296,23 @@ void CreatePageBackground(int SoHang)
     DrawRectangleRoundedLines(funcScreen, 0, 1, 2, RED);
 
     DrawRectangleRec(splitScreen, BLACK);
-    for(int i=0;i<SoHang;i++)
+    for (int i = 0; i < SoHang; i++)
     {
-        DrawRectangle(funcScreen.x + 29, funcScreen.y + 105+75*i, 240, 60, GRAY);
+        DrawRectangle(funcScreen.x + 29, funcScreen.y + 105 + 75 * i, 240, 60, GRAY);
         // DrawRectangle(funcScreen.x + 29, funcScreen.y + 180, 240, 60, GRAY);
         // DrawRectangle(funcScreen.x + 29, funcScreen.y + 255, 240, 60, GRAY);
     }
-    
-    if(SoHang !=0)
+
+    if (SoHang != 0)
     {
         DrawTextEx(FontArial,
-               "Chức năng",
-               {CenterDataSetter(300, funcScreen.x - 1, MeasureTextEx(FontArial, "Chức năng", 55, 0).x),
-                CenterDataSetter(70, funcScreen.y + 10, MeasureTextEx(FontArial, "a", 55, 0).y)},
-               55,
-               0,
-               BLUE);
+                   "Chức năng",
+                   {CenterDataSetter(300, funcScreen.x - 1, MeasureTextEx(FontArial, "Chức năng", 55, 0).x),
+                    CenterDataSetter(70, funcScreen.y + 10, MeasureTextEx(FontArial, "Chức năng", 55, 0).y)},
+                   55,
+                   0,
+                   BLUE);
     }
-    
 }
 
 // =-MayBay
@@ -289,16 +323,33 @@ void CreatePage_QLMB(DSMB listMB)
     // tittle
     DrawTextEx(FontArial, "DANH SÁCH MÁY BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
 
+    Button button[3];
+    for (int i = 0; i < 3; i++)
+    {
+        button[i].x = StartPos.x + 1201 + 29;
+        button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
+        button[i].w = 240;
+        button[i].h = 60;
+        button[i].BoTron = false;
+        button[i].gotNothing = false;
+        button[i].gotText = true;
+        button[i].font = FontArial;
+        button[i].BoMau = ArrowKey;
+    }
+
     // mini function
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Thêm máy bay", FontArial, ArrowKey))
+    button[0].tittle = "Thêm máy bay";
+    if (CreateButton(button[0]))
     {
         cout << "Them" << endl;
     }
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Hiệu chỉnh máy bay", FontArial, ArrowKey))
+    button[1].tittle = "Hiệu chỉnh máy bay";
+    if (CreateButton(button[1]))
     {
         cout << "Sua" << endl;
     }
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, "Xóa máy bay", FontArial, ArrowKey))
+    button[2].tittle = "Xoá máy bay";
+    if (CreateButton(button[2]))
     {
         cout << "Xoa" << endl;
     }
@@ -313,14 +364,15 @@ void XuLy_QLMB(DSMB listMB)
     Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
     DrawRectangleRec(searchText, WHITE);
     DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
+    InputTextBox searchTextBox;
+    searchTextBox.textBox = searchText;
+    searchTextBox.tittle = "Nhập nội dung tìm kiếm";
+
     DrawTextEx(FontArial, "Search", {searchText.x, searchText.y}, 40, 0, BLUE);
+
     static char *prev_key_word = new char[259];
     const char *key_word =
-        CreateTextInputBox({StartPos.x + 60, StartPos.y + 60 + 100 + 15}, 880, 50,
-                           "Nhập nội dung tìm kiếm",
-                           true, false,
-                           WHITE, BLACK, BLACK,
-                           2);
+        CreateTextInputBox(searchTextBox);
     if (strcmp(prev_key_word, key_word) != 0)
     {
 
@@ -333,7 +385,20 @@ void XuLy_QLMB(DSMB listMB)
         else
             isSearch = false;
     }
-    if (CreateButton(searchText.x + searchText.width, searchText.y, 200, 50, false, "TÌM KIẾM", FontArial, ArrowKey))
+    Button button;
+
+    button.x = searchText.x + searchText.width;
+    button.y = searchText.y;
+    button.w = 200;
+    button.h = 50;
+    button.BoTron = false;
+    button.gotNothing = false;
+    button.gotText = true;
+    button.tittle = "TÌM KIẾM";
+    button.font = FontArial;
+    button.BoMau = ArrowKey;
+
+    if (CreateButton(button))
     {
         cout << "Tim kiem" << endl;
     }
@@ -414,23 +479,44 @@ void CreatePage_QLCB()
     DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
 
     // mini function
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Thêm chuyến bay", FontArial, ArrowKey))
+    Button button[5];
+    for (int i = 0; i < 5; i++)
+    {
+        button[i].x = StartPos.x + 1201 + 29;
+        button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
+        button[i].w = 240;
+        button[i].h = 60;
+        button[i].BoTron = false;
+        button[i].gotNothing = false;
+        button[i].gotText = true;
+        button[i].font = FontArial;
+        button[i].BoMau = ArrowKey;
+    }
+    button[0].tittle = "Thêm chuyến bay";
+    if (CreateButton(button[0]))
     {
         cout << "Them" << endl;
     }
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Hiệu chỉnh CB", FontArial, ArrowKey))
+    button[1].tittle = "Hiệu chỉnh CB";
+    if (CreateButton(button[1]))
     {
         cout << "Sua" << endl;
     }
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, "Xóa chuyến bay", FontArial, ArrowKey))
+    button[2].tittle = "Xóa chuyến bay";
+    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
+    if (CreateButton(button[2]))
     {
         cout << "Xoa" << endl;
     }
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, "Xem danh sach vé", FontArial, ArrowKey))
+    button[3].tittle = "Xem danh sach vé";
+    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
+    if (CreateButton(button[3]))
     {
         cout << "XemDSVe" << endl;
     }
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, "Đặt vé", FontArial, ArrowKey))
+    button[4].tittle = "Đặt vé";
+    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
+    if (CreateButton(button[4]))
     {
         cout << "Dat ve" << endl;
     }
@@ -439,11 +525,11 @@ void CreatePage_QLCB()
 
 void CreateTable_QLCB()
 {
-    const char *cell_tittle[6] = {"STT", "Mã CB", "Số hiệu MB","Ngày giờ", "Nơi đến","TT"};
+    const char *cell_tittle[6] = {"STT", "Mã CB", "Số hiệu MB", "Ngày giờ", "Nơi đến", "TT"};
 
-    float cellW[6] = {90, 230, 230, 200, 180,150};
+    float cellW[6] = {90, 230, 230, 200, 180, 150};
     CreateTable({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 6, cellW, 1080);
-    Vector2 *tittle_pos = GetTittlePos({StartPos.x+60 , StartPos.y + 60 + 100 + 80}, 6, cellW, cell_tittle);
+    Vector2 *tittle_pos = GetTittlePos({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 6, cellW, cell_tittle);
 
     for (int i = 0; i < 6; i++)
     {
@@ -470,15 +556,37 @@ void CreatePage_QLHK()
     DrawTextEx(FontArial, "DANH SÁCH HÀNH KHÁCH", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
 
     // mini function
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Quản lý vé", FontArial, ArrowKey))
+    Button button[2];
+    for (int i = 0; i < 2; i++)
     {
-        cout << "quan ly ve" << endl;
+        button[i].x = StartPos.x + 1201 + 29;
+        button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
+        button[i].w = 240;
+        button[i].h = 60;
+        button[i].BoTron = false;
+        button[i].gotNothing = false;
+        button[i].gotText = true;
+        button[i].font = FontArial;
+        button[i].BoMau = ArrowKey;
     }
-    if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Huỷ vé", FontArial, ArrowKey))
+    button[0].tittle = "Quản lý vé";
+    if (CreateButton(button[0]))
+    {
+        cout << "ql ve" << endl;
+    }
+    button[1].tittle = "Huỷ vé";
+    if (CreateButton(button[1]))
     {
         cout << "huy ve" << endl;
     }
-    
+    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Quản lý vé", FontArial, ArrowKey))
+    // {
+    //     cout << "quan ly ve" << endl;
+    // }
+    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Huỷ vé", FontArial, ArrowKey))
+    // {
+    //     cout << "huy ve" << endl;
+    // }
 
     CreateTable_QLHK();
     // CreateTable();
@@ -540,7 +648,7 @@ void CreatePage_QLHK()
 
 void CreateTable_QLHK()
 {
-    const char *cell_tittle[5] = {"STT", "CMND", "Họ","Tên", "Phái"};
+    const char *cell_tittle[5] = {"STT", "CMND", "Họ", "Tên", "Phái"};
 
     float cellW[5] = {100, 300, 380, 200, 100};
     CreateTable({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 5, cellW, 1080);
@@ -551,7 +659,6 @@ void CreateTable_QLHK()
     {
         DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
     }
-
 }
 
 void CreatePage_GioiThieu()
@@ -665,7 +772,7 @@ Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[], const char *c
     float pos_y_table_title = CenterDataSetter(50, StartPos.y + 60 + 100 + 80, MeasureTextEx(FontArial, "A", 40, 0).y);
     float pos_x_table_title[5];
 
-    for (int i = 0; i < soCot; i++)//
+    for (int i = 0; i < soCot; i++) //
     {
         pos_x_table_title[i] = CenterDataSetter(cellW[i], cellPosX[i], MeasureTextEx(FontArial, cell_tittle[i], 40, 0).x);
         ans[i] = {pos_x_table_title[i],
@@ -679,77 +786,61 @@ void ThanhQuanLy()
     const int button_width = 360;
     const int button_height = 50;
 
-    const char
-        *button1_tittle = "QUẢN LÝ MÁY BAY",
-        *button2_tittle = "QUẢN LÝ CHUYẾN BAY",
-        *button3_tittle = "QUẢN LÝ VÉ",
-        *button4_tittle = "QUẢN LÝ HÀNH KHÁCH";
+    char *button_tittle[4];
+    button_tittle[0] = "QUẢN LÝ MÁY BAY",
+    button_tittle[1] = "QUẢN LÝ CHUYẾN BAY",
+    button_tittle[2] = "QUẢN LÝ VÉ",
+    button_tittle[3] = "QUẢN LÝ HÀNH KHÁCH";
 
-    Vector2 buttonPos[6] =
+    Vector2 buttonPos[5] =
         {
             {StartPos.x, StartPos.y},
             {buttonPos[0].x + 60, StartPos.y},
             {buttonPos[1].x + button_width, StartPos.y},
             {buttonPos[2].x + button_width, StartPos.y},
             {buttonPos[3].x + button_width, StartPos.y}};
-    if (CreateButtonWithPicture(buttonPos[0].x, buttonPos[0].y, 60, button_height, false, PNG_home, MauThanhQuanLy))
+    Button button[5];
+    button[0].x = buttonPos[0].x;
+    button[0].y = buttonPos[0].y;
+    button[0].w = 60;
+    button[0].h = button_height;
+    button[0].BoTron = false;
+    button[0].gotNothing = false;
+    button[0].gotPic = true;
+    button[0].picture = PNG_home;
+    button[0].BoMau = MauThanhQuanLy;
+    for (int i = 1; i < 5; i++)
+    {
+        button[i].x = buttonPos[i].x;
+        button[i].y = buttonPos[i].y;
+        button[i].w = button_width;
+        button[i].h = button_height;
+        button[i].BoTron = false;
+        button[i].gotNothing = false;
+        button[i].gotText = true;
+        button[i].tittle = button_tittle[i - 1];
+        button[i].font = FontArial;
+        button[i].BoMau = MauThanhQuanLy;
+    }
+    if (CreateButton(button[0]))
         current_page = 0;
-    if (current_page != 1)
+    for (int i = 1; i < 5; i++)
     {
-        if (CreateButton(buttonPos[1].x, buttonPos[1].y, button_width, button_height, false, button1_tittle, FontArial, MauThanhQuanLy))
-            current_page = 1;
+        if (current_page != i)
+        {
+            if (CreateButton(button[i]))
+                current_page = i;
+        }
+        else
+        {
+            DrawRectangleRec({buttonPos[i].x, buttonPos[i].y, button_width, button_height}, MauThanhQuanLy.isPressed);
+            DrawTextEx(FontArial,
+                       button_tittle[i - 1],
+                       {CenterDataSetter(button_width, buttonPos[i].x, MeasureTextEx(FontArial, button_tittle[i - 1], button_height / 2.0f, 0).x),
+                        button_height / 5.0f + buttonPos[i].y},
+                       button_height / 2.0f, 0, MauThanhQuanLy.text2);
+        };
     }
-    else
-    {
-        DrawRectangleRec({buttonPos[1].x, buttonPos[1].y, button_width, button_height}, MauThanhQuanLy.isPressed);
-        DrawTextEx(FontArial,
-                   button1_tittle,
-                   {CenterDataSetter(button_width, buttonPos[1].x, MeasureTextEx(FontArial, button1_tittle, button_height / 2.0f, 0).x),
-                    button_height / 5.0f + buttonPos[1].y},
-                   button_height / 2.0f, 0, MauThanhQuanLy.text2);
-    };
-    if (current_page != 2)
-    {
-        if (CreateButton(buttonPos[2].x, buttonPos[2].y, button_width, button_height, false, button2_tittle, FontArial, MauThanhQuanLy))
-            current_page = 2;
-    }
-    else
-    {
-        DrawRectangleRec({buttonPos[2].x, buttonPos[2].y, button_width, button_height}, MauThanhQuanLy.isPressed);
-        DrawTextEx(FontArial,
-                   button2_tittle,
-                   {CenterDataSetter(button_width, buttonPos[2].x, MeasureTextEx(FontArial, button2_tittle, button_height / 2.0f, 0).x),
-                    button_height / 5.0f + buttonPos[2].y},
-                   button_height / 2.0f, 0, MauThanhQuanLy.text2);
-    };
-    if (current_page != 3)
-    {
-        if (CreateButton(buttonPos[3].x, buttonPos[3].y, button_width, button_height, false, button3_tittle, FontArial, MauThanhQuanLy))
-            current_page = 3;
-    }
-    else
-    {
-        DrawRectangleRec({buttonPos[3].x, buttonPos[3].y, button_width, button_height}, MauThanhQuanLy.isPressed);
-        DrawTextEx(FontArial,
-                   button3_tittle,
-                   {CenterDataSetter(button_width, buttonPos[3].x, MeasureTextEx(FontArial, button3_tittle, button_height / 2.0f, 0).x),
-                    button_height / 5.0f + buttonPos[3].y},
-                   button_height / 2.0f, 0, MauThanhQuanLy.text2);
-    };
-    if (current_page != 4)
-    {
-        if (CreateButton(buttonPos[4].x, buttonPos[4].y, button_width, button_height, false, button4_tittle, FontArial, MauThanhQuanLy))
-            current_page = 4;
-    }
-    else
-    {
-        DrawRectangleRec({buttonPos[4].x, buttonPos[4].y, button_width, button_height}, MauThanhQuanLy.isPressed);
-        DrawTextEx(FontArial,
-                   button4_tittle,
-                   {CenterDataSetter(button_width, buttonPos[4].x, MeasureTextEx(FontArial, button4_tittle, button_height / 2.0f, 0).x),
-                    button_height / 5.0f + buttonPos[4].y},
-                   button_height / 2.0f, 0, MauThanhQuanLy.text2);
-    };
 }
 
 // ---Các hàm hỗ trợ ngoài vìa------------------------------------------------------------------------------------------------------
@@ -774,9 +865,29 @@ int SwitchPage(int current_page, int n_page, Vector2 pos)
     n2[2] = '\0';
     char *text = (char *)"trang";
 
+    Button button[2];
+    button[0].x = pos.x + 10;
+    button[0].y = pos.y + 10;
+    button[0].w = 30;
+    button[0].h = 30;
+    button[0].BoTron = false;
+    button[0].gotNothing = false;
+    button[0].gotPic = true;
+    button[0].BoMau = ArrowKey;
+    button[0].picture = PNG_arrowLeft;
+
+    button[1].x = pos.x + 50 + 300 + 10;
+    button[1].y = pos.y + 10;
+    button[1].w = 30;
+    button[1].h = 30;
+    button[1].BoTron = false;
+    button[1].gotNothing = false;
+    button[1].gotPic = true;
+    button[1].BoMau = ArrowKey;
+    button[1].picture = PNG_arrowRight;
     if (current_page > 1)
     {
-        if (CreateButtonWithPicture(pos.x + 10, pos.y + 10, 30, 30, false, PNG_arrowLeft, ArrowKey))
+        if (CreateButton(button[0]))
             status = -1;
     }
     else
@@ -813,7 +924,7 @@ int SwitchPage(int current_page, int n_page, Vector2 pos)
 
     if (current_page < n_page)
     {
-        if (CreateButtonWithPicture(pos.x + 50 + 300 + 10, pos.y + 10, 30, 30, false, PNG_arrowRight, ArrowKey))
+        if (CreateButton(button[1]))
             status = 1;
     }
     else
@@ -828,34 +939,47 @@ int SwitchPage(int current_page, int n_page, Vector2 pos)
     else
         return current_page;
 }
-
-bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau)
+bool CreateButton(Button data)
 {
-    Rectangle Button = {pos_x, pos_y, width, height};
+    Rectangle Button = {data.x, data.y, data.w, data.h};
     Vector2 MousePos = {0.0f, 0.0f};
-    Vector2 TextPos = {CenterDataSetter(width, pos_x, MeasureTextEx(font, titlle, height / 2.0f, 0).x),
-                       height / 5.0f + pos_y};
+    Vector2 TextPos = {CenterDataSetter(data.w, data.x, MeasureTextEx(data.font, data.tittle, data.h / 2.0f, 0).x),
+                       data.h / 5.0f + data.y};
     // DrawRectangleRec(Button, BoMau.isnotHovered);
-    if (BoTron)
+    if (data.BoTron)
     {
-        DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isnotHovered);
-        DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text1);
-        DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, BoMau.Rounder);
+        if (!data.gotNothing)
+            DrawRectangleRounded(Button, 0.5f, 0.5f, data.BoMau.isnotHovered);
+        if (data.gotText)
+            DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text1);
+        else if (data.gotPic)
+            DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
+
+        if (!data.gotNothing)
+            DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.Rounder);
         MousePos = GetVMousePosition();
 
         if (CheckCollisionPointRec(MousePos, Button))
         {
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
             {
-                DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isPressed);
-                DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text2);
+                if (!data.gotNothing)
+                    DrawRectangleRounded(Button, 0.5f, 0.5f, data.BoMau.isPressed);
+                if (data.gotText)
+                    DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text2);
+                else if (data.gotPic)
+                    DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
             }
             else
             {
-                DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isHovered);
-                DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text1);
+                if (!data.gotNothing)
+                    DrawRectangleRounded(Button, 0.5f, 0.5f, data.BoMau.isHovered);
+                if (data.gotText)
+                    DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text1);
+                else if (data.gotPic)
+                    DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
             }
-            DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, BoMau.Rounder);
+            DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.Rounder);
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
                 return true;
@@ -865,24 +989,36 @@ bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTr
     }
     else
     {
-        DrawRectangleRec(Button, BoMau.isnotHovered);
-        DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text1);
-        DrawRectangleRoundedLines(Button, 0, 0, 2, BoMau.Rounder);
+        if (!data.gotNothing)
+            DrawRectangleRec(Button, data.BoMau.isnotHovered);
+        if (data.gotText)
+            DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text1);
+        else if (data.gotPic)
+            DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
+        DrawRectangleRoundedLines(Button, 0, 0, 2, data.BoMau.Rounder);
         MousePos = GetVMousePosition();
 
         if (CheckCollisionPointRec(MousePos, Button))
         {
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
             {
-                DrawRectangleRec(Button, BoMau.isPressed);
-                DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text2);
+                if (!data.gotNothing)
+                    DrawRectangleRec(Button, data.BoMau.isPressed);
+                if (data.gotText)
+                    DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text2);
+                else if (data.gotPic)
+                    DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
             }
             else
             {
-                DrawRectangleRec(Button, BoMau.isHovered);
-                DrawTextEx(font, titlle, TextPos, height / 2.0f, 0, BoMau.text1);
+                if (!data.gotNothing)
+                    DrawRectangleRec(Button, data.BoMau.isHovered);
+                if (data.gotText)
+                    DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text2);
+                else if (data.gotPic)
+                    DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
             }
-            DrawRectangleRoundedLines(Button, 0, 0, 2, BoMau.Rounder);
+            DrawRectangleRoundedLines(Button, 0, 0, 2, data.BoMau.Rounder);
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
                 return true;
@@ -893,85 +1029,12 @@ bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTr
     return false;
 }
 
-bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height, bool BoTron, Texture2D Picture, BoMauNut BoMau)
-{
-    Rectangle Button = {pos_x, pos_y, width, height};
-    Vector2 MousePos = {0.0f, 0.0f};
-    // DrawRectangleRec(Button, BoMau.isnotHovered);
-    if (BoTron)
-    {
-        DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isnotHovered);
-        DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isnotHovered);
-        DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, BoMau.Rounder);
-        MousePos = GetVMousePosition();
-
-        if (CheckCollisionPointRec(MousePos, Button))
-        {
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-            {
-                DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isPressed);
-                DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isPressed);
-            }
-            else
-            {
-                DrawRectangleRounded(Button, 0.5f, 0.5f, BoMau.isHovered);
-                DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isHovered);
-            }
-            DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, BoMau.Rounder);
-
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-                return true;
-            else
-                return false;
-        }
-    }
-    else
-    {
-        DrawRectangleRec(Button, BoMau.isnotHovered);
-        DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isnotHovered);
-        DrawRectangleRoundedLines(Button, 0, 0, 2, BoMau.Rounder);
-        MousePos = GetVMousePosition();
-
-        if (CheckCollisionPointRec(MousePos, Button))
-        {
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-            {
-                DrawRectangleRec(Button, BoMau.isPressed);
-                DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isPressed);
-            }
-            else
-            {
-                DrawRectangleRec(Button, BoMau.isHovered);
-                DrawTextureEx(Picture, {pos_x, pos_y}, 0, 1, BoMau.isHovered);
-            }
-            DrawRectangleRoundedLines(Button, 0, 0, 2, BoMau.Rounder);
-
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-                return true;
-            else
-                return false;
-        }
-    }
-    return false;
-}
-
-/**
- * @brief Create a Text Input Box object
- *
- * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ)
- * @warning chữ luôn in hoa
- * @return const char* Những kí tự đã có, hoặc các kí tự đã có sau khi nhấn enter nếu returnIfDone = true
- */
-const char *CreateTextInputBox(Vector2 pos, float width, float height,
-                               const char *tittle,
-                               bool showPreResult, bool returnIfDone,
-                               Color MauSac, Color MauVien, Color MauChu,
-                               int mode)
+const char *CreateTextInputBox(InputTextBox data)
 {
     static char name[120] = "\0";
     char name_cpy[120] = "\0";
     char *result = new char[120];
-    const int font_size = height * per1000(700);
+    const int font_size = data.textBox.height * per1000(700);
     static bool done;
     static bool mouseClickOnText = false;
     static int letterCount = 0;
@@ -979,15 +1042,14 @@ const char *CreateTextInputBox(Vector2 pos, float width, float height,
     static int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0;
     static int indexPoint = 0;
 
-    Rectangle textBox = {pos.x, pos.y, width, height};
-    Vector2 textBoxPos = {textBox.x + 5, CenterDataSetter(textBox.height, textBox.y, MeasureTextEx(FontArial, name, font_size, 0).y)};
+    Vector2 textBoxPos = {data.textBox.x + 5, CenterDataSetter(data.textBox.height, data.textBox.y, MeasureTextEx(FontArial, name, font_size, 0).y)};
 
     strcpy(name_cpy, name);
     name_cpy[letterCount + indexPoint] = '\0';
 
-    Vector2 textBoxDot = {textBox.x + MeasureTextEx(FontArial, name_cpy, font_size, 0).x, CenterDataSetter(textBox.height, textBox.y, MeasureTextEx(FontArial, name_cpy, font_size, 0).y)};
+    Vector2 textBoxDot = {data.textBox.x + MeasureTextEx(FontArial, name_cpy, font_size, 0).x, CenterDataSetter(data.textBox.height, data.textBox.y, MeasureTextEx(FontArial, name_cpy, font_size, 0).y)};
     strcpy(result, name);
-    if (CheckCollisionPointRec(GetVMousePosition(), textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    if (CheckCollisionPointRec(GetVMousePosition(), data.textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
         mouseClickOnText = true;
         done = false;
@@ -995,7 +1057,7 @@ const char *CreateTextInputBox(Vector2 pos, float width, float height,
     else if (IsKeyPressed(KEY_ENTER))
     {
         mouseClickOnText = false;
-        if (!showPreResult)
+        if (!data.showPreResult)
         {
             name[0] = '\0';
             indexPoint = 0;
@@ -1003,10 +1065,10 @@ const char *CreateTextInputBox(Vector2 pos, float width, float height,
         }
         done = true;
     }
-    else if (!CheckCollisionPointRec(GetVMousePosition(), textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    else if (!CheckCollisionPointRec(GetVMousePosition(), data.textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         mouseClickOnText = false;
 
-    if (CheckCollisionPointRec(GetVMousePosition(), textBox))
+    if (CheckCollisionPointRec(GetVMousePosition(), data.textBox))
     {
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
@@ -1021,7 +1083,7 @@ const char *CreateTextInputBox(Vector2 pos, float width, float height,
         int key = GetCharPressed();
         while (key > 0)
         {
-            switch (mode)
+            switch (data.mode)
             {
             case 1:
             {
@@ -1112,16 +1174,16 @@ const char *CreateTextInputBox(Vector2 pos, float width, float height,
     }
     else
         framesCounter = 0;
-    DrawRectangleRec(textBox, MauSac);
-    DrawRectangleRoundedLines(textBox, 0, 1, 2, MauVien);
+    DrawRectangleRec(data.textBox, data.MauNen);
+    DrawRectangleRoundedLines(data.textBox, 0, 1, 2, data.MauVien);
     if (name[0] != '\0')
-        DrawTextEx(FontArial, name, textBoxPos, font_size, 0, MauChu);
+        DrawTextEx(FontArial, name, textBoxPos, font_size, 0, data.MauChu);
     else
-        DrawTextEx(FontArial, tittle, textBoxPos, font_size, 0, MauChu);
+        DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, data.MauChu);
     // cout << "index: " << indexPoint << endl;
     if (mouseClickOnText && ((framesCounter % 120 >= 15)))
         DrawTextEx(FontArial, "|", textBoxDot, font_size, 0, MAROON);
-    if (!returnIfDone)
+    if (!data.returnIfDone)
         return result;
     else
     {
@@ -1144,31 +1206,6 @@ Vector2 GetVMousePosition()
     virtualMouse.y = (mouse.y - (GetScreenHeight() - (WINDOW_HEIGHT * scaleH)) * 0.5f) / scaleH;
     virtualMouse = Vector2Clamp(virtualMouse, (Vector2){0, 0}, (Vector2){(float)WINDOW_WIDTH, (float)WINDOW_HEIGHT});
     return virtualMouse;
-}
-
-char *intTochar(int value, int size)
-{
-    char *ans = new char[size];
-    for (int i = 0; i < size; i++)
-    {
-        int _10 = 1;
-        for (int j = i + 1; j < size; j++)
-        {
-            _10 *= 10;
-        }
-        if (value / _10 == 0)
-            ans[i] = '0';
-        else
-            ans[i] = (value / _10) + 48;
-        value = value % _10;
-    }
-    ans[size] = '\0';
-    return ans;
-}
-
-float per1000(int number)
-{
-    return (float)number / 1000;
 }
 
 //==================================================================================================================================

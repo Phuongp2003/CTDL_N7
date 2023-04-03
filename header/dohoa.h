@@ -6,6 +6,7 @@
 #include "maybay.h"
 #include "ngaythang.h"
 #include "vemaybay.h"
+#include <list>
 
 // Kích thước cửa sổ mặc định
 #define WINDOW_WIDTH 1530
@@ -17,6 +18,40 @@
 
 struct BoMauNut;
 
+/**
+ * @brief chứa câu trúc nút
+ *
+ *
+ * @param BoTron bo tròn các góc (mặc định false)
+ * @param gotNothing chỉ vẽ phần viền (mặc định true)
+ * @param gotText hiện chũ (mạc định false)
+ * @param gotPic hiện ảnh (mặc định false)
+ *
+ * @note text: tittle, font
+ * @note pic: picture
+ * @note default: x, y, w, h, BoMau
+ *
+ * @warning ba biến gotNothing, gotText, gotPic chỉ có 1 biến nhận true;
+ * @warning Độ ưu tiên: (trống thông tin < có ảnh < có chữ)
+ *
+ */
+struct Button;
+
+/**
+ * @brief tạo ô nhập kí tự
+ *
+ * @param showPreResult giữ kết quả đã nhập sau khi thoát box (mặc định true)
+ * @param returnIfDone chỉ return kết quả khi nhấn enter (mặc định false)
+ * @param MauNen mặc định: trắng
+ * @param MauChu mặc định: đen
+ * @param MauVien mặc định: đen
+ * @param not_default textBox, tittle, mode
+ *
+ * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ)
+ * @warning chữ luôn in hoa
+ */
+struct InputTextBox;
+
 void LoadResources();
 void UnloadResources();
 void SetSizeWindow(); // done
@@ -24,7 +59,7 @@ void SetSizeWindow(); // done
 void CreateHomeBackground(); // done
 void CreateHomePage();       // done
 
-void CreatePageBackground(); // done
+void CreatePageBackground(int SoHang); // done
 
 void CreatePage_QLMB(DSMB listMB);
 void XuLy_QLMB(DSMB listMB);
@@ -52,17 +87,10 @@ Vector2 GetCellTextPos_Right(Vector2 vitriBang, int soCot, float cellW[], int vi
 
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width); // done
 int SwitchPage(int current_page, int n_page, Vector2 pos);
-bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau); // done
-bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height, bool BoTron, Texture2D Picture, BoMauNut BoMau);  // done
-const char *CreateTextInputBox(Vector2 pos, float width,
-                               float height, const char *tittle,
-                               bool showPreResult, bool returnIfDone,
-                               Color MauSac, Color MauVien, Color MauChu,
-                               int mode);
-// const char *CreateTextInputBox(Vector2 pos, float width, float height, const char *tittle, bool showPreResult, Color MauSac, Color MauVien, Color MauChu);
+// bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau); // done
+// bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height, bool BoTron, Texture2D Picture, BoMauNut BoMau);  // done
+bool CreateButton(Button data);
+const char *CreateTextInputBox(InputTextBox data);
 
-Vector2 GetVMousePosition();          // done
-char *intTochar(int value, int size); // done
-float per1000(int number);            // done
-
+Vector2 GetVMousePosition(); // done
 void mainGraphics();

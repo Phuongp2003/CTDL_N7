@@ -79,7 +79,7 @@ public:
 
     // void showDSVe();
     DSVeMayBay *getDSVe();
-    
+
     void ThucHienCB(DSMB *DanhSachCB);
     // node
 };
@@ -118,7 +118,7 @@ public:
     void pop_first();
     void pop_back();
     ChuyenBay *TimCB(string _MaCB);
-    DanhSachCB TimDSCB(Date date,string noiden);
-    
+    DanhSachCB TimDSCB(Date date, string noiden);
+
     DanhSachCB LocDSCB(string _keyword);
 };

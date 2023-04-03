@@ -198,7 +198,10 @@ DSMB DSMB::Find_DSMB(const char *String_Search)
         }
     }
     if (dsmb->getsize() == 0)
+    {
+        delete dsmb;
         return *(new DSMB());
+    }
     return *dsmb;
 }
 
@@ -228,6 +231,7 @@ void DSMB::ReadFromFile(ifstream &file)
             getline(s, sodong, '|');
             Insert_MB(new MayBay(sohieumb.c_str(), loaimb.c_str(), stoi(soday), stoi(sodong)));
         }
+        file.close();
     }
     else
         cout << "Error" << endl;

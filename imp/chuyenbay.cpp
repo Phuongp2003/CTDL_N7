@@ -12,9 +12,9 @@ ChuyenBay::ChuyenBay()
 ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
                      Date _NgayGio, char *_MaMayBay)
 {
+    strcpy(this->MaCB, _MaCB);
     strcpy(this->IDMayBay, _MaMayBay);
     this->NgayGio = _NgayGio;
-    strcpy(this->MaCB, _MaCB);
     this->NoiDen = _NoiDen;
     this->TrangThai = ConVe;
 }
@@ -174,12 +174,13 @@ void DanhSachCB::pop_back()
 ChuyenBay *DanhSachCB::TimCB(string _MaCB)
 {
     NodeCB *tmp = this->head;
-    while (tmp->hasNext())
+    while (tmp != NULL)
     {
         if (tmp->getNode()->getMaCB() == _MaCB)
         {
             return tmp->getNode();
         }
+        tmp = tmp->getNext();
     }
 
     return NULL;
@@ -218,29 +219,4 @@ DanhSachCB DanhSachCB::LocDSCB(string _keyword)
         tmp = tmp->getNext();
     }
     return *result;
-}
-
-bool isGotStr(string _string, string _keyword)
-{
-    if (_string.length() < _keyword.length())
-        return false;
-    bool status = false;
-    for (int i = 0; i <= _string.length() - _keyword.length(); i++)
-    {
-        if (_string[i] == _keyword[0])
-        {
-            status = true;
-            for (int j = i + 1; j < i + _keyword.length(); j++)
-            {
-                if (_string[j] != _keyword[j - i])
-                {
-                    status = false;
-                    continue;
-                }
-            }
-        }
-        if (status == true)
-            return true;
-    }
-    return false;
 }
