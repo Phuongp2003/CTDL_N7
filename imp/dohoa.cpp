@@ -10,6 +10,8 @@ struct BoMauNut
     Color text1;
     Color text2;
     Color Rounder;
+    Color RounderHovered;
+    Color RounderPressed;
 };
 struct Button
 {
@@ -24,6 +26,8 @@ struct Button
     Font font;
     bool gotPic = false;
     Texture2D picture;
+    bool RounderChangeColor = false;
+    bool firstRounder = true;
     BoMauNut BoMau;
 };
 
@@ -31,6 +35,7 @@ struct InputTextBox
 {
     Rectangle textBox;
     const char *tittle = "";
+    bool editMode = false;
     bool showPreResult = true;
     bool returnIfDone = false;
     Color MauNen = WHITE;
@@ -319,6 +324,8 @@ void CreatePageBackground(int SoHang)
 void CreatePage_QLMB(DSMB listMB)
 {
     CreatePageBackground(3);
+    static MayBay *data = new MayBay();
+    static char *preResult = "\0";
 
     // tittle
     DrawTextEx(FontArial, "DANH SÁCH MÁY BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
@@ -353,13 +360,26 @@ void CreatePage_QLMB(DSMB listMB)
     {
         cout << "Xoa" << endl;
     }
-    XuLy_QLMB(listMB);
+    data = XuLy_QLMB(listMB);
+    if (data->getSoHieuMB()[0] >= 36)
+    {
+        preResult = data->getSoHieuMB();
+    }
+
+    if (strcmp(data->getSoHieuMB(), preResult) != 0)
+    {
+        cout << data->getSoHieuMB() << endl;
+    }
 }
 
-void XuLy_QLMB(DSMB listMB)
+MayBay *XuLy_QLMB(DSMB listMB)
 {
     static bool isSearch = false;
     static DSMB *searchResult = new DSMB();
+    static MayBay *result;
+    static MayBay **data;
+    static int index = -1;
+
     // search
     Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
     DrawRectangleRec(searchText, WHITE);
@@ -413,18 +433,55 @@ void XuLy_QLMB(DSMB listMB)
     if (!isSearch)
     {
         n_page = 1 + (listMB.getsize() - 1) / 10;
-        showList_QLMB(listMB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+        data = showList_QLMB(listMB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
     }
     else
     {
         n_page = 1 + (searchResult->getsize() - 1) / 10;
-        showList_QLMB(*searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+        data = showList_QLMB(*searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
     }
 
+    // Pick data
+    Button data_picker[10];
+
+    for (int i = 0; i < 10; i++)
+    {
+        data_picker[i].x = StartPos.x + 60;
+        data_picker[i].y = StartPos.y + 60 + 100 + 80 + 50 + i * 40;
+        data_picker[i].w = 1080;
+        data_picker[i].h = 40;
+        data_picker[i].firstRounder = false;
+        data_picker[i].RounderChangeColor = true;
+        data_picker[i].BoMau.RounderHovered = YELLOW;
+        data_picker[i].BoMau.RounderPressed = RED;
+        if (CreateButton(data_picker[i]))
+        {
+            if (index != i)
+            {
+
+                index = i;
+            }
+            else
+                index = -1;
+        }
+        if (index == i)
+            DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y, data_picker[i].w, data_picker[i].h}, 0, 1, 2, GREEN);
+    }
+    if (index >= 0)
+    {
+        result = data[index];
+    }
+    else
+        result = new MayBay();
+
     // page and switch page
-    current_page = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+    int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+    if (current_page != swp)
+        index = -1;
+    current_page = swp;
     if (current_page > n_page)
         current_page = 1;
+    return result;
 }
 
 void CreateTable_QLMB()
@@ -442,25 +499,41 @@ void CreateTable_QLMB()
     }
 }
 
-void showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW[])
+MayBay **showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW[])
 {
+    typedef MayBay *MayBay_ptr;
+    MayBay_ptr *result = new MayBay_ptr[10];
+    ;
+    for (int i = 0; i < 10; i++)
+    {
+        result[i] = new MayBay();
+    }
     int size = listMB.getsize();
     int i = (current_page - 1) * 10;
     int j;
     if (current_page * 10 < size)
         j = current_page * 10;
     else
+    {
         j = size;
+        for (int i = size % 10; i < 10; i++)
+        {
+            result[i] = new MayBay();
+        }
+    }
 
     for (i; i < j; i++)
     {
         MayBay *MB = listMB.getMB(i);
+        result[i % 10] = MB;
         DrawTextEx(FontArial, intTochar(i + 1, 2), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, 2)), 30, 0, BLACK);
         DrawTextEx(FontArial, MB->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (i % 10) + 1, MB->getSoHieuMB()), 30, 0, BLACK);
         DrawTextEx(FontArial, MB->getLoaiMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 3, (i % 10) + 1, MB->getLoaiMB()), 30, 0, BLACK);
         DrawTextEx(FontArial, intTochar(MB->getSoDay(), 2), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (i % 10) + 1, intTochar(MB->getSoDay(), 2)), 30, 0, BLACK);
         DrawTextEx(FontArial, intTochar(MB->getSoDong(), 2), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (i % 10) + 1, intTochar(MB->getSoDong(), 2)), 30, 0, BLACK);
     }
+
+    return result;
 }
 
 // =-ChuyenBay
@@ -945,6 +1018,11 @@ bool CreateButton(Button data)
     Vector2 MousePos = {0.0f, 0.0f};
     Vector2 TextPos = {CenterDataSetter(data.w, data.x, MeasureTextEx(data.font, data.tittle, data.h / 2.0f, 0).x),
                        data.h / 5.0f + data.y};
+    if (!data.RounderChangeColor)
+    {
+        data.BoMau.RounderHovered = data.BoMau.Rounder;
+        data.BoMau.RounderPressed = data.BoMau.Rounder;
+    }
     // DrawRectangleRec(Button, BoMau.isnotHovered);
     if (data.BoTron)
     {
@@ -954,8 +1032,7 @@ bool CreateButton(Button data)
             DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text1);
         else if (data.gotPic)
             DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
-
-        if (!data.gotNothing)
+        if (data.firstRounder)
             DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.Rounder);
         MousePos = GetVMousePosition();
 
@@ -969,6 +1046,7 @@ bool CreateButton(Button data)
                     DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text2);
                 else if (data.gotPic)
                     DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
+                DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.RounderPressed);
             }
             else
             {
@@ -978,8 +1056,8 @@ bool CreateButton(Button data)
                     DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text1);
                 else if (data.gotPic)
                     DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
+                DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.RounderHovered);
             }
-            DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.Rounder);
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
                 return true;
@@ -995,7 +1073,8 @@ bool CreateButton(Button data)
             DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text1);
         else if (data.gotPic)
             DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
-        DrawRectangleRoundedLines(Button, 0, 0, 2, data.BoMau.Rounder);
+        if (data.firstRounder)
+            DrawRectangleRoundedLines(Button, 0, 0, 2, data.BoMau.Rounder);
         MousePos = GetVMousePosition();
 
         if (CheckCollisionPointRec(MousePos, Button))
@@ -1008,6 +1087,7 @@ bool CreateButton(Button data)
                     DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text2);
                 else if (data.gotPic)
                     DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
+                DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.RounderPressed);
             }
             else
             {
@@ -1017,8 +1097,8 @@ bool CreateButton(Button data)
                     DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0, data.BoMau.text2);
                 else if (data.gotPic)
                     DrawTextureEx(data.picture, {data.x, data.y}, 0, 1, data.BoMau.isnotHovered);
+                DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.RounderHovered);
             }
-            DrawRectangleRoundedLines(Button, 0, 0, 2, data.BoMau.Rounder);
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
                 return true;
@@ -1052,6 +1132,11 @@ const char *CreateTextInputBox(InputTextBox data)
     if (CheckCollisionPointRec(GetVMousePosition(), data.textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
         mouseClickOnText = true;
+        if (data.editMode && name[0] == 0)
+        {
+            strcpy(name, data.tittle);
+            letterCount = getCharSize(name);
+        }
         done = false;
     }
     else if (IsKeyPressed(KEY_ENTER))

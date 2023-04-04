@@ -9,8 +9,8 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <stdio.h>
-#include <stdlib.h>
+// #include <stdio.h>
+// #include <stdlib.h>
 #include <string>
 
 using std::cout;
@@ -53,3 +53,4 @@ class DSVeMayBay;
 char *intTochar(int value, int size); // done
 float per1000(int number);            // done
 bool isGotStr(string _string, string _keyword);
+int getCharSize(const char *_char);

@@ -48,3 +48,13 @@ bool isGotStr(string _string, string _keyword)
     }
     return false;
 }
+
+int getCharSize(const char *_char)
+{
+    int result = 0;
+    while (_char[result] >= 32 && _char[result] <= 126)
+    {
+        result++;
+    }
+    return result;
+}

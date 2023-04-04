@@ -32,7 +32,7 @@ struct BoMauNut;
  * @note default: x, y, w, h, BoMau
  *
  * @warning ba biến gotNothing, gotText, gotPic chỉ có 1 biến nhận true;
- * @warning Độ ưu tiên: (trống thông tin < có ảnh < có chữ)
+ * @warning Độ ưu tiên: (trống thông tin > có ảnh > có chữ)
  *
  */
 struct Button;
@@ -40,15 +40,18 @@ struct Button;
 /**
  * @brief tạo ô nhập kí tự
  *
+ * @warning chữ luôn in hoa
+ * @warning editMode yêu cầu tittle phải là kí tự không dấu
+ *
+ * @param editMode nhận giá trị từ tittle và chỉnh sửa (mặc định false)
  * @param showPreResult giữ kết quả đã nhập sau khi thoát box (mặc định true)
  * @param returnIfDone chỉ return kết quả khi nhấn enter (mặc định false)
  * @param MauNen mặc định: trắng
  * @param MauChu mặc định: đen
  * @param MauVien mặc định: đen
  * @param not_default textBox, tittle, mode
- *
  * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ)
- * @warning chữ luôn in hoa
+ *
  */
 struct InputTextBox;
 
@@ -62,9 +65,9 @@ void CreateHomePage();       // done
 void CreatePageBackground(int SoHang); // done
 
 void CreatePage_QLMB(DSMB listMB);
-void XuLy_QLMB(DSMB listMB);
+MayBay *XuLy_QLMB(DSMB listMB);
 void CreateTable_QLMB();
-void showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW[]);
+MayBay **showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW[]);
 
 void CreatePage_QLCB();
 void CreateTable_QLCB();
