@@ -10,7 +10,7 @@ ChuyenBay::ChuyenBay()
 }
 
 ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
-                     Date _NgayGio, char *_MaMayBay)
+                     Date _NgayGio, const char *_MaMayBay)
 {
     strcpy(this->MaCB, _MaCB);
     strcpy(this->IDMayBay, _MaMayBay);
@@ -44,7 +44,7 @@ int ChuyenBay::getTrangThai()
     return this->TrangThai;
 }
 
-char *ChuyenBay::getMaMayBay()
+const char *ChuyenBay::getMaMayBay()
 {
     return this->IDMayBay;
 }
@@ -85,6 +85,11 @@ bool ChuyenBay::operator<(const ChuyenBay &other)
 ChuyenBay *NodeCB::getNode()
 {
     return this->node;
+}
+
+void NodeCB::setNode(ChuyenBay *node)
+{
+    this->node = node;
 }
 
 bool NodeCB::hasNext()
@@ -137,6 +142,11 @@ void DanhSachCB::push_front(NodeCB *node)
     this->head->setNext(node);
     this->head = node;
 }
+void DanhSachCB::setHead(NodeCB *head)
+{
+    this->head=head;
+}
+
 NodeCB *DanhSachCB::getHead()
 {
     return head;
@@ -226,6 +236,63 @@ DanhSachCB DanhSachCB::LocDSCB(string _keyword)
     }
     return *result;
 }
+void  DanhSachCB::ReadFromFile(ifstream &file)
+{
+    if(file.is_open())
+    {
+        string macb,noiden,trangthai,idmaybay,ngay,thang,nam,gio,phut;
+        string line="";
+        NodeCB *node;
+        ChuyenBay *cb;
+        while (getline(file, line))
+        {
+            stringstream s(line);
+            getline(s, macb, '|');
+            getline(s, idmaybay, '|');
+            getline(s, ngay, '|');
+            getline(s, thang, '|');
+            getline(s, nam, '|');
+            getline(s, gio, '|');
+            getline(s, phut, '|');
+            getline(s, noiden, '|');            
+            cb=new ChuyenBay(macb.c_str(),noiden,Date(stoi(gio),stoi(phut),stoi(ngay),stoi(thang),stoi(nam)),idmaybay.c_str());
+            node->setNode(cb);
+            if(head ==NULL)
+            {
+                push_back(node);
+            }
+            else push_front(node);
+        }
+        file.close();
+    }
+    else
+        cout << "Error" << endl;
+}
+void  DanhSachCB::WritetOfFile(ofstream &file)
+{
+    if (file.is_open())
+    {
+        NodeCB *tmp = this->head;
+        while (tmp != NULL)//
+        {
+            file<<tmp->getNode()->getMaCB()<<"|"
+                <<tmp->getNode()->getMaMayBay()<<"|"
+                <<tmp->getNode()->getNgayGio().getNgay()<<"|"
+                <<tmp->getNode()->getNgayGio().getThang()<<"|"
+                <<tmp->getNode()->getNgayGio().getNam()<<"|"
+                <<tmp->getNode()->getNgayGio().getGio()<<"|"
+                <<tmp->getNode()->getNgayGio().getPhut()<<"|"
+                <<tmp->getNode()->getNoiDen()<<"|";
+
+            tmp = tmp->getNext();
+        }  
+    }else
+    {
+        cout << "Error";
+    }
+    file.close();
+}
+
 
 NodeCB *DanhSachCB::merge(NodeCB *left, NodeCB *right)
 {
