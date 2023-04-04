@@ -267,7 +267,7 @@ void  DanhSachCB::WritetOfFile(ofstream &file)
     if (file.is_open())
     {
         NodeCB *tmp = this->head;
-        while (tmp != NULL)
+        while (tmp != NULL)//
         {
             file<<tmp->getNode()->getMaCB()<<"|"
                 <<tmp->getNode()->getMaMayBay()<<"|"

@@ -117,7 +117,7 @@ public:
      *
      */
     void pop(NodeCB *node);
-    void pop_first();
+    void pop_first();//
     void pop_back();
     ChuyenBay *TimCB(string _MaCB);
     DanhSachCB TimDSCB(Date date, string noiden);
