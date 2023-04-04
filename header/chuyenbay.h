@@ -82,6 +82,7 @@ public:
 
     void ThucHienCB(DSMB *DanhSachCB);
     // node
+    bool operator<(const ChuyenBay &other);
 };
 
 class NodeCB
@@ -121,4 +122,7 @@ public:
     DanhSachCB TimDSCB(Date date, string noiden);
 
     DanhSachCB LocDSCB(string _keyword);
+    NodeCB *merge(NodeCB *left, NodeCB *right);
+    NodeCB *mid_point(NodeCB *node);
+    NodeCB *sort(NodeCB *node);
 };

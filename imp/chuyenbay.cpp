@@ -76,6 +76,12 @@ void ChuyenBay::ThucHienCB(DSMB *DanhSachMB)
     tmp->TangSLTHCB();
 }
 
+bool ChuyenBay::operator<(const ChuyenBay &other)
+{
+    int compare = strcmp(MaCB, other.MaCB);
+    return (compare < 0) ? true : false;
+}
+
 ChuyenBay *NodeCB::getNode()
 {
     return this->node;
@@ -219,4 +225,75 @@ DanhSachCB DanhSachCB::LocDSCB(string _keyword)
         tmp = tmp->getNext();
     }
     return *result;
+}
+
+NodeCB *DanhSachCB::merge(NodeCB *left, NodeCB *right)
+{
+    if (left == NULL)
+    {
+        return right;
+    }
+    if (right == NULL)
+    {
+        return left;
+    }
+
+    NodeCB *final;
+
+    if (left->getNode() < right->getNode())
+    {
+        final = left;
+        final->setNext(merge(left->getNext(), right));
+    }
+    else
+    {
+        final = right;
+        final->setNext(merge(left, right->getNext()));
+    }
+    return final;
+}
+
+NodeCB *DanhSachCB::mid_point(NodeCB *node)
+{
+    if (node == NULL || !node->hasNext())
+    {
+        return node;
+    }
+
+    NodeCB *slow = head;
+    NodeCB *fast = head;
+
+    while (fast != NULL && fast->hasNext())
+    {
+        fast = fast->getNext();
+
+        if (!fast->hasNext())
+        {
+            break;
+        }
+
+        fast = fast->getNext();
+        slow = slow->getNext();
+    }
+
+    return slow;
+}
+
+NodeCB *DanhSachCB::sort(NodeCB *node)
+{
+    if (node == NULL || !node->hasNext())
+    {
+        return node;
+    }
+
+    NodeCB *mid = mid_point(node);
+    NodeCB *left = node;
+    NodeCB *right = mid->getNext();
+    mid->setNext(NULL);
+
+    left = sort(left);
+    right = sort(right);
+
+    NodeCB *final = merge(left, right);
+    return final;
 }
