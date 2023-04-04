@@ -63,7 +63,7 @@ public:
      */
     ChuyenBay();
     ChuyenBay(const char *_MaCB, string _NoiDen,
-              Date _NgayGio, char *_MaMayBay);
+              Date _NgayGio, const char *_MaMayBay);
     char *getMaCB();
     string getNoiDen();
     Date getNgayGio();
@@ -74,7 +74,7 @@ public:
      */
     void setTrangThai(int _TrangThai);
     int getTrangThai();
-    char *getMaMayBay();
+    const char *getMaMayBay();
     // void setDSVeMB(DSMB *DanhSachCB);
 
     // void showDSVe();
@@ -92,6 +92,7 @@ private:
 
 public:
     ChuyenBay *getNode();
+    void setNode(ChuyenBay *node);
     bool hasNext();
     void setNext(NodeCB *node);
     NodeCB *getNext();
@@ -106,6 +107,7 @@ private:
 public:
     DanhSachCB();
     DanhSachCB(NodeCB *cb);
+    void setHead(NodeCB *head);
     NodeCB *getHead();
     void push(NodeCB *currNode, NodeCB *node);
     void push_back(NodeCB *node);
@@ -121,4 +123,6 @@ public:
     DanhSachCB TimDSCB(Date date, string noiden);
 
     DanhSachCB LocDSCB(string _keyword);
+    void ReadFromFile(ifstream &file);
+    void WritetOfFile(ofstream &file);
 };
