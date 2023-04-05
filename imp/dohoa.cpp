@@ -35,6 +35,8 @@ struct InputTextBox
 {
     Rectangle textBox;
     const char *tittle = "";
+    int size = 27;
+    bool showNKeyRemain = true;
     bool editMode = false;
     bool showPreResult = true;
     bool returnIfDone = false;
@@ -416,41 +418,45 @@ bool Popup_ThemMB(DSMB *listMB, int &status)
     static InputTextBox MaMB;
     MaMB.mode = 3;
     MaMB.tittle = (char *)"Nhập số hiệu máy bay";
-    MaMB.textBox = {StartPos.x + 450, StartPos.y + 60 + 180, 600, 50};
+    MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
+    MaMB.size = 15;
     static InputTextBox LoaiMayBay;
     LoaiMayBay.mode = 2;
     LoaiMayBay.tittle = (char *)"Nhập loại máy bay";
-    LoaiMayBay.textBox = {StartPos.x + 450, StartPos.y + 60 + 280, 600, 50};
+    LoaiMayBay.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+    LoaiMayBay.size = 40;
     static InputTextBox SoDong;
     SoDong.mode = 5;
     SoDong.tittle = (char *)"Nhập số dòng của máy bay";
-    SoDong.textBox = {StartPos.x + 450, StartPos.y + 60 + 380, 600, 50};
+    SoDong.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
+    SoDong.size = 3;
     static InputTextBox SoDay;
     SoDay.mode = 5;
     SoDay.tittle = (char *)"Nhập số dãy của máy bay";
-    SoDay.textBox = {StartPos.x + 450, StartPos.y + 60 + 480, 600, 50};
+    SoDay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
+    SoDay.size = 3;
 
     const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y - MeasureTextEx(FontArial, "A", 25, 0).y;
 
     DrawTextEx(FontArial, "Mã máy bay",
-               {StartPos.x + 450, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+               {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
     DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
-               {StartPos.x + 450 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25, 0, RED);
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25, 0, RED);
     const char *newMaMB = CreateTextInputBox(MaMB);
     DrawTextEx(FontArial, "Hãng máy bay",
-               {StartPos.x + 450, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+               {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
     DrawTextEx(FontArial, "(Gồm chữ cái và số)",
-               {StartPos.x + 450 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25, 0, RED);
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25, 0, RED);
     const char *newLoaiMayBay = CreateTextInputBox(LoaiMayBay);
     DrawTextEx(FontArial, "Số dòng",
-               {StartPos.x + 450, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+               {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
     DrawTextEx(FontArial, "(Gồm CHỈ số)",
-               {StartPos.x + 450 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25, 0, RED);
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25, 0, RED);
     const char *newSoDong = CreateTextInputBox(SoDong);
     DrawTextEx(FontArial, "Số dãy",
-               {StartPos.x + 450, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+               {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
     DrawTextEx(FontArial, "(Gồm CHỈ số)",
-               {StartPos.x + 450 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25, 0, RED);
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25, 0, RED);
     const char *newSoDay = CreateTextInputBox(SoDay);
 
     Button OK;
@@ -546,44 +552,48 @@ bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb)
         MaMB.mode = 3;
         MaMB.editMode = true;
         MaMB.tittle = mb->getSoHieuMB();
-        MaMB.textBox = {StartPos.x + 450, StartPos.y + 60 + 180, 600, 50};
+        MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
+        MaMB.size = 15;
         static InputTextBox LoaiMayBay;
         LoaiMayBay.mode = 2;
         LoaiMayBay.editMode = true;
         LoaiMayBay.tittle = mb->getLoaiMB();
-        LoaiMayBay.textBox = {StartPos.x + 450, StartPos.y + 60 + 280, 600, 50};
+        LoaiMayBay.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+        LoaiMayBay.size = 40;
         static InputTextBox SoDong;
         SoDong.mode = 5;
         SoDong.editMode = true;
-        SoDong.tittle = intTochar(mb->getSoDong(), 2);
-        SoDong.textBox = {StartPos.x + 450, StartPos.y + 60 + 380, 600, 50};
+        SoDong.tittle = intTochar(mb->getSoDong(), 3);
+        SoDong.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
+        SoDong.size = 3;
         static InputTextBox SoDay;
         SoDay.mode = 5;
         SoDay.editMode = true;
-        SoDay.tittle = intTochar(mb->getSoDay(), 2);
-        SoDay.textBox = {StartPos.x + 450, StartPos.y + 60 + 480, 600, 50};
+        SoDay.tittle = intTochar(mb->getSoDay(), 3);
+        SoDay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
+        SoDay.size = 3;
 
         const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y - MeasureTextEx(FontArial, "A", 25, 0).y;
 
         DrawTextEx(FontArial, "Mã máy bay",
-                   {StartPos.x + 450, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+                   {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
         DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
-                   {StartPos.x + 450 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25, 0, RED);
+                   {StartPos.x + 300 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25, 0, RED);
         const char *newMaMB = CreateTextInputBox(MaMB);
         DrawTextEx(FontArial, "Hãng máy bay",
-                   {StartPos.x + 450, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+                   {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
         DrawTextEx(FontArial, "(Gồm chữ cái và số)",
-                   {StartPos.x + 450 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25, 0, RED);
+                   {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25, 0, RED);
         const char *newLoaiMayBay = CreateTextInputBox(LoaiMayBay);
         DrawTextEx(FontArial, "Số dòng",
-                   {StartPos.x + 450, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+                   {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
         DrawTextEx(FontArial, "(Gồm CHỈ số)",
-                   {StartPos.x + 450 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25, 0, RED);
+                   {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25, 0, RED);
         const char *newSoDong = CreateTextInputBox(SoDong);
         DrawTextEx(FontArial, "Số dãy",
-                   {StartPos.x + 450, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+                   {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
         DrawTextEx(FontArial, "(Gồm CHỈ số)",
-                   {StartPos.x + 450 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25, 0, RED);
+                   {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25, 0, RED);
         const char *newSoDay = CreateTextInputBox(SoDay);
 
         Button OK;
@@ -688,38 +698,38 @@ bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status)
     if (mb->getSoHieuMB()[0] != 0)
     {
         DrawTextEx(FontArial, "Mã máy bay",
-                   {StartPos.x + 450, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
-        DrawRectangleRec({StartPos.x + 450, StartPos.y + 60 + 180, 600, 50}, WHITE);
-        DrawRectangleRoundedLines({StartPos.x + 450, StartPos.y + 60 + 180, 600, 50}, 0, 1, 2, BLACK);
+                   {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+        DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 180, 900, 50}, WHITE);
+        DrawRectangleRoundedLines({StartPos.x + 300, StartPos.y + 60 + 180, 900, 50}, 0, 1, 2, BLACK);
         DrawTextEx(FontArial, mb->getSoHieuMB(),
-                   {StartPos.x + 450 + 5,
+                   {StartPos.x + 300 + 5,
                     CenterDataSetter(60, StartPos.y + 60 + 180, MeasureTextEx(FontArial, "A", 40, 0).y)},
                    40, 0, BLACK);
 
         DrawTextEx(FontArial, "Hãng máy bay",
-                   {StartPos.x + 450, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
-        DrawRectangleRec({StartPos.x + 450, StartPos.y + 60 + 280, 600, 50}, WHITE);
-        DrawRectangleRoundedLines({StartPos.x + 450, StartPos.y + 60 + 280, 600, 50}, 0, 1, 2, BLACK);
+                   {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+        DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 280, 900, 50}, WHITE);
+        DrawRectangleRoundedLines({StartPos.x + 300, StartPos.y + 60 + 280, 900, 50}, 0, 1, 2, BLACK);
         DrawTextEx(FontArial, mb->getLoaiMB(),
-                   {StartPos.x + 450 + 5,
+                   {StartPos.x + 300 + 5,
                     CenterDataSetter(60, StartPos.y + 60 + 280, MeasureTextEx(FontArial, "A", 40, 0).y)},
                    40, 0, BLACK);
 
         DrawTextEx(FontArial, "Số dòng",
-                   {StartPos.x + 450, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
-        DrawRectangleRec({StartPos.x + 450, StartPos.y + 60 + 380, 600, 50}, WHITE);
-        DrawRectangleRoundedLines({StartPos.x + 450, StartPos.y + 60 + 380, 600, 50}, 0, 1, 2, BLACK);
+                   {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+        DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, WHITE);
+        DrawRectangleRoundedLines({StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, 0, 1, 2, BLACK);
         DrawTextEx(FontArial, intTochar(mb->getSoDong(), 2),
-                   {StartPos.x + 450 + 5,
+                   {StartPos.x + 300 + 5,
                     CenterDataSetter(60, StartPos.y + 60 + 380, MeasureTextEx(FontArial, "A", 40, 0).y)},
                    40, 0, BLACK);
 
         DrawTextEx(FontArial, "Số dãy",
-                   {StartPos.x + 450, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
-        DrawRectangleRec({StartPos.x + 450, StartPos.y + 60 + 480, 600, 50}, WHITE);
-        DrawRectangleRoundedLines({StartPos.x + 450, StartPos.y + 60 + 480, 600, 50}, 0, 1, 2, BLACK);
+                   {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+        DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 480, 500, 50}, WHITE);
+        DrawRectangleRoundedLines({StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, 0, 1, 2, BLACK);
         DrawTextEx(FontArial, intTochar(mb->getSoDay(), 2),
-                   {StartPos.x + 450 + 5,
+                   {StartPos.x + 300 + 5,
                     CenterDataSetter(60, StartPos.y + 60 + 480, MeasureTextEx(FontArial, "A", 40, 0).y)},
                    40, 0, BLACK);
 
@@ -925,6 +935,13 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
         result[i] = new MayBay();
     }
     int size = listMB->getsize();
+    int n_char;
+    if (size <= 99)
+        n_char = 2;
+    else if (size >= 100 && size <= 999)
+        n_char = 3;
+    else
+        n_char = 4;
     int i = (current_page - 1) * 10;
     int j;
     if (current_page * 10 < size)
@@ -942,11 +959,11 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
     {
         MayBay *MB = listMB->getMB(i);
         result[i % 10] = MB;
-        DrawTextEx(FontArial, intTochar(i + 1, 2), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, 2)), 30, 0, BLACK);
+        DrawTextEx(FontArial, intTochar(i + 1, n_char), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, n_char)), 30, 0, BLACK);
         DrawTextEx(FontArial, MB->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (i % 10) + 1, MB->getSoHieuMB()), 30, 0, BLACK);
         DrawTextEx(FontArial, MB->getLoaiMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 3, (i % 10) + 1, MB->getLoaiMB()), 30, 0, BLACK);
-        DrawTextEx(FontArial, intTochar(MB->getSoDay(), 2), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (i % 10) + 1, intTochar(MB->getSoDay(), 2)), 30, 0, BLACK);
-        DrawTextEx(FontArial, intTochar(MB->getSoDong(), 2), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (i % 10) + 1, intTochar(MB->getSoDong(), 2)), 30, 0, BLACK);
+        DrawTextEx(FontArial, intTochar(MB->getSoDay(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (i % 10) + 1, intTochar(MB->getSoDay(), 3)), 30, 0, BLACK);
+        DrawTextEx(FontArial, intTochar(MB->getSoDong(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (i % 10) + 1, intTochar(MB->getSoDong(), 3)), 30, 0, BLACK);
     }
 
     return result;
@@ -1556,8 +1573,8 @@ bool CreateButton(Button data)
 
 const char *CreateTextInputBox(InputTextBox &data)
 {
-    char name_cpy[120] = "\0";
-    char *result = new char[120];
+    char name_cpy[data.size] = "\0";
+    char *result = new char[data.size];
     const int font_size = data.textBox.height * per1000(700);
 
     Vector2 textBoxPos = {data.textBox.x + 5, CenterDataSetter(data.textBox.height, data.textBox.y, MeasureTextEx(FontArial, data.name, font_size, 0).y)};
@@ -1613,7 +1630,7 @@ const char *CreateTextInputBox(InputTextBox &data)
             {
             case 1:
             {
-                if ((key >= 32) && (key <= 125) && (data.letterCount < 27))
+                if ((key >= 32) && (key <= 125) && (data.letterCount < data.size))
                 {
                     if (((key >= 'a') && (key <= 'z')))
                         key -= 32;
@@ -1629,9 +1646,9 @@ const char *CreateTextInputBox(InputTextBox &data)
             };
             case 2:
             {
-                if (((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
-                    ((key >= 'A') && (key <= 'Z')) &&
-                        (data.letterCount < 27))
+                if ((((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
+                     ((key >= 'A') && (key <= 'Z'))) &&
+                    (data.letterCount < data.size))
                 {
                     for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
                     {
@@ -1645,11 +1662,11 @@ const char *CreateTextInputBox(InputTextBox &data)
             }
             case 3:
             {
-                if (((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
-                    ((key >= 'A') && (key <= 'Z')) &&
-                        (data.letterCount < 27))
+                if ((((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
+                     ((key >= 'A') && (key <= 'Z'))) &&
+                    (data.letterCount < data.size))
                 {
-                    if (((key >= 'a') && (key <= 'z')))
+                    if ((key >= 'a') && (key <= 'z'))
                         key -= 32;
                     for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
                     {
@@ -1664,9 +1681,9 @@ const char *CreateTextInputBox(InputTextBox &data)
 
             case 4:
             {
-                if (((key >= 'a') && (key <= 'z')) ||
-                    ((key >= 'A') && (key <= 'Z')) &&
-                        (data.letterCount < 27))
+                if ((((key >= 'a') && (key <= 'z')) ||
+                     ((key >= 'A') && (key <= 'Z'))) &&
+                    (data.letterCount < data.size))
                 {
                     if (((key >= 'a') && (key <= 'z')))
                         key -= 32;
@@ -1683,7 +1700,7 @@ const char *CreateTextInputBox(InputTextBox &data)
             case 5:
             {
                 if (((key >= '0') && (key <= '9')) &&
-                    (data.letterCount < 27))
+                    (data.letterCount < data.size))
                 {
                     for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
                     {
@@ -1745,6 +1762,12 @@ const char *CreateTextInputBox(InputTextBox &data)
         data.framesCounter = 0;
     DrawRectangleRec(data.textBox, data.MauNen);
     DrawRectangleRoundedLines(data.textBox, 0, 1, 2, data.MauVien);
+    if (data.showNKeyRemain)
+    {
+        DrawTextEx(FontArial, intTochar(data.size - data.letterCount, 2),
+                   {data.textBox.x + data.textBox.width - data.textBox.height, data.textBox.y + data.textBox.height / 2},
+                   data.textBox.height * per1000(400), 0, DARKGREEN);
+    }
     if (data.name[0] != '\0')
         DrawTextEx(FontArial, data.name, textBoxPos, font_size, 0, data.MauChu);
     else
