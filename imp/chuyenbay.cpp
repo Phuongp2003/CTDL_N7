@@ -70,10 +70,10 @@ DSVeMayBay *ChuyenBay::getDSVe()
  */
 void ChuyenBay::ThucHienCB(DSMB *DanhSachMB)
 {
-    this->TrangThai = HoanTat;
-    MayBay *tmp;
-    tmp = DanhSachMB->getMB(DanhSachMB->Find_MB(this->MaCB));
-    tmp->TangSLTHCB();
+    //     this->TrangThai = HoanTat;
+    //     MayBay *tmp;
+    //     tmp = DanhSachMB->getMB(DanhSachMB->Find_MB(this->MaCB));
+    //     tmp->TangSLTHCB();
 }
 
 ChuyenBay *NodeCB::getNode()

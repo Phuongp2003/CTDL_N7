@@ -42,6 +42,15 @@ struct InputTextBox
     Color MauVien = BLACK;
     Color MauChu = BLACK;
     int mode = 1;
+
+    // xử lý
+    char name[120] = "\0";
+    int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0;
+    bool done;
+    bool mouseClickOnText = false;
+    int letterCount = 0;
+    int framesCounter = 0;
+    int indexPoint = 0;
 };
 
 BoMauNut HomeButtonColor{
@@ -216,11 +225,11 @@ void CreateHomePage()
     const char *home_tittle = "ĐỒ ÁN QUẢN LÝ MÁY BAY - NHÓM 7 - KHOÁ D21",
                *button_tille = "CÁC CHỨC NĂNG";
     char *button_tittle[5];
-    button_tittle[0] = "QUẢN LÝ MÁY BAY";
-    button_tittle[1] = "QUẢN LÝ CHUYẾN BAY";
-    button_tittle[2] = "QUẢN LÝ VÉ";
-    button_tittle[3] = "QUẢN LÝ HÀNH KHÁCH";
-    button_tittle[4] = "GIỚI THIỆU VỀ SẢN PHẨM";
+    button_tittle[0] = (char *)"QUẢN LÝ MÁY BAY";
+    button_tittle[1] = (char *)"QUẢN LÝ CHUYẾN BAY";
+    button_tittle[2] = (char *)"QUẢN LÝ VÉ";
+    button_tittle[3] = (char *)"QUẢN LÝ HÀNH KHÁCH";
+    button_tittle[4] = (char *)"GIỚI THIỆU VỀ SẢN PHẨM";
 
     // Vị trí tiêu đề
     Vector2 tittleHomePos =
@@ -321,58 +330,452 @@ void CreatePageBackground(int SoHang)
 }
 
 // =-MayBay
-void CreatePage_QLMB(DSMB listMB)
+void CreatePage_QLMB(DSMB *listMB)
 {
     CreatePageBackground(3);
     static MayBay *data = new MayBay();
-    static char *preResult = "\0";
+    static char *preResult = (char *)"\0";
+    static int status = 0;
+    static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
 
     // tittle
     DrawTextEx(FontArial, "DANH SÁCH MÁY BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
 
-    Button button[3];
-    for (int i = 0; i < 3; i++)
+    if (current_popup == 0)
     {
-        button[i].x = StartPos.x + 1201 + 29;
-        button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
-        button[i].w = 240;
-        button[i].h = 60;
-        button[i].BoTron = false;
-        button[i].gotNothing = false;
-        button[i].gotText = true;
-        button[i].font = FontArial;
-        button[i].BoMau = ArrowKey;
-    }
+        Button button[3];
+        for (int i = 0; i < 3; i++)
+        {
+            button[i].x = StartPos.x + 1201 + 29;
+            button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
+            button[i].w = 240;
+            button[i].h = 60;
+            button[i].BoTron = false;
+            button[i].gotNothing = false;
+            button[i].gotText = true;
+            button[i].font = FontArial;
+            button[i].BoMau = ArrowKey;
+        }
 
-    // mini function
-    button[0].tittle = "Thêm máy bay";
-    if (CreateButton(button[0]))
-    {
-        cout << "Them" << endl;
-    }
-    button[1].tittle = "Hiệu chỉnh máy bay";
-    if (CreateButton(button[1]))
-    {
-        cout << "Sua" << endl;
-    }
-    button[2].tittle = "Xoá máy bay";
-    if (CreateButton(button[2]))
-    {
-        cout << "Xoa" << endl;
-    }
-    data = XuLy_QLMB(listMB);
-    if (data->getSoHieuMB()[0] >= 36)
-    {
-        preResult = data->getSoHieuMB();
-    }
+        // mini function
+        button[0].tittle = "Thêm máy bay";
+        if (CreateButton(button[0]))
+        {
+            current_popup = 1;
+        }
+        button[1].tittle = "Hiệu chỉnh máy bay";
+        if (CreateButton(button[1]))
+        {
 
-    if (strcmp(data->getSoHieuMB(), preResult) != 0)
-    {
-        cout << data->getSoHieuMB() << endl;
+            current_popup = 2;
+        }
+        button[2].tittle = "Xoá máy bay";
+        if (CreateButton(button[2]))
+        {
+            current_popup = 3;
+        }
+        data = XuLy_QLMB(listMB, status);
+        // if (data->getSoHieuMB()[0] >= 36)
+        // {
+        //     preResult = data->getSoHieuMB();
+        // }
     }
+    else if (current_popup == 1)
+    {
+        if (Popup_ThemMB(listMB, status))
+            current_popup = 0;
+    }
+    else if (current_popup == 2)
+    {
+        if (Popup_HieuChinhMB(listMB, data))
+            current_popup = 0;
+    }
+    else if (current_popup == 3)
+    {
+        if (Popup_XoaMB(listMB, data, status))
+            current_popup = 0;
+    }
+    // cout << data->getSoHieuMB() << endl;
 }
 
-MayBay *XuLy_QLMB(DSMB listMB)
+void CreatePopupBackground()
+{
+    DrawRectangle(StartPos.x, StartPos.y + 60, SCREEN_WIDTH, SCREEN_HEIGHT - 60, {129, 150, 212, 255});
+    DrawRectangle(StartPos.x + 400, StartPos.y + 60 + 10, 700, 60, {104, 112, 217, 255});
+}
+
+bool Popup_ThemMB(DSMB *listMB, int &status)
+{
+    CreatePopupBackground();
+    static int error = 0;
+    DrawTextEx(FontArial, "Thêm máy bay",
+               {CenterDataSetter(700, StartPos.x + 400, MeasureTextEx(FontArial, "Thêm máy bay", 50, 0).x),
+                CenterDataSetter(60, StartPos.y + 60 + 10, MeasureTextEx(FontArial, "A", 50, 0).y)},
+               50, 0, BLACK);
+
+    static InputTextBox MaMB;
+    MaMB.mode = 3;
+    MaMB.tittle = (char *)"Nhập số hiệu máy bay";
+    MaMB.textBox = {StartPos.x + 450, StartPos.y + 60 + 180, 600, 50};
+    static InputTextBox LoaiMayBay;
+    LoaiMayBay.mode = 2;
+    LoaiMayBay.tittle = (char *)"Nhập loại máy bay";
+    LoaiMayBay.textBox = {StartPos.x + 450, StartPos.y + 60 + 280, 600, 50};
+    static InputTextBox SoDong;
+    SoDong.mode = 5;
+    SoDong.tittle = (char *)"Nhập số dòng của máy bay";
+    SoDong.textBox = {StartPos.x + 450, StartPos.y + 60 + 380, 600, 50};
+    static InputTextBox SoDay;
+    SoDay.mode = 5;
+    SoDay.tittle = (char *)"Nhập số dãy của máy bay";
+    SoDay.textBox = {StartPos.x + 450, StartPos.y + 60 + 480, 600, 50};
+
+    const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y - MeasureTextEx(FontArial, "A", 25, 0).y;
+
+    DrawTextEx(FontArial, "Mã máy bay",
+               {StartPos.x + 450, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+    DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
+               {StartPos.x + 450 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25, 0, RED);
+    const char *newMaMB = CreateTextInputBox(MaMB);
+    DrawTextEx(FontArial, "Hãng máy bay",
+               {StartPos.x + 450, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+    DrawTextEx(FontArial, "(Gồm chữ cái và số)",
+               {StartPos.x + 450 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25, 0, RED);
+    const char *newLoaiMayBay = CreateTextInputBox(LoaiMayBay);
+    DrawTextEx(FontArial, "Số dòng",
+               {StartPos.x + 450, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+    DrawTextEx(FontArial, "(Gồm CHỈ số)",
+               {StartPos.x + 450 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25, 0, RED);
+    const char *newSoDong = CreateTextInputBox(SoDong);
+    DrawTextEx(FontArial, "Số dãy",
+               {StartPos.x + 450, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+    DrawTextEx(FontArial, "(Gồm CHỈ số)",
+               {StartPos.x + 450 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25, 0, RED);
+    const char *newSoDay = CreateTextInputBox(SoDay);
+
+    Button OK;
+    OK.x = StartPos.x + 225 + 750;
+    OK.y = StartPos.y + 60 + 625;
+    OK.w = 300;
+    OK.h = 50;
+    OK.gotNothing = false;
+    OK.gotText = true;
+    OK.tittle = (char *)"Hoàn tất";
+    OK.font = FontArial;
+    OK.BoMau = ArrowKey;
+
+    Button Cancel;
+    Cancel.x = StartPos.x + 225;
+    Cancel.y = StartPos.y + 60 + 625;
+    Cancel.w = 300;
+    Cancel.h = 50;
+    Cancel.gotNothing = false;
+    Cancel.gotText = true;
+    Cancel.tittle = (char *)"Huỷ";
+    Cancel.font = FontArial;
+    Cancel.BoMau = ArrowKey;
+    if (error == 1)
+        DrawTextEx(FontArial, "Máy Bay đã tồn tại!",
+                   {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, "Máy Bay đã tồn tại!", 40, 0).x),
+                    CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                   40, 0, RED);
+    else if (error == 2)
+        DrawTextEx(FontArial, "Nhập chưa đủ thông tin!",
+                   {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, "Nhập chưa đủ thông tin!", 40, 0).x),
+                    CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                   40, 0, RED);
+    if (CreateButton(OK))
+    {
+        char CheckMB[16];
+        strcpy(CheckMB, newMaMB);
+        if (listMB->Find_MB(CheckMB) < 0)
+        {
+            if (newMaMB[0] >= 32 && newLoaiMayBay[0] >= 32 && newSoDay[0] >= 32 && newSoDong[0] >= 32)
+            {
+                MayBay *result = new MayBay(newMaMB, newLoaiMayBay, atoi(newSoDay), atoi(newSoDong));
+                listMB->Insert_MB(result);
+                ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
+                listMB->WritetoFile(fileWrite);
+                fileWrite.close();
+                ifstream fileRead("../data/dataMB.txt", ios::in);
+                listMB->ReadFromFile(fileRead);
+                fileRead.close();
+                status = 1;
+                resetInputTextBox(MaMB);
+                resetInputTextBox(LoaiMayBay);
+                resetInputTextBox(SoDong);
+                resetInputTextBox(SoDay);
+                error = 0;
+
+                return true;
+            }
+            else
+            {
+                error = 2;
+            }
+        }
+        else
+        {
+            error = 1;
+        }
+    }
+    if (CreateButton(Cancel))
+    {
+        resetInputTextBox(MaMB);
+        resetInputTextBox(LoaiMayBay);
+        resetInputTextBox(SoDong);
+        resetInputTextBox(SoDay);
+        error = 0;
+        return true;
+    }
+    return false;
+}
+
+bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb)
+{
+    CreatePopupBackground();
+    static int error = 0;
+    DrawTextEx(FontArial, "Sửa thông tin máy bay",
+               {CenterDataSetter(700, StartPos.x + 400, MeasureTextEx(FontArial, "Sửa thông tin máy bay", 50, 0).x),
+                CenterDataSetter(60, StartPos.y + 60 + 10, MeasureTextEx(FontArial, "A", 50, 0).y)},
+               50, 0, BLACK);
+
+    if (mb->getSoHieuMB()[0] != 0)
+    {
+        static InputTextBox MaMB;
+        MaMB.mode = 3;
+        MaMB.editMode = true;
+        MaMB.tittle = mb->getSoHieuMB();
+        MaMB.textBox = {StartPos.x + 450, StartPos.y + 60 + 180, 600, 50};
+        static InputTextBox LoaiMayBay;
+        LoaiMayBay.mode = 2;
+        LoaiMayBay.editMode = true;
+        LoaiMayBay.tittle = mb->getLoaiMB();
+        LoaiMayBay.textBox = {StartPos.x + 450, StartPos.y + 60 + 280, 600, 50};
+        static InputTextBox SoDong;
+        SoDong.mode = 5;
+        SoDong.editMode = true;
+        SoDong.tittle = intTochar(mb->getSoDong(), 2);
+        SoDong.textBox = {StartPos.x + 450, StartPos.y + 60 + 380, 600, 50};
+        static InputTextBox SoDay;
+        SoDay.mode = 5;
+        SoDay.editMode = true;
+        SoDay.tittle = intTochar(mb->getSoDay(), 2);
+        SoDay.textBox = {StartPos.x + 450, StartPos.y + 60 + 480, 600, 50};
+
+        const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y - MeasureTextEx(FontArial, "A", 25, 0).y;
+
+        DrawTextEx(FontArial, "Mã máy bay",
+                   {StartPos.x + 450, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+        DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
+                   {StartPos.x + 450 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25, 0, RED);
+        const char *newMaMB = CreateTextInputBox(MaMB);
+        DrawTextEx(FontArial, "Hãng máy bay",
+                   {StartPos.x + 450, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+        DrawTextEx(FontArial, "(Gồm chữ cái và số)",
+                   {StartPos.x + 450 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25, 0, RED);
+        const char *newLoaiMayBay = CreateTextInputBox(LoaiMayBay);
+        DrawTextEx(FontArial, "Số dòng",
+                   {StartPos.x + 450, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+        DrawTextEx(FontArial, "(Gồm CHỈ số)",
+                   {StartPos.x + 450 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25, 0, RED);
+        const char *newSoDong = CreateTextInputBox(SoDong);
+        DrawTextEx(FontArial, "Số dãy",
+                   {StartPos.x + 450, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+        DrawTextEx(FontArial, "(Gồm CHỈ số)",
+                   {StartPos.x + 450 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25, 0, RED);
+        const char *newSoDay = CreateTextInputBox(SoDay);
+
+        Button OK;
+        OK.x = StartPos.x + 225 + 750;
+        OK.y = StartPos.y + 60 + 625;
+        OK.w = 300;
+        OK.h = 50;
+        OK.gotNothing = false;
+        OK.gotText = true;
+        OK.tittle = (char *)"Hoàn tất";
+        OK.font = FontArial;
+        OK.BoMau = ArrowKey;
+
+        Button Cancel;
+        Cancel.x = StartPos.x + 225;
+        Cancel.y = StartPos.y + 60 + 625;
+        Cancel.w = 300;
+        Cancel.h = 50;
+        Cancel.gotNothing = false;
+        Cancel.gotText = true;
+        Cancel.tittle = (char *)"Huỷ";
+        Cancel.font = FontArial;
+        Cancel.BoMau = ArrowKey;
+
+        if (error == 1)
+            DrawTextEx(FontArial, "Máy Bay đã tồn tại!",
+                       {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, "Máy Bay đã tồn tại!", 40, 0).x),
+                        CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                       40, 0, RED);
+        else if (error == 2)
+            DrawTextEx(FontArial, "Nhập chưa đủ thông tin!",
+                       {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, "Nhập chưa đủ thông tin!", 40, 0).x),
+                        CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                       40, 0, RED);
+        if (CreateButton(OK))
+        {
+            char CheckMB[16];
+            strcpy(CheckMB, newMaMB);
+            if (listMB->Find_MB(CheckMB) < 0 || listMB->Find_MB(CheckMB) == listMB->Find_MB(mb->getSoHieuMB()))
+            {
+                if (newMaMB[0] >= 32 && newLoaiMayBay[0] >= 32 && newSoDay[0] >= 32 && newSoDong[0] >= 32)
+                {
+                    mb->setSoHieuMB(newMaMB);
+                    mb->setLoaiMB(newLoaiMayBay);
+                    mb->setSoDong(atoi(newSoDong));
+                    mb->setSoDay(atoi(newSoDay));
+
+                    ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
+                    listMB->WritetoFile(fileWrite);
+                    fileWrite.close();
+                    ifstream fileRead("../data/dataMB.txt", ios::in);
+                    listMB->ReadFromFile(fileRead);
+                    fileRead.close();
+                    resetInputTextBox(MaMB);
+                    resetInputTextBox(LoaiMayBay);
+                    resetInputTextBox(SoDong);
+                    resetInputTextBox(SoDay);
+                    error = 0;
+
+                    return true;
+                }
+                else
+                {
+                    error = 2;
+                }
+            }
+            else
+            {
+                error = 1;
+            }
+        }
+
+        if (CreateButton(Cancel))
+        {
+            resetInputTextBox(MaMB);
+            resetInputTextBox(LoaiMayBay);
+            resetInputTextBox(SoDong);
+            resetInputTextBox(SoDay);
+            return true;
+        }
+    }
+    else
+    {
+        if (Warning_NoData())
+            return true;
+    }
+    return false;
+}
+
+bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status)
+{
+    CreatePopupBackground();
+    DrawTextEx(FontArial, "Xoá máy bay?",
+               {CenterDataSetter(700, StartPos.x + 400, MeasureTextEx(FontArial, "Xoá máy bay", 50, 0).x),
+                CenterDataSetter(60, StartPos.y + 60 + 10, MeasureTextEx(FontArial, "A", 50, 0).y)},
+               50, 0, BLACK);
+    DrawTextEx(FontArial, "Máy bay có các thông tin như sau: ",
+               {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, "Máy bay có các thông tin như sau: ", 40, 0).x),
+                CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
+               40, 0, RED);
+
+    if (mb->getSoHieuMB()[0] != 0)
+    {
+        DrawTextEx(FontArial, "Mã máy bay",
+                   {StartPos.x + 450, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+        DrawRectangleRec({StartPos.x + 450, StartPos.y + 60 + 180, 600, 50}, WHITE);
+        DrawRectangleRoundedLines({StartPos.x + 450, StartPos.y + 60 + 180, 600, 50}, 0, 1, 2, BLACK);
+        DrawTextEx(FontArial, mb->getSoHieuMB(),
+                   {StartPos.x + 450 + 5,
+                    CenterDataSetter(60, StartPos.y + 60 + 180, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                   40, 0, BLACK);
+
+        DrawTextEx(FontArial, "Hãng máy bay",
+                   {StartPos.x + 450, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+        DrawRectangleRec({StartPos.x + 450, StartPos.y + 60 + 280, 600, 50}, WHITE);
+        DrawRectangleRoundedLines({StartPos.x + 450, StartPos.y + 60 + 280, 600, 50}, 0, 1, 2, BLACK);
+        DrawTextEx(FontArial, mb->getLoaiMB(),
+                   {StartPos.x + 450 + 5,
+                    CenterDataSetter(60, StartPos.y + 60 + 280, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                   40, 0, BLACK);
+
+        DrawTextEx(FontArial, "Số dòng",
+                   {StartPos.x + 450, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+        DrawRectangleRec({StartPos.x + 450, StartPos.y + 60 + 380, 600, 50}, WHITE);
+        DrawRectangleRoundedLines({StartPos.x + 450, StartPos.y + 60 + 380, 600, 50}, 0, 1, 2, BLACK);
+        DrawTextEx(FontArial, intTochar(mb->getSoDong(), 2),
+                   {StartPos.x + 450 + 5,
+                    CenterDataSetter(60, StartPos.y + 60 + 380, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                   40, 0, BLACK);
+
+        DrawTextEx(FontArial, "Số dãy",
+                   {StartPos.x + 450, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+        DrawRectangleRec({StartPos.x + 450, StartPos.y + 60 + 480, 600, 50}, WHITE);
+        DrawRectangleRoundedLines({StartPos.x + 450, StartPos.y + 60 + 480, 600, 50}, 0, 1, 2, BLACK);
+        DrawTextEx(FontArial, intTochar(mb->getSoDay(), 2),
+                   {StartPos.x + 450 + 5,
+                    CenterDataSetter(60, StartPos.y + 60 + 480, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                   40, 0, BLACK);
+
+        Button OK;
+        OK.x = StartPos.x + 225 + 750;
+        OK.y = StartPos.y + 60 + 625;
+        OK.w = 300;
+        OK.h = 50;
+        OK.gotNothing = false;
+        OK.gotText = true;
+        OK.tittle = (char *)"Đồng ý!";
+        OK.font = FontArial;
+        OK.BoMau = ArrowKey;
+
+        Button Cancel;
+        Cancel.x = StartPos.x + 225;
+        Cancel.y = StartPos.y + 60 + 625;
+        Cancel.w = 300;
+        Cancel.h = 50;
+        Cancel.gotNothing = false;
+        Cancel.gotText = true;
+        Cancel.tittle = (char *)"Huỷ";
+        Cancel.font = FontArial;
+        Cancel.BoMau = ArrowKey;
+
+        if (CreateButton(OK))
+        {
+            char CheckMB[16];
+            strcpy(CheckMB, mb->getSoHieuMB());
+            listMB->Delete_MB(listMB->Find_MB(CheckMB));
+
+            ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
+            listMB->WritetoFile(fileWrite);
+            fileWrite.close();
+            ifstream fileRead("../data/dataMB.txt", ios::in);
+            listMB->ReadFromFile(fileRead);
+            fileRead.close();
+
+            status = -1;
+
+            return true;
+        }
+        if (CreateButton(Cancel))
+        {
+            return true;
+        }
+    }
+    else
+    {
+        if (Warning_NoData())
+            return true;
+    }
+    return false;
+}
+
+MayBay *XuLy_QLMB(DSMB *listMB, int &status)
 {
     static bool isSearch = false;
     static DSMB *searchResult = new DSMB();
@@ -384,7 +787,7 @@ MayBay *XuLy_QLMB(DSMB listMB)
     Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
     DrawRectangleRec(searchText, WHITE);
     DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
-    InputTextBox searchTextBox;
+    static InputTextBox searchTextBox;
     searchTextBox.textBox = searchText;
     searchTextBox.tittle = "Nhập nội dung tìm kiếm";
 
@@ -399,7 +802,7 @@ MayBay *XuLy_QLMB(DSMB listMB)
         strcpy(prev_key_word, key_word);
         if (key_word[0] != 0)
         {
-            *searchResult = listMB.Find_DSMB(key_word);
+            *searchResult = listMB->Find_DSMB(key_word);
             isSearch = true;
         }
         else
@@ -430,15 +833,29 @@ MayBay *XuLy_QLMB(DSMB listMB)
     // data
     static int current_page = 1;
     int n_page; // 1 + (spt/10)
+    if (status == 1)
+    {
+        current_page = 1 + (listMB->getsize() - 1) / 10;
+        isSearch = false;
+        index = (listMB->getsize() - 1) % 10;
+        status = 0;
+    }
+    else if (status == -1)
+    {
+        current_page = 1;
+        isSearch = false;
+        index = -1;
+        status = 0;
+    }
     if (!isSearch)
     {
-        n_page = 1 + (listMB.getsize() - 1) / 10;
+        n_page = 1 + (listMB->getsize() - 1) / 10;
         data = showList_QLMB(listMB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
     }
     else
     {
         n_page = 1 + (searchResult->getsize() - 1) / 10;
-        data = showList_QLMB(*searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+        data = showList_QLMB(searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
     }
 
     // Pick data
@@ -499,16 +916,15 @@ void CreateTable_QLMB()
     }
 }
 
-MayBay **showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW[])
+MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float cellW[])
 {
     typedef MayBay *MayBay_ptr;
     MayBay_ptr *result = new MayBay_ptr[10];
-    ;
     for (int i = 0; i < 10; i++)
     {
         result[i] = new MayBay();
     }
-    int size = listMB.getsize();
+    int size = listMB->getsize();
     int i = (current_page - 1) * 10;
     int j;
     if (current_page * 10 < size)
@@ -524,7 +940,7 @@ MayBay **showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float c
 
     for (i; i < j; i++)
     {
-        MayBay *MB = listMB.getMB(i);
+        MayBay *MB = listMB->getMB(i);
         result[i % 10] = MB;
         DrawTextEx(FontArial, intTochar(i + 1, 2), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, 2)), 30, 0, BLACK);
         DrawTextEx(FontArial, MB->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (i % 10) + 1, MB->getSoHieuMB()), 30, 0, BLACK);
@@ -860,10 +1276,10 @@ void ThanhQuanLy()
     const int button_height = 50;
 
     char *button_tittle[4];
-    button_tittle[0] = "QUẢN LÝ MÁY BAY",
-    button_tittle[1] = "QUẢN LÝ CHUYẾN BAY",
-    button_tittle[2] = "QUẢN LÝ VÉ",
-    button_tittle[3] = "QUẢN LÝ HÀNH KHÁCH";
+    button_tittle[0] = (char *)"QUẢN LÝ MÁY BAY",
+    button_tittle[1] = (char *)"QUẢN LÝ CHUYẾN BAY",
+    button_tittle[2] = (char *)"QUẢN LÝ VÉ",
+    button_tittle[3] = (char *)"QUẢN LÝ HÀNH KHÁCH";
 
     Vector2 buttonPos[5] =
         {
@@ -914,6 +1330,35 @@ void ThanhQuanLy()
                        button_height / 2.0f, 0, MauThanhQuanLy.text2);
         };
     }
+}
+
+bool Warning_NoData()
+{
+    DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330, GRAY);
+    DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70, DARKBLUE);
+    DrawTextEx(FontArial, "KHÔNG CÓ DỮ LIỆU!",
+               {CenterDataSetter(700, StartPos.x + 400, MeasureTextEx(FontArial, "KHÔNG CÓ DỮ LIỆU!", 55, 0).x),
+                CenterDataSetter(70, StartPos.y + 300, MeasureTextEx(FontArial, "A", 55, 0).y)},
+               55, 0, RED);
+    DrawTextEx(FontArial, "- Có vẻ bạn chưa chọn dữ liệu hoặc dữ liệu trống!", {StartPos.x + 200, StartPos.y + 375}, 55, 0, RED);
+    DrawTextEx(FontArial, "-> Hãy click vào 1 dòng trong bảng để lấy dữ liệu!", {StartPos.x + 200, StartPos.y + 445}, 55, 0, DARKGREEN);
+
+    Button OK;
+    OK.x = StartPos.x + 700;
+    OK.y = StartPos.y + 530;
+    OK.w = 100;
+    OK.h = 50;
+    OK.gotNothing = false;
+    OK.gotText = true;
+    OK.tittle = (char *)"OK";
+    OK.font = FontArial;
+    OK.BoMau = ArrowKey;
+
+    if (CreateButton(OK))
+    {
+        return true;
+    }
+    return false;
 }
 
 // ---Các hàm hỗ trợ ngoài vìa------------------------------------------------------------------------------------------------------
@@ -1109,51 +1554,47 @@ bool CreateButton(Button data)
     return false;
 }
 
-const char *CreateTextInputBox(InputTextBox data)
+const char *CreateTextInputBox(InputTextBox &data)
 {
-    static char name[120] = "\0";
     char name_cpy[120] = "\0";
     char *result = new char[120];
     const int font_size = data.textBox.height * per1000(700);
-    static bool done;
-    static bool mouseClickOnText = false;
-    static int letterCount = 0;
-    static int framesCounter = 0;
-    static int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0;
-    static int indexPoint = 0;
 
-    Vector2 textBoxPos = {data.textBox.x + 5, CenterDataSetter(data.textBox.height, data.textBox.y, MeasureTextEx(FontArial, name, font_size, 0).y)};
-
-    strcpy(name_cpy, name);
-    name_cpy[letterCount + indexPoint] = '\0';
+    Vector2 textBoxPos = {data.textBox.x + 5, CenterDataSetter(data.textBox.height, data.textBox.y, MeasureTextEx(FontArial, data.name, font_size, 0).y)};
+    Vector2 MousePos = {0.0f, 0.0f};
+    strcpy(name_cpy, data.name);
+    name_cpy[data.letterCount + data.indexPoint] = '\0';
 
     Vector2 textBoxDot = {data.textBox.x + MeasureTextEx(FontArial, name_cpy, font_size, 0).x, CenterDataSetter(data.textBox.height, data.textBox.y, MeasureTextEx(FontArial, name_cpy, font_size, 0).y)};
-    strcpy(result, name);
-    if (CheckCollisionPointRec(GetVMousePosition(), data.textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    strcpy(result, data.name);
+
+    if (data.editMode && data.name[0] == 0)
     {
-        mouseClickOnText = true;
-        if (data.editMode && name[0] == 0)
-        {
-            strcpy(name, data.tittle);
-            letterCount = getCharSize(name);
-        }
-        done = false;
+        strcpy(data.name, data.tittle);
+        data.letterCount = getCharSize(data.name);
+    }
+
+    MousePos = GetVMousePosition();
+    if (CheckCollisionPointRec(MousePos, data.textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+        data.mouseClickOnText = true;
+        data.done = false;
     }
     else if (IsKeyPressed(KEY_ENTER))
     {
-        mouseClickOnText = false;
+        data.mouseClickOnText = false;
         if (!data.showPreResult)
         {
-            name[0] = '\0';
-            indexPoint = 0;
-            letterCount = 0;
+            data.name[0] = '\0';
+            data.indexPoint = 0;
+            data.letterCount = 0;
         }
-        done = true;
+        data.done = true;
     }
-    else if (!CheckCollisionPointRec(GetVMousePosition(), data.textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-        mouseClickOnText = false;
+    else if (!CheckCollisionPointRec(MousePos, data.textBox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        data.mouseClickOnText = false;
 
-    if (CheckCollisionPointRec(GetVMousePosition(), data.textBox))
+    if (CheckCollisionPointRec(MousePos, data.textBox))
     {
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
@@ -1162,9 +1603,9 @@ const char *CreateTextInputBox(InputTextBox data)
         SetMouseCursor(1);
     }
 
-    if (mouseClickOnText)
+    if (data.mouseClickOnText)
     {
-        framesCounter++;
+        data.framesCounter++;
         int key = GetCharPressed();
         while (key > 0)
         {
@@ -1172,49 +1613,85 @@ const char *CreateTextInputBox(InputTextBox data)
             {
             case 1:
             {
-                if ((key >= 32) && (key <= 125) && (letterCount < 27))
+                if ((key >= 32) && (key <= 125) && (data.letterCount < 27))
                 {
                     if (((key >= 'a') && (key <= 'z')))
                         key -= 32;
-                    for (int i = letterCount; i > letterCount + indexPoint; i--)
+                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
                     {
-                        name[i] = name[i - 1];
+                        data.name[i] = data.name[i - 1];
                     }
-                    name[letterCount + indexPoint] = char(key);
-                    name[letterCount + 1] = '\0';
-                    letterCount++;
+                    data.name[data.letterCount + data.indexPoint] = char(key);
+                    data.name[data.letterCount + 1] = '\0';
+                    data.letterCount++;
                 }
                 break;
             };
             case 2:
             {
-                if (((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) || ((key >= 'A') && (key <= 'Z')) && (letterCount < 27))
+                if (((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
+                    ((key >= 'A') && (key <= 'Z')) &&
+                        (data.letterCount < 27))
                 {
-                    if (((key >= 'a') && (key <= 'z')))
-                        key -= 32;
-                    for (int i = letterCount; i > letterCount + indexPoint; i--)
+                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
                     {
-                        name[i] = name[i - 1];
+                        data.name[i] = data.name[i - 1];
                     }
-                    name[letterCount + indexPoint] = char(key);
-                    name[letterCount + 1] = '\0';
-                    letterCount++;
+                    data.name[data.letterCount + data.indexPoint] = char(key);
+                    data.name[data.letterCount + 1] = '\0';
+                    data.letterCount++;
                 }
                 break;
             }
             case 3:
             {
-                if (((key >= 'a') && (key <= 'z')) || ((key >= 'A') && (key <= 'Z')) && (letterCount < 27))
+                if (((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
+                    ((key >= 'A') && (key <= 'Z')) &&
+                        (data.letterCount < 27))
                 {
                     if (((key >= 'a') && (key <= 'z')))
                         key -= 32;
-                    for (int i = letterCount; i > letterCount + indexPoint; i--)
+                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
                     {
-                        name[i] = name[i - 1];
+                        data.name[i] = data.name[i - 1];
                     }
-                    name[letterCount + indexPoint] = char(key);
-                    name[letterCount + 1] = '\0';
-                    letterCount++;
+                    data.name[data.letterCount + data.indexPoint] = char(key);
+                    data.name[data.letterCount + 1] = '\0';
+                    data.letterCount++;
+                }
+                break;
+            }
+
+            case 4:
+            {
+                if (((key >= 'a') && (key <= 'z')) ||
+                    ((key >= 'A') && (key <= 'Z')) &&
+                        (data.letterCount < 27))
+                {
+                    if (((key >= 'a') && (key <= 'z')))
+                        key -= 32;
+                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
+                    {
+                        data.name[i] = data.name[i - 1];
+                    }
+                    data.name[data.letterCount + data.indexPoint] = char(key);
+                    data.name[data.letterCount + 1] = '\0';
+                    data.letterCount++;
+                }
+                break;
+            }
+            case 5:
+            {
+                if (((key >= '0') && (key <= '9')) &&
+                    (data.letterCount < 27))
+                {
+                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
+                    {
+                        data.name[i] = data.name[i - 1];
+                    }
+                    data.name[data.letterCount + data.indexPoint] = char(key);
+                    data.name[data.letterCount + 1] = '\0';
+                    data.letterCount++;
                 }
                 break;
             }
@@ -1223,61 +1700,80 @@ const char *CreateTextInputBox(InputTextBox data)
             key = GetCharPressed();
         }
         if (IsKeyDown(KEY_BACKSPACE))
-            fHold_BS++;
+            data.fHold_BS++;
         else
-            fHold_BS = 0;
+            data.fHold_BS = 0;
         if (IsKeyDown(KEY_RIGHT))
-            fHold_RIGHT++;
+            data.fHold_RIGHT++;
         else
-            fHold_RIGHT = 0;
+            data.fHold_RIGHT = 0;
         if (IsKeyDown(KEY_LEFT))
-            fHold_LEFT++;
+            data.fHold_LEFT++;
         else
-            fHold_LEFT = 0;
-        if ((IsKeyDown(KEY_BACKSPACE) && letterCount + indexPoint > 0 && (fHold_BS > 60) && (fHold_BS % 3 == 0)) ||
-            IsKeyPressed(KEY_BACKSPACE) && letterCount + indexPoint > 0)
+            data.fHold_LEFT = 0;
+        if ((IsKeyDown(KEY_BACKSPACE) &&
+             data.letterCount + data.indexPoint > 0 &&
+             (data.fHold_BS > 60) && (data.fHold_BS % 3 == 0)) ||
+            IsKeyPressed(KEY_BACKSPACE) && data.letterCount + data.indexPoint > 0)
         {
-            for (int i = letterCount + indexPoint - 1; i < letterCount; i++)
+            for (int i = data.letterCount + data.indexPoint - 1; i < data.letterCount; i++)
             {
-                name[i] = name[i + 1];
+                data.name[i] = data.name[i + 1];
             }
-            letterCount--;
-            if (letterCount < 0)
-                letterCount = 0;
-            name[letterCount] = '\0';
+            data.letterCount--;
+            if (data.letterCount < 0)
+                data.letterCount = 0;
+            data.name[data.letterCount] = '\0';
         }
-        if ((IsKeyDown(KEY_LEFT) && (letterCount + indexPoint) > 0 && (fHold_LEFT > 60) && (fHold_LEFT % 3 == 0)) ||
-            (IsKeyPressed(KEY_LEFT) && (letterCount + indexPoint) > 0))
+        if ((IsKeyDown(KEY_LEFT) &&
+             (data.letterCount + data.indexPoint) > 0 &&
+             (data.fHold_LEFT > 60) && (data.fHold_LEFT % 3 == 0)) ||
+            (IsKeyPressed(KEY_LEFT) && (data.letterCount + data.indexPoint) > 0))
         {
-            indexPoint--;
+            data.indexPoint--;
         }
-        if ((IsKeyDown(KEY_RIGHT) && indexPoint < 0 && (fHold_RIGHT > 60) && (fHold_RIGHT % 3 == 0)) ||
-            (IsKeyPressed(KEY_RIGHT) && indexPoint < 0))
+        if ((IsKeyDown(KEY_RIGHT) &&
+             data.indexPoint < 0 &&
+             (data.fHold_RIGHT > 60) &&
+             (data.fHold_RIGHT % 3 == 0)) ||
+            (IsKeyPressed(KEY_RIGHT) && data.indexPoint < 0))
         {
-            indexPoint++;
+            data.indexPoint++;
         }
     }
     else
-        framesCounter = 0;
+        data.framesCounter = 0;
     DrawRectangleRec(data.textBox, data.MauNen);
     DrawRectangleRoundedLines(data.textBox, 0, 1, 2, data.MauVien);
-    if (name[0] != '\0')
-        DrawTextEx(FontArial, name, textBoxPos, font_size, 0, data.MauChu);
+    if (data.name[0] != '\0')
+        DrawTextEx(FontArial, data.name, textBoxPos, font_size, 0, data.MauChu);
     else
         DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, data.MauChu);
     // cout << "index: " << indexPoint << endl;
-    if (mouseClickOnText && ((framesCounter % 120 >= 15)))
+    if (data.mouseClickOnText && ((data.framesCounter % 120 >= 15)))
         DrawTextEx(FontArial, "|", textBoxDot, font_size, 0, MAROON);
     if (!data.returnIfDone)
         return result;
     else
     {
-        if (done)
+        if (data.done)
             return result;
         else
             return "\0";
     };
     return "\0";
+}
+void resetInputTextBox(InputTextBox &box)
+{
+    box.name[0] = 0;
+    box.fHold_BS = 0;
+    box.fHold_RIGHT = 0;
+    box.fHold_LEFT = 0;
+    box.done = true;
+    box.mouseClickOnText = false;
+    box.letterCount = 0;
+    box.framesCounter = 0;
+    box.indexPoint = 0;
 }
 
 Vector2 GetVMousePosition()
@@ -1297,7 +1793,7 @@ Vector2 GetVMousePosition()
 // main function
 void mainGraphics()
 {
-    ifstream DataMB("../data/dataMB.txt", ios::out);
+    ifstream DataMB("../data/dataMB.txt", ios::in);
     DSMB *listMB = new DSMB();
     listMB->ReadFromFile(DataMB);
 
@@ -1330,7 +1826,7 @@ void mainGraphics()
         }
         case 1:
         {
-            CreatePage_QLMB(*listMB);
+            CreatePage_QLMB(listMB);
             break;
         }
         case 2:

@@ -50,7 +50,7 @@ struct Button;
  * @param MauChu mặc định: đen
  * @param MauVien mặc định: đen
  * @param not_default textBox, tittle, mode
- * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ)
+ * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ IN HOA và số) (4 - chỉ chữ) (5 - chỉ số)
  *
  */
 struct InputTextBox;
@@ -64,10 +64,15 @@ void CreateHomePage();       // done
 
 void CreatePageBackground(int SoHang); // done
 
-void CreatePage_QLMB(DSMB listMB);
-MayBay *XuLy_QLMB(DSMB listMB);
+void CreatePage_QLMB(DSMB *listMB);
+MayBay *XuLy_QLMB(DSMB *listMB, int &status);
 void CreateTable_QLMB();
-MayBay **showList_QLMB(DSMB listMB, Vector2 start_pos, int current_page, float cellW[]);
+MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float cellW[]);
+bool Popup_ThemMB(DSMB *listMB, int &status);
+bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb);
+bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status);
+
+void CreatePopupBackground();
 
 void CreatePage_QLCB();
 void CreateTable_QLCB();
@@ -81,6 +86,7 @@ void CreateTable_QLHK();
 void CreatePage_GioiThieu();
 
 void ThanhQuanLy(); // done
+bool Warning_NoData();
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[], float cellH);
 Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[], const char *cell_tittle[]);
@@ -93,7 +99,8 @@ int SwitchPage(int current_page, int n_page, Vector2 pos);
 // bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau); // done
 // bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height, bool BoTron, Texture2D Picture, BoMauNut BoMau);  // done
 bool CreateButton(Button data);
-const char *CreateTextInputBox(InputTextBox data);
+const char *CreateTextInputBox(InputTextBox &data);
+void resetInputTextBox(InputTextBox &box);
 
 Vector2 GetVMousePosition(); // done
 void mainGraphics();

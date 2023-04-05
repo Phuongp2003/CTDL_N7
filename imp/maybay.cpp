@@ -174,7 +174,7 @@ int DSMB::Find_MB(char *_SoHieuMB) // Hàm tìm kiếm thì khi nhập index th�
 {
     for (int i = 0; i < this->size; i++)
     {
-        if (*this->data[i]->getSoHieuMB() == *_SoHieuMB)
+        if (strcmp(this->data[i]->getSoHieuMB(), _SoHieuMB) == 0)
             return i;
     }
     return -1;
@@ -211,6 +211,7 @@ void DSMB::Delete_DSMB()
     {
         delete data[i];
     }
+    this->size = 0;
 }
 MayBay *DSMB::getMB(int index)
 {
@@ -220,6 +221,7 @@ void DSMB::ReadFromFile(ifstream &file)
 {
     if (file.is_open())
     {
+        Delete_DSMB();
         std::string sohieumb, loaimb, soday, sodong;
         std::string line = "";
         while (std::getline(file, line))

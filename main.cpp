@@ -1,8 +1,8 @@
 #include "header/libs.h"
-// #include "windows.h"
 
 using namespace std;
-int main()
+// using std::filesystem::current_path;
+int main(int argc, const char *argv[])
 {
      // string test;
      // string key;
@@ -14,10 +14,12 @@ int main()
      //      cout << "yes" << endl;
      // else
      //      cout << "no" << endl;
+     char tmp[256];
+     getcwd(tmp, 256);
+     cout << "Current working directory: " << argv[1] << endl;
 
      InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "First Screen");
      mainGraphics();
      CloseWindow();
      return 0;
 }
-
