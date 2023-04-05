@@ -10,7 +10,7 @@ ChuyenBay::ChuyenBay()
 }
 
 ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen,
-                     Date _NgayGio, char *_MaMayBay)
+                     Date _NgayGio, const char *_MaMayBay)
 {
     strcpy(this->MaCB, _MaCB);
     strcpy(this->IDMayBay, _MaMayBay);
@@ -44,7 +44,7 @@ int ChuyenBay::getTrangThai()
     return this->TrangThai;
 }
 
-char *ChuyenBay::getMaMayBay()
+const char *ChuyenBay::getMaMayBay()
 {
     return this->IDMayBay;
 }
@@ -76,9 +76,20 @@ void ChuyenBay::ThucHienCB(DSMB *DanhSachMB)
     //     tmp->TangSLTHCB();
 }
 
+bool ChuyenBay::operator<(const ChuyenBay &other)
+{
+    int compare = strcmp(MaCB, other.MaCB);
+    return (compare < 0) ? true : false;
+}
+
 ChuyenBay *NodeCB::getNode()
 {
     return this->node;
+}
+
+void NodeCB::setNode(ChuyenBay *node)
+{
+    this->node = node;
 }
 
 bool NodeCB::hasNext()
@@ -131,6 +142,11 @@ void DanhSachCB::push_front(NodeCB *node)
     this->head->setNext(node);
     this->head = node;
 }
+void DanhSachCB::setHead(NodeCB *head)
+{
+    this->head=head;
+}
+
 NodeCB *DanhSachCB::getHead()
 {
     return head;
@@ -219,4 +235,132 @@ DanhSachCB DanhSachCB::LocDSCB(string _keyword)
         tmp = tmp->getNext();
     }
     return *result;
+}
+void  DanhSachCB::ReadFromFile(ifstream &file)
+{
+    if(file.is_open())
+    {
+        string macb,noiden,trangthai,idmaybay,ngay,thang,nam,gio,phut;
+        string line="";
+        NodeCB *node;
+        ChuyenBay *cb;
+        while (getline(file, line))
+        {
+            stringstream s(line);
+            getline(s, macb, '|');
+            getline(s, idmaybay, '|');
+            getline(s, ngay, '|');
+            getline(s, thang, '|');
+            getline(s, nam, '|');
+            getline(s, gio, '|');
+            getline(s, phut, '|');
+            getline(s, noiden, '|');            
+            cb=new ChuyenBay(macb.c_str(),noiden,Date(stoi(gio),stoi(phut),stoi(ngay),stoi(thang),stoi(nam)),idmaybay.c_str());
+            node->setNode(cb);
+            if(head ==NULL)
+            {
+                push_back(node);
+            }
+            else push_front(node);
+        }
+        file.close();
+    }
+    else
+        cout << "Error" << endl;
+}
+void  DanhSachCB::WritetOfFile(ofstream &file)
+{
+    if (file.is_open())
+    {
+        NodeCB *tmp = this->head;
+        while (tmp != NULL)//
+        {
+            file<<tmp->getNode()->getMaCB()<<"|"
+                <<tmp->getNode()->getMaMayBay()<<"|"
+                <<tmp->getNode()->getNgayGio().getNgay()<<"|"
+                <<tmp->getNode()->getNgayGio().getThang()<<"|"
+                <<tmp->getNode()->getNgayGio().getNam()<<"|"
+                <<tmp->getNode()->getNgayGio().getGio()<<"|"
+                <<tmp->getNode()->getNgayGio().getPhut()<<"|"
+                <<tmp->getNode()->getNoiDen()<<"|";
+
+            tmp = tmp->getNext();
+        }  
+    }else
+    {
+        cout << "Error";
+    }
+    file.close();
+}
+
+
+NodeCB *DanhSachCB::merge(NodeCB *left, NodeCB *right)
+{
+    if (left == NULL)
+    {
+        return right;
+    }
+    if (right == NULL)
+    {
+        return left;
+    }
+
+    NodeCB *final;
+
+    if (left->getNode() < right->getNode())
+    {
+        final = left;
+        final->setNext(merge(left->getNext(), right));
+    }
+    else
+    {
+        final = right;
+        final->setNext(merge(left, right->getNext()));
+    }
+    return final;
+}
+
+NodeCB *DanhSachCB::mid_point(NodeCB *node)
+{
+    if (node == NULL || !node->hasNext())
+    {
+        return node;
+    }
+
+    NodeCB *slow = head;
+    NodeCB *fast = head;
+
+    while (fast != NULL && fast->hasNext())
+    {
+        fast = fast->getNext();
+
+        if (!fast->hasNext())
+        {
+            break;
+        }
+
+        fast = fast->getNext();
+        slow = slow->getNext();
+    }
+
+    return slow;
+}
+
+NodeCB *DanhSachCB::sort(NodeCB *node)
+{
+    if (node == NULL || !node->hasNext())
+    {
+        return node;
+    }
+
+    NodeCB *mid = mid_point(node);
+    NodeCB *left = node;
+    NodeCB *right = mid->getNext();
+    mid->setNext(NULL);
+
+    left = sort(left);
+    right = sort(right);
+
+    NodeCB *final = merge(left, right);
+    return final;
 }
