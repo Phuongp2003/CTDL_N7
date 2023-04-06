@@ -1,5 +1,7 @@
 #include "../header/ngaythang.h"
-
+#include<sstream>
+#include<string>
+using std::string;
 Date::Date() {}
 
 Date::Date(int _Gio, int _Phut, int _Ngay, int _Thang, int _Nam)
@@ -145,4 +147,49 @@ bool Date::checkNgayGio()
     if (t_nam && t_thang && t_ngay && t_gio && t_phut)
         return true; // là thời gian nhập vào hợp lý
     return false;
+}
+string Date::PrintDateHour()
+{
+    
+    return intToString(Ngay,2) + " / " 
+    + intToString(Thang,2) + " / " 
+    + intToString(Nam,4) + " " 
+    + intToString(Gio,2) +" : " 
+    + intToString(Phut,2);
+}
+string Date::PrintDate()
+{
+    return intToString(Ngay,2) + " / " 
+    + intToString(Thang,2) + " / " 
+    + intToString(Nam,4);
+}
+string Date::PrintHour()
+{
+    return intToString(Gio,2) +" : " + intToString(Phut,2);
+}
+string intToString(int num,int size) {
+    std::stringstream ss;
+    ss << num;
+    
+    std::string str = ss.str();
+    if(str.length() < size)
+    {
+        int len =str.length();
+        for(int i=0;i<size-len;i++)
+        {
+            str="0"+str;
+        }
+    }
+    
+    return str;
+}
+int main()
+{
+    Date d=Date(1,2,1,2,2);
+    cout<<d.PrintDateHour();
+    cout<<endl;
+    cout<<d.PrintDate();
+    cout<<endl;
+    cout<<d.PrintHour();
+    cout<<endl; 
 }
