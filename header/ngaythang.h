@@ -26,7 +26,11 @@ public:
     bool checkNgay();
     bool checkGio();
     bool checkNgayGio();
+    string PrintDateHour();
+    string PrintDate();
+    string PrintHour();
 };
-
+// dd/mm/yyyy hh:mm
 // function
+string intToString(int num,int size);
 bool laNamNhuan(int nInput);
