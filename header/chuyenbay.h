@@ -92,6 +92,7 @@ private:
     NodeCB *next;
 
 public:
+    NodeCB();
     ChuyenBay *getNode();
     void setNode(ChuyenBay *node);
     bool hasNext();
@@ -110,6 +111,9 @@ public:
     DanhSachCB(NodeCB *cb);
     void setHead(NodeCB *head);
     NodeCB *getHead();
+
+    void setSize(int value);
+    int getSize();
     void push(NodeCB *currNode, NodeCB *node);
     void push_back(NodeCB *node);
     void push_front(NodeCB *node);
@@ -118,7 +122,7 @@ public:
      *
      */
     void pop(NodeCB *node);
-    void pop_first();//
+    void pop_first(); //
     void pop_back();
     ChuyenBay *TimCB(string _MaCB);
     DanhSachCB TimDSCB(Date date, string noiden);

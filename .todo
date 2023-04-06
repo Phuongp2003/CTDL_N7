@@ -1,0 +1,14 @@
+Sau khi hoàn thành pj, đổi cây file thành:
+
+project_folder
+|
+|-build-|-main.exe
+|
+|-src---|-header
+|       |-imp
+|       |-main.cpp
+|
+|-res---|-img
+|       |-font
+|
+|-lib

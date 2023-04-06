@@ -109,7 +109,8 @@ Texture2D PNG_arrowRight;
 
 void LoadResources()
 {
-    FontArial = LoadFontEx("../src/font/arial.ttf", 96, 0, 9812);
+    // FontArial = LoadFontEx("../src/font/arial.ttf", 96, 0, 9812);
+    FontArial = LoadFontEx("c:/Windows/Fonts/arial.ttf", 96, 0, 9812);
     GenTextureMipmaps(&FontArial.texture);
     SetTextureFilter(FontArial.texture, TEXTURE_FILTER_TRILINEAR);
 
@@ -959,11 +960,11 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
     {
         MayBay *MB = listMB->getMB(i);
         result[i % 10] = MB;
-        DrawTextEx(FontArial, intTochar(i + 1, n_char), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, n_char)), 30, 0, BLACK);
-        DrawTextEx(FontArial, MB->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (i % 10) + 1, MB->getSoHieuMB()), 30, 0, BLACK);
-        DrawTextEx(FontArial, MB->getLoaiMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 3, (i % 10) + 1, MB->getLoaiMB()), 30, 0, BLACK);
-        DrawTextEx(FontArial, intTochar(MB->getSoDay(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (i % 10) + 1, intTochar(MB->getSoDay(), 3)), 30, 0, BLACK);
-        DrawTextEx(FontArial, intTochar(MB->getSoDong(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (i % 10) + 1, intTochar(MB->getSoDong(), 3)), 30, 0, BLACK);
+        DrawTextEx(FontArial, intTochar(i + 1, n_char), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, n_char), 30), 30, 0, BLACK);
+        DrawTextEx(FontArial, MB->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (i % 10) + 1, MB->getSoHieuMB(), 30), 30, 0, BLACK);
+        DrawTextEx(FontArial, MB->getLoaiMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 3, (i % 10) + 1, MB->getLoaiMB(), 30), 30, 0, BLACK);
+        DrawTextEx(FontArial, intTochar(MB->getSoDay(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (i % 10) + 1, intTochar(MB->getSoDay(), 3), 30), 30, 0, BLACK);
+        DrawTextEx(FontArial, intTochar(MB->getSoDong(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (i % 10) + 1, intTochar(MB->getSoDong(), 3), 30), 30, 0, BLACK);
     }
 
     return result;
@@ -971,15 +972,13 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
 
 // =-ChuyenBay
 
-void CreatePage_QLCB()
+void CreatePage_QLCB(DanhSachCB *listCB)
 {
     CreatePageBackground(5);
-    // const char *test = CreateTextInputBox({60, 270}, 1080, 60, "test", true, WHITE, BROWN, BLACK);
-    // char hello[27] = "\0";
-    // strcpy(hello, test);
-    // if (hello[0] != '\0')
-    //     cout << hello << endl;
-    // CreateTable();
+    static ChuyenBay *data = new ChuyenBay();
+    static char *preResult = (char *)"\0";
+    static int status = 0;
+    static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
 
     // tittle
     DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
@@ -1026,7 +1025,8 @@ void CreatePage_QLCB()
     {
         cout << "Dat ve" << endl;
     }
-    CreateTable_QLCB();
+    data = XuLy_QLCB(listCB, status);
+    // CreateTable_QLCB();
 }
 
 void CreateTable_QLCB()
@@ -1041,6 +1041,182 @@ void CreateTable_QLCB()
     {
         DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
     }
+}
+
+ChuyenBay *XuLy_QLCB(DanhSachCB *listCB, int &status)
+{
+    static bool isSearch = false;
+    static DanhSachCB *searchResult = new DanhSachCB();
+    static ChuyenBay *result;
+    static ChuyenBay **data;
+    static int index = -1;
+
+    // search
+    Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
+    DrawRectangleRec(searchText, WHITE);
+    DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
+    static InputTextBox searchTextBox;
+    searchTextBox.textBox = searchText;
+    searchTextBox.tittle = "Nhập nội dung tìm kiếm";
+
+    DrawTextEx(FontArial, "Search", {searchText.x, searchText.y}, 40, 0, BLUE);
+
+    static char *prev_key_word = new char[259];
+    const char *key_word =
+        CreateTextInputBox(searchTextBox);
+    if (strcmp(prev_key_word, key_word) != 0)
+    {
+
+        strcpy(prev_key_word, key_word);
+        if (key_word[0] != 0)
+        {
+            // *searchResult = listCB->LocDSCB(key_word);
+            isSearch = true;
+        }
+        else
+            isSearch = false;
+    }
+    Button button;
+
+    button.x = searchText.x + searchText.width;
+    button.y = searchText.y;
+    button.w = 200;
+    button.h = 50;
+    button.BoTron = false;
+    button.gotNothing = false;
+    button.gotText = true;
+    button.tittle = "TÌM KIẾM";
+    button.font = FontArial;
+    button.BoMau = ArrowKey;
+
+    if (CreateButton(button))
+    {
+        cout << "Tim kiem" << endl;
+    }
+
+    // table
+    float cellW[6] = {90, 230, 230, 200, 180, 150};
+    CreateTable_QLCB();
+
+    // data
+    static int current_page = 1;
+    int n_page; // 1 + (spt/10)
+    if (status == 1)
+    {
+        current_page = 1 + (listCB->getSize() - 1) / 10;
+        isSearch = false;
+        index = (listCB->getSize() - 1) % 10;
+        status = 0;
+    }
+    else if (status == -1)
+    {
+        current_page = 1;
+        isSearch = false;
+        index = -1;
+        status = 0;
+    }
+    if (!isSearch)
+    {
+        n_page = 1 + (listCB->getSize() - 1) / 10;
+        data = showList_QLCB(listCB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+    }
+    else
+    {
+        n_page = 1 + (searchResult->getSize() - 1) / 10;
+        data = showList_QLCB(searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
+    }
+
+    // Pick data
+    Button data_picker[10];
+
+    for (int i = 0; i < 10; i++)
+    {
+        data_picker[i].x = StartPos.x + 60;
+        data_picker[i].y = StartPos.y + 60 + 100 + 80 + 50 + i * 40;
+        data_picker[i].w = 1080;
+        data_picker[i].h = 40;
+        data_picker[i].firstRounder = false;
+        data_picker[i].RounderChangeColor = true;
+        data_picker[i].BoMau.RounderHovered = YELLOW;
+        data_picker[i].BoMau.RounderPressed = RED;
+        if (CreateButton(data_picker[i]))
+        {
+            if (index != i)
+            {
+
+                index = i;
+            }
+            else
+                index = -1;
+        }
+        if (index == i)
+            DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y, data_picker[i].w, data_picker[i].h}, 0, 1, 2, GREEN);
+    }
+    if (index >= 0)
+    {
+        result = data[index];
+    }
+    else
+        result = new ChuyenBay();
+
+    // page and switch page
+    int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+    if (current_page != swp)
+        index = -1;
+    current_page = swp;
+    if (current_page > n_page)
+        current_page = 1;
+    return result;
+}
+
+ChuyenBay **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, float cellW[])
+{
+    typedef ChuyenBay *ChuyenBay_ptr;
+    ChuyenBay_ptr *result = new ChuyenBay_ptr[10];
+    for (int i = 0; i < 10; i++)
+    {
+        result[i] = new ChuyenBay();
+    }
+    int size = listCB->getSize();
+
+    int n_char;
+    if (size <= 99)
+        n_char = 2;
+    else if (size >= 100 && size <= 999)
+        n_char = 3;
+    else
+        n_char = 4;
+    int i = (current_page - 1) * 10;
+    int j;
+    if (current_page * 10 < size)
+        j = current_page * 10;
+    else
+    {
+        j = size;
+        for (int i = size % 10; i < 10; i++)
+        {
+            result[i] = new ChuyenBay();
+        }
+    }
+    NodeCB *tmp = listCB->getHead();
+    for (int k = 0; k < j; k++)
+    {
+        if (k >= i)
+        {
+            ChuyenBay *CB = tmp->getNode();
+
+            result[i % 10] = CB;
+            DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, (k % 10) + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, CB->getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, (k % 10) + 1, CB->getMaCB(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, CB->getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, (k % 10) + 1, CB->getMaMayBay(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, "dd/mm/yyyy hh:mm", GetCellTextPos_Mid(start_pos, 6, cellW, 4, (k % 10) + 1, "dd/mm/yyyy hh:mm", 20), 20, 0, BLACK);
+            DrawTextEx(FontArial, CB->getNoiDen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, (k % 10) + 1, CB->getNoiDen().data(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, intTochar(CB->getTrangThai(), 1), GetCellTextPos_Mid(start_pos, 6, cellW, 6, (k % 10) + 1, intTochar(CB->getTrangThai(), 1), 30), 30, 0, BLACK);
+        }
+        tmp = tmp->getNext();
+    }
+
+    return result;
 }
 
 void CreatePage_QLVe()
@@ -1097,60 +1273,6 @@ void CreatePage_QLHK()
     CreateTable_QLHK();
     // CreateTable();
 }
-// void XuLy_QLHK(DsHanhKhach listHK)
-// {
-//     static bool isSearch = false;
-//     static DsHanhKhach *searchResult = new DsHanhKhach();
-//     // search
-//     Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
-//     DrawRectangleRec(searchText, WHITE);
-//     DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
-//     DrawTextEx(FontArial, "Search", {searchText.x, searchText.y}, 40, 0, BLUE);
-//     static char *prev_key_word = new char[259];
-//     const char *key_word =
-//         CreateTextInputBox({StartPos.x + 60, StartPos.y + 60 + 100 + 15}, 880, 50,
-//                            "Nhập nội dung tìm kiếm",
-//                            true, false,
-//                            WHITE, BLACK, BLACK);
-//     if (strcmp(prev_key_word, key_word) != 0)
-//     {
-
-//         strcpy(prev_key_word, key_word);
-//         if (key_word[0] != 0)
-//         {
-//             *searchResult = listHK.search(key_word);
-//             isSearch = true;
-//             // current_page=1;
-//         }
-//         else
-//             isSearch = false;
-//     }
-//     if (CreateButton(searchText.x + searchText.width, searchText.y, 200, 50, false, "TÌM KIẾM", FontArial, ArrowKey))
-//     {
-//         cout << "Tim kiem" << endl;
-//     }
-
-//     // table
-//     float cellW[5] = {100, 300, 380, 150, 150};
-//     CreateTable_QLHK();
-
-//     // data
-//     static int current_page = 1;
-//     int n_page; // 1 + (spt/10)
-//     if (!isSearch)
-//     {
-//         n_page = 1 + (ListHK.getsize() - 1) / 10;
-//         showList_QLMB(ListHK, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
-//     }
-//     else
-//     {
-//         n_page = 1 + (searchResult->getsize() - 1) / 10;
-//         showList_QLMB(*searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
-//     }
-
-//     // page and switch page
-//     current_page = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-// }
 
 void CreateTable_QLHK()
 {
@@ -1223,7 +1345,7 @@ void CreateTable(Vector2 vitriBang, int soCot, float cellW[], float total_cellW)
     DrawRectangleRoundedLines(hightlight_table, 0, 0, 3, BLACK);
 }
 
-Vector2 GetCellTextPos_Left(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y)
+Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text, float fontSize)
 {
     Vector2 ans;
     float cellPosX[soCot];
@@ -1232,36 +1354,8 @@ Vector2 GetCellTextPos_Left(Vector2 vitriBang, int soCot, float cellW[], int vi_
     {
         cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
     }
-    ans = {cellPosX[vi_tri_x - 1] + 10,
-           CenterDataSetter(40, StartPos.y + 60 + 100 + 80 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, "A", 30, 0).y)};
-    return ans;
-}
-
-Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text)
-{
-    Vector2 ans;
-    float cellPosX[soCot];
-    cellPosX[0] = vitriBang.x;
-    for (int i = 1; i < soCot; i++)
-    {
-        cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
-    }
-    ans = {CenterDataSetter(cellW[vi_tri_x - 1], cellPosX[vi_tri_x - 1], MeasureTextEx(FontArial, text, 30, 0).x),
-           CenterDataSetter(40, vitriBang.y + 50 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, text, 30, 0).y)};
-    return ans;
-}
-
-Vector2 GetCellTextPos_Right(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text)
-{
-    Vector2 ans;
-    float cellPosX[soCot];
-    cellPosX[0] = vitriBang.x;
-    for (int i = 1; i < soCot; i++)
-    {
-        cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
-    }
-    ans = {cellPosX[vi_tri_x - 1] + cellW[vi_tri_x - 1] - MeasureTextEx(FontArial, text, 30, 0).x - 10,
-           CenterDataSetter(50, StartPos.y + 60 + 100 + 80 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, "A", 40, 0).y)};
+    ans = {CenterDataSetter(cellW[vi_tri_x - 1], cellPosX[vi_tri_x - 1], MeasureTextEx(FontArial, text, fontSize, 0).x),
+           CenterDataSetter(40, vitriBang.y + 50 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, text, fontSize, 0).y)};
     return ans;
 }
 
@@ -1819,12 +1913,13 @@ void mainGraphics()
     ifstream DataMB("../data/dataMB.txt", ios::in);
     DSMB *listMB = new DSMB();
     listMB->ReadFromFile(DataMB);
+    DataMB.close();
 
-    DSMB searchR = listMB->Find_DSMB("011");
-    for (int i = 0; i < searchR.getsize(); i++)
-    {
-        searchR.getDSMB();
-    }
+    ifstream DataCB("../data/dataCB.txt", ios::in);
+    DanhSachCB *listCB = new DanhSachCB();
+    listCB->ReadFromFile(DataCB);
+    DataCB.close();
+
     LoadResources();
 
     SetConfigFlags(FLAG_MSAA_4X_HINT);
@@ -1854,7 +1949,7 @@ void mainGraphics()
         }
         case 2:
         {
-            CreatePage_QLCB();
+            CreatePage_QLCB(listCB);
             break;
         }
         case 3:

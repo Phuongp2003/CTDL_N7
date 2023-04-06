@@ -58,11 +58,6 @@ DSVeMayBay *ChuyenBay::getDSVe()
 {
     return this->DSVe;
 }
-// VeMayBay* ChuyenBay::GetDSVeTrong()
-// {
-//     VeMayBay *DSVeTrong=new VeMayBay[DSVe->getSoVeToiDa()];
-//     for(int )
-// }
 
 /**
  * @brief Đây là hàm thử nghiệm
@@ -87,6 +82,12 @@ ChuyenBay *NodeCB::getNode()
     return this->node;
 }
 
+NodeCB::NodeCB()
+{
+    this->node = NULL;
+    this->next = NULL;
+}
+
 void NodeCB::setNode(ChuyenBay *node)
 {
     this->node = node;
@@ -94,14 +95,15 @@ void NodeCB::setNode(ChuyenBay *node)
 
 bool NodeCB::hasNext()
 {
-    if (this->next != NULL)
-        return true;
-    return false;
+    if (this->next == NULL)
+        return false;
+    return true;
 }
 
 void NodeCB::setNext(NodeCB *node)
 {
-    node->next = this->next;
+    if (this->next != NULL)
+        node->next = this->next;
     this->next = node;
 }
 
@@ -114,16 +116,19 @@ NodeCB *NodeCB::getNext()
 DanhSachCB::DanhSachCB()
 {
     this->head = NULL;
+    size = 0;
 }
 
 DanhSachCB::DanhSachCB(NodeCB *node)
 {
     this->head = node;
+    size++;
 }
 
 void DanhSachCB::push(NodeCB *currNode, NodeCB *node)
 {
     currNode->setNext(node);
+    size++;
 }
 
 void DanhSachCB::push_back(NodeCB *node)
@@ -135,22 +140,39 @@ void DanhSachCB::push_back(NodeCB *node)
         tmp = tmp->getNext();
     }
     tmp->setNext(node);
+    size++;
 }
 
 void DanhSachCB::push_front(NodeCB *node)
 {
-    this->head->setNext(node);
-    this->head = node;
+    if (this->head == NULL)
+    {
+        setHead(node);
+        size = 1;
+    }
+    else
+    {
+        this->head->setNext(node);
+        this->head = node;
+    }
+    size++;
 }
 void DanhSachCB::setHead(NodeCB *head)
 {
-    this->head=head;
+    this->head = head;
+    size++;
 }
 
 NodeCB *DanhSachCB::getHead()
 {
     return head;
 }
+
+int DanhSachCB::getSize()
+{
+    return size - 1;
+}
+
 void DanhSachCB::pop(NodeCB *node)
 {
     if (node == this->head)
@@ -174,17 +196,24 @@ void DanhSachCB::pop(NodeCB *node)
 
 void DanhSachCB::pop_first()
 {
-    this->head = this->head->getNext();
+    if (this->head != NULL)
+    {
+        this->head = this->head->getNext();
+        size--;
+    }
 }
 
 void DanhSachCB::pop_back()
 {
+    if (this->head == NULL)
+        return;
     NodeCB *tmp = this->head;
     while (tmp->getNext()->hasNext())
     {
         tmp = tmp->getNext();
     }
     tmp->setNext(NULL);
+    size--;
 }
 
 ChuyenBay *DanhSachCB::TimCB(string _MaCB)
@@ -236,14 +265,13 @@ DanhSachCB DanhSachCB::LocDSCB(string _keyword)
     }
     return *result;
 }
-void  DanhSachCB::ReadFromFile(ifstream &file)
+void DanhSachCB::ReadFromFile(ifstream &file)
 {
-    if(file.is_open())
+    if (file.is_open())
     {
-        string macb,noiden,trangthai,idmaybay,ngay,thang,nam,gio,phut;
-        string line="";
-        NodeCB *node;
-        ChuyenBay *cb;
+        string macb, noiden, trangthai, idmaybay, ngay, thang, nam, gio, phut;
+        string line = "";
+
         while (getline(file, line))
         {
             stringstream s(line);
@@ -254,45 +282,47 @@ void  DanhSachCB::ReadFromFile(ifstream &file)
             getline(s, nam, '|');
             getline(s, gio, '|');
             getline(s, phut, '|');
-            getline(s, noiden, '|');            
-            cb=new ChuyenBay(macb.c_str(),noiden,Date(stoi(gio),stoi(phut),stoi(ngay),stoi(thang),stoi(nam)),idmaybay.c_str());
+            getline(s, noiden, '|');
+            ChuyenBay *cb = new ChuyenBay(macb.c_str(), noiden, Date(stoi(gio), stoi(phut), stoi(ngay), stoi(thang), stoi(nam)), idmaybay.c_str());
+            NodeCB *node = new NodeCB();
             node->setNode(cb);
-            if(head ==NULL)
+            if (head == NULL)
             {
-                push_back(node);
+                push_front(node);
             }
-            else push_front(node);
+            else
+                push_back(node);
         }
         file.close();
     }
     else
         cout << "Error" << endl;
 }
-void  DanhSachCB::WritetOfFile(ofstream &file)
+void DanhSachCB::WritetOfFile(ofstream &file)
 {
     if (file.is_open())
     {
         NodeCB *tmp = this->head;
-        while (tmp != NULL)//
+        while (tmp != NULL) //
         {
-            file<<tmp->getNode()->getMaCB()<<"|"
-                <<tmp->getNode()->getMaMayBay()<<"|"
-                <<tmp->getNode()->getNgayGio().getNgay()<<"|"
-                <<tmp->getNode()->getNgayGio().getThang()<<"|"
-                <<tmp->getNode()->getNgayGio().getNam()<<"|"
-                <<tmp->getNode()->getNgayGio().getGio()<<"|"
-                <<tmp->getNode()->getNgayGio().getPhut()<<"|"
-                <<tmp->getNode()->getNoiDen()<<"|";
+            file << tmp->getNode()->getMaCB() << "|"
+                 << tmp->getNode()->getMaMayBay() << "|"
+                 << tmp->getNode()->getNgayGio().getNgay() << "|"
+                 << tmp->getNode()->getNgayGio().getThang() << "|"
+                 << tmp->getNode()->getNgayGio().getNam() << "|"
+                 << tmp->getNode()->getNgayGio().getGio() << "|"
+                 << tmp->getNode()->getNgayGio().getPhut() << "|"
+                 << tmp->getNode()->getNoiDen() << "|";
 
             tmp = tmp->getNext();
-        }  
-    }else
+        }
+    }
+    else
     {
         cout << "Error";
     }
     file.close();
 }
-
 
 NodeCB *DanhSachCB::merge(NodeCB *left, NodeCB *right)
 {
