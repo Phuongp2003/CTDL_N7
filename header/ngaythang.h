@@ -25,7 +25,9 @@ public:
     void showTG();
     bool checkNgay();
     bool checkGio();
-    bool checkNgayGio();
+    bool checkNgayNhapVoiNgayHT();
+    bool checkGioNhapVoiGioHT();
+    bool checkDateHour();
     string PrintDateHour();
     string PrintDate();
     string PrintHour();
