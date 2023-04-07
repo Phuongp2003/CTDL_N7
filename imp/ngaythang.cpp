@@ -193,7 +193,7 @@ bool Date::checkDateHour()
     return false;
 }
 
-string Date::PrintDateHour()
+string Date::PrintDateHour()//
 {
 
     return intToString(Ngay, 2) + " / " + intToString(Thang, 2) + " / " + intToString(Nam, 4) + " " + intToString(Gio, 2) + " : " + intToString(Phut, 2);

@@ -35,4 +35,4 @@ public:
 // dd/mm/yyyy hh:mm
 // function
 string intToString(int num,int size);
-bool laNamNhuan(int nInput);
+bool laNamNhuan(int nInput);//
