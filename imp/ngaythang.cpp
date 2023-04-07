@@ -1,6 +1,6 @@
 #include "../header/ngaythang.h"
-#include<sstream>
-#include<string>
+#include <sstream>
+#include <string>
 using std::string;
 Date::Date() {}
 
@@ -150,46 +150,31 @@ bool Date::checkNgayGio()
 }
 string Date::PrintDateHour()
 {
-    
-    return intToString(Ngay,2) + " / " 
-    + intToString(Thang,2) + " / " 
-    + intToString(Nam,4) + " " 
-    + intToString(Gio,2) +" : " 
-    + intToString(Phut,2);
+
+    return intToString(Ngay, 2) + " / " + intToString(Thang, 2) + " / " + intToString(Nam, 4) + " " + intToString(Gio, 2) + " : " + intToString(Phut, 2);
 }
 string Date::PrintDate()
 {
-    return intToString(Ngay,2) + " / " 
-    + intToString(Thang,2) + " / " 
-    + intToString(Nam,4);
+    return intToString(Ngay, 2) + " / " + intToString(Thang, 2) + " / " + intToString(Nam, 4);
 }
 string Date::PrintHour()
 {
-    return intToString(Gio,2) +" : " + intToString(Phut,2);
+    return intToString(Gio, 2) + " : " + intToString(Phut, 2);
 }
-string intToString(int num,int size) {
+string intToString(int num, int size)
+{
     std::stringstream ss;
     ss << num;
-    
+
     std::string str = ss.str();
-    if(str.length() < size)
+    if (str.length() < size)
     {
-        int len =str.length();
-        for(int i=0;i<size-len;i++)
+        int len = str.length();
+        for (int i = 0; i < size - len; i++)
         {
-            str="0"+str;
+            str = "0" + str;
         }
     }
-    
+
     return str;
-}
-int main()
-{
-    Date d=Date(1,2,1,2,2);
-    cout<<d.PrintDateHour();
-    cout<<endl;
-    cout<<d.PrintDate();
-    cout<<endl;
-    cout<<d.PrintHour();
-    cout<<endl; 
 }
