@@ -70,9 +70,9 @@ void CreateTable_QLMB();
 MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float cellW[]);
 
 void CreatePage_QLCB(DanhSachCB *listCB);
-ChuyenBay *XuLy_QLCB(DanhSachCB *listCB, int &status);
+NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status);
 void CreateTable_QLCB();
-ChuyenBay **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, float cellW[]);
+NodeCB **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, float cellW[]);
 
 void CreatePage_QLVe();
 void CreateTable_QLVe();

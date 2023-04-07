@@ -77,18 +77,18 @@ bool ChuyenBay::operator<(const ChuyenBay &other)
     return (compare < 0) ? true : false;
 }
 
-ChuyenBay *NodeCB::getNode()
+ChuyenBay NodeCB::getNode()
 {
     return this->node;
 }
 
 NodeCB::NodeCB()
 {
-    this->node = NULL;
+    this->node = ChuyenBay();
     this->next = NULL;
 }
 
-void NodeCB::setNode(ChuyenBay *node)
+void NodeCB::setNode(ChuyenBay node)
 {
     this->node = node;
 }
@@ -216,27 +216,28 @@ void DanhSachCB::pop_back()
     size--;
 }
 
-ChuyenBay *DanhSachCB::TimCB(string _MaCB)
+ChuyenBay DanhSachCB::TimCB(string _MaCB)
 {
     NodeCB *tmp = this->head;
     while (tmp != NULL)
     {
-        if (tmp->getNode()->getMaCB() == _MaCB)
+        if (tmp->getNode().getMaCB() == _MaCB)
         {
             return tmp->getNode();
         }
         tmp = tmp->getNext();
     }
 
-    return NULL;
+    return ChuyenBay();
 }
+
 DanhSachCB DanhSachCB::TimDSCB(Date date, string noiden)
 {
     NodeCB *tmp = this->head;
     DanhSachCB *DS = new DanhSachCB();
     while (tmp != NULL)
     {
-        if ((tmp->getNode()->getNgayGio().getNgay() == date.getNgay()) && (tmp->getNode()->getNgayGio().getThang() == date.getThang()) && (tmp->getNode()->getNgayGio().getNam() == date.getNam()) && (tmp->getNode()->getNoiDen() == noiden) && ((tmp->getNode()->getDSVe()->getSoVeConLai() != 0)))
+        if ((tmp->getNode().getNgayGio().getNgay() == date.getNgay()) && (tmp->getNode().getNgayGio().getThang() == date.getThang()) && (tmp->getNode().getNgayGio().getNam() == date.getNam()) && (tmp->getNode().getNoiDen() == noiden) && ((tmp->getNode().getDSVe()->getSoVeConLai() != 0)))
         {
             if (DS->getHead() == NULL)
                 DS->push_front(tmp);
@@ -254,7 +255,7 @@ DanhSachCB DanhSachCB::LocDSCB(string _keyword)
     DanhSachCB *result = new DanhSachCB();
     while (tmp != NULL)
     {
-        if (isGotStr(tmp->getNode()->getMaCB(), _keyword))
+        if (isGotStr(tmp->getNode().getMaCB(), _keyword))
         {
             if (result->getHead() == NULL)
                 result->push_front(tmp);
@@ -283,7 +284,7 @@ void DanhSachCB::ReadFromFile(ifstream &file)
             getline(s, gio, '|');
             getline(s, phut, '|');
             getline(s, noiden, '|');
-            ChuyenBay *cb = new ChuyenBay(macb.c_str(), noiden, Date(stoi(gio), stoi(phut), stoi(ngay), stoi(thang), stoi(nam)), idmaybay.c_str());
+            ChuyenBay cb = ChuyenBay(macb.c_str(), noiden, Date(stoi(gio), stoi(phut), stoi(ngay), stoi(thang), stoi(nam)), idmaybay.c_str());
             NodeCB *node = new NodeCB();
             node->setNode(cb);
             if (head == NULL)
@@ -305,14 +306,14 @@ void DanhSachCB::WritetOfFile(ofstream &file)
         NodeCB *tmp = this->head;
         while (tmp != NULL) //
         {
-            file << tmp->getNode()->getMaCB() << "|"
-                 << tmp->getNode()->getMaMayBay() << "|"
-                 << tmp->getNode()->getNgayGio().getNgay() << "|"
-                 << tmp->getNode()->getNgayGio().getThang() << "|"
-                 << tmp->getNode()->getNgayGio().getNam() << "|"
-                 << tmp->getNode()->getNgayGio().getGio() << "|"
-                 << tmp->getNode()->getNgayGio().getPhut() << "|"
-                 << tmp->getNode()->getNoiDen() << "|";
+            file << tmp->getNode().getMaCB() << "|"
+                 << tmp->getNode().getMaMayBay() << "|"
+                 << tmp->getNode().getNgayGio().getNgay() << "|"
+                 << tmp->getNode().getNgayGio().getThang() << "|"
+                 << tmp->getNode().getNgayGio().getNam() << "|"
+                 << tmp->getNode().getNgayGio().getGio() << "|"
+                 << tmp->getNode().getNgayGio().getPhut() << "|"
+                 << tmp->getNode().getNoiDen() << "|";
 
             tmp = tmp->getNext();
         }

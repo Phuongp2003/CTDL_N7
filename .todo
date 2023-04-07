@@ -12,3 +12,8 @@ project_folder
 |       |-font
 |
 |-lib
+
+## vd
+hàm hiển thị nếu kí tự quá dài
+bảng số lượt bao gồm cả ý trên
+làm phần hiện số phần tử tối đa và phần tử còn lại của các danh sách

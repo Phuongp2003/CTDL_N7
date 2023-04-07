@@ -972,10 +972,11 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
 
 // =-ChuyenBay
 
+
 void CreatePage_QLCB(DanhSachCB *listCB)
 {
     CreatePageBackground(5);
-    static ChuyenBay *data = new ChuyenBay();
+    static NodeCB *data = new NodeCB();
     static char *preResult = (char *)"\0";
     static int status = 0;
     static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
@@ -1043,12 +1044,12 @@ void CreateTable_QLCB()
     }
 }
 
-ChuyenBay *XuLy_QLCB(DanhSachCB *listCB, int &status)
+NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
 {
     static bool isSearch = false;
     static DanhSachCB *searchResult = new DanhSachCB();
-    static ChuyenBay *result;
-    static ChuyenBay **data;
+    static NodeCB *result;
+    static NodeCB **data;
     static int index = -1;
 
     // search
@@ -1070,7 +1071,7 @@ ChuyenBay *XuLy_QLCB(DanhSachCB *listCB, int &status)
         strcpy(prev_key_word, key_word);
         if (key_word[0] != 0)
         {
-            // *searchResult = listCB->LocDSCB(key_word);
+            *searchResult = listCB->LocDSCB(key_word);
             isSearch = true;
         }
         else
@@ -1157,7 +1158,7 @@ ChuyenBay *XuLy_QLCB(DanhSachCB *listCB, int &status)
         result = data[index];
     }
     else
-        result = new ChuyenBay();
+        result = new NodeCB();
 
     // page and switch page
     int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
@@ -1169,13 +1170,13 @@ ChuyenBay *XuLy_QLCB(DanhSachCB *listCB, int &status)
     return result;
 }
 
-ChuyenBay **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, float cellW[])
+NodeCB **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, float cellW[])
 {
-    typedef ChuyenBay *ChuyenBay_ptr;
-    ChuyenBay_ptr *result = new ChuyenBay_ptr[10];
+    typedef NodeCB *NodeCB_ptr;
+    NodeCB_ptr *result = new NodeCB_ptr[10];
     for (int i = 0; i < 10; i++)
     {
-        result[i] = new ChuyenBay();
+        result[i] = new NodeCB();
     }
     int size = listCB->getSize();
 
@@ -1195,7 +1196,7 @@ ChuyenBay **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_pag
         j = size;
         for (int i = size % 10; i < 10; i++)
         {
-            result[i] = new ChuyenBay();
+            result[i] = new NodeCB();
         }
     }
     NodeCB *tmp = listCB->getHead();
@@ -1203,15 +1204,15 @@ ChuyenBay **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_pag
     {
         if (k >= i)
         {
-            ChuyenBay *CB = tmp->getNode();
+            NodeCB *node = tmp;
 
-            result[i % 10] = CB;
+            result[i % 10] = node;
             DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, (k % 10) + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, CB->getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, (k % 10) + 1, CB->getMaCB(), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, CB->getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, (k % 10) + 1, CB->getMaMayBay(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, node->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, (k % 10) + 1, node->getNode().getMaCB(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, node->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, (k % 10) + 1, node->getNode().getMaMayBay(), 30), 30, 0, BLACK);
             DrawTextEx(FontArial, "dd/mm/yyyy hh:mm", GetCellTextPos_Mid(start_pos, 6, cellW, 4, (k % 10) + 1, "dd/mm/yyyy hh:mm", 20), 20, 0, BLACK);
-            DrawTextEx(FontArial, CB->getNoiDen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, (k % 10) + 1, CB->getNoiDen().data(), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, intTochar(CB->getTrangThai(), 1), GetCellTextPos_Mid(start_pos, 6, cellW, 6, (k % 10) + 1, intTochar(CB->getTrangThai(), 1), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, node->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, (k % 10) + 1, node->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, intTochar(node->getNode().getTrangThai(), 1), GetCellTextPos_Mid(start_pos, 6, cellW, 6, (k % 10) + 1, intTochar(node->getNode().getTrangThai(), 1), 30), 30, 0, BLACK);
         }
         tmp = tmp->getNext();
     }
