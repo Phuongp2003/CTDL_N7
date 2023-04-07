@@ -8,19 +8,17 @@
             "command": "g++",
             "args": [
                 "-g",
-                "${workspaceRoot}/main.cpp",
+                "${workspaceRoot}/app/main.cpp",
                 "${workspaceRoot}/imp/**.cpp",
                 "-o",
-                "${workspaceRoot}/main.exe",
+                "${workspaceRoot}/app/main.exe",
                 "-L",
                 "${workspaceRoot}/lib/",
                 "-lraylib",
                 "-lopengl32",
                 "-lgdi32",
                 "-lwinmm",
-                "-static-libgcc",
-                "-static-libstdc++",
-                "-lpthread",
+                // "-mwindows" //tat console
             ],
             "options": {
                 "cwd": "${fileDirname}"

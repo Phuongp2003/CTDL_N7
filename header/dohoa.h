@@ -68,14 +68,11 @@ void CreatePage_QLMB(DSMB *listMB);
 MayBay *XuLy_QLMB(DSMB *listMB, int &status);
 void CreateTable_QLMB();
 MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float cellW[]);
-bool Popup_ThemMB(DSMB *listMB, int &status);
-bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb);
-bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status);
 
-void CreatePopupBackground();
-
-void CreatePage_QLCB();
+void CreatePage_QLCB(DanhSachCB *listCB);
+NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status);
 void CreateTable_QLCB();
+NodeCB **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, float cellW[]);
 
 void CreatePage_QLVe();
 void CreateTable_QLVe();
@@ -85,19 +82,20 @@ void CreateTable_QLHK();
 
 void CreatePage_GioiThieu();
 
+void CreatePopupBackground();
+bool Popup_ThemMB(DSMB *listMB, int &status);
+bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb);
+bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status);
+
 void ThanhQuanLy(); // done
 bool Warning_NoData();
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[], float cellH);
 Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[], const char *cell_tittle[]);
-Vector2 GetCellTextPos_Left(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y);
-Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text);
-Vector2 GetCellTextPos_Right(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text);
+Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text, float fontSize);
 
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width); // done
 int SwitchPage(int current_page, int n_page, Vector2 pos);
-// bool CreateButton(float pos_x, float pos_y, float width, float height, bool BoTron, const char *titlle, Font font, BoMauNut BoMau); // done
-// bool CreateButtonWithPicture(float pos_x, float pos_y, float width, float height, bool BoTron, Texture2D Picture, BoMauNut BoMau);  // done
 bool CreateButton(Button data);
 const char *CreateTextInputBox(InputTextBox &data);
 void resetInputTextBox(InputTextBox &box);

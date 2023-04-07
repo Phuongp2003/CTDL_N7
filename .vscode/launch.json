@@ -4,7 +4,7 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceRoot}\\main.exe",
+      "program": "${workspaceRoot}\\app\\main.exe",
       "args": 
       [
         "&",

@@ -1,8 +1,8 @@
-#include "header/libs.h"
+#include "../header/libs.h"
 
-using namespace std;
+// using namespace std;
 // using std::filesystem::current_path;
-int main(int argc, const char *argv[])
+int main()
 {
      // string test;
      // string key;
@@ -14,9 +14,6 @@ int main(int argc, const char *argv[])
      //      cout << "yes" << endl;
      // else
      //      cout << "no" << endl;
-     char tmp[256];
-     getcwd(tmp, 256);
-     cout << "Current working directory: " << argv[1] << endl;
 
      InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "First Screen");
      mainGraphics();

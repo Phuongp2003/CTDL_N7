@@ -88,12 +88,13 @@ public:
 class NodeCB
 {
 private:
-    ChuyenBay *node;
+    ChuyenBay node;
     NodeCB *next;
 
 public:
-    ChuyenBay *getNode();
-    void setNode(ChuyenBay *node);
+    NodeCB();
+    ChuyenBay getNode();
+    void setNode(ChuyenBay node);
     bool hasNext();
     void setNext(NodeCB *node);
     NodeCB *getNext();
@@ -110,6 +111,9 @@ public:
     DanhSachCB(NodeCB *cb);
     void setHead(NodeCB *head);
     NodeCB *getHead();
+
+    void setSize(int value);
+    int getSize();
     void push(NodeCB *currNode, NodeCB *node);
     void push_back(NodeCB *node);
     void push_front(NodeCB *node);
@@ -118,9 +122,9 @@ public:
      *
      */
     void pop(NodeCB *node);
-    void pop_first();//
+    void pop_first(); //
     void pop_back();
-    ChuyenBay *TimCB(string _MaCB);
+    ChuyenBay TimCB(string _MaCB);
     DanhSachCB TimDSCB(Date date, string noiden);
 
     DanhSachCB LocDSCB(string _keyword);
