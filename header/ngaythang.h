@@ -11,7 +11,7 @@ private:
 
 public:
     Date();
-    Date(int, int, int, int, int);
+    Date(int _Ngay, int _Thang, int _Nam, int _Gio, int _Phut);
     void setGio(int);
     int getGio();
     void setPhut(int);
@@ -29,8 +29,10 @@ public:
     string PrintDateHour();
     string PrintDate();
     string PrintHour();
+    bool operator<(Date another);
+    bool operator=(Date another);
 };
 // dd/mm/yyyy hh:mm
 // function
-string intToString(int num,int size);
+string intToString(int num, int size);
 bool laNamNhuan(int nInput);

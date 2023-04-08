@@ -72,9 +72,9 @@ BoMauNut ArrowKey{
     BLACK};
 
 BoMauNut MauThanhQuanLy{
-    {87, 87, 255, 255},
-    {25, 25, 255, 255},
-    {253, 255, 133, 255},
+    {126, 100, 179, 255},
+    {86, 42, 176, 255},
+    {171, 249, 255, 255},
     WHITE,
     BLACK,
     {25, 25, 255, 255},
@@ -109,8 +109,8 @@ Texture2D PNG_arrowRight;
 
 void LoadResources()
 {
-    // FontArial = LoadFontEx("../src/font/arial.ttf", 96, 0, 9812);
-    FontArial = LoadFontEx("c:/Windows/Fonts/arial.ttf", 96, 0, 9812);
+    FontArial = LoadFontEx("../src/font/arial.ttf", 96, 0, 9812);
+    // FontArial = LoadFontEx("c:/Windows/Fonts/arial.ttf", 96, 0, 9812);
     GenTextureMipmaps(&FontArial.texture);
     SetTextureFilter(FontArial.texture, TEXTURE_FILTER_TRILINEAR);
 
@@ -972,7 +972,6 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
 
 // =-ChuyenBay
 
-
 void CreatePage_QLCB(DanhSachCB *listCB)
 {
     CreatePageBackground(5);
@@ -982,7 +981,7 @@ void CreatePage_QLCB(DanhSachCB *listCB)
     static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
 
     // tittle
-    DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
+    DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY", {StartPos.x + 60, CenterDataSetter(70, StartPos.y + 60, MeasureTextEx(FontArial, "A", 50, 0).y)}, 50, 0, BLUE);
 
     // mini function
     Button button[5];
@@ -1044,45 +1043,104 @@ void CreateTable_QLCB()
     }
 }
 
+// test
 NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
 {
-    static bool isSearch = false;
-    static DanhSachCB *searchResult = new DanhSachCB();
     static NodeCB *result;
-    static NodeCB **data;
     static int index = -1;
+    const Vector2 search = {StartPos.x + 60, StartPos.y + 60 + 70};
 
     // search
-    Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
-    DrawRectangleRec(searchText, WHITE);
-    DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
-    static InputTextBox searchTextBox;
-    searchTextBox.textBox = searchText;
-    searchTextBox.tittle = "Nhập nội dung tìm kiếm";
 
-    DrawTextEx(FontArial, "Search", {searchText.x, searchText.y}, 40, 0, BLUE);
+    DrawRectangleRoundedLines({search.x - 5, search.y - 5, 1090, 105}, 0, 1, 3, DARKBLUE);
 
-    static char *prev_key_word = new char[259];
-    const char *key_word =
-        CreateTextInputBox(searchTextBox);
-    if (strcmp(prev_key_word, key_word) != 0)
-    {
+    // VỊ trị box
+    Rectangle boxMaCB = {search.x + 300, search.y, 350, 45};
+    Rectangle boxGio = {boxMaCB.x + 370 + 230, search.y, 80, 45};
+    Rectangle boxPhut = {boxGio.x + 80 + 20, search.y, 80, 45};
+    Rectangle boxNgay = {search.x + 280, search.y + 55, 80, 45};
+    Rectangle boxThang = {boxNgay.x + 100, search.y + 55, 80, 45};
+    Rectangle boxNam = {boxThang.x + 100, search.y + 55, 160, 45};
+    Rectangle boxNoiDen = {boxNam.x + 180, search.y + 55, 420, 45};
 
-        strcpy(prev_key_word, key_word);
-        if (key_word[0] != 0)
-        {
-            *searchResult = listCB->LocDSCB(key_word);
-            isSearch = true;
-        }
-        else
-            isSearch = false;
-    }
+    // Tạo các ô nhập
+    static InputTextBox searchNoiDen;
+    searchNoiDen.textBox = boxNoiDen;
+    searchNoiDen.tittle = "Nơi đến";
+    searchNoiDen.size = 20;
+    searchNoiDen.mode = 1;
+    static InputTextBox searchNgay;
+    searchNgay.textBox = boxNgay;
+    searchNgay.tittle = "DD";
+    searchNgay.mode = 5;
+    searchNgay.size = 2;
+    searchNgay.showNKeyRemain = false;
+    static InputTextBox searchThang;
+    searchThang.textBox = boxThang;
+    searchThang.tittle = "MM";
+    searchThang.size = 2;
+    searchThang.mode = 5;
+    searchThang.showNKeyRemain = false;
+    static InputTextBox searchNam;
+    searchNam.textBox = boxNam;
+    searchNam.tittle = "YYYY";
+    searchNam.size = 4;
+    searchNam.mode = 5;
+    searchNam.showNKeyRemain = false;
+    static InputTextBox searchGio;
+    searchGio.textBox = boxGio;
+    searchGio.tittle = "HH";
+    searchGio.size = 2;
+    searchGio.mode = 5;
+    searchGio.showNKeyRemain = false;
+    static InputTextBox searchPhut;
+    searchPhut.textBox = boxPhut;
+    searchPhut.tittle = "MM";
+    searchPhut.size = 2;
+    searchPhut.mode = 5;
+    searchPhut.showNKeyRemain = false;
+    static InputTextBox searchMaCB;
+    searchMaCB.textBox = boxMaCB;
+    searchMaCB.tittle = "Mã chuyến bay";
+    searchMaCB.size = 15;
+    searchMaCB.mode = 2;
+
+    // Vẽ ô nhập
+    // DrawTextEx(FontArial, "Tìm kiếm chuyến bay:", {search.x, search.y}, 40, 0, BLUE);
+
+    const char *textMaCB =
+        CreateTextInputBox(searchMaCB);
+    DrawTextEx(FontArial, "Giờ khởi hành:", {boxMaCB.x + 390, CenterDataSetter(50, search.y, MeasureTextEx(FontArial, "a", 35, 0).y)}, 35, 0, RED);
+    const char *textGio =
+        CreateTextInputBox(searchGio);
+    const char *textPhut =
+        CreateTextInputBox(searchPhut);
+    DrawTextEx(FontArial, "Ngày khởi hành:", {search.x + 10, CenterDataSetter(50, search.y + 55, MeasureTextEx(FontArial, "a", 35, 0).y)}, 35, 0, RED);
+    const char *textNgay =
+        CreateTextInputBox(searchNgay);
+    const char *textThang =
+        CreateTextInputBox(searchThang);
+    const char *textNam =
+        CreateTextInputBox(searchNam);
+    const char *textNoiDen =
+        CreateTextInputBox(searchNoiDen);
+    // Giá trị cơ bản của tìm kiếm
+    int numNgay = 1, numThang = 1, numNam = 1900, numGio = 0, numPhut = 0;
+    if (textNgay[0] != 0)
+        numNgay = stoi(textNgay);
+    if (textThang[0] != 0)
+        numThang = stoi(textThang);
+    if (textNam[0] != 0)
+        numNam = stoi(textNam);
+    if (textGio[0] != 0)
+        numGio = stoi(textGio);
+    if (textPhut[0] != 0)
+        numPhut = stoi(textPhut);
     Button button;
-
-    button.x = searchText.x + searchText.width;
-    button.y = searchText.y;
-    button.w = 200;
-    button.h = 50;
+    button.x = search.x + 5;
+    button.y = search.y + 5;
+    button.w = 250 - 10;
+    button.h = 55 - 10;
     button.BoTron = false;
     button.gotNothing = false;
     button.gotText = true;
@@ -1101,30 +1159,18 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
 
     // data
     static int current_page = 1;
-    int n_page; // 1 + (spt/10)
+    int n_page = 1;
     if (status == 1)
     {
         current_page = 1 + (listCB->getSize() - 1) / 10;
-        isSearch = false;
         index = (listCB->getSize() - 1) % 10;
         status = 0;
     }
     else if (status == -1)
     {
         current_page = 1;
-        isSearch = false;
         index = -1;
         status = 0;
-    }
-    if (!isSearch)
-    {
-        n_page = 1 + (listCB->getSize() - 1) / 10;
-        data = showList_QLCB(listCB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
-    }
-    else
-    {
-        n_page = 1 + (searchResult->getSize() - 1) / 10;
-        data = showList_QLCB(searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
     }
 
     // Pick data
@@ -1153,31 +1199,10 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
         if (index == i)
             DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y, data_picker[i].w, data_picker[i].h}, 0, 1, 2, GREEN);
     }
-    if (index >= 0)
-    {
-        result = data[index];
-    }
-    else
-        result = new NodeCB();
+    result = new NodeCB();
 
-    // page and switch page
-    int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-    if (current_page != swp)
-        index = -1;
-    current_page = swp;
-    if (current_page > n_page)
-        current_page = 1;
-    return result;
-}
-
-NodeCB **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, float cellW[])
-{
-    typedef NodeCB *NodeCB_ptr;
-    NodeCB_ptr *result = new NodeCB_ptr[10];
-    for (int i = 0; i < 10; i++)
-    {
-        result[i] = new NodeCB();
-    }
+    // show list
+    Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
     int size = listCB->getSize();
 
     int n_char;
@@ -1187,36 +1212,39 @@ NodeCB **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, 
         n_char = 3;
     else
         n_char = 4;
-    int i = (current_page - 1) * 10;
-    int j;
-    if (current_page * 10 < size)
-        j = current_page * 10;
-    else
-    {
-        j = size;
-        for (int i = size % 10; i < 10; i++)
-        {
-            result[i] = new NodeCB();
-        }
-    }
-    NodeCB *tmp = listCB->getHead();
-    for (int k = 0; k < j; k++)
-    {
-        if (k >= i)
-        {
-            NodeCB *node = tmp;
 
-            result[i % 10] = node;
-            DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, (k % 10) + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, node->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, (k % 10) + 1, node->getNode().getMaCB(), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, node->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, (k % 10) + 1, node->getNode().getMaMayBay(), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, "dd/mm/yyyy hh:mm", GetCellTextPos_Mid(start_pos, 6, cellW, 4, (k % 10) + 1, "dd/mm/yyyy hh:mm", 20), 20, 0, BLACK);
-            DrawTextEx(FontArial, node->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, (k % 10) + 1, node->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, intTochar(node->getNode().getTrangThai(), 1), GetCellTextPos_Mid(start_pos, 6, cellW, 6, (k % 10) + 1, intTochar(node->getNode().getTrangThai(), 1), 30), 30, 0, BLACK);
+    int i = (current_page - 1) * 10;
+
+    int j = 0;
+    NodeCB *tmp = listCB->getHead();
+    for (int k = 0; k < size; k++)
+    {
+        if (tmp->getNode().checkMaCB(textMaCB) && tmp->getNode().checkTime(numNgay, numThang, numNam, numGio, numPhut) && tmp->getNode().checkNoiDen(textNoiDen))
+        {
+            j++;
+            if (j >= i && j <= i + 10)
+            {
+                if (j % 10 == index)
+                    result = tmp;
+                DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, j + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, j + 1, tmp->getNode().getMaCB(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, j + 1, tmp->getNode().getMaMayBay(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, "dd/mm/yyyy hh:mm", GetCellTextPos_Mid(start_pos, 6, cellW, 4, j + 1, "dd/mm/yyyy hh:mm", 20), 20, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, j + 1, tmp->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, intTochar(tmp->getNode().getTrangThai(), 1), GetCellTextPos_Mid(start_pos, 6, cellW, 6, j + 1, intTochar(tmp->getNode().getTrangThai(), 1), 30), 30, 0, BLACK);
+            }
         }
         tmp = tmp->getNext();
     }
+    n_page = 1 + (j / 10);
 
+    // page and switch page
+    int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+    if (current_page != swp)
+        index = -1;
+    current_page = swp;
+    if (current_page > n_page)
+        current_page = 1;
     return result;
 }
 
@@ -1390,7 +1418,7 @@ void ThanhQuanLy()
     char *button_tittle[4];
     button_tittle[0] = (char *)"QUẢN LÝ MÁY BAY",
     button_tittle[1] = (char *)"QUẢN LÝ CHUYẾN BAY",
-    button_tittle[2] = (char *)"QUẢN LÝ VÉ",
+    button_tittle[2] = (char *)"ĐẶT VÉ",
     button_tittle[3] = (char *)"QUẢN LÝ HÀNH KHÁCH";
 
     Vector2 buttonPos[5] =
@@ -1446,14 +1474,14 @@ void ThanhQuanLy()
 
 bool Warning_NoData()
 {
-    DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330, GRAY);
-    DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70, DARKBLUE);
+    DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330, {246, 250, 170, 255});
+    DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70, {255, 43, 43, 255});
     DrawTextEx(FontArial, "KHÔNG CÓ DỮ LIỆU!",
                {CenterDataSetter(700, StartPos.x + 400, MeasureTextEx(FontArial, "KHÔNG CÓ DỮ LIỆU!", 55, 0).x),
                 CenterDataSetter(70, StartPos.y + 300, MeasureTextEx(FontArial, "A", 55, 0).y)},
-               55, 0, RED);
-    DrawTextEx(FontArial, "- Có vẻ bạn chưa chọn dữ liệu hoặc dữ liệu trống!", {StartPos.x + 200, StartPos.y + 375}, 55, 0, RED);
-    DrawTextEx(FontArial, "-> Hãy click vào 1 dòng trong bảng để lấy dữ liệu!", {StartPos.x + 200, StartPos.y + 445}, 55, 0, DARKGREEN);
+               55, 0, WHITE);
+    DrawTextEx(FontArial, "- Có vẻ bạn chưa chọn dữ liệu hoặc dữ liệu trống!", {StartPos.x + 200, StartPos.y + 375}, 55, 0, BLACK);
+    DrawTextEx(FontArial, "-> Hãy click vào 1 dòng trong bảng để lấy dữ liệu!", {StartPos.x + 200, StartPos.y + 445}, 55, 0, BLACK);
 
     Button OK;
     OK.x = StartPos.x + 700;
@@ -1727,8 +1755,6 @@ const char *CreateTextInputBox(InputTextBox &data)
             {
                 if ((key >= 32) && (key <= 125) && (data.letterCount < data.size))
                 {
-                    if (((key >= 'a') && (key <= 'z')))
-                        key -= 32;
                     for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
                     {
                         data.name[i] = data.name[i - 1];
@@ -1866,7 +1892,7 @@ const char *CreateTextInputBox(InputTextBox &data)
     if (data.name[0] != '\0')
         DrawTextEx(FontArial, data.name, textBoxPos, font_size, 0, data.MauChu);
     else
-        DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, data.MauChu);
+        DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, BROWN);
     // cout << "index: " << indexPoint << endl;
     if (data.mouseClickOnText && ((data.framesCounter % 120 >= 15)))
         DrawTextEx(FontArial, "|", textBoxDot, font_size, 0, MAROON);

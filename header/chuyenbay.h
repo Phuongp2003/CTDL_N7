@@ -75,9 +75,11 @@ public:
     void setTrangThai(int _TrangThai);
     int getTrangThai();
     const char *getMaMayBay();
-    // void setDSVeMB(DSMB *DanhSachCB);
 
-    // void showDSVe();
+    bool checkNoiDen(const char *noiden);
+    bool checkTime(int ngay, int thang, int nam, int gio, int phut);
+    bool checkMaCB(const char* maCB);
+
     DSVeMayBay *getDSVe();
 
     void ThucHienCB(DSMB *DanhSachCB);
@@ -98,6 +100,7 @@ public:
     bool hasNext();
     void setNext(NodeCB *node);
     NodeCB *getNext();
+    NodeCB *getTail();
 };
 
 class DanhSachCB
@@ -112,7 +115,7 @@ public:
     void setHead(NodeCB *head);
     NodeCB *getHead();
 
-    void setSize(int value);
+    void setSize();
     int getSize();
     void push(NodeCB *currNode, NodeCB *node);
     void push_back(NodeCB *node);

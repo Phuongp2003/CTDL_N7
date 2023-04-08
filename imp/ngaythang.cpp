@@ -4,7 +4,7 @@
 using std::string;
 Date::Date() {}
 
-Date::Date(int _Gio, int _Phut, int _Ngay, int _Thang, int _Nam)
+Date::Date(int _Ngay, int _Thang, int _Nam, int _Gio, int _Phut)
 {
     this->Gio = _Gio;
     this->Phut = _Phut;
@@ -161,6 +161,57 @@ string Date::PrintHour()
 {
     return intToString(Gio, 2) + " : " + intToString(Phut, 2);
 }
+
+bool Date::operator<(Date another)
+{
+    if (Nam < another.Nam)
+        return true;
+    else if (Nam > another.Nam)
+        return false;
+
+    if (Thang < another.Thang)
+        return true;
+    else if (Thang > another.Thang)
+        return false;
+
+    if (Ngay < another.Ngay)
+        return true;
+    else if (Ngay > another.Ngay)
+        return false;
+
+    if (Gio < another.Gio)
+        return true;
+    else if (Gio > another.Gio)
+        return false;
+
+    if (Phut < another.Phut)
+        return true;
+    else if (Phut > another.Phut)
+        return false;
+
+    return false;
+}
+
+bool Date::operator=(Date another)
+{
+    if (Nam != another.Nam)
+        return false;
+
+    if (Thang != another.Thang)
+        return false;
+
+    if (Ngay != another.Ngay)
+        return false;
+
+    if (Gio != another.Gio)
+        return false;
+
+    if (Phut != another.Phut)
+        return false;
+
+    return true;
+}
+
 string intToString(int num, int size)
 {
     std::stringstream ss;

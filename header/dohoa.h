@@ -43,13 +43,15 @@ struct Button;
  * @warning chữ luôn in hoa
  * @warning editMode yêu cầu tittle phải là kí tự không dấu
  *
+ * @param not_default textBox, tittle, mode(1)
+ * @param size mặc định là 27
+ * @param showNKeyRemain hiện số kí tự còn có thể nhập (mặc định true)
  * @param editMode nhận giá trị từ tittle và chỉnh sửa (mặc định false)
  * @param showPreResult giữ kết quả đã nhập sau khi thoát box (mặc định true)
  * @param returnIfDone chỉ return kết quả khi nhấn enter (mặc định false)
  * @param MauNen mặc định: trắng
  * @param MauChu mặc định: đen
  * @param MauVien mặc định: đen
- * @param not_default textBox, tittle, mode
  * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ IN HOA và số) (4 - chỉ chữ) (5 - chỉ số)
  *
  */

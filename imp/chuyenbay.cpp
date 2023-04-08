@@ -54,6 +54,27 @@ void ChuyenBay::setNgayGio(Date _NgayGio)
     this->NgayGio = _NgayGio;
 }
 
+bool ChuyenBay::checkNoiDen(const char *noiden)
+{
+    if (isGotStr(NoiDen, noiden))
+        return true;
+    return false;
+}
+
+bool ChuyenBay::checkTime(int ngay, int thang, int nam, int gio, int phut)
+{
+    if (NgayGio < Date(ngay, thang, nam, gio, phut))
+        return false;
+    return true;
+}
+
+bool ChuyenBay::checkMaCB(const char *maCB)
+{
+    if (isGotStr(MaCB, maCB))
+        return true;
+    return false;
+}
+
 DSVeMayBay *ChuyenBay::getDSVe()
 {
     return this->DSVe;
@@ -102,14 +123,20 @@ bool NodeCB::hasNext()
 
 void NodeCB::setNext(NodeCB *node)
 {
-    if (this->next != NULL)
-        node->next = this->next;
     this->next = node;
 }
 
 NodeCB *NodeCB::getNext()
 {
     return this->next;
+}
+
+NodeCB *NodeCB::getTail()
+{
+    NodeCB *tmp = this;
+    while (tmp->hasNext())
+        tmp = tmp->getNext();
+    return tmp;
 }
 // Hàm của DanhSachCB
 
@@ -122,25 +149,21 @@ DanhSachCB::DanhSachCB()
 DanhSachCB::DanhSachCB(NodeCB *node)
 {
     this->head = node;
-    size++;
 }
 
 void DanhSachCB::push(NodeCB *currNode, NodeCB *node)
 {
     currNode->setNext(node);
-    size++;
 }
 
 void DanhSachCB::push_back(NodeCB *node)
 {
-    node->setNext(NULL);
     NodeCB *tmp = this->head;
     while (tmp->hasNext())
     {
         tmp = tmp->getNext();
     }
     tmp->setNext(node);
-    size++;
 }
 
 void DanhSachCB::push_front(NodeCB *node)
@@ -148,19 +171,26 @@ void DanhSachCB::push_front(NodeCB *node)
     if (this->head == NULL)
     {
         setHead(node);
-        size = 1;
     }
     else
     {
-        this->head->setNext(node);
+        NodeCB *tmp = this->head;
+        while (tmp->hasNext())
+        {
+            NodeCB *tmp2 = tmp->getNext();
+            if (tmp2 == node)
+            {
+                tmp2->setNext(NULL);
+                break;
+            }
+        }
+        node->getTail()->setNext(this->head);
         this->head = node;
     }
-    size++;
 }
 void DanhSachCB::setHead(NodeCB *head)
 {
     this->head = head;
-    size++;
 }
 
 NodeCB *DanhSachCB::getHead()
@@ -168,9 +198,20 @@ NodeCB *DanhSachCB::getHead()
     return head;
 }
 
+void DanhSachCB::setSize()
+{
+    NodeCB *tmp = this->head;
+    while (tmp != NULL)
+    {
+        size++;
+        tmp = tmp->getNext();
+    }
+}
+
 int DanhSachCB::getSize()
 {
-    return size - 1;
+
+    return size;
 }
 
 void DanhSachCB::pop(NodeCB *node)
@@ -252,19 +293,24 @@ DanhSachCB DanhSachCB::TimDSCB(Date date, string noiden)
 DanhSachCB DanhSachCB::LocDSCB(string _keyword)
 {
     NodeCB *tmp = this->head;
-    DanhSachCB *result = new DanhSachCB();
+    DanhSachCB result = DanhSachCB();
     while (tmp != NULL)
     {
         if (isGotStr(tmp->getNode().getMaCB(), _keyword))
         {
-            if (result->getHead() == NULL)
-                result->push_front(tmp);
+            if (result.getHead() == NULL)
+            {
+                result.setHead(tmp);
+                result.getHead()->setNext(NULL);
+            }
             else
-                result->push_back(tmp);
+            {
+                result.push_back(tmp);
+            }
         }
         tmp = tmp->getNext();
     }
-    return *result;
+    return result;
 }
 void DanhSachCB::ReadFromFile(ifstream &file)
 {
@@ -284,16 +330,17 @@ void DanhSachCB::ReadFromFile(ifstream &file)
             getline(s, gio, '|');
             getline(s, phut, '|');
             getline(s, noiden, '|');
-            ChuyenBay cb = ChuyenBay(macb.c_str(), noiden, Date(stoi(gio), stoi(phut), stoi(ngay), stoi(thang), stoi(nam)), idmaybay.c_str());
+            ChuyenBay cb = ChuyenBay(macb.c_str(), noiden, Date(stoi(ngay.data()), stoi(thang.data()), stoi(nam.data()), stoi(gio.data()), stoi(phut.data())), idmaybay.c_str());
             NodeCB *node = new NodeCB();
             node->setNode(cb);
             if (head == NULL)
             {
-                push_front(node);
+                setHead(node);
             }
             else
                 push_back(node);
         }
+        setSize();
         file.close();
     }
     else
