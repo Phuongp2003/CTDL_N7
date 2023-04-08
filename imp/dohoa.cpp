@@ -1103,7 +1103,7 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
     searchMaCB.textBox = boxMaCB;
     searchMaCB.tittle = "Mã chuyến bay";
     searchMaCB.size = 15;
-    searchMaCB.mode = 2;
+    searchMaCB.mode = 3;
 
     // Vẽ ô nhập
     // DrawTextEx(FontArial, "Tìm kiếm chuyến bay:", {search.x, search.y}, 40, 0, BLUE);
