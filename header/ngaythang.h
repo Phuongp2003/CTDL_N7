@@ -25,7 +25,9 @@ public:
     void showTG();
     bool checkNgay();
     bool checkGio();
-    bool checkNgayGio();
+    bool checkNgayNhapVoiNgayHT();
+    bool checkGioNhapVoiGioHT();
+    bool checkDateHour();
     string PrintDateHour();
     string PrintDate();
     string PrintHour();
@@ -35,4 +37,4 @@ public:
 // dd/mm/yyyy hh:mm
 // function
 string intToString(int num, int size);
-bool laNamNhuan(int nInput);
+bool laNamNhuan(int nInput); //
