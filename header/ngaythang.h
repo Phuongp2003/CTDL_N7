@@ -32,7 +32,7 @@ public:
     string PrintDate();
     string PrintHour();
     bool operator<(Date another);
-    bool operator=(Date another);
+    bool operator==(Date another);
 };
 // dd/mm/yyyy hh:mm
 // function

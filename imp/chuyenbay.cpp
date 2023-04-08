@@ -6,6 +6,7 @@ using namespace std;
 ChuyenBay::ChuyenBay()
 {
     strcpy(MaCB, "");
+    NgayGio = Date(1, 1, 1991, 0, 0);
     NoiDen = "";
 }
 
@@ -110,8 +111,7 @@ NodeCB::NodeCB()
 }
 
 void NodeCB::setNode(ChuyenBay node)
-{
-    this->node = node;
+{    this->node = node;
 }
 
 bool NodeCB::hasNext()
@@ -330,7 +330,8 @@ void DanhSachCB::ReadFromFile(ifstream &file)
             getline(s, gio, '|');
             getline(s, phut, '|');
             getline(s, noiden, '|');
-            ChuyenBay cb = ChuyenBay(macb.c_str(), noiden, Date(stoi(ngay.data()), stoi(thang.data()), stoi(nam.data()), stoi(gio.data()), stoi(phut.data())), idmaybay.c_str());
+            Date d = Date(stoi(ngay), stoi(thang), stoi(nam), stoi(gio), stoi(phut));
+            ChuyenBay cb = ChuyenBay(macb.c_str(), noiden, d, idmaybay.c_str());
             NodeCB *node = new NodeCB();
             node->setNode(cb);
             if (head == NULL)

@@ -237,7 +237,7 @@ bool Date::operator<(Date another)
     return false;
 }
 
-bool Date::operator=(Date another)
+bool Date::operator==(Date another)
 {
     if (Nam != another.Nam)
         return false;

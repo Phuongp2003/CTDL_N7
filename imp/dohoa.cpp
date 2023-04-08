@@ -1221,18 +1221,18 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
     {
         if (tmp->getNode().checkMaCB(textMaCB) && tmp->getNode().checkTime(numNgay, numThang, numNam, numGio, numPhut) && tmp->getNode().checkNoiDen(textNoiDen))
         {
-            j++;
-            if (j >= i && j <= i + 10)
+            if (j >= i && j <= i + 9)
             {
                 if (j % 10 == index)
                     result = tmp;
-                DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, j + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, j + 1, tmp->getNode().getMaCB(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, j + 1, tmp->getNode().getMaMayBay(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, "dd/mm/yyyy hh:mm", GetCellTextPos_Mid(start_pos, 6, cellW, 4, j + 1, "dd/mm/yyyy hh:mm", 20), 20, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, j + 1, tmp->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, intTochar(tmp->getNode().getTrangThai(), 1), GetCellTextPos_Mid(start_pos, 6, cellW, 6, j + 1, intTochar(tmp->getNode().getTrangThai(), 1), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, j % 10 + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, j % 10 + 1, tmp->getNode().getMaCB(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, j % 10 + 1, tmp->getNode().getMaMayBay(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getNgayGio().PrintDateHour().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 4, j % 10 + 1, tmp->getNode().getNgayGio().PrintDateHour().data(), 20), 20, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, j % 10 + 1, tmp->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, intTochar(tmp->getNode().getTrangThai(), 1), GetCellTextPos_Mid(start_pos, 6, cellW, 6, j % 10 + 1, intTochar(tmp->getNode().getTrangThai(), 1), 30), 30, 0, BLACK);
             }
+            j++;
         }
         tmp = tmp->getNext();
     }
