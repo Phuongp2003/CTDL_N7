@@ -263,7 +263,7 @@ void DsHanhKhach::readFromFile()
             getline(ss, ho, '|');
             getline(ss, ten, '|');
             getline(ss, phai_str, '|');
-            phai = phai_str == "Nam" ? 0 : 1;
+            phai = phai_str == "0" ? 0 : 1;
             insert(HanhKhach(cmnd, ho, ten, phai));
         }
         file.close();
