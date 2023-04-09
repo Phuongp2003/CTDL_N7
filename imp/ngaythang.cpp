@@ -122,7 +122,7 @@ bool Date::checkNgayNhapVoiNgayHT()
     bool t_nam = 0;
     bool t_thang = 0;
     bool t_ngay = 0;
-    
+
     if (Nam < 1900 + ltm->tm_year)
         t_nam = false;
     else
@@ -193,7 +193,7 @@ bool Date::checkDateHour()
     return false;
 }
 
-string Date::PrintDateHour()//
+string Date::PrintDateHour() //
 {
 
     return intToString(Ngay, 2) + " / " + intToString(Thang, 2) + " / " + intToString(Nam, 4) + " " + intToString(Gio, 2) + " : " + intToString(Phut, 2);
@@ -224,16 +224,6 @@ bool Date::operator<(Date another)
     else if (Ngay > another.Ngay)
         return false;
 
-    if (Gio < another.Gio)
-        return true;
-    else if (Gio > another.Gio)
-        return false;
-
-    if (Phut < another.Phut)
-        return true;
-    else if (Phut > another.Phut)
-        return false;
-
     return false;
 }
 
@@ -246,12 +236,6 @@ bool Date::operator==(Date another)
         return false;
 
     if (Ngay != another.Ngay)
-        return false;
-
-    if (Gio != another.Gio)
-        return false;
-
-    if (Phut != another.Phut)
         return false;
 
     return true;

@@ -55,6 +55,7 @@ class DsHanhKhach
 {
 private:
     NodeHK *root;
+    int size = 0;
 
 public:
     DsHanhKhach();
@@ -65,6 +66,8 @@ public:
     void showDsHanhKhach(string);
     void writeToFile(NodeHK *);
     void readFromFile();
+    NodeHK *getRoot();
+    int getSize();
 };
 
 // function

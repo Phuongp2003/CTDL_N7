@@ -66,28 +66,28 @@ void CreateHomePage();       // done
 
 void CreatePageBackground(int SoHang); // done
 
-void CreatePage_QLMB(DSMB *listMB);
-MayBay *XuLy_QLMB(DSMB *listMB, int &status);
+void CreatePage_QLMB(DSMB &listMB);
+MayBay *XuLy_QLMB(DSMB &listMB, int &status);
 void CreateTable_QLMB();
-MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float cellW[]);
+MayBay **showList_QLMB(DSMB &listMB, Vector2 start_pos, int current_page, float cellW[]);
 
-void CreatePage_QLCB(DanhSachCB *listCB);
-NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status);
+void CreatePage_QLCB(DanhSachCB &listCB);
+NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status);
 void CreateTable_QLCB();
-NodeCB **showList_QLCB(DanhSachCB *listCB, Vector2 start_pos, int current_page, float cellW[]);
 
 void CreatePage_QLVe();
 void CreateTable_QLVe();
 
-void CreatePage_QLHK();
+void CreatePage_QLHK(DsHanhKhach &listHK);
 void CreateTable_QLHK();
+NodeHK *XuLy_QLHK(DsHanhKhach &listHK, int &status);
 
 void CreatePage_GioiThieu();
 
 void CreatePopupBackground();
-bool Popup_ThemMB(DSMB *listMB, int &status);
-bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb);
-bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status);
+bool Popup_ThemMB(DSMB &listMB, int &status);
+bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb);
+bool Popup_XoaMB(DSMB &listMB, MayBay *mb, int &status);
 
 void ThanhQuanLy(); // done
 bool Warning_NoData();

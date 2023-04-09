@@ -64,7 +64,7 @@ bool ChuyenBay::checkNoiDen(const char *noiden)
 
 bool ChuyenBay::checkTime(int ngay, int thang, int nam, int gio, int phut)
 {
-    if (NgayGio < Date(ngay, thang, nam, gio, phut))
+    if (NgayGio == Date(ngay, thang, nam, gio, phut))
         return false;
     return true;
 }
@@ -111,7 +111,8 @@ NodeCB::NodeCB()
 }
 
 void NodeCB::setNode(ChuyenBay node)
-{    this->node = node;
+{
+    this->node = node;
 }
 
 bool NodeCB::hasNext()

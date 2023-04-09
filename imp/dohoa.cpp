@@ -48,7 +48,7 @@ struct InputTextBox
     // xử lý
     char name[120] = "\0";
     int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0;
-    bool done;
+    bool done = true;
     bool mouseClickOnText = false;
     int letterCount = 0;
     int framesCounter = 0;
@@ -109,6 +109,7 @@ Texture2D PNG_arrowRight;
 
 void LoadResources()
 {
+    UnloadResources();
     FontArial = LoadFontEx("../src/font/arial.ttf", 96, 0, 9812);
     // FontArial = LoadFontEx("c:/Windows/Fonts/arial.ttf", 96, 0, 9812);
     GenTextureMipmaps(&FontArial.texture);
@@ -333,7 +334,7 @@ void CreatePageBackground(int SoHang)
 }
 
 // =-MayBay
-void CreatePage_QLMB(DSMB *listMB)
+void CreatePage_QLMB(DSMB &listMB)
 {
     CreatePageBackground(3);
     static MayBay *data = new MayBay();
@@ -407,7 +408,7 @@ void CreatePopupBackground()
     DrawRectangle(StartPos.x + 400, StartPos.y + 60 + 10, 700, 60, {104, 112, 217, 255});
 }
 
-bool Popup_ThemMB(DSMB *listMB, int &status)
+bool Popup_ThemMB(DSMB &listMB, int &status)
 {
     CreatePopupBackground();
     static int error = 0;
@@ -495,17 +496,17 @@ bool Popup_ThemMB(DSMB *listMB, int &status)
     {
         char CheckMB[16];
         strcpy(CheckMB, newMaMB);
-        if (listMB->Find_MB(CheckMB) < 0)
+        if (listMB.Find_MB(CheckMB) < 0)
         {
             if (newMaMB[0] >= 32 && newLoaiMayBay[0] >= 32 && newSoDay[0] >= 32 && newSoDong[0] >= 32)
             {
                 MayBay *result = new MayBay(newMaMB, newLoaiMayBay, atoi(newSoDay), atoi(newSoDong));
-                listMB->Insert_MB(result);
+                listMB.Insert_MB(result);
                 ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
-                listMB->WritetoFile(fileWrite);
+                listMB.WritetoFile(fileWrite);
                 fileWrite.close();
                 ifstream fileRead("../data/dataMB.txt", ios::in);
-                listMB->ReadFromFile(fileRead);
+                listMB.ReadFromFile(fileRead);
                 fileRead.close();
                 status = 1;
                 resetInputTextBox(MaMB);
@@ -538,7 +539,7 @@ bool Popup_ThemMB(DSMB *listMB, int &status)
     return false;
 }
 
-bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb)
+bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb)
 {
     CreatePopupBackground();
     static int error = 0;
@@ -633,7 +634,7 @@ bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb)
         {
             char CheckMB[16];
             strcpy(CheckMB, newMaMB);
-            if (listMB->Find_MB(CheckMB) < 0 || listMB->Find_MB(CheckMB) == listMB->Find_MB(mb->getSoHieuMB()))
+            if (listMB.Find_MB(CheckMB) < 0 || listMB.Find_MB(CheckMB) == listMB.Find_MB(mb->getSoHieuMB()))
             {
                 if (newMaMB[0] >= 32 && newLoaiMayBay[0] >= 32 && newSoDay[0] >= 32 && newSoDong[0] >= 32)
                 {
@@ -643,10 +644,10 @@ bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb)
                     mb->setSoDay(atoi(newSoDay));
 
                     ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
-                    listMB->WritetoFile(fileWrite);
+                    listMB.WritetoFile(fileWrite);
                     fileWrite.close();
                     ifstream fileRead("../data/dataMB.txt", ios::in);
-                    listMB->ReadFromFile(fileRead);
+                    listMB.ReadFromFile(fileRead);
                     fileRead.close();
                     resetInputTextBox(MaMB);
                     resetInputTextBox(LoaiMayBay);
@@ -684,7 +685,7 @@ bool Popup_HieuChinhMB(DSMB *listMB, MayBay *mb)
     return false;
 }
 
-bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status)
+bool Popup_XoaMB(DSMB &listMB, MayBay *mb, int &status)
 {
     CreatePopupBackground();
     DrawTextEx(FontArial, "Xoá máy bay?",
@@ -760,13 +761,13 @@ bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status)
         {
             char CheckMB[16];
             strcpy(CheckMB, mb->getSoHieuMB());
-            listMB->Delete_MB(listMB->Find_MB(CheckMB));
+            listMB.Delete_MB(listMB.Find_MB(CheckMB));
 
             ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
-            listMB->WritetoFile(fileWrite);
+            listMB.WritetoFile(fileWrite);
             fileWrite.close();
             ifstream fileRead("../data/dataMB.txt", ios::in);
-            listMB->ReadFromFile(fileRead);
+            listMB.ReadFromFile(fileRead);
             fileRead.close();
 
             status = -1;
@@ -786,10 +787,10 @@ bool Popup_XoaMB(DSMB *listMB, MayBay *mb, int &status)
     return false;
 }
 
-MayBay *XuLy_QLMB(DSMB *listMB, int &status)
+MayBay *XuLy_QLMB(DSMB &listMB, int &status)
 {
     static bool isSearch = false;
-    static DSMB *searchResult = new DSMB();
+    static DSMB searchResult = DSMB();
     static MayBay *result;
     static MayBay **data;
     static int index = -1;
@@ -813,7 +814,7 @@ MayBay *XuLy_QLMB(DSMB *listMB, int &status)
         strcpy(prev_key_word, key_word);
         if (key_word[0] != 0)
         {
-            *searchResult = listMB->Find_DSMB(key_word);
+            searchResult = listMB.Find_DSMB(key_word);
             isSearch = true;
         }
         else
@@ -846,9 +847,9 @@ MayBay *XuLy_QLMB(DSMB *listMB, int &status)
     int n_page; // 1 + (spt/10)
     if (status == 1)
     {
-        current_page = 1 + (listMB->getsize() - 1) / 10;
+        current_page = 1 + (listMB.getsize() - 1) / 10;
         isSearch = false;
-        index = (listMB->getsize() - 1) % 10;
+        index = (listMB.getsize() - 1) % 10;
         status = 0;
     }
     else if (status == -1)
@@ -860,12 +861,12 @@ MayBay *XuLy_QLMB(DSMB *listMB, int &status)
     }
     if (!isSearch)
     {
-        n_page = 1 + (listMB->getsize() - 1) / 10;
+        n_page = 1 + (listMB.getsize() - 1) / 10;
         data = showList_QLMB(listMB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
     }
     else
     {
-        n_page = 1 + (searchResult->getsize() - 1) / 10;
+        n_page = 1 + (searchResult.getsize() - 1) / 10;
         data = showList_QLMB(searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
     }
 
@@ -927,7 +928,7 @@ void CreateTable_QLMB()
     }
 }
 
-MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float cellW[])
+MayBay **showList_QLMB(DSMB &listMB, Vector2 start_pos, int current_page, float cellW[])
 {
     typedef MayBay *MayBay_ptr;
     MayBay_ptr *result = new MayBay_ptr[10];
@@ -935,7 +936,7 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
     {
         result[i] = new MayBay();
     }
-    int size = listMB->getsize();
+    int size = listMB.getsize();
     int n_char;
     if (size <= 99)
         n_char = 2;
@@ -958,7 +959,7 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
 
     for (i; i < j; i++)
     {
-        MayBay *MB = listMB->getMB(i);
+        MayBay *MB = listMB.getMB(i);
         result[i % 10] = MB;
         DrawTextEx(FontArial, intTochar(i + 1, n_char), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, n_char), 30), 30, 0, BLACK);
         DrawTextEx(FontArial, MB->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (i % 10) + 1, MB->getSoHieuMB(), 30), 30, 0, BLACK);
@@ -972,7 +973,7 @@ MayBay **showList_QLMB(DSMB *listMB, Vector2 start_pos, int current_page, float 
 
 // =-ChuyenBay
 
-void CreatePage_QLCB(DanhSachCB *listCB)
+void CreatePage_QLCB(DanhSachCB &listCB)
 {
     CreatePageBackground(5);
     static NodeCB *data = new NodeCB();
@@ -1044,7 +1045,7 @@ void CreateTable_QLCB()
 }
 
 // test
-NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
+NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
 {
     static NodeCB *result;
     static int index = -1;
@@ -1111,11 +1112,6 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
     const char *textMaCB =
         CreateTextInputBox(searchMaCB);
     DrawTextEx(FontArial, "Giờ khởi hành:", {boxMaCB.x + 390, CenterDataSetter(50, search.y, MeasureTextEx(FontArial, "a", 35, 0).y)}, 35, 0, RED);
-    const char *textGio =
-        CreateTextInputBox(searchGio);
-    const char *textPhut =
-        CreateTextInputBox(searchPhut);
-    DrawTextEx(FontArial, "Ngày khởi hành:", {search.x + 10, CenterDataSetter(50, search.y + 55, MeasureTextEx(FontArial, "a", 35, 0).y)}, 35, 0, RED);
     const char *textNgay =
         CreateTextInputBox(searchNgay);
     const char *textThang =
@@ -1132,10 +1128,6 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
         numThang = stoi(textThang);
     if (textNam[0] != 0)
         numNam = stoi(textNam);
-    if (textGio[0] != 0)
-        numGio = stoi(textGio);
-    if (textPhut[0] != 0)
-        numPhut = stoi(textPhut);
     Button button;
     button.x = search.x + 5;
     button.y = search.y + 5;
@@ -1162,8 +1154,8 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
     int n_page = 1;
     if (status == 1)
     {
-        current_page = 1 + (listCB->getSize() - 1) / 10;
-        index = (listCB->getSize() - 1) % 10;
+        current_page = 1 + (listCB.getSize() - 1) / 10;
+        index = (listCB.getSize() - 1) % 10;
         status = 0;
     }
     else if (status == -1)
@@ -1203,7 +1195,7 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
 
     // show list
     Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
-    int size = listCB->getSize();
+    int size = listCB.getSize();
 
     int n_char;
     if (size <= 99)
@@ -1216,7 +1208,7 @@ NodeCB *XuLy_QLCB(DanhSachCB *listCB, int &status)
     int i = (current_page - 1) * 10;
 
     int j = 0;
-    NodeCB *tmp = listCB->getHead();
+    NodeCB *tmp = listCB.getHead();
     for (int k = 0; k < size; k++)
     {
         if (tmp->getNode().checkMaCB(textMaCB) && tmp->getNode().checkTime(numNgay, numThang, numNam, numGio, numPhut) && tmp->getNode().checkNoiDen(textNoiDen))
@@ -1261,9 +1253,15 @@ void CreateTable_QLVe()
     CreateTable({CenterDataSetter(1080, StartPos.x + 60, 700), StartPos.y + 60 + 100 + 80}, 3, cellW, 700);
 }
 
-void CreatePage_QLHK()
+void CreatePage_QLHK(DsHanhKhach &listHK)
 {
     CreatePageBackground(2);
+
+    static NodeHK *data = new NodeHK();
+    static char *preResult = (char *)"\0";
+    static int status = 0;
+    static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
+
     DrawTextEx(FontArial, "DANH SÁCH HÀNH KHÁCH", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
 
     // mini function
@@ -1300,7 +1298,7 @@ void CreatePage_QLHK()
     // }
 
     CreateTable_QLHK();
-    // CreateTable();
+    data = XuLy_QLHK(listHK, status);
 }
 
 void CreateTable_QLHK()
@@ -1316,6 +1314,110 @@ void CreateTable_QLHK()
     {
         DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
     }
+}
+
+NodeHK *XuLy_QLHK(DsHanhKhach &listHK, int &status)
+{
+    static NodeHK *result;
+    static int index = -1;
+    const Vector2 search = {StartPos.x + 60, StartPos.y + 60 + 70};
+
+    // table
+    float cellW[5] = {100, 300, 380, 200, 100};
+    CreateTable_QLHK();
+
+    // data
+    static int current_page = 1;
+    int n_page = 1;
+    if (status == 1)
+    {
+        // current_page = 1 + (listHK.getSize() - 1) / 10;
+        // index = (listHK.getSize() - 1) % 10;
+        status = 0;
+    }
+
+    // Pick data
+    Button data_picker[10];
+
+    for (int i = 0; i < 10; i++)
+    {
+        data_picker[i].x = StartPos.x + 60;
+        data_picker[i].y = StartPos.y + 60 + 100 + 80 + 50 + i * 40;
+        data_picker[i].w = 1080;
+        data_picker[i].h = 40;
+        data_picker[i].firstRounder = false;
+        data_picker[i].RounderChangeColor = true;
+        data_picker[i].BoMau.RounderHovered = YELLOW;
+        data_picker[i].BoMau.RounderPressed = RED;
+        if (CreateButton(data_picker[i]))
+        {
+            if (index != i)
+            {
+
+                index = i;
+            }
+            else
+                index = -1;
+        }
+        if (index == i)
+            DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y, data_picker[i].w, data_picker[i].h}, 0, 1, 2, GREEN);
+    }
+    result = new NodeHK();
+
+    // show list
+    Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
+    int size = listHK.getSize();
+
+    int n_char;
+    if (size <= 99)
+        n_char = 2;
+    else if (size >= 100 && size <= 999)
+        n_char = 3;
+    else
+        n_char = 4;
+
+    int i = (current_page - 1) * 10;
+
+    int j = 0;
+    typedef NodeHK *NodeHK_ptr;
+    NodeHK_ptr Stack[size];
+    int StackP = -1;
+    NodeHK *tmp = listHK.getRoot();
+    for (int k = 0; tmp != NULL; k++)
+    {
+        // if (tmp->getNode().checkMaCB(textMaCB) && tmp->getNode().checkTime(numNgay, numThang, numNam, numGio, numPhut) && tmp->getNode().checkNoiDen(textNoiDen))
+        // {
+        if (j >= i && j <= i + 9)
+        {
+            if (j % 10 == index)
+                result = tmp;
+            DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, j % 10 + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, tmp->getHanhKhach().getCmnd().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, j % 10 + 1, tmp->getHanhKhach().getCmnd().data(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, tmp->getHanhKhach().getHo().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, j % 10 + 1, tmp->getHanhKhach().getHo().data(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, tmp->getHanhKhach().getTen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 4, j % 10 + 1, tmp->getHanhKhach().getTen().data(), 30), 30, 0, BLACK);
+            DrawTextEx(FontArial, tmp->getHanhKhach().getPhai().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, j % 10 + 1, tmp->getHanhKhach().getPhai().data(), 30), 30, 0, BLACK);
+        }
+        j++;
+        // }
+        if (tmp->getRight() != NULL)
+            Stack[++StackP] = tmp->getRight();
+        if (tmp->getLeft() != NULL)
+            tmp = tmp->getLeft();
+        else if (StackP == -1)
+            break;
+        else
+            tmp = Stack[StackP--];
+    }
+    n_page = 1 + (j / 10);
+
+    // page and switch page
+    int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+    if (current_page != swp)
+        index = -1;
+    current_page = swp;
+    if (current_page > n_page)
+        current_page = 1;
+    return result;
 }
 
 void CreatePage_GioiThieu()
@@ -1510,10 +1612,12 @@ float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float ob
 
 int SwitchPage(int current_page, int n_page, Vector2 pos)
 {
+    static bool editmode = false;
     Rectangle textBox = {pos.x + 50, pos.y, 160, 50};
     Rectangle pg1 = {textBox.x + textBox.width + 2, textBox.y, 70 - 4, 50};
     Rectangle pg2 = {textBox.x + textBox.width + 70 + 2, textBox.y, 70 - 4, 50};
     int status = 0;
+    int page_n = current_page;
 
     // char *n1 = new char[2], *n2 = new char[2];
     char n1[3], n2[3];
@@ -1564,6 +1668,7 @@ int SwitchPage(int current_page, int n_page, Vector2 pos)
 
     DrawRectangleRec(pg1, WHITE);
     DrawRectangleRoundedLines(pg1, 0, 1, 2, BROWN);
+
     DrawRectangleRec(pg2, WHITE);
     DrawRectangleRoundedLines(pg2, 0, 1, 2, BROWN);
 
@@ -1589,6 +1694,38 @@ int SwitchPage(int current_page, int n_page, Vector2 pos)
     {
         DrawRectangle(pos.x + 50 + 300 + 10, pos.y + 10, 30, 30, ArrowKey.isPressed);
         DrawTexture(PNG_arrowRight, pos.x + 50 + 300 + 10, pos.y + 10, ArrowKey.isPressed);
+    }
+
+    if (CheckCollisionPointRec(GetVMousePosition(), pg1) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        editmode = true;
+    static InputTextBox fast_switcher;
+    fast_switcher.textBox = pg1;
+    fast_switcher.editMode = true;
+    fast_switcher.tittle = intTochar(current_page, 2);
+    fast_switcher.size = 2;
+    fast_switcher.MauVien = BROWN;
+    fast_switcher.mode = 5;
+    fast_switcher.returnIfDone = true;
+    fast_switcher.showNKeyRemain = false;
+    if (editmode)
+    {
+        const char *page_t = CreateTextInputBox(fast_switcher);
+        if (page_t[0] == 0)
+            page_n = current_page;
+        else
+            page_n = stoi(page_t);
+        if (!(page_n > 0 && page_n <= n_page))
+        {
+            page_n = current_page;
+            resetInputTextBox(fast_switcher);
+        }
+    }
+
+    if (page_n != current_page)
+    {
+        resetInputTextBox(fast_switcher);
+        editmode = false;
+        return page_n;
     }
     if (status == -1)
         return current_page - 1;
@@ -1708,7 +1845,7 @@ const char *CreateTextInputBox(InputTextBox &data)
     Vector2 textBoxDot = {data.textBox.x + MeasureTextEx(FontArial, name_cpy, font_size, 0).x, CenterDataSetter(data.textBox.height, data.textBox.y, MeasureTextEx(FontArial, name_cpy, font_size, 0).y)};
     strcpy(result, data.name);
 
-    if (data.editMode && data.name[0] == 0)
+    if (data.editMode && data.done)
     {
         strcpy(data.name, data.tittle);
         data.letterCount = getCharSize(data.name);
@@ -1938,14 +2075,19 @@ Vector2 GetVMousePosition()
 void mainGraphics()
 {
     ifstream DataMB("../data/dataMB.txt", ios::in);
-    DSMB *listMB = new DSMB();
-    listMB->ReadFromFile(DataMB);
+    DSMB listMB = DSMB();
+    listMB.ReadFromFile(DataMB);
     DataMB.close();
 
     ifstream DataCB("../data/dataCB.txt", ios::in);
-    DanhSachCB *listCB = new DanhSachCB();
-    listCB->ReadFromFile(DataCB);
+    DanhSachCB listCB = DanhSachCB();
+    listCB.ReadFromFile(DataCB);
     DataCB.close();
+
+    ifstream DataHK("../data/dataHK.txt", ios::in);
+    DsHanhKhach listHK = DsHanhKhach();
+    listHK.readFromFile();
+    DataHK.close();
 
     LoadResources();
 
@@ -1986,7 +2128,7 @@ void mainGraphics()
         }
         case 4:
         {
-            CreatePage_QLHK();
+            CreatePage_QLHK(listHK);
             break;
         }
         case 5:

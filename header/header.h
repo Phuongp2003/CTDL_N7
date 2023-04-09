@@ -32,7 +32,7 @@ class Date;
 // Hành khách
 class HanhKhach;
 class NodeHK;
-class DSHankHach;
+class DsHanhKhach;
 
 // Máy bay
 class MayBay;

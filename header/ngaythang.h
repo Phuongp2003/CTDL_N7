@@ -31,6 +31,7 @@ public:
     string PrintDateHour();
     string PrintDate();
     string PrintHour();
+
     bool operator<(Date another);
     bool operator==(Date another);
 };

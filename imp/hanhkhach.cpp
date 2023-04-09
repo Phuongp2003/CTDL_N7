@@ -235,7 +235,7 @@ void DsHanhKhach::printInOrder()
 void DsHanhKhach::writeToFile(NodeHK *node)
 {
     ofstream file;
-    file.open("../dataHK.txt", ios::out | ios::app);
+    file.open("../data/dataHK.txt", ios::out | ios::app);
     if (file.is_open())
     {
         HanhKhach hanhKhach = node->getHanhKhach();
@@ -250,7 +250,7 @@ void DsHanhKhach::writeToFile(NodeHK *node)
 void DsHanhKhach::readFromFile()
 {
     ifstream file;
-    file.open("../test.txt");
+    file.open("../data/dataHK.txt", ios::in);
     if (file.is_open())
     {
         string line;
@@ -272,4 +272,14 @@ void DsHanhKhach::readFromFile()
     {
         cout << "Error";
     }
+}
+
+int DsHanhKhach::getSize()
+{
+    return size;
+}
+
+NodeHK *DsHanhKhach::getRoot()
+{
+    return root;
 }
