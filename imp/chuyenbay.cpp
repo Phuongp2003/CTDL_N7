@@ -65,8 +65,8 @@ bool ChuyenBay::checkNoiDen(const char *noiden)
 bool ChuyenBay::checkTime(int ngay, int thang, int nam, int gio, int phut)
 {
     if (NgayGio == Date(ngay, thang, nam, gio, phut))
-        return false;
-    return true;
+        return true;
+    return false;
 }
 
 bool ChuyenBay::checkMaCB(const char *maCB)

@@ -110,7 +110,7 @@ Texture2D PNG_arrowRight;
 void LoadResources()
 {
     UnloadResources();
-    FontArial = LoadFontEx("../src/font/arial.ttf", 96, 0, 9812);
+    FontArial = LoadFontEx("../src/font/arial.ttf", 72, 0, 9812);
     // FontArial = LoadFontEx("c:/Windows/Fonts/arial.ttf", 96, 0, 9812);
     GenTextureMipmaps(&FontArial.texture);
     SetTextureFilter(FontArial.texture, TEXTURE_FILTER_TRILINEAR);
@@ -1049,6 +1049,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
 {
     static NodeCB *result;
     static int index = -1;
+    static bool first_run = true;
     const Vector2 search = {StartPos.x + 60, StartPos.y + 60 + 70};
 
     // search
@@ -1088,24 +1089,22 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     searchNam.size = 4;
     searchNam.mode = 5;
     searchNam.showNKeyRemain = false;
-    static InputTextBox searchGio;
-    searchGio.textBox = boxGio;
-    searchGio.tittle = "HH";
-    searchGio.size = 2;
-    searchGio.mode = 5;
-    searchGio.showNKeyRemain = false;
-    static InputTextBox searchPhut;
-    searchPhut.textBox = boxPhut;
-    searchPhut.tittle = "MM";
-    searchPhut.size = 2;
-    searchPhut.mode = 5;
-    searchPhut.showNKeyRemain = false;
     static InputTextBox searchMaCB;
     searchMaCB.textBox = boxMaCB;
     searchMaCB.tittle = "Mã chuyến bay";
     searchMaCB.size = 15;
     searchMaCB.mode = 3;
 
+    int numNgay = 1, numThang = 1, numNam = 1900, numGio = 0, numPhut = 0;
+    if (first_run)
+    {
+        strcpy(searchNgay.name, intTochar(numNgay, 2));
+        searchNgay.letterCount = 2;
+        strcpy(searchThang.name, intTochar(numThang, 2));
+        searchThang.letterCount = 2;
+        strcpy(searchNam.name, intTochar(numNam, 4));
+        searchNam.letterCount = 4;
+    }
     // Vẽ ô nhập
     // DrawTextEx(FontArial, "Tìm kiếm chuyến bay:", {search.x, search.y}, 40, 0, BLUE);
 
@@ -1121,13 +1120,15 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     const char *textNoiDen =
         CreateTextInputBox(searchNoiDen);
     // Giá trị cơ bản của tìm kiếm
-    int numNgay = 1, numThang = 1, numNam = 1900, numGio = 0, numPhut = 0;
     if (textNgay[0] != 0)
         numNgay = stoi(textNgay);
+
     if (textThang[0] != 0)
         numThang = stoi(textThang);
+
     if (textNam[0] != 0)
         numNam = stoi(textNam);
+
     Button button;
     button.x = search.x + 5;
     button.y = search.y + 5;
@@ -1228,7 +1229,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
         }
         tmp = tmp->getNext();
     }
-    n_page = 1 + (j / 10);
+    n_page = 1 + ((j - 1) / 10);
 
     // page and switch page
     int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
@@ -1237,6 +1238,10 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     current_page = swp;
     if (current_page > n_page)
         current_page = 1;
+
+    if (first_run)
+        first_run = false;
+
     return result;
 }
 
@@ -1408,7 +1413,7 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, int &status)
         else
             tmp = Stack[StackP--];
     }
-    n_page = 1 + (j / 10);
+    n_page = 1 + ((j - 1) / 10);
 
     // page and switch page
     int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
@@ -2074,6 +2079,8 @@ Vector2 GetVMousePosition()
 // main function
 void mainGraphics()
 {
+    // Settup data
+
     ifstream DataMB("../data/dataMB.txt", ios::in);
     DSMB listMB = DSMB();
     listMB.ReadFromFile(DataMB);
@@ -2089,14 +2096,19 @@ void mainGraphics()
     listHK.readFromFile();
     DataHK.close();
 
-    LoadResources();
+    // Settup for before run graphics
 
-    SetConfigFlags(FLAG_MSAA_4X_HINT);
-    SetTargetFPS(60); // max framerate per second set to 60
     SetWindowState(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     SetWindowMinSize(700, 400);
+    LoadResources();
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    SetTargetFPS(60); // max framerate per second set to 60
     SetSizeWindow();
     RenderTexture2D renderTexture = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT); // Load nội dung màn hình như một ảnh
+    GenTextureMipmaps(&renderTexture.texture);
+    SetTextureFilter(renderTexture.texture, TEXTURE_FILTER_TRILINEAR);
+
+    // Graphics in running
     while (!WindowShouldClose())
     {
         BeginTextureMode(renderTexture);
@@ -2154,6 +2166,8 @@ void mainGraphics()
             WHITE);
         EndDrawing();
     }
+
+    // Clear all data after run graphics
     UnloadRenderTexture(renderTexture);
     UnloadResources();
 }
