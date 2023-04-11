@@ -76,7 +76,12 @@ bool ChuyenBay::checkMaCB(const char *maCB)
     return false;
 }
 
-DSVeMayBay *ChuyenBay::getDSVe()
+void ChuyenBay::setDSVe(DSVeMayBay dsve)
+{
+    DSVe = dsve;
+}
+
+DSVeMayBay ChuyenBay::getDSVe()
 {
     return this->DSVe;
 }
@@ -279,7 +284,7 @@ DanhSachCB DanhSachCB::TimDSCB(Date date, string noiden)
     DanhSachCB *DS = new DanhSachCB();
     while (tmp != NULL)
     {
-        if ((tmp->getNode().getNgayGio().getNgay() == date.getNgay()) && (tmp->getNode().getNgayGio().getThang() == date.getThang()) && (tmp->getNode().getNgayGio().getNam() == date.getNam()) && (tmp->getNode().getNoiDen() == noiden) && ((tmp->getNode().getDSVe()->getSoVeConLai() != 0)))
+        if ((tmp->getNode().getNgayGio().getNgay() == date.getNgay()) && (tmp->getNode().getNgayGio().getThang() == date.getThang()) && (tmp->getNode().getNgayGio().getNam() == date.getNam()) && (tmp->getNode().getNoiDen() == noiden) && ((tmp->getNode().getDSVe().getSoVeConLai() != 0)))
         {
             if (DS->getHead() == NULL)
                 DS->push_front(tmp);

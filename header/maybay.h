@@ -1,5 +1,5 @@
 #pragma once
-#include "chuyenbay.h"
+// #include "chuyenbay.h"
 #include "header.h"
 #include <fstream>
 #define MAXMB 300
@@ -67,7 +67,7 @@ public:
     // MayBay *New_MB(MayBay *maybay);
     void Insert_MB(MayBay *maybay);
     void Delete_MB(int index);
-    int Find_MB(char *_SoHieuMB);
+    int Find_MB(const char *_SoHieuMB);
     int vitri(const char *a, const char *b);
     DSMB Find_DSMB(const char *SoHieuMB);
 

@@ -1,8 +1,11 @@
 #pragma once
-#include "hanhkhach.h"
-#include "header.h"
+
+// #include "chuyenbay.h"
+// #include "hanhkhach.h"
 #include "maybay.h"
-#include "ngaythang.h"
+// #include "ngaythang.h"
+
+#include "header.h"
 
 class VeMayBay
 {
@@ -42,9 +45,3 @@ public:
     DSVeMayBay getDSVeTrong();
     ~DSVeMayBay();
 };
-    
-
-
-
-
-

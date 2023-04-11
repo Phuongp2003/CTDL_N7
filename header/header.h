@@ -3,14 +3,13 @@
 // #include "mylib.h"
 #include "raylib.h"
 #include "raymath.h"
+
 #include <conio.h>
 #include <ctime>
 #include <dos.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
-// #include <stdio.h>
-// #include <stdlib.h>
 #include <string>
 
 using std::cout;
@@ -25,10 +24,43 @@ using std::string;
 #define MAXVe 100
 #define ENTER 13
 
+const char IDChu[26] = {
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+};
+
+const char IDSo[10] = {'0', '1', '2', '3', '4',
+                       '5', '6', '7', '8', '9'};
+
 // class -----------------------------------------------------------------
 
 // ngày tháng
 class Date;
+
 // Hành khách
 class HanhKhach;
 class NodeHK;
@@ -38,14 +70,14 @@ class DsHanhKhach;
 class MayBay;
 class DSMB;
 
+// Vé máy bay
+class VeMayBay;
+class DSVeMayBay;
+
 // Chuyến bay
 class ChuyenBay;
 class NodeCB;
 class DanhSachCB;
-
-// Vé máy bay
-class VeMayBay;
-class DSVeMayBay;
 
 // Định nghĩa function ở file header của các file
 

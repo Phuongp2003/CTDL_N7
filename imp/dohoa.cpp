@@ -1050,52 +1050,62 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     static NodeCB *result;
     static int index = -1;
     static bool first_run = true;
+    static bool findByDay = false;
+    bool DKTimKiem = true;
+    int numNgay = 1, numThang = 1, numNam = 1900, numGio = 0, numPhut = 0;
+    float cellW[6] = {90, 230, 230, 200, 180, 150};
+    static int current_page = 1;
+    int n_page = 1;
+
     const Vector2 search = {StartPos.x + 60, StartPos.y + 60 + 70};
 
-    // search
-
-    DrawRectangleRoundedLines({search.x - 5, search.y - 5, 1090, 105}, 0, 1, 3, DARKBLUE);
-
     // VỊ trị box
-    Rectangle boxMaCB = {search.x + 300, search.y, 350, 45};
-    Rectangle boxGio = {boxMaCB.x + 370 + 230, search.y, 80, 45};
-    Rectangle boxPhut = {boxGio.x + 80 + 20, search.y, 80, 45};
-    Rectangle boxNgay = {search.x + 280, search.y + 55, 80, 45};
-    Rectangle boxThang = {boxNgay.x + 100, search.y + 55, 80, 45};
-    Rectangle boxNam = {boxThang.x + 100, search.y + 55, 160, 45};
-    Rectangle boxNoiDen = {boxNam.x + 180, search.y + 55, 420, 45};
+    Rectangle boxMaCB = {search.x + 300 + 250, search.y, 350, 45};
+    Rectangle boxNgay = {search.x + 290, search.y + 55, 50, 45};
+    Rectangle boxThang = {boxNgay.x + 70, search.y + 55, 50, 45};
+    Rectangle boxNam = {boxThang.x + 70, search.y + 55, 80, 45};
+    Rectangle boxNoiDen = {boxNam.x + 80 + 150 + 20, search.y + 55, 350, 45};
 
-    // Tạo các ô nhập
     static InputTextBox searchNoiDen;
+    static InputTextBox searchNgay;
+    static InputTextBox searchThang;
+    static InputTextBox searchNam;
+    static InputTextBox searchMaCB;
+
+    Button dayFilter;
+    Button data_picker[10];
+    Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
+    NodeCB *tmp = listCB.getHead();
+
+    // Cài đặt các ô nhập
     searchNoiDen.textBox = boxNoiDen;
     searchNoiDen.tittle = "Nơi đến";
     searchNoiDen.size = 20;
     searchNoiDen.mode = 1;
-    static InputTextBox searchNgay;
+
     searchNgay.textBox = boxNgay;
     searchNgay.tittle = "DD";
     searchNgay.mode = 5;
     searchNgay.size = 2;
     searchNgay.showNKeyRemain = false;
-    static InputTextBox searchThang;
+
     searchThang.textBox = boxThang;
     searchThang.tittle = "MM";
     searchThang.size = 2;
     searchThang.mode = 5;
     searchThang.showNKeyRemain = false;
-    static InputTextBox searchNam;
+
     searchNam.textBox = boxNam;
     searchNam.tittle = "YYYY";
     searchNam.size = 4;
     searchNam.mode = 5;
     searchNam.showNKeyRemain = false;
-    static InputTextBox searchMaCB;
+
     searchMaCB.textBox = boxMaCB;
     searchMaCB.tittle = "Mã chuyến bay";
     searchMaCB.size = 15;
     searchMaCB.mode = 3;
 
-    int numNgay = 1, numThang = 1, numNam = 1900, numGio = 0, numPhut = 0;
     if (first_run)
     {
         strcpy(searchNgay.name, intTochar(numNgay, 2));
@@ -1105,54 +1115,75 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
         strcpy(searchNam.name, intTochar(numNam, 4));
         searchNam.letterCount = 4;
     }
-    // Vẽ ô nhập
-    // DrawTextEx(FontArial, "Tìm kiếm chuyến bay:", {search.x, search.y}, 40, 0, BLUE);
 
+    // search
+
+    DrawRectangleRoundedLines({search.x - 5, search.y - 5, 1090, 105}, 0, 1, 3, DARKBLUE);
+
+    if (!findByDay)
+    {
+        dayFilter.x = search.x + 5;
+        dayFilter.y = search.y + 5 + 55;
+        dayFilter.w = 470;
+        dayFilter.h = 40;
+        dayFilter.BoTron = false;
+        dayFilter.gotNothing = false;
+        dayFilter.gotText = true;
+        dayFilter.tittle = "LỌC THEO NGÀY";
+        dayFilter.font = FontArial;
+        dayFilter.BoMau = ArrowKey;
+    }
+    else
+    {
+        dayFilter.x = search.x + 5;
+        dayFilter.y = search.y + 5 + 55;
+        dayFilter.w = 30;
+        dayFilter.h = 40;
+        dayFilter.BoTron = false;
+        dayFilter.gotNothing = false;
+        dayFilter.gotText = true;
+        dayFilter.tittle = "X";
+        dayFilter.font = FontArial;
+        dayFilter.BoMau = ArrowKey;
+    }
+
+    DrawTextEx(FontArial, "Mã chuyến bay:", {search.x + 10 + 300, CenterDataSetter(50, search.y, MeasureTextEx(FontArial, "a", 35, 0).y)}, 35, 0, RED);
     const char *textMaCB =
         CreateTextInputBox(searchMaCB);
-    DrawTextEx(FontArial, "Giờ khởi hành:", {boxMaCB.x + 390, CenterDataSetter(50, search.y, MeasureTextEx(FontArial, "a", 35, 0).y)}, 35, 0, RED);
-    const char *textNgay =
-        CreateTextInputBox(searchNgay);
-    const char *textThang =
-        CreateTextInputBox(searchThang);
-    const char *textNam =
-        CreateTextInputBox(searchNam);
+    DrawTextEx(FontArial, "Nơi đến:", {search.x + 20 + 530, CenterDataSetter(50, search.y + 55, MeasureTextEx(FontArial, "a", 35, 0).y)}, 35, 0, RED);
     const char *textNoiDen =
         CreateTextInputBox(searchNoiDen);
-    // Giá trị cơ bản của tìm kiếm
-    if (textNgay[0] != 0)
-        numNgay = stoi(textNgay);
-
-    if (textThang[0] != 0)
-        numThang = stoi(textThang);
-
-    if (textNam[0] != 0)
-        numNam = stoi(textNam);
-
-    Button button;
-    button.x = search.x + 5;
-    button.y = search.y + 5;
-    button.w = 250 - 10;
-    button.h = 55 - 10;
-    button.BoTron = false;
-    button.gotNothing = false;
-    button.gotText = true;
-    button.tittle = "TÌM KIẾM";
-    button.font = FontArial;
-    button.BoMau = ArrowKey;
-
-    if (CreateButton(button))
+    if (!findByDay)
     {
-        cout << "Tim kiem" << endl;
+        if (CreateButton(dayFilter))
+            findByDay = true;
+    }
+    else
+    {
+        if (CreateButton(dayFilter))
+            findByDay = false;
+
+        DrawTextEx(FontArial, "Ngày khởi hành:", {search.x + 10 + 30, CenterDataSetter(50, search.y + 55, MeasureTextEx(FontArial, "a", 35, 0).y)}, 35, 0, RED);
+        const char *textNgay =
+            CreateTextInputBox(searchNgay);
+        const char *textThang =
+            CreateTextInputBox(searchThang);
+        const char *textNam =
+            CreateTextInputBox(searchNam);
+        if (textNgay[0] != 0)
+            numNgay = stoi(textNgay);
+
+        if (textThang[0] != 0)
+            numThang = stoi(textThang);
+
+        if (textNam[0] != 0)
+            numNam = stoi(textNam);
     }
 
     // table
-    float cellW[6] = {90, 230, 230, 200, 180, 150};
     CreateTable_QLCB();
 
     // data
-    static int current_page = 1;
-    int n_page = 1;
     if (status == 1)
     {
         current_page = 1 + (listCB.getSize() - 1) / 10;
@@ -1167,7 +1198,6 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     }
 
     // Pick data
-    Button data_picker[10];
 
     for (int i = 0; i < 10; i++)
     {
@@ -1195,7 +1225,6 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     result = new NodeCB();
 
     // show list
-    Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
     int size = listCB.getSize();
 
     int n_char;
@@ -1209,10 +1238,15 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     int i = (current_page - 1) * 10;
 
     int j = 0;
-    NodeCB *tmp = listCB.getHead();
+
     for (int k = 0; k < size; k++)
     {
-        if (tmp->getNode().checkMaCB(textMaCB) && tmp->getNode().checkTime(numNgay, numThang, numNam, numGio, numPhut) && tmp->getNode().checkNoiDen(textNoiDen))
+        if (findByDay)
+            DKTimKiem = tmp->getNode().checkMaCB(textMaCB) && tmp->getNode().checkTime(numNgay, numThang, numNam, numGio, numPhut) && tmp->getNode().checkNoiDen(textNoiDen);
+        else
+            DKTimKiem = tmp->getNode().checkMaCB(textMaCB) && tmp->getNode().checkNoiDen(textNoiDen);
+
+        if (DKTimKiem)
         {
             if (j >= i && j <= i + 9)
             {
@@ -1248,7 +1282,9 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
 void CreatePage_QLVe()
 {
     CreatePageBackground(3);
-    CreateTable_QLVe();
+    // CreateTable_QLVe();
+    ChuyenBay *cb = new ChuyenBay("CB01", "Da Lat", {25, 4, 2023, 10, 0}, "MB1");
+    XuLy_QLVe(*cb);
 }
 
 void CreateTable_QLVe()
@@ -1256,6 +1292,69 @@ void CreateTable_QLVe()
     DrawTextEx(FontArial, "DANH SÁCH VÉ", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
     float cellW[3] = {100, 200, 400};
     CreateTable({CenterDataSetter(1080, StartPos.x + 60, 700), StartPos.y + 60 + 100 + 80}, 3, cellW, 700);
+}
+
+void XuLy_QLVe(ChuyenBay &cb)
+{
+    DSMB ds;
+    MayBay *mb = new MayBay("MB1", "AB1", 10, 30);
+    ds.Insert_MB(mb);
+    DSVeMayBay dsve = DSVeMayBay();
+    dsve.setDSVe(ds.getMB(ds.Find_MB(cb.getMaMayBay())));
+    cb.setDSVe(dsve);
+    static int current_page = 1;
+    int n_page = 1;
+    int size = dsve.getSoVeToiDa();
+    static int index = -1;
+    int i = (current_page - 1) * 10;
+    int j = 0;
+    // if (current_page * 10 < size)
+    //     j = current_page * 100;
+    // else
+    //     j = size;
+    Rectangle r;
+    int k = 0;
+    int b = 0;
+    for (int a = 0; a < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong(); a++)
+    {
+
+        if (j >= i && j <= i + 9)
+        {
+            for (int m = 0; m < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay(); m++)
+            {
+                if (a > 9)
+                {
+                    b = int(a / 10);
+                }
+                r = {CenterDataSetter(1080, StartPos.x + 60, (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay()) * 50 + (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay() - 1) * 50) + a * 100 - b * 1000, StartPos.y + 85 + m * 60, 50 * 1.0, 40 * 1.0};
+                Button button;
+                button.x = r.x;
+                button.y = r.y;
+                button.w = r.width;
+                button.h = r.height;
+                button.BoTron = false;
+                button.gotNothing = false;
+                button.gotText = true;
+                button.tittle = cb.getDSVe().getVe(m * ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong() + a).getIDVe().c_str();
+                button.font = FontArial;
+                button.BoMau = ArrowKey;
+                if (CreateButton(button))
+                {
+                    index = i * (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong()) + j;
+                };
+            }
+        }
+        j++;
+    }
+
+    n_page = 1 + (j / 10);
+
+    int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+    if (current_page != swp)
+        index = -1;
+    current_page = swp;
+    if (current_page > n_page)
+        current_page = 1;
 }
 
 void CreatePage_QLHK(DsHanhKhach &listHK)

@@ -44,6 +44,7 @@ bool VeMayBay::getTrangThai()
 {
     return this->TrangThai;
 }
+
 // ham DSvemaybay
 DSVeMayBay::DSVeMayBay()
 {

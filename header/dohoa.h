@@ -77,6 +77,7 @@ void CreateTable_QLCB();
 
 void CreatePage_QLVe();
 void CreateTable_QLVe();
+void XuLy_QLVe(ChuyenBay &cb);
 
 void CreatePage_QLHK(DsHanhKhach &listHK);
 void CreateTable_QLHK();

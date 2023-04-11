@@ -170,7 +170,7 @@ void DSMB::Delete_MB(int index)
     }
     this->size--; //
 }
-int DSMB::Find_MB(char *_SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
+int DSMB::Find_MB(const char *_SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
 {
     for (int i = 0; i < this->size; i++)
     {

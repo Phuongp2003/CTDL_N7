@@ -1,49 +1,16 @@
 #pragma once
-#include "hanhkhach.h"
+
 #include "header.h"
+
+#include "hanhkhach.h"
 #include "maybay.h"
 #include "ngaythang.h"
 #include "vemaybay.h"
-
-using std::string;
 
 #define HuyChuyen 0
 #define ConVe 1
 #define HetVe 2
 #define HoanTat 3
-
-const char IDChu[26] = {
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-};
-
-const char IDSo[10] = {'0', '1', '2', '3', '4',
-                       '5', '6', '7', '8', '9'};
-
 class ChuyenBay
 {
 private:
@@ -51,9 +18,8 @@ private:
     Date NgayGio;
     string NoiDen;
     int TrangThai;
-    // char *idMayBay;
     char IDMayBay[16];
-    DSVeMayBay *DSVe;
+    DSVeMayBay DSVe;
 
 public:
     /**
@@ -68,6 +34,7 @@ public:
     string getNoiDen();
     Date getNgayGio();
     void setNgayGio(Date _NgayGio);
+
     /**
      *
      * @param _GiaTri 0-Huỷ chuyến, 1-Còn vé, 2-Hết vé, 3-Hoàn tất
@@ -78,9 +45,10 @@ public:
 
     bool checkNoiDen(const char *noiden);
     bool checkTime(int ngay, int thang, int nam, int gio, int phut);
-    bool checkMaCB(const char* maCB);
+    bool checkMaCB(const char *maCB);
 
-    DSVeMayBay *getDSVe();
+    void setDSVe(DSVeMayBay dsve);
+    DSVeMayBay getDSVe();
 
     void ThucHienCB(DSMB *DanhSachCB);
     // node
