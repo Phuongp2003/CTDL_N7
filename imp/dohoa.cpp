@@ -789,10 +789,7 @@ bool Popup_XoaMB(DSMB &listMB, MayBay *mb, int &status)
 
 MayBay *XuLy_QLMB(DSMB &listMB, int &status)
 {
-    static bool isSearch = false;
-    static DSMB searchResult = DSMB();
     static MayBay *result;
-    static MayBay **data;
     static int index = -1;
 
     // search
@@ -808,18 +805,7 @@ MayBay *XuLy_QLMB(DSMB &listMB, int &status)
     static char *prev_key_word = new char[259];
     const char *key_word =
         CreateTextInputBox(searchTextBox);
-    if (strcmp(prev_key_word, key_word) != 0)
-    {
-
-        strcpy(prev_key_word, key_word);
-        if (key_word[0] != 0)
-        {
-            searchResult = listMB.Find_DSMB(key_word);
-            isSearch = true;
-        }
-        else
-            isSearch = false;
-    }
+    
     Button button;
 
     button.x = searchText.x + searchText.width;
@@ -844,31 +830,19 @@ MayBay *XuLy_QLMB(DSMB &listMB, int &status)
 
     // data
     static int current_page = 1;
-    int n_page; // 1 + (spt/10)
-    if (status == 1)
-    {
-        current_page = 1 + (listMB.getsize() - 1) / 10;
-        isSearch = false;
-        index = (listMB.getsize() - 1) % 10;
-        status = 0;
-    }
-    else if (status == -1)
-    {
-        current_page = 1;
-        isSearch = false;
-        index = -1;
-        status = 0;
-    }
-    if (!isSearch)
-    {
-        n_page = 1 + (listMB.getsize() - 1) / 10;
-        data = showList_QLMB(listMB, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
-    }
-    else
-    {
-        n_page = 1 + (searchResult.getsize() - 1) / 10;
-        data = showList_QLMB(searchResult, {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, current_page, cellW);
-    }
+    int n_page = 1; // 1 + (spt/10)
+    // if (status == 1)
+    // {
+    //     current_page = 1 + (listMB.getsize() - 1) / 10;
+    //     index = (listMB.getsize() - 1) % 10;
+    //     status = 0;
+    // }
+    // else if (status == -1)
+    // {
+    //     current_page = 1;
+    //     index = -1;
+    //     status = 0;
+    // }
 
     // Pick data
     Button data_picker[10];
@@ -896,12 +870,50 @@ MayBay *XuLy_QLMB(DSMB &listMB, int &status)
         if (index == i)
             DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y, data_picker[i].w, data_picker[i].h}, 0, 1, 2, GREEN);
     }
-    if (index >= 0)
-    {
-        result = data[index];
-    }
+    // if (index >= 0)
+    // {
+    //     result = listMB.getMB(index);
+    // }
+    // else
+    //     result = new MayBay();
+
+    int size = listMB.getsize();
+    int n_char;
+    if (size <= 99)
+        n_char = 2;
+    else if (size >= 100 && size <= 999)
+        n_char = 3;
     else
-        result = new MayBay();
+        n_char = 4;
+    int i = (current_page - 1) * 10;
+    int j=0;
+    // if (current_page * 10 < size)
+    //     j = current_page * 10;
+    // else
+    // {
+    //     j = size;
+    // }
+    
+    
+    Vector2 start_pos = {StartPos.x +60, StartPos.y + 60 + 70 + 110};
+    for (int id = 0; id < size; id++)
+    {
+        if (isGotStr(listMB.getMB(id)->getSoHieuMB(), key_word))
+            {if (j >= i && j <= i + 9)
+            {
+                if (j % 10 == index)
+                    result = listMB.getMB(id);
+                DrawTextEx(FontArial, intTochar(j + 1, n_char), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (j % 10) + 1, intTochar(j + 1, n_char), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, listMB.getMB(id)->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (j % 10) + 1, listMB.getMB(id)->getSoHieuMB(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, listMB.getMB(id)->getLoaiMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 3, (j % 10) + 1, listMB.getMB(id)->getLoaiMB(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, intTochar(listMB.getMB(id)->getSoDay(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (j % 10) + 1, intTochar(listMB.getMB(id)->getSoDay(), 3), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, intTochar(listMB.getMB(id)->getSoDong(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (j % 10) + 1, intTochar(listMB.getMB(id)->getSoDong(), 3), 30), 30, 0, BLACK);
+            }
+            j++;}
+        
+        
+    }
+    n_page = 1 + ((j - 1) / 10);
 
     // page and switch page
     int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
@@ -957,16 +969,7 @@ MayBay **showList_QLMB(DSMB &listMB, Vector2 start_pos, int current_page, float 
         }
     }
 
-    for (i; i < j; i++)
-    {
-        MayBay *MB = listMB.getMB(i);
-        result[i % 10] = MB;
-        DrawTextEx(FontArial, intTochar(i + 1, n_char), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (i % 10) + 1, intTochar(i + 1, n_char), 30), 30, 0, BLACK);
-        DrawTextEx(FontArial, MB->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (i % 10) + 1, MB->getSoHieuMB(), 30), 30, 0, BLACK);
-        DrawTextEx(FontArial, MB->getLoaiMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 3, (i % 10) + 1, MB->getLoaiMB(), 30), 30, 0, BLACK);
-        DrawTextEx(FontArial, intTochar(MB->getSoDay(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (i % 10) + 1, intTochar(MB->getSoDay(), 3), 30), 30, 0, BLACK);
-        DrawTextEx(FontArial, intTochar(MB->getSoDong(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (i % 10) + 1, intTochar(MB->getSoDong(), 3), 30), 30, 0, BLACK);
-    }
+    
 
     return result;
 }
@@ -1184,18 +1187,18 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     CreateTable_QLCB();
 
     // data
-    if (status == 1)
-    {
-        current_page = 1 + (listCB.getSize() - 1) / 10;
-        index = (listCB.getSize() - 1) % 10;
-        status = 0;
-    }
-    else if (status == -1)
-    {
-        current_page = 1;
-        index = -1;
-        status = 0;
-    }
+    // if (status == 1)
+    // {
+    //     current_page = 1 + (listCB.getSize() - 1) / 10;
+    //     index = (listCB.getSize() - 1) % 10;
+    //     status = 0;
+    // }
+    // else if (status == -1)
+    // {
+    //     current_page = 1;
+    //     index = -1;
+    //     status = 0;
+    // }
 
     // Pick data
 
@@ -1283,6 +1286,7 @@ void CreatePage_QLVe()
 {
     CreatePageBackground(3);
     // CreateTable_QLVe();
+    
     ChuyenBay *cb = new ChuyenBay("CB01", "Da Lat", {25, 4, 2023, 10, 0}, "MB1");
     XuLy_QLVe(*cb);
 }
@@ -1364,7 +1368,7 @@ void CreateTable_QLVe()
 void XuLy_QLVe(ChuyenBay &cb)
 {
     DSMB ds;
-    MayBay *mb = new MayBay("MB1", "AB1", 13, 25);
+    MayBay *mb = new MayBay("MB1", "AB1", 17, 25);
     ds.Insert_MB(mb);
     DSVeMayBay dsve = DSVeMayBay();
     dsve.setDSVe(ds.getMB(ds.Find_MB(cb.getMaMayBay())));
@@ -1384,8 +1388,7 @@ void XuLy_QLVe(ChuyenBay &cb)
          StartPos.y + 85,
          50,
          30};
-    int k = 0;
-    int b = 0;
+                Button button;
     for (int a = 0; a < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong(); a++)
     {
 
@@ -1393,11 +1396,6 @@ void XuLy_QLVe(ChuyenBay &cb)
         {
             for (int m = 0; m < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay(); m++)
             {
-                if (a > 9)
-                {
-                    b = int(a / 10);
-                }
-                Button button;
                 button.x = r.x + m * 70;
                 button.y = r.y + (a % 10) * 40;
                 button.w = r.width;
@@ -1410,8 +1408,8 @@ void XuLy_QLVe(ChuyenBay &cb)
                 button.BoMau = ArrowKey;
                 if (CreateButton(button))
                 {
-                    index = i * (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong()) + j;
-                    cout << i << endl;
+                    index = m * (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong()) + j;
+                    cout << index << endl;
                 };
             }
         }
