@@ -1294,10 +1294,77 @@ void CreateTable_QLVe()
     CreateTable({CenterDataSetter(1080, StartPos.x + 60, 700), StartPos.y + 60 + 100 + 80}, 3, cellW, 700);
 }
 
+// void XuLy_QLVe(ChuyenBay &cb)
+// {
+//     DSMB ds;
+//     MayBay *mb = new MayBay("MB1", "AB1", 1, 6);
+//     ds.Insert_MB(mb);
+//     DSVeMayBay dsve = DSVeMayBay();
+//     dsve.setDSVe(ds.getMB(ds.Find_MB(cb.getMaMayBay())));
+//     cb.setDSVe(dsve);
+//     static int current_page = 1;
+//     int n_page = 1;
+//     int size = dsve.getSoVeToiDa();
+//     static int index = -1;
+//     int i = (current_page - 1) * 10;
+//     int j = 0;
+//     // if (current_page * 10 < size)
+//     //     j = current_page * 100;
+//     // else
+//     //     j = size;
+//     Rectangle r;
+//     int k = 0;
+//     int b = 0;
+//     for (int a = 0; a < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong(); a++)
+//     {
+
+//         if (j >= i && j <= i + 9)
+//         {
+//             for (int m = 0; m < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay(); m++)
+//             {
+//                 if (a > 9)
+//                 {
+//                     b = int(a / 10);
+//                 }
+//                 r = {CenterDataSetter(1080, StartPos.x + 60, (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay()) * 50 + (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay() - 1) * 50),
+//                      StartPos.y + 85 + m * 60,
+//                      50 * 1.0,
+//                      40 * 1.0};
+//                 Button button;
+//                 button.x = r.x;
+//                 button.y = r.y;
+//                 button.w = r.width;
+//                 button.h = r.height;
+//                 button.BoTron = false;
+//                 button.gotNothing = false;
+//                 button.gotText = true;
+//                 button.tittle = cb.getDSVe().getVe(m * ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong() + a).getIDVe().c_str();
+//                 button.font = FontArial;
+//                 button.BoMau = ArrowKey;
+//                 if (CreateButton(button))
+//                 {
+//                     index = i * (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong()) + j;
+//                     cout << i << endl;
+//                 };
+//             }
+//         }
+//         j++;
+//     }
+
+//     n_page = 1 + ((j - 1) / 10);
+
+//     int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+//     if (current_page != swp)
+//         index = -1;
+//     current_page = swp;
+//     if (current_page > n_page)
+//         current_page = 1;
+// }
+
 void XuLy_QLVe(ChuyenBay &cb)
 {
     DSMB ds;
-    MayBay *mb = new MayBay("MB1", "AB1", 10, 30);
+    MayBay *mb = new MayBay("MB1", "AB1", 13, 25);
     ds.Insert_MB(mb);
     DSVeMayBay dsve = DSVeMayBay();
     dsve.setDSVe(ds.getMB(ds.Find_MB(cb.getMaMayBay())));
@@ -1313,6 +1380,10 @@ void XuLy_QLVe(ChuyenBay &cb)
     // else
     //     j = size;
     Rectangle r;
+    r = {CenterDataSetter(1200, StartPos.x, (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay()) * 50 + (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay() - 1) * 20),
+         StartPos.y + 85,
+         50,
+         30};
     int k = 0;
     int b = 0;
     for (int a = 0; a < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong(); a++)
@@ -1326,10 +1397,9 @@ void XuLy_QLVe(ChuyenBay &cb)
                 {
                     b = int(a / 10);
                 }
-                r = {CenterDataSetter(1080, StartPos.x + 60, (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay()) * 50 + (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay() - 1) * 50) + a * 100 - b * 1000, StartPos.y + 85 + m * 60, 50 * 1.0, 40 * 1.0};
                 Button button;
-                button.x = r.x;
-                button.y = r.y;
+                button.x = r.x + m * 70;
+                button.y = r.y + (a % 10) * 40;
                 button.w = r.width;
                 button.h = r.height;
                 button.BoTron = false;
@@ -1341,13 +1411,14 @@ void XuLy_QLVe(ChuyenBay &cb)
                 if (CreateButton(button))
                 {
                     index = i * (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong()) + j;
+                    cout << i << endl;
                 };
             }
         }
         j++;
     }
 
-    n_page = 1 + (j / 10);
+    n_page = 1 + ((j - 1) / 10);
 
     int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
     if (current_page != swp)
@@ -1368,41 +1439,50 @@ void CreatePage_QLHK(DsHanhKhach &listHK)
 
     DrawTextEx(FontArial, "DANH SÁCH HÀNH KHÁCH", {StartPos.x + 60, CenterDataSetter(100, StartPos.y + 60, MeasureTextEx(FontArial, "A", 60, 0).y)}, 60, 0, BLUE);
 
-    // mini function
-    Button button[2];
-    for (int i = 0; i < 2; i++)
-    {
-        button[i].x = StartPos.x + 1201 + 29;
-        button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
-        button[i].w = 240;
-        button[i].h = 60;
-        button[i].BoTron = false;
-        button[i].gotNothing = false;
-        button[i].gotText = true;
-        button[i].font = FontArial;
-        button[i].BoMau = ArrowKey;
-    }
-    button[0].tittle = "Quản lý vé";
-    if (CreateButton(button[0]))
-    {
-        cout << "ql ve" << endl;
-    }
-    button[1].tittle = "Huỷ vé";
-    if (CreateButton(button[1]))
-    {
-        cout << "huy ve" << endl;
-    }
-    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Quản lý vé", FontArial, ArrowKey))
-    // {
-    //     cout << "quan ly ve" << endl;
-    // }
-    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Huỷ vé", FontArial, ArrowKey))
-    // {
-    //     cout << "huy ve" << endl;
-    // }
+    if (current_popup == 0)
+    { // mini function
+        Button button[2];
+        for (int i = 0; i < 2; i++)
+        {
+            button[i].x = StartPos.x + 1201 + 29;
+            button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
+            button[i].w = 240;
+            button[i].h = 60;
+            button[i].BoTron = false;
+            button[i].gotNothing = false;
+            button[i].gotText = true;
+            button[i].font = FontArial;
+            button[i].BoMau = ArrowKey;
+        }
+        button[0].tittle = "Quản lý vé";
+        if (CreateButton(button[0]))
+        {
+            current_popup = 1;
+        }
+        button[1].tittle = "Huỷ vé";
+        if (CreateButton(button[1]))
+        {
+            current_popup = 2;
+        }
+        // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15, 240, 60, false, "Quản lý vé", FontArial, ArrowKey))
+        // {
+        //     cout << "quan ly ve" << endl;
+        // }
+        // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75, 240, 60, false, "Huỷ vé", FontArial, ArrowKey))
+        // {
+        //     cout << "huy ve" << endl;
+        // }
 
-    CreateTable_QLHK();
+        CreateTable_QLHK();
+    }
+    else if (current_popup = 1)
+    {
+    }
+    else if (current_popup = 2)
+    {
+    }
     data = XuLy_QLHK(listHK, status);
+    cout << data->getHanhKhach().getCmnd() << endl;
 }
 
 void CreateTable_QLHK()

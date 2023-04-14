@@ -89,6 +89,7 @@ void CreatePopupBackground();
 bool Popup_ThemMB(DSMB &listMB, int &status);
 bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb);
 bool Popup_XoaMB(DSMB &listMB, MayBay *mb, int &status);
+bool Popup_ThemHK(DsHanhKhach &listHK, int &status);
 
 void ThanhQuanLy(); // done
 bool Warning_NoData();
