@@ -160,7 +160,7 @@ bool Date::checkGioNhapVoiGioHT()
     return false;
 }
 
-bool Date::checkDateHour()
+bool Date::checkDateHour()//để set trang thái hoàn thành của chuyến bay
 {
     time_t now = time(0);
     tm *ltm = localtime(&now);

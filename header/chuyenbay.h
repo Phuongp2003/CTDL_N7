@@ -51,6 +51,7 @@ public:
     DSVeMayBay getDSVe();
 
     void ThucHienCB(DSMB *DanhSachCB);
+    Date NgayHoanThanh();
     // node
     bool operator<(const ChuyenBay &other);
 };
@@ -97,9 +98,11 @@ public:
     void pop_first(); //
     void pop_back();
     ChuyenBay TimCB(string _MaCB);
-    DanhSachCB TimDSCB(Date date, string noiden);
+    bool MayBayDangSuDung(const char* SoHieuMB);
+    bool DuocDatKhong(string CMND, ChuyenBay cb);
 
-    DanhSachCB LocDSCB(string _keyword);
+
+
     void ReadFromFile(ifstream &file);
     void WritetOfFile(ofstream &file);
     NodeCB *merge(NodeCB *left, NodeCB *right);

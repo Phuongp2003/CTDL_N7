@@ -98,6 +98,65 @@ void ChuyenBay::ThucHienCB(DSMB *DanhSachMB)
     //     tmp->TangSLTHCB();
 }
 
+Date ChuyenBay::NgayHoanThanh()
+{
+    Date date;
+    if(NgayGio.getGio()+2<24)
+    {
+        date.setNgay(NgayGio.getNgay());
+        date.setThang(NgayGio.getThang());
+        date.setNam(NgayGio.getNam());
+        date.setGio(NgayGio.getGio()+2);
+        date.setPhut(NgayGio.getPhut());
+    }
+    else
+    {
+        date.setNgay(NgayGio.getNgay()+1);
+        date.setThang(NgayGio.getThang());
+        date.setNam(NgayGio.getNam());
+        date.setGio(NgayGio.getGio()+2-24);
+        date.setPhut(NgayGio.getPhut());
+        
+    }
+    int thang;
+    thang=NgayGio.getThang();
+    if(thang==1 || thang==3 || thang==5 || thang==7 || thang==8 || thang==10  && date.getNgay()==32 )
+    {
+        date.setThang(thang+1);
+        date.setNgay(1);
+    }
+    if(thang==12 && date.getNgay()==32 )
+    {
+        date.setThang(1);
+        date.setNgay(1);
+        date.setNam(NgayGio.getNam()+1);
+    }
+    if(thang==4 || thang==6 || thang==9 || thang==11  && date.getNgay()==31 )
+    {
+        date.setThang(thang+1);
+        date.setNgay(1);
+    }
+    if(laNamNhuan(NgayGio.getNam())==1)
+    {
+        if(thang==2 && date.getNgay()==30)
+        {
+            date.setThang(3);
+            date.setNgay(1);
+        }
+    }
+    else
+    {
+        if(thang==2 && date.getNgay()==29)
+        {
+            date.setThang(3);
+            date.setNgay(1);
+        }   
+    }
+
+
+    
+}
+
 bool ChuyenBay::operator<(const ChuyenBay &other)
 {
     int compare = strcmp(MaCB, other.MaCB);
@@ -285,46 +344,58 @@ ChuyenBay DanhSachCB::TimCB(string _MaCB)
     return ChuyenBay();
 }
 
-DanhSachCB DanhSachCB::TimDSCB(Date date, string noiden)
+bool DanhSachCB::MayBayDangSuDung(const char* SoHieuMB)
 {
     NodeCB *tmp = this->head;
-    DanhSachCB *DS = new DanhSachCB();
     while (tmp != NULL)
     {
-        if ((tmp->getNode().getNgayGio().getNgay() == date.getNgay()) && (tmp->getNode().getNgayGio().getThang() == date.getThang()) && (tmp->getNode().getNgayGio().getNam() == date.getNam()) && (tmp->getNode().getNoiDen() == noiden) && ((tmp->getNode().getDSVe().getSoVeConLai() != 0)))
+        if(tmp->getNode().getTrangThai()==1 || tmp->getNode().getTrangThai()==2)
         {
-            if (DS->getHead() == NULL)
-                DS->push_front(tmp);
-            else
-                DS->push_back(tmp);
+            if (tmp->getNode().getMaCB() == SoHieuMB)
+                return true;
         }
+        
         tmp = tmp->getNext();
     }
-    return *DS;
+
+    return false;
+}
+bool DanhSachCB::DuocDatKhong(string CMND, ChuyenBay cb)
+{
+    NodeCB *tmp = this->head;
+    for(int i=0;i<cb.getDSVe().getSoVeDaDat();i++)
+    {
+        if(cb.getDSVe().getVe(i).getHanhKhach() == CMND)
+            return false;
+    }
+    while (tmp != NULL)
+    {
+        if(tmp->getNode().getTrangThai()==1 && tmp->getNode().getTrangThai()==2
+           &&tmp->getNode().getNgayGio().getNgay()==cb.getNgayGio().getNgay()
+           && tmp->getNode().getNgayGio().getThang()==cb.getNgayGio().getThang()
+           && tmp->getNode().getNgayGio().getNam()==cb.getNgayGio().getNam()
+           &&(
+            tmp->getNode().getNgayGio().getGio()*60+tmp->getNode().getNgayGio().getPhut()<=cb.getNgayGio().getGio()*60+tmp->getNode().getNgayGio().getPhut()- 6*60
+            ||tmp->getNode().getNgayGio().getGio()*60+tmp->getNode().getNgayGio().getPhut()>=cb.getNgayGio().getGio()*60+tmp->getNode().getNgayGio().getPhut()+ 6*60
+            )
+          )
+        {
+            for(int i=0;i<tmp->getNode().getDSVe().getSoVeDaDat();i++)
+            {
+                if(tmp->getNode().getDSVe().getVe(i).getHanhKhach() == CMND)
+                    return false;
+            }
+        }
+        
+        tmp = tmp->getNext();
+    }
+
+    return true;
 }
 
-DanhSachCB DanhSachCB::LocDSCB(string _keyword)
-{
-    NodeCB *tmp = this->head;
-    DanhSachCB result = DanhSachCB();
-    while (tmp != NULL)
-    {
-        if (isGotStr(tmp->getNode().getMaCB(), _keyword))
-        {
-            if (result.getHead() == NULL)
-            {
-                result.setHead(tmp);
-                result.getHead()->setNext(NULL);
-            }
-            else
-            {
-                result.push_back(tmp);
-            }
-        }
-        tmp = tmp->getNext();
-    }
-    return result;
-}
+
+
+
 void DanhSachCB::ReadFromFile(ifstream &file)
 {
     if (file.is_open())
