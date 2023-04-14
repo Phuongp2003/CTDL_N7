@@ -63,6 +63,7 @@ private:
 
 public:
     NodeCB();
+    NodeCB(ChuyenBay node);
     ChuyenBay getNode();
     void setNode(ChuyenBay node);
     bool hasNext();

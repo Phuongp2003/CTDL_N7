@@ -71,6 +71,7 @@ bool Date::checkNgay()
 {
     switch (Thang)
     {
+    case 0:
     case 1:
     case 3:
     case 5:

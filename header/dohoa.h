@@ -52,7 +52,7 @@ struct Button;
  * @param MauNen mặc định: trắng
  * @param MauChu mặc định: đen
  * @param MauVien mặc định: đen
- * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ IN HOA và số) (4 - chỉ chữ) (5 - chỉ số)
+ * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ IN HOA và số) (4 - chỉ chữ) (5 - chỉ số) (6-7-8 ngày - tháng - năm)
  *
  */
 struct InputTextBox;
@@ -90,6 +90,7 @@ bool Popup_ThemMB(DSMB &listMB, int &status);
 bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb);
 bool Popup_XoaMB(DSMB &listMB, MayBay *mb, int &status);
 bool Popup_ThemHK(DsHanhKhach &listHK, int &status);
+bool Popup_ThemCB(DanhSachCB &listCB, int &status);
 
 void ThanhQuanLy(); // done
 bool Warning_NoData();

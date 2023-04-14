@@ -542,7 +542,7 @@ bool Popup_ThemMB(DSMB &listMB, int &status)
 bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb)
 {
     CreatePopupBackground();
-    static int error = 0;
+    static string mess = "";
     DrawTextEx(FontArial, "Sửa thông tin máy bay",
                {CenterDataSetter(700, StartPos.x + 400, MeasureTextEx(FontArial, "Sửa thông tin máy bay", 50, 0).x),
                 CenterDataSetter(60, StartPos.y + 60 + 10, MeasureTextEx(FontArial, "A", 50, 0).y)},
@@ -620,16 +620,11 @@ bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb)
         Cancel.font = FontArial;
         Cancel.BoMau = ArrowKey;
 
-        if (error == 1)
-            DrawTextEx(FontArial, "Máy Bay đã tồn tại!",
-                       {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, "Máy Bay đã tồn tại!", 40, 0).x),
-                        CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
-                       40, 0, RED);
-        else if (error == 2)
-            DrawTextEx(FontArial, "Nhập chưa đủ thông tin!",
-                       {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, "Nhập chưa đủ thông tin!", 40, 0).x),
-                        CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
-                       40, 0, RED);
+        DrawTextEx(FontArial, mess.data(),
+                   {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, mess.data(), 40, 0).x),
+                    CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                   40, 0, RED);
+
         if (CreateButton(OK))
         {
             char CheckMB[16];
@@ -653,18 +648,18 @@ bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb)
                     resetInputTextBox(LoaiMayBay);
                     resetInputTextBox(SoDong);
                     resetInputTextBox(SoDay);
-                    error = 0;
+                    mess = "";
 
                     return true;
                 }
                 else
                 {
-                    error = 2;
+                    mess = "Nhập chưa đủ thông tin!";
                 }
             }
             else
             {
-                error = 1;
+                mess = "Mã máy bay đã tồn tại!";
             }
         }
 
@@ -981,53 +976,247 @@ void CreatePage_QLCB(DanhSachCB &listCB)
     static int status = 0;
     static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
 
-    // tittle
-    DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY", {StartPos.x + 60, CenterDataSetter(70, StartPos.y + 60, MeasureTextEx(FontArial, "A", 50, 0).y)}, 50, 0, BLUE);
+    if (current_popup == 0)
+    { // tittle
+        DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY", {StartPos.x + 60, CenterDataSetter(70, StartPos.y + 60, MeasureTextEx(FontArial, "A", 50, 0).y)}, 50, 0, BLUE);
 
-    // mini function
-    Button button[5];
-    for (int i = 0; i < 5; i++)
-    {
-        button[i].x = StartPos.x + 1201 + 29;
-        button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
-        button[i].w = 240;
-        button[i].h = 60;
-        button[i].BoTron = false;
-        button[i].gotNothing = false;
-        button[i].gotText = true;
-        button[i].font = FontArial;
-        button[i].BoMau = ArrowKey;
+        // mini function
+        Button button[5];
+        for (int i = 0; i < 5; i++)
+        {
+            button[i].x = StartPos.x + 1201 + 29;
+            button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
+            button[i].w = 240;
+            button[i].h = 60;
+            button[i].BoTron = false;
+            button[i].gotNothing = false;
+            button[i].gotText = true;
+            button[i].font = FontArial;
+            button[i].BoMau = ArrowKey;
+        }
+        button[0].tittle = "Thêm chuyến bay";
+        if (CreateButton(button[0]))
+        {
+            current_popup = 1;
+        }
+        button[1].tittle = "Hiệu chỉnh CB";
+        if (CreateButton(button[1]))
+        {
+            cout << "Sua" << endl;
+        }
+        button[2].tittle = "Xóa chuyến bay";
+        // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
+        if (CreateButton(button[2]))
+        {
+            cout << "Xoa" << endl;
+        }
+        button[3].tittle = "Xem danh sach vé";
+        // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
+        if (CreateButton(button[3]))
+        {
+            cout << "XemDSVe" << endl;
+        }
+        button[4].tittle = "Đặt vé";
+        // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
+        if (CreateButton(button[4]))
+        {
+            cout << "Dat ve" << endl;
+        }
+        data = XuLy_QLCB(listCB, status);
     }
-    button[0].tittle = "Thêm chuyến bay";
-    if (CreateButton(button[0]))
+    else if (current_popup == 1)
     {
-        cout << "Them" << endl;
+        if (Popup_ThemCB(listCB, status))
+        {
+            current_popup = 0;
+        }
     }
-    button[1].tittle = "Hiệu chỉnh CB";
-    if (CreateButton(button[1]))
-    {
-        cout << "Sua" << endl;
-    }
-    button[2].tittle = "Xóa chuyến bay";
-    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
-    if (CreateButton(button[2]))
-    {
-        cout << "Xoa" << endl;
-    }
-    button[3].tittle = "Xem danh sach vé";
-    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
-    if (CreateButton(button[3]))
-    {
-        cout << "XemDSVe" << endl;
-    }
-    button[4].tittle = "Đặt vé";
-    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 + 75 + 75, 240, 60, false, , FontArial, ArrowKey))
-    if (CreateButton(button[4]))
-    {
-        cout << "Dat ve" << endl;
-    }
-    data = XuLy_QLCB(listCB, status);
     // CreateTable_QLCB();
+}
+
+bool Popup_ThemCB(DanhSachCB &listCB, int &status)
+{
+    CreatePopupBackground();
+    static string mess = "";
+    DrawTextEx(FontArial, "Thêm máy bay",
+               {CenterDataSetter(700, StartPos.x + 400, MeasureTextEx(FontArial, "Thêm máy bay", 50, 0).x),
+                CenterDataSetter(60, StartPos.y + 60 + 10, MeasureTextEx(FontArial, "A", 50, 0).y)},
+               50, 0, BLACK);
+
+    static InputTextBox MaCB;
+    MaCB.mode = 3;
+    MaCB.tittle = (char *)"Nhập mã chuyến bay";
+    MaCB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
+    MaCB.size = 15;
+    static InputTextBox MaMB;
+    MaMB.mode = 3;
+    MaMB.tittle = (char *)"Nhập số hiệu máy bay";
+    MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+    MaMB.size = 40;
+    static InputTextBox NoiDen;
+    NoiDen.mode = 1;
+    NoiDen.tittle = (char *)"Nhập nơi đến";
+    NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 900, 50};
+    NoiDen.size = 40;
+    static InputTextBox Ngay;
+    Ngay.mode = 6;
+    Ngay.tittle = (char *)"DD";
+    Ngay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 60, 50};
+    Ngay.size = 2;
+    Ngay.showNKeyRemain = false;
+    static InputTextBox Thang;
+    Thang.mode = 7;
+    Thang.tittle = (char *)"MM";
+    Thang.textBox = {StartPos.x + 300 + 70, StartPos.y + 60 + 480, 60, 50};
+    Thang.size = 2;
+    Thang.showNKeyRemain = false;
+    static InputTextBox Nam;
+    Nam.mode = 8;
+    Nam.tittle = (char *)"YYYY";
+    Nam.textBox = {StartPos.x + 300 + 70 + 70, StartPos.y + 60 + 480, 120, 50};
+    Nam.size = 4;
+    Nam.showNKeyRemain = false;
+    static InputTextBox Gio;
+    Gio.mode = 5;
+    Gio.tittle = (char *)"HH";
+    Gio.textBox = {StartPos.x + 300 + 70 + 70 + 150, StartPos.y + 60 + 480, 60, 50};
+    Gio.size = 2;
+    Gio.showNKeyRemain = false;
+    static InputTextBox Phut;
+    Phut.mode = 5;
+    Phut.tittle = (char *)"MM";
+    Phut.textBox = {StartPos.x + 300 + 70 + 70 + 150 + 70, StartPos.y + 60 + 480, 60, 50};
+    Phut.size = 2;
+    Phut.showNKeyRemain = false;
+
+    const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y - MeasureTextEx(FontArial, "A", 25, 0).y;
+
+    DrawTextEx(FontArial, "Mã mã chuyến bay",
+               {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+    DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25, 0, RED);
+    const char *newMaCB = CreateTextInputBox(MaCB);
+    DrawTextEx(FontArial, "Số hiệu máy bay",
+               {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+    DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25, 0, RED);
+    const char *newMaMB = CreateTextInputBox(MaMB);
+    DrawTextEx(FontArial, "Nơi đến",
+               {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+    DrawTextEx(FontArial, "(Gồm chữ cái, kí tự và số)",
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25, 0, RED);
+    const char *newNoiDen = CreateTextInputBox(NoiDen);
+    DrawTextEx(FontArial, "Thời gian bay",
+               {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+    DrawTextEx(FontArial, "(Gồm CHỈ số, sai tự xoá dữ liệu của ô)",
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25, 0, RED);
+
+    Date check = Date(1, 1, 1901, 00, 00);
+    const char *newNgay = CreateTextInputBox(Ngay);
+    const char *newThang = CreateTextInputBox(Thang);
+    const char *newNam = CreateTextInputBox(Nam);
+    cout << Ngay.letterCount << "/" << Ngay.indexPoint << endl;
+    check = Date(stoi(newNgay[0] == 0 ? "1" : newNgay), stoi(newThang[0] == 0 ? "1" : newThang), stoi(newNam[0] == 0 ? "2000" : newNam), 00, 00);
+    if (strcmp(newThang, "00") == 0 || !check.checkNgay())
+    {
+        int tmp = stoi(newNam[0] == 0 ? "2000" : newNam);
+        if (Date(29, 2, tmp, 0, 0).checkNgay())
+        {
+            mess = "Tháng không hợp lệ!";
+            resetInputTextBox(Thang);
+            newThang = "";
+        }
+        else
+        {
+            mess = "Năm không hợp lệ!";
+            resetInputTextBox(Nam);
+            newNam = "";
+        }
+    }
+    const char *newGio = CreateTextInputBox(Gio);
+    const char *newPhut = CreateTextInputBox(Phut);
+
+    Date newNgayBay = Date(stoi(newNgay[0] == 0 ? "0" : newNgay),
+                           stoi(newThang[0] == 0 ? "0" : newThang),
+                           stoi(newNam[0] == 0 ? "0" : newNam),
+                           stoi(newGio[0] == 0 ? "25" : newGio),
+                           stoi(newPhut[0] == 0 ? "25" : newPhut));
+    Button OK;
+    OK.x = StartPos.x + 225 + 750;
+    OK.y = StartPos.y + 60 + 625;
+    OK.w = 300;
+    OK.h = 50;
+    OK.gotNothing = false;
+    OK.gotText = true;
+    OK.tittle = (char *)"Hoàn tất";
+    OK.font = FontArial;
+    OK.BoMau = ArrowKey;
+
+    Button Cancel;
+    Cancel.x = StartPos.x + 225;
+    Cancel.y = StartPos.y + 60 + 625;
+    Cancel.w = 300;
+    Cancel.h = 50;
+    Cancel.gotNothing = false;
+    Cancel.gotText = true;
+    Cancel.tittle = (char *)"Huỷ";
+    Cancel.font = FontArial;
+    Cancel.BoMau = ArrowKey;
+    DrawTextEx(FontArial, mess.data(),
+               {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, mess.data(), 40, 0).x),
+                CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
+               40, 0, RED);
+    if (CreateButton(OK))
+    {
+        char CheckCB[16];
+        strcpy(CheckCB, newMaCB);
+        if (!newNgayBay.checkNgay())
+            mess = "Ngày, tháng hoặc năm không hợp lệ!";
+        else if (listCB.TimCB(CheckCB).getMaCB()[0] == 0)
+        {
+            if (newMaCB[0] >= 32 && newMaMB[0] >= 32 && newNoiDen[0] >= 32 && newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 && newGio[0] >= 32 && newPhut[0] >= 32)
+            {
+                ChuyenBay result = ChuyenBay(newMaCB, newNoiDen, newNgayBay, newMaMB);
+                listCB.push_back(new NodeCB(result));
+                ofstream fileWrite("../data/dataCB.txt", ios::out | ios::trunc);
+                listCB.WritetOfFile(fileWrite);
+                fileWrite.close();
+                ifstream fileRead("../data/dataCB.txt", ios::in);
+                listCB.ReadFromFile(fileRead);
+                fileRead.close();
+                status = 1;
+                resetInputTextBox(MaCB);
+                resetInputTextBox(MaMB);
+                resetInputTextBox(NoiDen);
+                resetInputTextBox(Ngay);
+                resetInputTextBox(Thang);
+                resetInputTextBox(Nam);
+                resetInputTextBox(Gio);
+                resetInputTextBox(Phut);
+                mess = "";
+
+                return true;
+            }
+            else
+            {
+                mess = "Nhập chưa đầy đủ thông tin!";
+            }
+        }
+        else
+        {
+            mess = "Mã chuyến bay đã được sử dụng!";
+        }
+    }
+    if (CreateButton(Cancel))
+    {
+        resetInputTextBox(MaCB);
+        resetInputTextBox(MaMB);
+        resetInputTextBox(NoiDen);
+        resetInputTextBox(Ngay);
+        mess = "";
+        return true;
+    }
+    return false;
 }
 
 void CreateTable_QLCB()
@@ -1252,7 +1441,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
             {
                 if (j % 10 == index)
                     result = tmp;
-                DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, j % 10 + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, intTochar(j % 10 + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, j % 10 + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
                 DrawTextEx(FontArial, tmp->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, j % 10 + 1, tmp->getNode().getMaCB(), 30), 30, 0, BLACK);
                 DrawTextEx(FontArial, tmp->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, j % 10 + 1, tmp->getNode().getMaMayBay(), 30), 30, 0, BLACK);
                 DrawTextEx(FontArial, tmp->getNode().getNgayGio().PrintDateHour().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 4, j % 10 + 1, tmp->getNode().getNgayGio().PrintDateHour().data(), 20), 20, 0, BLACK);
@@ -2027,7 +2216,6 @@ const char *CreateTextInputBox(InputTextBox &data)
     name_cpy[data.letterCount + data.indexPoint] = '\0';
 
     Vector2 textBoxDot = {data.textBox.x + MeasureTextEx(FontArial, name_cpy, font_size, 0).x, CenterDataSetter(data.textBox.height, data.textBox.y, MeasureTextEx(FontArial, name_cpy, font_size, 0).y)};
-    strcpy(result, data.name);
 
     if (data.editMode && data.done)
     {
@@ -2154,6 +2342,71 @@ const char *CreateTextInputBox(InputTextBox &data)
                 }
                 break;
             }
+            case 6:
+            {
+                if (((key >= '0') && (key <= '9')) && (data.letterCount < data.size))
+                {
+                    if (data.letterCount + data.indexPoint == 0 && (key < '0' || key > '3'))
+                        break;
+                    if (data.letterCount + data.indexPoint == 0 && data.name[0] >= '2' && key == '3')
+                        break;
+                    if (data.letterCount + data.indexPoint == 0 && data.name[0] == '0' && key == '0')
+                        break;
+                    if (data.letterCount + data.indexPoint == 1 && data.name[0] == '0' && key == '0')
+                        break;
+                    if (data.letterCount + data.indexPoint == 1 && data.name[0] == '3' && !(key == '0' || key == '1'))
+                        break;
+                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
+                    {
+                        data.name[i] = data.name[i - 1];
+                    }
+                    data.name[data.letterCount + data.indexPoint] = char(key);
+                    data.name[data.letterCount + 1] = '\0';
+                    data.letterCount++;
+                }
+                break;
+            }
+            case 7:
+            {
+                if (((key >= '0') && (key <= '9')) &&
+                    (data.letterCount < data.size))
+                {
+                    // if ()
+                    if (data.letterCount + data.indexPoint == 0 && data.name[0] == '0' && key == '0')
+                        break;
+                    if (data.letterCount + data.indexPoint == 1 && data.name[0] == '0' && key == '0')
+                        break;
+                    if (data.letterCount + data.indexPoint == 1 && data.name[0] == '1' && !(key == '0' || key == '1' || key == '2'))
+                        break;
+                    if (data.letterCount + data.indexPoint == 1 && data.name[0] != '0' && data.name[0] != '1')
+                        break;
+
+                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
+                    {
+                        data.name[i] = data.name[i - 1];
+                    }
+                    data.name[data.letterCount + data.indexPoint] = char(key);
+                    data.name[data.letterCount + 1] = '\0';
+                    data.letterCount++;
+                }
+                break;
+            }
+            case 8:
+            {
+                if (((key >= '0') && (key <= '9')) &&
+                    (data.letterCount < data.size))
+                {
+
+                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
+                    {
+                        data.name[i] = data.name[i - 1];
+                    }
+                    data.name[data.letterCount + data.indexPoint] = char(key);
+                    data.name[data.letterCount + 1] = '\0';
+                    data.letterCount++;
+                }
+                break;
+            }
             }
 
             key = GetCharPressed();
@@ -2202,12 +2455,20 @@ const char *CreateTextInputBox(InputTextBox &data)
     }
     else
         data.framesCounter = 0;
+
+    if (data.mode == 8)
+        if (data.letterCount == 4)
+            data.returnIfDone = false;
+        else
+            data.returnIfDone = true;
+    strcpy(result, data.name);
+
     DrawRectangleRec(data.textBox, data.MauNen);
     DrawRectangleRoundedLines(data.textBox, 0, 1, 2, data.MauVien);
     if (data.showNKeyRemain)
     {
         DrawTextEx(FontArial, intTochar(data.size - data.letterCount, 2),
-                   {data.textBox.x + data.textBox.width - data.textBox.height, data.textBox.y + data.textBox.height / 2},
+                   {data.textBox.x + data.textBox.width - data.textBox.height, data.textBox.y + data.textBox.height / 3},
                    data.textBox.height * per1000(400), 0, DARKGREEN);
     }
     if (data.name[0] != '\0')

@@ -115,6 +115,12 @@ NodeCB::NodeCB()
     this->next = NULL;
 }
 
+NodeCB::NodeCB(ChuyenBay node)
+{
+    this->node = node;
+    this->next = NULL;
+}
+
 void NodeCB::setNode(ChuyenBay node)
 {
     this->node = node;
@@ -207,6 +213,7 @@ NodeCB *DanhSachCB::getHead()
 void DanhSachCB::setSize()
 {
     NodeCB *tmp = this->head;
+    size = 0;
     while (tmp != NULL)
     {
         size++;
@@ -322,6 +329,7 @@ void DanhSachCB::ReadFromFile(ifstream &file)
 {
     if (file.is_open())
     {
+        this->head = NULL;
         string macb, noiden, trangthai, idmaybay, ngay, thang, nam, gio, phut;
         string line = "";
 
@@ -367,9 +375,12 @@ void DanhSachCB::WritetOfFile(ofstream &file)
                  << tmp->getNode().getNgayGio().getNam() << "|"
                  << tmp->getNode().getNgayGio().getGio() << "|"
                  << tmp->getNode().getNgayGio().getPhut() << "|"
-                 << tmp->getNode().getNoiDen() << "|";
-
-            tmp = tmp->getNext();
+                 << tmp->getNode().getNoiDen() << "|"
+                 << endl;
+            if (tmp->hasNext())
+                tmp = tmp->getNext();
+            else
+                break;
         }
     }
     else
