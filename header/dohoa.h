@@ -52,7 +52,7 @@ struct Button;
  * @param MauNen mặc định: trắng
  * @param MauChu mặc định: đen
  * @param MauVien mặc định: đen
- * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ IN HOA và số) (4 - chỉ chữ) (5 - chỉ số) (6-7-8 ngày - tháng - năm)
+ * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ IN HOA và số) (4 - chỉ chữ) (5 - chỉ số) (6-7-8-9-10 dd-mm-yyyy-hh-mm)
  *
  */
 struct InputTextBox;

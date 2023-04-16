@@ -792,6 +792,7 @@ MayBay *XuLy_QLMB(DSMB &listMB, int &status)
     DrawRectangleRec(searchText, WHITE);
     DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
     static InputTextBox searchTextBox;
+    searchTextBox.mode = 3;
     searchTextBox.textBox = searchText;
     searchTextBox.tittle = "Nhập nội dung tìm kiếm";
 
@@ -800,7 +801,7 @@ MayBay *XuLy_QLMB(DSMB &listMB, int &status)
     static char *prev_key_word = new char[259];
     const char *key_word =
         CreateTextInputBox(searchTextBox);
-    
+
     Button button;
 
     button.x = searchText.x + searchText.width;
@@ -881,20 +882,20 @@ MayBay *XuLy_QLMB(DSMB &listMB, int &status)
     else
         n_char = 4;
     int i = (current_page - 1) * 10;
-    int j=0;
+    int j = 0;
     // if (current_page * 10 < size)
     //     j = current_page * 10;
     // else
     // {
     //     j = size;
     // }
-    
-    
-    Vector2 start_pos = {StartPos.x +60, StartPos.y + 60 + 70 + 110};
+
+    Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
     for (int id = 0; id < size; id++)
     {
         if (isGotStr(listMB.getMB(id)->getSoHieuMB(), key_word))
-            {if (j >= i && j <= i + 9)
+        {
+            if (j >= i && j <= i + 9)
             {
                 if (j % 10 == index)
                     result = listMB.getMB(id);
@@ -904,9 +905,8 @@ MayBay *XuLy_QLMB(DSMB &listMB, int &status)
                 DrawTextEx(FontArial, intTochar(listMB.getMB(id)->getSoDay(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (j % 10) + 1, intTochar(listMB.getMB(id)->getSoDay(), 3), 30), 30, 0, BLACK);
                 DrawTextEx(FontArial, intTochar(listMB.getMB(id)->getSoDong(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (j % 10) + 1, intTochar(listMB.getMB(id)->getSoDong(), 3), 30), 30, 0, BLACK);
             }
-            j++;}
-        
-        
+            j++;
+        }
     }
     n_page = 1 + ((j - 1) / 10);
 
@@ -963,8 +963,6 @@ MayBay **showList_QLMB(DSMB &listMB, Vector2 start_pos, int current_page, float 
             result[i] = new MayBay();
         }
     }
-
-    
 
     return result;
 }
@@ -1041,6 +1039,7 @@ bool Popup_ThemCB(DanhSachCB &listCB, int &status)
 {
     CreatePopupBackground();
     static string mess = "";
+    static int f_show_error = 0;
     DrawTextEx(FontArial, "Thêm máy bay",
                {CenterDataSetter(700, StartPos.x + 400, MeasureTextEx(FontArial, "Thêm máy bay", 50, 0).x),
                 CenterDataSetter(60, StartPos.y + 60 + 10, MeasureTextEx(FontArial, "A", 50, 0).y)},
@@ -1080,13 +1079,13 @@ bool Popup_ThemCB(DanhSachCB &listCB, int &status)
     Nam.size = 4;
     Nam.showNKeyRemain = false;
     static InputTextBox Gio;
-    Gio.mode = 5;
+    Gio.mode = 9;
     Gio.tittle = (char *)"HH";
     Gio.textBox = {StartPos.x + 300 + 70 + 70 + 150, StartPos.y + 60 + 480, 60, 50};
     Gio.size = 2;
     Gio.showNKeyRemain = false;
     static InputTextBox Phut;
-    Phut.mode = 5;
+    Phut.mode = 10;
     Phut.tittle = (char *)"MM";
     Phut.textBox = {StartPos.x + 300 + 70 + 70 + 150 + 70, StartPos.y + 60 + 480, 60, 50};
     Phut.size = 2;
@@ -1165,10 +1164,21 @@ bool Popup_ThemCB(DanhSachCB &listCB, int &status)
     Cancel.tittle = (char *)"Huỷ";
     Cancel.font = FontArial;
     Cancel.BoMau = ArrowKey;
-    DrawTextEx(FontArial, mess.data(),
-               {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, mess.data(), 40, 0).x),
-                CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, RED);
+
+    // Hiện lỗi trong 5s
+    if (f_show_error <= 100)
+    {
+        DrawTextEx(FontArial, mess.data(),
+                   {CenterDataSetter(1100, StartPos.x + 200, MeasureTextEx(FontArial, mess.data(), 40, 0).x),
+                    CenterDataSetter(50, StartPos.y + 130, MeasureTextEx(FontArial, "A", 40, 0).y)},
+                   40, 0, RED);
+        f_show_error++;
+    }
+    else
+    {
+        mess = "";
+        f_show_error = 0;
+    }
     if (CreateButton(OK))
     {
         char CheckCB[16];
@@ -1277,20 +1287,20 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
 
     searchNgay.textBox = boxNgay;
     searchNgay.tittle = "DD";
-    searchNgay.mode = 5;
+    searchNgay.mode = 6;
     searchNgay.size = 2;
     searchNgay.showNKeyRemain = false;
 
     searchThang.textBox = boxThang;
     searchThang.tittle = "MM";
     searchThang.size = 2;
-    searchThang.mode = 5;
+    searchThang.mode = 7;
     searchThang.showNKeyRemain = false;
 
     searchNam.textBox = boxNam;
     searchNam.tittle = "YYYY";
     searchNam.size = 4;
-    searchNam.mode = 5;
+    searchNam.mode = 8;
     searchNam.showNKeyRemain = false;
 
     searchMaCB.textBox = boxMaCB;
@@ -1475,7 +1485,7 @@ void CreatePage_QLVe()
 {
     CreatePageBackground(3);
     // CreateTable_QLVe();
-    
+
     ChuyenBay *cb = new ChuyenBay("CB01", "Da Lat", {25, 4, 2023, 10, 0}, "MB1");
     XuLy_QLVe(*cb);
 }
@@ -1577,7 +1587,7 @@ void XuLy_QLVe(ChuyenBay &cb)
          StartPos.y + 85,
          50,
          30};
-                Button button;
+    Button button;
     for (int a = 0; a < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong(); a++)
     {
 
@@ -2256,155 +2266,16 @@ const char *CreateTextInputBox(InputTextBox &data)
         int key = GetCharPressed();
         while (key > 0)
         {
-            switch (data.mode)
+            key = ChuanHoaKey(key, data.name, data.letterCount + data.indexPoint, data.mode);
+            if ((key >= 32) && (key <= 127) && (data.letterCount < data.size))
             {
-            case 1:
-            {
-                if ((key >= 32) && (key <= 125) && (data.letterCount < data.size))
+                for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
                 {
-                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
-                    {
-                        data.name[i] = data.name[i - 1];
-                    }
-                    data.name[data.letterCount + data.indexPoint] = char(key);
-                    data.name[data.letterCount + 1] = '\0';
-                    data.letterCount++;
+                    data.name[i] = data.name[i - 1];
                 }
-                break;
-            };
-            case 2:
-            {
-                if ((((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
-                     ((key >= 'A') && (key <= 'Z'))) &&
-                    (data.letterCount < data.size))
-                {
-                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
-                    {
-                        data.name[i] = data.name[i - 1];
-                    }
-                    data.name[data.letterCount + data.indexPoint] = char(key);
-                    data.name[data.letterCount + 1] = '\0';
-                    data.letterCount++;
-                }
-                break;
-            }
-            case 3:
-            {
-                if ((((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
-                     ((key >= 'A') && (key <= 'Z'))) &&
-                    (data.letterCount < data.size))
-                {
-                    if ((key >= 'a') && (key <= 'z'))
-                        key -= 32;
-                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
-                    {
-                        data.name[i] = data.name[i - 1];
-                    }
-                    data.name[data.letterCount + data.indexPoint] = char(key);
-                    data.name[data.letterCount + 1] = '\0';
-                    data.letterCount++;
-                }
-                break;
-            }
-
-            case 4:
-            {
-                if ((((key >= 'a') && (key <= 'z')) ||
-                     ((key >= 'A') && (key <= 'Z'))) &&
-                    (data.letterCount < data.size))
-                {
-                    if (((key >= 'a') && (key <= 'z')))
-                        key -= 32;
-                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
-                    {
-                        data.name[i] = data.name[i - 1];
-                    }
-                    data.name[data.letterCount + data.indexPoint] = char(key);
-                    data.name[data.letterCount + 1] = '\0';
-                    data.letterCount++;
-                }
-                break;
-            }
-            case 5:
-            {
-                if (((key >= '0') && (key <= '9')) &&
-                    (data.letterCount < data.size))
-                {
-                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
-                    {
-                        data.name[i] = data.name[i - 1];
-                    }
-                    data.name[data.letterCount + data.indexPoint] = char(key);
-                    data.name[data.letterCount + 1] = '\0';
-                    data.letterCount++;
-                }
-                break;
-            }
-            case 6:
-            {
-                if (((key >= '0') && (key <= '9')) && (data.letterCount < data.size))
-                {
-                    if (data.letterCount + data.indexPoint == 0 && (key < '0' || key > '3'))
-                        break;
-                    if (data.letterCount + data.indexPoint == 0 && data.name[0] >= '2' && key == '3')
-                        break;
-                    if (data.letterCount + data.indexPoint == 0 && data.name[0] == '0' && key == '0')
-                        break;
-                    if (data.letterCount + data.indexPoint == 1 && data.name[0] == '0' && key == '0')
-                        break;
-                    if (data.letterCount + data.indexPoint == 1 && data.name[0] == '3' && !(key == '0' || key == '1'))
-                        break;
-                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
-                    {
-                        data.name[i] = data.name[i - 1];
-                    }
-                    data.name[data.letterCount + data.indexPoint] = char(key);
-                    data.name[data.letterCount + 1] = '\0';
-                    data.letterCount++;
-                }
-                break;
-            }
-            case 7:
-            {
-                if (((key >= '0') && (key <= '9')) &&
-                    (data.letterCount < data.size))
-                {
-                    // if ()
-                    if (data.letterCount + data.indexPoint == 0 && data.name[0] == '0' && key == '0')
-                        break;
-                    if (data.letterCount + data.indexPoint == 1 && data.name[0] == '0' && key == '0')
-                        break;
-                    if (data.letterCount + data.indexPoint == 1 && data.name[0] == '1' && !(key == '0' || key == '1' || key == '2'))
-                        break;
-                    if (data.letterCount + data.indexPoint == 1 && data.name[0] != '0' && data.name[0] != '1')
-                        break;
-
-                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
-                    {
-                        data.name[i] = data.name[i - 1];
-                    }
-                    data.name[data.letterCount + data.indexPoint] = char(key);
-                    data.name[data.letterCount + 1] = '\0';
-                    data.letterCount++;
-                }
-                break;
-            }
-            case 8:
-            {
-                if (((key >= '0') && (key <= '9')) &&
-                    (data.letterCount < data.size))
-                {
-
-                    for (int i = data.letterCount; i > data.letterCount + data.indexPoint; i--)
-                    {
-                        data.name[i] = data.name[i - 1];
-                    }
-                    data.name[data.letterCount + data.indexPoint] = char(key);
-                    data.name[data.letterCount + 1] = '\0';
-                    data.letterCount++;
-                }
-                break;
-            }
+                data.name[data.letterCount + data.indexPoint] = char(key);
+                data.name[data.letterCount + 1] = '\0';
+                data.letterCount++;
             }
 
             key = GetCharPressed();
@@ -2423,7 +2294,7 @@ const char *CreateTextInputBox(InputTextBox &data)
             data.fHold_LEFT = 0;
         if ((IsKeyDown(KEY_BACKSPACE) &&
              data.letterCount + data.indexPoint > 0 &&
-             (data.fHold_BS > 60) && (data.fHold_BS % 3 == 0)) ||
+             (data.fHold_BS > 10) && (data.fHold_BS % 1 == 0)) ||
             IsKeyPressed(KEY_BACKSPACE) && data.letterCount + data.indexPoint > 0)
         {
             for (int i = data.letterCount + data.indexPoint - 1; i < data.letterCount; i++)
@@ -2437,15 +2308,15 @@ const char *CreateTextInputBox(InputTextBox &data)
         }
         if ((IsKeyDown(KEY_LEFT) &&
              (data.letterCount + data.indexPoint) > 0 &&
-             (data.fHold_LEFT > 60) && (data.fHold_LEFT % 3 == 0)) ||
+             (data.fHold_LEFT > 20) && (data.fHold_LEFT % 1 == 0)) ||
             (IsKeyPressed(KEY_LEFT) && (data.letterCount + data.indexPoint) > 0))
         {
             data.indexPoint--;
         }
         if ((IsKeyDown(KEY_RIGHT) &&
              data.indexPoint < 0 &&
-             (data.fHold_RIGHT > 60) &&
-             (data.fHold_RIGHT % 3 == 0)) ||
+             (data.fHold_RIGHT > 20) &&
+             (data.fHold_RIGHT % 1 == 0)) ||
             (IsKeyPressed(KEY_RIGHT) && data.indexPoint < 0))
         {
             data.indexPoint++;
@@ -2454,6 +2325,7 @@ const char *CreateTextInputBox(InputTextBox &data)
     else
         data.framesCounter = 0;
 
+    // Lấy đủ 4 kí tự
     if (data.mode == 8)
         if (data.letterCount == 4)
             data.returnIfDone = false;
@@ -2474,7 +2346,7 @@ const char *CreateTextInputBox(InputTextBox &data)
     else
         DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, BROWN);
     // cout << "index: " << indexPoint << endl;
-    if (data.mouseClickOnText && ((data.framesCounter % 120 >= 15)))
+    if (data.mouseClickOnText && ((data.framesCounter % 40 >= 5)))
         DrawTextEx(FontArial, "|", textBoxDot, font_size, 0, MAROON);
     if (!data.returnIfDone)
         return result;
@@ -2540,7 +2412,7 @@ void mainGraphics()
     SetWindowMinSize(700, 400);
     LoadResources();
     SetConfigFlags(FLAG_MSAA_4X_HINT);
-    SetTargetFPS(60); // max framerate per second set to 60
+    SetTargetFPS(20); // max framerate per second set to 20
     SetSizeWindow();
     RenderTexture2D renderTexture = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT); // Load nội dung màn hình như một ảnh
     GenTextureMipmaps(&renderTexture.texture);

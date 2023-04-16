@@ -58,3 +58,151 @@ int getCharSize(const char *_char)
     }
     return result;
 }
+
+int ChuanHoaKey(int key, const char *str, int index_pos, int mode)
+{
+    char tmp = str[index_pos - 1];
+    if (index_pos == 0 || (!((tmp >= 'a' && tmp <= 'z') || (tmp >= 'A' && tmp <= 'Z') || (tmp >= '0' && tmp <= '9'))))
+    {
+        if (!((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || (key >= '0' && key <= '9')))
+            return 0;
+        if (key >= 'a' && key <= 'z')
+        {
+            key -= 32;
+        }
+    }
+    if ((tmp >= 'a' && tmp <= 'z') || (tmp >= 'A' && tmp <= 'Z') || (tmp >= '0' && tmp <= '9'))
+        if (key >= 'A' && key <= 'Z')
+        {
+            key += 32;
+        }
+
+    switch (mode)
+    {
+    case 1:
+    {
+        if ((key >= 32) && (key <= 125))
+        {
+            return key;
+        }
+        break;
+    };
+    case 2:
+    {
+        if ((((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
+             ((key >= 'A') && (key <= 'Z'))))
+        {
+            return key;
+        }
+        break;
+    }
+    case 3:
+    {
+        if ((((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
+             ((key >= 'A') && (key <= 'Z'))))
+        {
+            if (key >= 'a' && key <= 'z')
+            {
+                key -= 32;
+            }
+            return key;
+        }
+        break;
+    }
+
+    case 4:
+    {
+        if ((((key >= 'a') && (key <= 'z')) ||
+             ((key >= 'A') && (key <= 'Z'))))
+        {
+            if (key >= 'a' && key <= 'z')
+            {
+                key -= 32;
+            }
+            return key;
+        }
+        break;
+    }
+    case 5:
+    case 8:
+    {
+        if (((key >= '0') && (key <= '9')))
+        {
+            return key;
+        }
+        break;
+    }
+    case 6:
+    {
+        if (((key >= '0') && (key <= '9')))
+        {
+            if (index_pos == 0 && (key < '0' || key > '3'))
+                return 0;
+            if (index_pos == 0 && str[0] >= '2' && key == '3')
+                return 0;
+            if (index_pos == 0 && str[0] == '0' && key == '0')
+                return 0;
+            if (index_pos == 1 && str[0] == '0' && key == '0')
+                return 0;
+            if (index_pos == 1 && str[0] == '3' && !(key == '0' || key == '1'))
+                return 0;
+            return key;
+        }
+        break;
+    }
+    case 7:
+    {
+        if (((key >= '0') && (key <= '9')))
+        {
+            if (str[0] == '0' && key == '0')
+                return 0;
+            if (index_pos == 1 && str[0] == '1' && !(key == '0' || key == '1' || key == '2'))
+                return 0;
+            if (index_pos == 1 && str[0] != '0' && str[0] != '1')
+                return 0;
+
+            if (index_pos == 0 && key > '1' && str[0] != '0' && str[0] != '1' && str[0] != 0)
+                return 0;
+            if (index_pos == 0 && key == '1' && str[0] > '2' && str[0] != 0)
+                return 0;
+            if (index_pos == 0 && !(key == '1' || key == '0') && !(str[0] == '0' || str[0] == '1' || str[0] == '2' || str[0] == 0))
+                return 0;
+
+            return key;
+        }
+        break;
+    }
+    case 9:
+    {
+        if (((key >= '0') && (key <= '9')))
+        {
+            if (index_pos == 1 && str[0] >= '2' && key > '3')
+                return 0;
+            if (index_pos == 1 && str[0] > '2')
+                return 0;
+
+            if (index_pos == 0 && key >= '2' && str[0] > '3')
+                return 0;
+
+            return key;
+        }
+        break;
+    }
+    case 10:
+    {
+        if (((key >= '0') && (key <= '9')))
+        {
+            if (index_pos == 1 && str[0] > '5')
+                return 0;
+
+            if (index_pos == 0 && key >= '6' && str[0] >= '0')
+                return 0;
+
+            return key;
+        }
+        break;
+    }
+    }
+
+    return 0;
+}
