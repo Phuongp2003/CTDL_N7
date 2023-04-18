@@ -12,6 +12,7 @@ private:
 public:
     Date();
     Date(int _Ngay, int _Thang, int _Nam, int _Gio, int _Phut);
+    void setToNow();
     void setGio(int);
     int getGio();
     void setPhut(int);

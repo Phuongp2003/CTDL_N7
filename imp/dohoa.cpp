@@ -81,6 +81,16 @@ BoMauNut MauThanhQuanLy{
 
 };
 
+Vector2 operator-(const Vector2 first, const Vector2 second)
+{
+    return {first.x - second.x, first.y - second.y};
+}
+
+Vector2 operator+(const Vector2 first, const Vector2 second)
+{
+    return {first.x + second.x, first.y + second.y};
+}
+
 //==================================================================================================================================
 // Setup
 /**
@@ -97,18 +107,28 @@ int current_page = 0;
 Vector2 StartPos{per1000(10) * SCREEN_WIDTH, per1000(40) * SCREEN_HEIGHT};
 
 Font FontArial;
-Image LogoPTIT;
 Texture2D PNG_logo; // Load ảnh vào biến (ram)
 
-Image HomeIcon;
 Texture2D PNG_home;
 
-Image ArrowLeft;
 Texture2D PNG_arrowLeft;
 Texture2D PNG_arrowRight;
 
+Texture2D PNG_tick;
+Texture2D PNG_circleGreen;
+Texture2D PNG_circleYellow;
+Texture2D PNG_circleGray;
+
 void LoadResources()
 {
+    Image LogoPTIT;
+    Image HomeIcon;
+    Image ArrowLeft;
+    Image Status_Tick;
+    Image Status_Green;
+    Image Status_Yellow;
+    Image Status_Gray;
+
     UnloadResources();
     FontArial = LoadFontEx("../src/font/arial.ttf", 72, 0, 9812);
     // FontArial = LoadFontEx("c:/Windows/Fonts/arial.ttf", 96, 0, 9812);
@@ -129,20 +149,44 @@ void LoadResources()
     ImageRotateCW(&ArrowLeft);
     ImageRotateCW(&ArrowLeft);
     PNG_arrowRight = LoadTextureFromImage(ArrowLeft);
+
+    Status_Tick = LoadImage("../src/img/status_tick.png");
+    ImageResize(&Status_Tick, 40, 40);
+    PNG_tick = LoadTextureFromImage(Status_Tick);
+
+    Status_Green = LoadImage("../src/img/status_green.png");
+    ImageResize(&Status_Green, 40, 40);
+    PNG_circleGreen = LoadTextureFromImage(Status_Green);
+
+    Status_Gray = LoadImage("../src/img/status_gray.png");
+    ImageResize(&Status_Gray, 40, 40);
+    PNG_circleGray = LoadTextureFromImage(Status_Gray);
+
+    Status_Yellow = LoadImage("../src/img/status_yellow.png");
+    ImageResize(&Status_Yellow, 40, 40);
+    PNG_circleYellow = LoadTextureFromImage(Status_Yellow);
+
+    UnloadImage(LogoPTIT);
+    UnloadImage(HomeIcon);
+    UnloadImage(ArrowLeft);
+    UnloadImage(Status_Tick);
+    UnloadImage(Status_Green);
+    UnloadImage(Status_Yellow);
+    UnloadImage(Status_Gray);
 }
 
 void UnloadResources()
 {
     UnloadFont(FontArial);
 
-    UnloadImage(LogoPTIT);
-    UnloadImage(HomeIcon);
-    UnloadImage(ArrowLeft);
-
     UnloadTexture(PNG_logo);
     UnloadTexture(PNG_home);
     UnloadTexture(PNG_arrowLeft);
     UnloadTexture(PNG_arrowRight);
+    UnloadTexture(PNG_tick);
+    UnloadTexture(PNG_circleGreen);
+    UnloadTexture(PNG_circleYellow);
+    UnloadTexture(PNG_circleGray);
 }
 
 void SetSizeWindow()
@@ -1234,13 +1278,12 @@ bool Popup_ThemCB(DanhSachCB &listCB, int &status)
 
 void CreateTable_QLCB()
 {
-    const char *cell_tittle[6] = {"STT", "Mã CB", "Số hiệu MB", "Ngày giờ", "Nơi đến", "TT"};
+    const char *cell_tittle[7] = {"STT", "Mã CB", "Số hiệu MB", "Ngày giờ", "Nơi đến", "SL Vé", "TT"};
 
-    float cellW[6] = {90, 230, 230, 200, 180, 150};
-    CreateTable({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 6, cellW, 1080);
-    Vector2 *tittle_pos = GetTittlePos({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 6, cellW, cell_tittle);
-
-    for (int i = 0; i < 6; i++)
+    float cellW[7] = {90, 230, 230, 200, 230, 100, 50};
+    CreateTable({StartPos.x + 35, StartPos.y + 60 + 100 + 80}, 7, cellW, 1130);
+    Vector2 *tittle_pos = GetTittlePos({StartPos.x + 35, StartPos.y + 60 + 100 + 80}, 7, cellW, cell_tittle);
+    for (int i = 0; i < 7; i++)
     {
         DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
     }
@@ -1255,7 +1298,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     static bool findByDay = false;
     bool DKTimKiem = true;
     int numNgay = 1, numThang = 1, numNam = 1900, numGio = 0, numPhut = 0;
-    float cellW[6] = {90, 230, 230, 200, 180, 150};
+    float cellW[7] = {90, 230, 230, 200, 230, 100, 50};
     static int current_page = 1;
     int n_page = 1;
 
@@ -1276,7 +1319,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
 
     Button dayFilter;
     Button data_picker[10];
-    Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
+    Vector2 start_pos = {StartPos.x + 35, StartPos.y + 60 + 70 + 110};
     NodeCB *tmp = listCB.getHead();
 
     // Cài đặt các ô nhập
@@ -1383,7 +1426,6 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     }
 
     // table
-    CreateTable_QLCB();
 
     // data
     // if (status == 1)
@@ -1403,9 +1445,9 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
 
     for (int i = 0; i < 10; i++)
     {
-        data_picker[i].x = StartPos.x + 60;
+        data_picker[i].x = StartPos.x + 35;
         data_picker[i].y = StartPos.y + 60 + 100 + 80 + 50 + i * 40;
-        data_picker[i].w = 1080;
+        data_picker[i].w = 1134;
         data_picker[i].h = 40;
         data_picker[i].firstRounder = false;
         data_picker[i].RounderChangeColor = true;
@@ -1454,23 +1496,53 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
             {
                 if (j % 10 == index)
                     result = tmp;
-                DrawTextEx(FontArial, intTochar(j % 10 + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, j % 10 + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, j % 10 + 1, tmp->getNode().getMaCB(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, j % 10 + 1, tmp->getNode().getMaMayBay(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getNgayGio().PrintDateHour().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 4, j % 10 + 1, tmp->getNode().getNgayGio().PrintDateHour().data(), 20), 20, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, j % 10 + 1, tmp->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, intTochar(tmp->getNode().getTrangThai(), 1), GetCellTextPos_Mid(start_pos, 6, cellW, 6, j % 10 + 1, intTochar(tmp->getNode().getTrangThai(), 1), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, intTochar(j % 10 + 1, n_char), GetCellTextPos_Mid(start_pos, 7, cellW, 1, j % 10 + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 7, cellW, 2, j % 10 + 1, tmp->getNode().getMaCB(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 7, cellW, 3, j % 10 + 1, tmp->getNode().getMaMayBay(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getNgayGio().PrintDateHour().data(), GetCellTextPos_Mid(start_pos, 7, cellW, 4, j % 10 + 1, tmp->getNode().getNgayGio().PrintDateHour().data(), 20), 20, 0, BLACK);
+                DrawTextEx(FontArial, tmp->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 7, cellW, 5, j % 10 + 1, tmp->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
+                DrawTextEx(FontArial, intTochar(tmp->getNode().getDSVe().getSoVeConLai(), 3), GetCellTextPos_Mid(start_pos, 7, cellW, 6, j % 10 + 1, intTochar(tmp->getNode().getDSVe().getSoVeConLai(), 3), 30), 30, 0, BLACK);
+                switch (tmp->getNode().getTrangThai())
+                {
+                case 0:
+                {
+
+                    DrawTextureEx(PNG_circleGray, GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    break;
+                }
+                case 1:
+                {
+                    DrawTextureEx(PNG_circleGreen, GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    // cout << (GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1)).x << "/" << (GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1)).y << endl;
+                    break;
+                }
+                case 2:
+                {
+                    DrawTextureEx(PNG_circleYellow, GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    break;
+                }
+                case 3:
+                {
+                    DrawTextureEx(PNG_tick, GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    break;
+                }
+                }
             }
             j++;
         }
         tmp = tmp->getNext();
     }
+    CreateTable_QLCB();
+
     n_page = 1 + ((j - 1) / 10);
 
     // page and switch page
     int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
     if (current_page != swp)
+    {
         index = -1;
+        result = NULL;
+    }
     current_page = swp;
     if (current_page > n_page)
         current_page = 1;
@@ -1478,6 +1550,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     if (first_run)
         first_run = false;
 
+    listCB.update();
     return result;
 }
 
@@ -1496,73 +1569,6 @@ void CreateTable_QLVe()
     float cellW[3] = {100, 200, 400};
     CreateTable({CenterDataSetter(1080, StartPos.x + 60, 700), StartPos.y + 60 + 100 + 80}, 3, cellW, 700);
 }
-
-// void XuLy_QLVe(ChuyenBay &cb)
-// {
-//     DSMB ds;
-//     MayBay *mb = new MayBay("MB1", "AB1", 1, 6);
-//     ds.Insert_MB(mb);
-//     DSVeMayBay dsve = DSVeMayBay();
-//     dsve.setDSVe(ds.getMB(ds.Find_MB(cb.getMaMayBay())));
-//     cb.setDSVe(dsve);
-//     static int current_page = 1;
-//     int n_page = 1;
-//     int size = dsve.getSoVeToiDa();
-//     static int index = -1;
-//     int i = (current_page - 1) * 10;
-//     int j = 0;
-//     // if (current_page * 10 < size)
-//     //     j = current_page * 100;
-//     // else
-//     //     j = size;
-//     Rectangle r;
-//     int k = 0;
-//     int b = 0;
-//     for (int a = 0; a < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong(); a++)
-//     {
-
-//         if (j >= i && j <= i + 9)
-//         {
-//             for (int m = 0; m < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay(); m++)
-//             {
-//                 if (a > 9)
-//                 {
-//                     b = int(a / 10);
-//                 }
-//                 r = {CenterDataSetter(1080, StartPos.x + 60, (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay()) * 50 + (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay() - 1) * 50),
-//                      StartPos.y + 85 + m * 60,
-//                      50 * 1.0,
-//                      40 * 1.0};
-//                 Button button;
-//                 button.x = r.x;
-//                 button.y = r.y;
-//                 button.w = r.width;
-//                 button.h = r.height;
-//                 button.BoTron = false;
-//                 button.gotNothing = false;
-//                 button.gotText = true;
-//                 button.tittle = cb.getDSVe().getVe(m * ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong() + a).getIDVe().c_str();
-//                 button.font = FontArial;
-//                 button.BoMau = ArrowKey;
-//                 if (CreateButton(button))
-//                 {
-//                     index = i * (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong()) + j;
-//                     cout << i << endl;
-//                 };
-//             }
-//         }
-//         j++;
-//     }
-
-//     n_page = 1 + ((j - 1) / 10);
-
-//     int swp = SwitchPage(current_page, n_page, {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-//     if (current_page != swp)
-//         index = -1;
-//     current_page = swp;
-//     if (current_page > n_page)
-//         current_page = 1;
-// }
 
 void XuLy_QLVe(ChuyenBay &cb)
 {
@@ -1868,6 +1874,20 @@ Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_t
     }
     ans = {CenterDataSetter(cellW[vi_tri_x - 1], cellPosX[vi_tri_x - 1], MeasureTextEx(FontArial, text, fontSize, 0).x),
            CenterDataSetter(40, vitriBang.y + 50 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, text, fontSize, 0).y)};
+    return ans;
+}
+
+Vector2 GetCellPic(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y)
+{
+    Vector2 ans;
+    float cellPosX[soCot];
+    cellPosX[0] = vitriBang.x;
+    for (int i = 1; i < soCot; i++)
+    {
+        cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
+    }
+    ans = {cellPosX[vi_tri_x - 1],
+           vitriBang.y + 50 + (vi_tri_y - 1) * 40};
     return ans;
 }
 
@@ -2327,10 +2347,22 @@ const char *CreateTextInputBox(InputTextBox &data)
 
     // Lấy đủ 4 kí tự
     if (data.mode == 8)
+    {
         if (data.letterCount == 4)
             data.returnIfDone = false;
         else
             data.returnIfDone = true;
+    }
+    if (data.mode == 6 || data.mode == 7)
+    {
+        if (data.letterCount == 1 && data.name[0] == '0')
+        {
+            data.returnIfDone = true;
+            data.done = false;
+        }
+        else
+            data.returnIfDone = false;
+    }
     strcpy(result, data.name);
 
     DrawRectangleRec(data.textBox, data.MauNen);

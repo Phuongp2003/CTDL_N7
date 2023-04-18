@@ -142,6 +142,7 @@ int ChuanHoaKey(int key, const char *str, int index_pos, int mode)
                 return 0;
             if (index_pos == 0 && str[0] == '0' && key == '0')
                 return 0;
+
             if (index_pos == 1 && str[0] == '0' && key == '0')
                 return 0;
             if (index_pos == 1 && str[0] == '3' && !(key == '0' || key == '1'))

@@ -101,44 +101,43 @@ void ChuyenBay::ThucHienCB(DSMB *DanhSachMB)
 Date ChuyenBay::NgayHoanThanh()
 {
     Date date;
-    if(NgayGio.getGio()+2<24)
+    if (NgayGio.getGio() + 2 < 24)
     {
         date.setNgay(NgayGio.getNgay());
         date.setThang(NgayGio.getThang());
         date.setNam(NgayGio.getNam());
-        date.setGio(NgayGio.getGio()+2);
+        date.setGio(NgayGio.getGio() + 2);
         date.setPhut(NgayGio.getPhut());
     }
     else
     {
-        date.setNgay(NgayGio.getNgay()+1);
+        date.setNgay(NgayGio.getNgay() + 1);
         date.setThang(NgayGio.getThang());
         date.setNam(NgayGio.getNam());
-        date.setGio(NgayGio.getGio()+2-24);
+        date.setGio(NgayGio.getGio() + 2 - 24);
         date.setPhut(NgayGio.getPhut());
-        
     }
     int thang;
-    thang=NgayGio.getThang();
-    if(thang==1 || thang==3 || thang==5 || thang==7 || thang==8 || thang==10  && date.getNgay()==32 )
+    thang = NgayGio.getThang();
+    if (thang == 1 || thang == 3 || thang == 5 || thang == 7 || thang == 8 || thang == 10 && date.getNgay() == 32)
     {
-        date.setThang(thang+1);
+        date.setThang(thang + 1);
         date.setNgay(1);
     }
-    if(thang==12 && date.getNgay()==32 )
+    if (thang == 12 && date.getNgay() == 32)
     {
         date.setThang(1);
         date.setNgay(1);
-        date.setNam(NgayGio.getNam()+1);
+        date.setNam(NgayGio.getNam() + 1);
     }
-    if(thang==4 || thang==6 || thang==9 || thang==11  && date.getNgay()==31 )
+    if (thang == 4 || thang == 6 || thang == 9 || thang == 11 && date.getNgay() == 31)
     {
-        date.setThang(thang+1);
+        date.setThang(thang + 1);
         date.setNgay(1);
     }
-    if(laNamNhuan(NgayGio.getNam())==1)
+    if (laNamNhuan(NgayGio.getNam()) == 1)
     {
-        if(thang==2 && date.getNgay()==30)
+        if (thang == 2 && date.getNgay() == 30)
         {
             date.setThang(3);
             date.setNgay(1);
@@ -146,15 +145,13 @@ Date ChuyenBay::NgayHoanThanh()
     }
     else
     {
-        if(thang==2 && date.getNgay()==29)
+        if (thang == 2 && date.getNgay() == 29)
         {
             date.setThang(3);
             date.setNgay(1);
-        }   
+        }
     }
-
-
-    
+    return date;
 }
 
 bool ChuyenBay::operator<(const ChuyenBay &other)
@@ -344,17 +341,17 @@ ChuyenBay DanhSachCB::TimCB(string _MaCB)
     return ChuyenBay();
 }
 
-bool DanhSachCB::MayBayDangSuDung(const char* SoHieuMB)
+bool DanhSachCB::MayBayDangSuDung(const char *SoHieuMB)
 {
     NodeCB *tmp = this->head;
     while (tmp != NULL)
     {
-        if(tmp->getNode().getTrangThai()==1 || tmp->getNode().getTrangThai()==2)
+        if (tmp->getNode().getTrangThai() == 1 || tmp->getNode().getTrangThai() == 2)
         {
             if (tmp->getNode().getMaCB() == SoHieuMB)
                 return true;
         }
-        
+
         tmp = tmp->getNext();
     }
 
@@ -363,38 +360,27 @@ bool DanhSachCB::MayBayDangSuDung(const char* SoHieuMB)
 bool DanhSachCB::DuocDatKhong(string CMND, ChuyenBay cb)
 {
     NodeCB *tmp = this->head;
-    for(int i=0;i<cb.getDSVe().getSoVeDaDat();i++)
+    for (int i = 0; i < cb.getDSVe().getSoVeDaDat(); i++)
     {
-        if(cb.getDSVe().getVe(i).getHanhKhach() == CMND)
+        if (cb.getDSVe().getVe(i).getHanhKhach() == CMND)
             return false;
     }
     while (tmp != NULL)
     {
-        if(tmp->getNode().getTrangThai()==1 && tmp->getNode().getTrangThai()==2
-           &&tmp->getNode().getNgayGio().getNgay()==cb.getNgayGio().getNgay()
-           && tmp->getNode().getNgayGio().getThang()==cb.getNgayGio().getThang()
-           && tmp->getNode().getNgayGio().getNam()==cb.getNgayGio().getNam()
-           &&(
-            tmp->getNode().getNgayGio().getGio()*60+tmp->getNode().getNgayGio().getPhut()<=cb.getNgayGio().getGio()*60+tmp->getNode().getNgayGio().getPhut()- 6*60
-            ||tmp->getNode().getNgayGio().getGio()*60+tmp->getNode().getNgayGio().getPhut()>=cb.getNgayGio().getGio()*60+tmp->getNode().getNgayGio().getPhut()+ 6*60
-            )
-          )
+        if (tmp->getNode().getTrangThai() == 1 && tmp->getNode().getTrangThai() == 2 && tmp->getNode().getNgayGio().getNgay() == cb.getNgayGio().getNgay() && tmp->getNode().getNgayGio().getThang() == cb.getNgayGio().getThang() && tmp->getNode().getNgayGio().getNam() == cb.getNgayGio().getNam() && (tmp->getNode().getNgayGio().getGio() * 60 + tmp->getNode().getNgayGio().getPhut() <= cb.getNgayGio().getGio() * 60 + tmp->getNode().getNgayGio().getPhut() - 6 * 60 || tmp->getNode().getNgayGio().getGio() * 60 + tmp->getNode().getNgayGio().getPhut() >= cb.getNgayGio().getGio() * 60 + tmp->getNode().getNgayGio().getPhut() + 6 * 60))
         {
-            for(int i=0;i<tmp->getNode().getDSVe().getSoVeDaDat();i++)
+            for (int i = 0; i < tmp->getNode().getDSVe().getSoVeDaDat(); i++)
             {
-                if(tmp->getNode().getDSVe().getVe(i).getHanhKhach() == CMND)
+                if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == CMND)
                     return false;
             }
         }
-        
+
         tmp = tmp->getNext();
     }
 
     return true;
 }
-
-
-
 
 void DanhSachCB::ReadFromFile(ifstream &file)
 {
@@ -530,4 +516,41 @@ NodeCB *DanhSachCB::sort(NodeCB *node)
 
     NodeCB *final = merge(left, right);
     return final;
+}
+
+void DanhSachCB::update()
+{
+    Date now;
+    now.setToNow();
+
+    bool changed = false;
+
+    NodeCB *tmp = this->head;
+
+    while (tmp != NULL)
+    {
+        if (tmp->getNode().getTrangThai() == 1 || tmp->getNode().getTrangThai() == 2)
+        {
+            if (tmp->getNode().getNgayGio() < now)
+            {
+                ChuyenBay cb_t = tmp->getNode();
+                cb_t.setTrangThai(HoanTat);
+                tmp->setNode(cb_t);
+                changed = true;
+            }
+        }
+
+        tmp = tmp->getNext();
+    }
+
+    // if (changed)
+    // {
+    //     ofstream dataOut("../data/dataCB.txt", ios::in);
+    //     WritetOfFile(dataOut);
+    //     dataOut.close();
+
+    //     ifstream dataIn("../data/dataCB.txt", ios::in);
+    //     ReadFromFile(dataIn);
+    //     dataIn.close();
+    // }
 }

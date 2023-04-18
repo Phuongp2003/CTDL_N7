@@ -98,14 +98,14 @@ public:
     void pop_first(); //
     void pop_back();
     ChuyenBay TimCB(string _MaCB);
-    bool MayBayDangSuDung(const char* SoHieuMB);
+    bool MayBayDangSuDung(const char *SoHieuMB);
     bool DuocDatKhong(string CMND, ChuyenBay cb);
-
-
 
     void ReadFromFile(ifstream &file);
     void WritetOfFile(ofstream &file);
     NodeCB *merge(NodeCB *left, NodeCB *right);
     NodeCB *mid_point(NodeCB *node);
     NodeCB *sort(NodeCB *node);
+
+    void update();
 };

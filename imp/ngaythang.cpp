@@ -71,7 +71,7 @@ bool Date::checkNgay()
 {
     switch (Thang)
     {
-    case 0:
+    // case 0:
     case 1:
     case 3:
     case 5:
@@ -160,7 +160,7 @@ bool Date::checkGioNhapVoiGioHT()
     return false;
 }
 
-bool Date::checkDateHour()//để set trang thái hoàn thành của chuyến bay
+bool Date::checkDateHour() // để set trang thái hoàn thành của chuyến bay
 {
     time_t now = time(0);
     tm *ltm = localtime(&now);
@@ -208,6 +208,17 @@ string Date::PrintHour()
     return intToString(Gio, 2) + " : " + intToString(Phut, 2);
 }
 
+void Date::setToNow()
+{
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    Ngay = ltm->tm_mday;
+    Thang = ltm->tm_mon + 1;
+    Nam = ltm->tm_year + 1900;
+    Gio = ltm->tm_hour;
+    Phut = ltm->tm_min;
+}
+
 bool Date::operator<(Date another)
 {
     if (Nam < another.Nam)
@@ -223,6 +234,16 @@ bool Date::operator<(Date another)
     if (Ngay < another.Ngay)
         return true;
     else if (Ngay > another.Ngay)
+        return false;
+
+    if (Gio < another.Gio)
+        return true;
+    else if (Gio > another.Gio)
+        return false;
+
+    if (Phut < another.Phut)
+        return true;
+    else if (Phut > another.Phut)
         return false;
 
     return false;
