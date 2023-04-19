@@ -71,6 +71,8 @@ public:
     void setNext(NodeCB *node);
     NodeCB *getNext();
     NodeCB *getTail();
+
+    ~NodeCB();
 };
 
 class DanhSachCB
@@ -90,6 +92,8 @@ public:
     void push(NodeCB *currNode, NodeCB *node);
     void push_back(NodeCB *node);
     void push_front(NodeCB *node);
+    void insertOrder(NodeCB *node);
+
     /**
      * @brief xoá chuyến bay hiện chọn
      *

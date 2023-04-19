@@ -1234,7 +1234,7 @@ bool Popup_ThemCB(DanhSachCB &listCB, int &status)
             if (newMaCB[0] >= 32 && newMaMB[0] >= 32 && newNoiDen[0] >= 32 && newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 && newGio[0] >= 32 && newPhut[0] >= 32)
             {
                 ChuyenBay result = ChuyenBay(newMaCB, newNoiDen, newNgayBay, newMaMB);
-                listCB.push_back(new NodeCB(result));
+                listCB.insertOrder(new NodeCB(result));
                 ofstream fileWrite("../data/dataCB.txt", ios::out | ios::trunc);
                 listCB.WritetOfFile(fileWrite);
                 fileWrite.close();

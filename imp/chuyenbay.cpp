@@ -119,7 +119,7 @@ Date ChuyenBay::NgayHoanThanh()
     }
     int thang;
     thang = NgayGio.getThang();
-    if (thang == 1 || thang == 3 || thang == 5 || thang == 7 || thang == 8 || thang == 10 && date.getNgay() == 32)
+    if ((thang == 1 || thang == 3 || thang == 5 || thang == 7 || thang == 8 || thang == 10) && date.getNgay() == 32)
     {
         date.setThang(thang + 1);
         date.setNgay(1);
@@ -130,7 +130,7 @@ Date ChuyenBay::NgayHoanThanh()
         date.setNgay(1);
         date.setNam(NgayGio.getNam() + 1);
     }
-    if (thang == 4 || thang == 6 || thang == 9 || thang == 11 && date.getNgay() == 31)
+    if ((thang == 4 || thang == 6 || thang == 9 || thang == 11) && date.getNgay() == 31)
     {
         date.setThang(thang + 1);
         date.setNgay(1);
@@ -206,6 +206,12 @@ NodeCB *NodeCB::getTail()
         tmp = tmp->getNext();
     return tmp;
 }
+
+NodeCB::~NodeCB()
+{
+    // delete next;
+}
+
 // Hàm của DanhSachCB
 
 DanhSachCB::DanhSachCB()
@@ -221,17 +227,15 @@ DanhSachCB::DanhSachCB(NodeCB *node)
 
 void DanhSachCB::push(NodeCB *currNode, NodeCB *node)
 {
+    node->setNext(currNode->getNext());
     currNode->setNext(node);
 }
 
 void DanhSachCB::push_back(NodeCB *node)
 {
     NodeCB *tmp = this->head;
-    while (tmp->hasNext())
-    {
-        tmp = tmp->getNext();
-    }
-    tmp->setNext(node);
+    tmp = tmp->getTail();
+    push(tmp, node);
 }
 
 void DanhSachCB::push_front(NodeCB *node)
@@ -242,20 +246,33 @@ void DanhSachCB::push_front(NodeCB *node)
     }
     else
     {
-        NodeCB *tmp = this->head;
-        while (tmp->hasNext())
-        {
-            NodeCB *tmp2 = tmp->getNext();
-            if (tmp2 == node)
-            {
-                tmp2->setNext(NULL);
-                break;
-            }
-        }
-        node->getTail()->setNext(this->head);
+        node->setNext(this->head);
         this->head = node;
     }
 }
+
+void DanhSachCB::insertOrder(NodeCB *node)
+{
+    NodeCB *tmp = head;
+
+    if (strcmp(head->getNode().getMaCB(), node->getNode().getMaCB()) > 0)
+    {
+        push_front(node);
+        return;
+    }
+
+    while (tmp != NULL)
+    {
+        if (!tmp->hasNext() || strcmp(tmp->getNext()->getNode().getMaCB(), node->getNode().getMaCB()) > 0)
+            break;
+        tmp = tmp->getNext();
+    }
+    if (tmp != NULL)
+        push(tmp, node);
+    else
+        push_back(node);
+}
+
 void DanhSachCB::setHead(NodeCB *head)
 {
     this->head = head;
@@ -401,8 +418,10 @@ void DanhSachCB::ReadFromFile(ifstream &file)
             getline(s, gio, '|');
             getline(s, phut, '|');
             getline(s, noiden, '|');
+            getline(s, trangthai, '|');
             Date d = Date(stoi(ngay), stoi(thang), stoi(nam), stoi(gio), stoi(phut));
             ChuyenBay cb = ChuyenBay(macb.c_str(), noiden, d, idmaybay.c_str());
+            cb.setTrangThai(stoi(trangthai));
             NodeCB *node = new NodeCB();
             node->setNode(cb);
             if (head == NULL)
@@ -410,7 +429,7 @@ void DanhSachCB::ReadFromFile(ifstream &file)
                 setHead(node);
             }
             else
-                push_back(node);
+                insertOrder(node);
         }
         setSize();
         file.close();
@@ -433,6 +452,7 @@ void DanhSachCB::WritetOfFile(ofstream &file)
                  << tmp->getNode().getNgayGio().getGio() << "|"
                  << tmp->getNode().getNgayGio().getPhut() << "|"
                  << tmp->getNode().getNoiDen() << "|"
+                 << tmp->getNode().getTrangThai() << "|"
                  << endl;
             if (tmp->hasNext())
                 tmp = tmp->getNext();
@@ -531,7 +551,7 @@ void DanhSachCB::update()
     {
         if (tmp->getNode().getTrangThai() == 1 || tmp->getNode().getTrangThai() == 2)
         {
-            if (tmp->getNode().getNgayGio() < now)
+            if (tmp->getNode().NgayHoanThanh() < now)
             {
                 ChuyenBay cb_t = tmp->getNode();
                 cb_t.setTrangThai(HoanTat);
@@ -540,17 +560,27 @@ void DanhSachCB::update()
             }
         }
 
+        if (tmp->getNode().getTrangThai() == 1 && tmp->getNode().getDSVe().getSoVeConLai() == 0)
+        {
+            ChuyenBay cb_t = tmp->getNode();
+            cb_t.setTrangThai(HetVe);
+            tmp->setNode(cb_t);
+            changed = true;
+        }
+
         tmp = tmp->getNext();
     }
 
-    // if (changed)
-    // {
-    //     ofstream dataOut("../data/dataCB.txt", ios::in);
-    //     WritetOfFile(dataOut);
-    //     dataOut.close();
+    if (changed)
+    {
+        // delete head;
 
-    //     ifstream dataIn("../data/dataCB.txt", ios::in);
-    //     ReadFromFile(dataIn);
-    //     dataIn.close();
-    // }
+        ofstream dataOut("../data/dataCB.txt", ios::in);
+        WritetOfFile(dataOut);
+        dataOut.close();
+
+        ifstream dataIn("../data/dataCB.txt", ios::in);
+        ReadFromFile(dataIn);
+        dataIn.close();
+    }
 }

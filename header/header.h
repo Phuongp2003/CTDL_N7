@@ -87,3 +87,4 @@ float per1000(int number);            // done
 bool isGotStr(string _string, string _keyword);
 int getCharSize(const char *_char);
 int ChuanHoaKey(int key, const char *str, int index_pos, int mode);
+int strcmp(const char *str1, const char *str2);

@@ -207,3 +207,22 @@ int ChuanHoaKey(int key, const char *str, int index_pos, int mode)
 
     return 0;
 }
+
+int strcmp(const char *str1, const char *str2)
+{
+    int max = 0;
+    if (getCharSize(str1) <= getCharSize(str2))
+        max = getCharSize(str2);
+    else
+        max = getCharSize(str1);
+
+    for (int i = 0; i < max; i++)
+    {
+        if (str1[i] < str2[i])
+            return -1;
+        else if (str1[i] > str2[i])
+            return 1;
+    }
+
+    return 0;
+}
