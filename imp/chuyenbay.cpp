@@ -404,24 +404,48 @@ void DanhSachCB::ReadFromFile(ifstream &file)
     if (file.is_open())
     {
         this->head = NULL;
-        string macb, noiden, trangthai, idmaybay, ngay, thang, nam, gio, phut;
+        string macb, noiden, trangthai, idmaybay, ngay, thang, nam, gio, phut, soVeMax, soVeAval;
         string line = "";
 
         while (getline(file, line))
         {
             stringstream s(line);
+
             getline(s, macb, '|');
             getline(s, idmaybay, '|');
+
             getline(s, ngay, '|');
             getline(s, thang, '|');
             getline(s, nam, '|');
             getline(s, gio, '|');
             getline(s, phut, '|');
-            getline(s, noiden, '|');
-            getline(s, trangthai, '|');
             Date d = Date(stoi(ngay), stoi(thang), stoi(nam), stoi(gio), stoi(phut));
+
+            getline(s, noiden, '|');
             ChuyenBay cb = ChuyenBay(macb.c_str(), noiden, d, idmaybay.c_str());
+            getline(s, trangthai, '|');
             cb.setTrangThai(stoi(trangthai));
+
+            getline(s, soVeMax, '|');
+            getline(s, soVeAval, '|');
+            DSVeMayBay dsve = DSVeMayBay();
+            dsve.setSoVeToiDa(stoi(soVeMax));
+            dsve.setSoVeDaDat(stoi(soVeMax) - stoi(soVeAval));
+
+            for (int i = 0; i < dsve.getSoVeDaDat(); i++)
+            {
+                string pos = "", cmnd = "";
+
+                getline(s, pos, '|');
+                if (pos == "")
+                    break;
+                getline(s, cmnd, '|');
+                VeMayBay t_ve = VeMayBay(cmnd);
+
+                dsve.setVe(t_ve, stoi(pos));
+            }
+            cb.setDSVe(dsve);
+
             NodeCB *node = new NodeCB();
             node->setNode(cb);
             if (head == NULL)
@@ -437,23 +461,36 @@ void DanhSachCB::ReadFromFile(ifstream &file)
     else
         cout << "Error" << endl;
 }
-void DanhSachCB::WritetOfFile(ofstream &file)
+void DanhSachCB::WritetToFile(ofstream &file)
 {
     if (file.is_open())
     {
         NodeCB *tmp = this->head;
         while (tmp != NULL) //
         {
-            file << tmp->getNode().getMaCB() << "|"
-                 << tmp->getNode().getMaMayBay() << "|"
-                 << tmp->getNode().getNgayGio().getNgay() << "|"
-                 << tmp->getNode().getNgayGio().getThang() << "|"
-                 << tmp->getNode().getNgayGio().getNam() << "|"
-                 << tmp->getNode().getNgayGio().getGio() << "|"
-                 << tmp->getNode().getNgayGio().getPhut() << "|"
-                 << tmp->getNode().getNoiDen() << "|"
-                 << tmp->getNode().getTrangThai() << "|"
-                 << endl;
+            file
+                << tmp->getNode().getMaCB() << "|"
+                << tmp->getNode().getMaMayBay() << "|"
+                << tmp->getNode().getNgayGio().getNgay() << "|"
+                << tmp->getNode().getNgayGio().getThang() << "|"
+                << tmp->getNode().getNgayGio().getNam() << "|"
+                << tmp->getNode().getNgayGio().getGio() << "|"
+                << tmp->getNode().getNgayGio().getPhut() << "|"
+                << tmp->getNode().getNoiDen() << "|"
+                << tmp->getNode().getTrangThai() << "|";
+
+            DSVeMayBay t_ve = tmp->getNode().getDSVe();
+            file
+                << t_ve.getSoVeToiDa() << "|"
+                << t_ve.getSoVeConLai() << "|";
+
+            for (int i = i; i < t_ve.getSoVeToiDa(); i++)
+            {
+                if (!t_ve.getVe(i).getTrangThai())
+                    file << i << "|" << t_ve.getVe(i).getHanhKhach() << "|";
+            }
+            file << endl;
+
             if (tmp->hasNext())
                 tmp = tmp->getNext();
             else
@@ -576,11 +613,29 @@ void DanhSachCB::update()
         // delete head;
 
         ofstream dataOut("../data/dataCB.txt", ios::in);
-        WritetOfFile(dataOut);
+        WritetToFile(dataOut);
         dataOut.close();
 
         ifstream dataIn("../data/dataCB.txt", ios::in);
         ReadFromFile(dataIn);
         dataIn.close();
     }
+}
+
+void linkAllLists(DSMB listMB, DsHanhKhach listHK, DanhSachCB listCB)
+{
+    NodeCB *CB_index = listCB.getHead();
+
+    while (CB_index != NULL)
+    {
+        ChuyenBay tmp = CB_index->getNode();
+        DSVeMayBay tmp_ve = DSVeMayBay();
+        tmp_ve.setDSVe(listMB.FindMB(tmp.getMaMayBay()));
+        tmp.setDSVe(tmp_ve);
+        CB_index->setNode(tmp);
+
+        CB_index = CB_index->getNext();
+    }
+
+    listCB.update();
 }

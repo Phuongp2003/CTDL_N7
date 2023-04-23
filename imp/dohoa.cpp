@@ -540,7 +540,7 @@ bool Popup_ThemMB(DSMB &listMB, int &status)
     {
         char CheckMB[16];
         strcpy(CheckMB, newMaMB);
-        if (listMB.Find_MB(CheckMB) < 0)
+        if (listMB.FindMBpos(CheckMB) < 0)
         {
             if (newMaMB[0] >= 32 && newLoaiMayBay[0] >= 32 && newSoDay[0] >= 32 && newSoDong[0] >= 32)
             {
@@ -673,7 +673,7 @@ bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb)
         {
             char CheckMB[16];
             strcpy(CheckMB, newMaMB);
-            if (listMB.Find_MB(CheckMB) < 0 || listMB.Find_MB(CheckMB) == listMB.Find_MB(mb->getSoHieuMB()))
+            if (listMB.FindMBpos(CheckMB) < 0 || listMB.FindMBpos(CheckMB) == listMB.FindMBpos(mb->getSoHieuMB()))
             {
                 if (newMaMB[0] >= 32 && newLoaiMayBay[0] >= 32 && newSoDay[0] >= 32 && newSoDong[0] >= 32)
                 {
@@ -800,7 +800,7 @@ bool Popup_XoaMB(DSMB &listMB, MayBay *mb, int &status)
         {
             char CheckMB[16];
             strcpy(CheckMB, mb->getSoHieuMB());
-            listMB.Delete_MB(listMB.Find_MB(CheckMB));
+            listMB.Delete_MB(listMB.FindMBpos(CheckMB));
 
             ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
             listMB.WritetoFile(fileWrite);
@@ -1236,7 +1236,7 @@ bool Popup_ThemCB(DanhSachCB &listCB, int &status)
                 ChuyenBay result = ChuyenBay(newMaCB, newNoiDen, newNgayBay, newMaMB);
                 listCB.insertOrder(new NodeCB(result));
                 ofstream fileWrite("../data/dataCB.txt", ios::out | ios::trunc);
-                listCB.WritetOfFile(fileWrite);
+                listCB.WritetToFile(fileWrite);
                 fileWrite.close();
                 ifstream fileRead("../data/dataCB.txt", ios::in);
                 listCB.ReadFromFile(fileRead);
@@ -1501,29 +1501,31 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
                 DrawTextEx(FontArial, tmp->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 7, cellW, 3, j % 10 + 1, tmp->getNode().getMaMayBay(), 30), 30, 0, BLACK);
                 DrawTextEx(FontArial, tmp->getNode().getNgayGio().PrintDateHour().data(), GetCellTextPos_Mid(start_pos, 7, cellW, 4, j % 10 + 1, tmp->getNode().getNgayGio().PrintDateHour().data(), 20), 20, 0, BLACK);
                 DrawTextEx(FontArial, tmp->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 7, cellW, 5, j % 10 + 1, tmp->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, intTochar(tmp->getNode().getDSVe().getSoVeConLai(), 3), GetCellTextPos_Mid(start_pos, 7, cellW, 6, j % 10 + 1, intTochar(tmp->getNode().getDSVe().getSoVeConLai(), 3), 30), 30, 0, BLACK);
+                string dsVe = "";
+                dsVe = intToString(tmp->getNode().getDSVe().getSoVeConLai(), 3) + "/" + intToString(tmp->getNode().getDSVe().getSoVeToiDa(), 3);
+                DrawTextEx(FontArial, dsVe.data(), GetCellTextPos_Mid(start_pos, 7, cellW, 6, j % 10 + 1, dsVe.data(), 25), 25, 0, BLACK);
                 switch (tmp->getNode().getTrangThai())
                 {
                 case 0:
                 {
 
-                    DrawTextureEx(PNG_circleGray, GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    DrawTextureEx(PNG_circleGray, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
                     break;
                 }
                 case 1:
                 {
-                    DrawTextureEx(PNG_circleGreen, GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
-                    // cout << (GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1)).x << "/" << (GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1)).y << endl;
+                    DrawTextureEx(PNG_circleGreen, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    // cout << (GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1)).x << "/" << (GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1)).y << endl;
                     break;
                 }
                 case 2:
                 {
-                    DrawTextureEx(PNG_circleYellow, GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    DrawTextureEx(PNG_circleYellow, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
                     break;
                 }
                 case 3:
                 {
-                    DrawTextureEx(PNG_tick, GetCellPic(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    DrawTextureEx(PNG_tick, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
                     break;
                 }
                 }
@@ -1576,7 +1578,7 @@ void XuLy_QLVe(ChuyenBay &cb)
     MayBay *mb = new MayBay("MB1", "AB1", 17, 25);
     ds.Insert_MB(mb);
     DSVeMayBay dsve = DSVeMayBay();
-    dsve.setDSVe(ds.getMB(ds.Find_MB(cb.getMaMayBay())));
+    dsve.setDSVe(ds.FindMB(cb.getMaMayBay()));
     cb.setDSVe(dsve);
     static int current_page = 1;
     int n_page = 1;
@@ -1589,17 +1591,17 @@ void XuLy_QLVe(ChuyenBay &cb)
     // else
     //     j = size;
     Rectangle r;
-    r = {CenterDataSetter(1200, StartPos.x, (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay()) * 50 + (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay() - 1) * 20),
+    r = {CenterDataSetter(1200, StartPos.x, (ds.FindMB(cb.getMaMayBay())->getSoDay()) * 50 + (ds.FindMB(cb.getMaMayBay())->getSoDay() - 1) * 20),
          StartPos.y + 85,
          50,
          30};
     Button button;
-    for (int a = 0; a < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong(); a++)
+    for (int a = 0; a < ds.FindMB(cb.getMaMayBay())->getSoDong(); a++)
     {
 
         if (j >= i && j <= i + 9)
         {
-            for (int m = 0; m < ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDay(); m++)
+            for (int m = 0; m < ds.FindMB(cb.getMaMayBay())->getSoDay(); m++)
             {
                 button.x = r.x + m * 70;
                 button.y = r.y + (a % 10) * 40;
@@ -1608,12 +1610,12 @@ void XuLy_QLVe(ChuyenBay &cb)
                 button.BoTron = false;
                 button.gotNothing = false;
                 button.gotText = true;
-                button.tittle = cb.getDSVe().getVe(m * ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong() + a).getIDVe().c_str();
+                button.tittle = cb.getDSVe().getVe(m * ds.FindMB(cb.getMaMayBay())->getSoDong() + a).getIDVe().c_str();
                 button.font = FontArial;
                 button.BoMau = ArrowKey;
                 if (CreateButton(button))
                 {
-                    index = m * (ds.getMB(ds.Find_MB(cb.getMaMayBay()))->getSoDong()) + j;
+                    index = m * (ds.FindMB(cb.getMaMayBay())->getSoDong()) + j;
                     cout << index << endl;
                 };
             }
@@ -1877,7 +1879,7 @@ Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_t
     return ans;
 }
 
-Vector2 GetCellPic(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y)
+Vector2 GetCellPos(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y)
 {
     Vector2 ans;
     float cellPosX[soCot];
@@ -2472,6 +2474,7 @@ void mainGraphics()
         }
         case 2:
         {
+            linkAllLists(listMB, listHK, listCB);
             CreatePage_QLCB(listCB);
             break;
         }

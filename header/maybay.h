@@ -67,7 +67,9 @@ public:
     // MayBay *New_MB(MayBay *maybay);
     void Insert_MB(MayBay *maybay);
     void Delete_MB(int index);
-    int Find_MB(const char *_SoHieuMB);
+    int FindMBpos(const char *_SoHieuMB);
+    MayBay *FindMB(const char *_SoHieuMB);
+
     int vitri(const char *a, const char *b);
     DSMB Find_DSMB(const char *SoHieuMB);
 

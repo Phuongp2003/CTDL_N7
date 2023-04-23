@@ -106,10 +106,12 @@ public:
     bool DuocDatKhong(string CMND, ChuyenBay cb);
 
     void ReadFromFile(ifstream &file);
-    void WritetOfFile(ofstream &file);
+    void WritetToFile(ofstream &file);
     NodeCB *merge(NodeCB *left, NodeCB *right);
     NodeCB *mid_point(NodeCB *node);
     NodeCB *sort(NodeCB *node);
 
     void update();
 };
+
+void linkAllLists(DSMB listMB, DsHanhKhach listHK, DanhSachCB listCB);

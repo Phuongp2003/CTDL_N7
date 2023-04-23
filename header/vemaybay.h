@@ -16,7 +16,7 @@ private:
 
 public:
     VeMayBay();
-    VeMayBay(string IDVe, string CMND);
+    VeMayBay(string CMND);
     void setIDVe(string ID);
     string getIDVe();
     void setHanhKhach(string CMND);
@@ -34,14 +34,16 @@ private:
 
 public:
     DSVeMayBay();
+
     void setSoVeToiDa(int SoVeToiDa);
+    void setSoVeDaDat(int SoVeDaDat);
+
     int getSoVeToiDa();
     int getSoVeDaDat();
     int getSoVeConLai();
     VeMayBay *getDSVeMB();
     void setDSVe(MayBay *MB);
-    void setVe(VeMayBay Ve);
+    void setVe(VeMayBay Ve, int pos);
     VeMayBay getVe(int index);
-    DSVeMayBay getDSVeTrong();
     ~DSVeMayBay();
 };

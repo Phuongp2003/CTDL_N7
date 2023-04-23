@@ -170,7 +170,8 @@ void DSMB::Delete_MB(int index)
     }
     this->size--; //
 }
-int DSMB::Find_MB(const char *_SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
+
+int DSMB::FindMBpos(const char *_SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện phải thoả DS.getsize()<=n-1 && >=0
 {
     for (int i = 0; i < this->size; i++)
     {
@@ -179,6 +180,17 @@ int DSMB::Find_MB(const char *_SoHieuMB) // Hàm tìm kiếm thì khi nhập ind
     }
     return -1;
 }
+
+MayBay *DSMB::FindMB(const char *_SoHieuMB)
+{
+    for (int i = 0; i < this->size; i++)
+    {
+        if (strcmp(this->data[i]->getSoHieuMB(), _SoHieuMB) == 0)
+            return data[i];
+    }
+    return NULL;
+}
+
 int DSMB::vitri(const char *a, const char *b)
 {
     int d = -1;

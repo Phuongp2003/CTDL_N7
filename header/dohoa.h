@@ -98,7 +98,7 @@ void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[], float cellH);
 Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[], const char *cell_tittle[]);
 Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text, float fontSize);
-Vector2 GetCellPic(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y);
+Vector2 GetCellPos(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y);
 
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width); // done
 int SwitchPage(int current_page, int n_page, Vector2 pos);
