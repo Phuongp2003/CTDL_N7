@@ -220,11 +220,6 @@ string Date::PrintDateHour() //
 //     result[23] = 0;
 // }
 
-const char *Date::PrintDateHour_c()
-{
-    return PrintDateHour().c_str();
-}
-
 string Date::PrintDate()
 {
     return intToString(Ngay, 2) + '/' + intToString(Thang, 2) + '/' + intToString(Nam, 4);

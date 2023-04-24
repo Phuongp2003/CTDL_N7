@@ -226,3 +226,15 @@ int strcmp(const char *str1, const char *str2)
 
     return 0;
 }
+
+const char *strToChar(string str)
+{
+    char *result = new char[100];
+    for (int i = 0; i < str.length(); i++)
+    {
+        result[i] = str[i];
+    }
+    result[str.length()] = 0;
+
+    return result;
+}

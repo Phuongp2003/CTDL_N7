@@ -1518,9 +1518,9 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
                 showText[0] = intTochar(j % 10 + 1, n_char);
                 showText[1] = tmp->getNode().getMaCB();
                 showText[2] = tmp->getNode().getMaMayBay();
-                showText[3] = tmp->getNode().getNgayGio().PrintDateHour_c();
-                showText[4] = tmp->getNode().getNoiDen().data();
-                showText[5] = dsVe.data();
+                showText[3] = strToChar(tmp->getNode().getNgayGio().PrintDateHour());
+                showText[4] = strToChar(tmp->getNode().getNoiDen());
+                showText[5] = strToChar(dsVe);
                 for (int show_i = 5; show_i >= 0; show_i--)
                 {
                     show[show_i] = GetCellTextBox(start_pos, 7, cellW, show_i + 1, (j % 10) + 1, showText[show_i], 30);
@@ -1814,10 +1814,10 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, int &status)
             TextBox show[5];
             const char *showText[5] = {0};
             showText[0] = intTochar(k + 1, n_char);
-            showText[1] = tmp->getHanhKhach().getCmnd().c_str();
-            showText[2] = tmp->getHanhKhach().getHo().c_str();
-            showText[3] = tmp->getHanhKhach().getTen().c_str();
-            showText[4] = tmp->getHanhKhach().getPhai().c_str();
+            showText[1] = strToChar(tmp->getHanhKhach().getCmnd());
+            showText[2] = strToChar(tmp->getHanhKhach().getHo());
+            showText[3] = strToChar(tmp->getHanhKhach().getTen());
+            showText[4] = strToChar(tmp->getHanhKhach().getPhai());
             for (int show_i = 4; show_i >= 0; show_i--)
             {
                 show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1, (j % 10) + 1, showText[show_i], 30);
