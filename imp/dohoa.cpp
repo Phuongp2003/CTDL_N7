@@ -161,19 +161,19 @@ void LoadResources()
     PNG_arrowRight = LoadTextureFromImage(ArrowLeft);
 
     Status_Tick = LoadImage("../src/img/status_tick.png");
-    ImageResize(&Status_Tick, 40, 40);
+    ImageResize(&Status_Tick, 34, 34);
     PNG_tick = LoadTextureFromImage(Status_Tick);
 
     Status_Green = LoadImage("../src/img/status_green.png");
-    ImageResize(&Status_Green, 40, 40);
+    ImageResize(&Status_Green, 34, 34);
     PNG_circleGreen = LoadTextureFromImage(Status_Green);
 
     Status_Gray = LoadImage("../src/img/status_gray.png");
-    ImageResize(&Status_Gray, 40, 40);
+    ImageResize(&Status_Gray, 34, 34);
     PNG_circleGray = LoadTextureFromImage(Status_Gray);
 
     Status_Yellow = LoadImage("../src/img/status_yellow.png");
-    ImageResize(&Status_Yellow, 40, 40);
+    ImageResize(&Status_Yellow, 34, 34);
     PNG_circleYellow = LoadTextureFromImage(Status_Yellow);
 
     UnloadImage(LogoPTIT);
@@ -1278,7 +1278,6 @@ void CreateTable_QLCB()
     {
         DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
     }
-    StatusHelp_QLCB();
 }
 
 void StatusHelp_QLCB()
@@ -1312,7 +1311,10 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     static bool findByDay = false;
     bool DKTimKiem = true;
     int numNgay = 1, numThang = 1, numNam = 1900, numGio = 0, numPhut = 0;
+
     float cellW[7] = {90, 230, 230, 200, 230, 100, 50};
+    CreateTable_QLCB();
+
     static int current_page = 1;
     int n_page = 1;
 
@@ -1461,7 +1463,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
     {
         data_picker[i].x = StartPos.x + 35;
         data_picker[i].y = StartPos.y + 60 + 100 + 80 + 50 + i * 40;
-        data_picker[i].w = 1134;
+        data_picker[i].w = 1130;
         data_picker[i].h = 40;
         data_picker[i].firstRounder = false;
         data_picker[i].RounderChangeColor = true;
@@ -1527,43 +1529,42 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
                 }
                 show[3].mode = 2;
                 show[5].mode = 2;
-                for (int show_i = 5; show_i >= 0; show_i--)
-                {
-                    CreateTextBox(show[show_i]);
-                }
-
                 switch (tmp->getNode().getTrangThai())
                 {
                 case 0:
                 {
 
-                    DrawTextureEx(PNG_circleGray, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    DrawTextureEx(PNG_circleGray, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){8, 3}, 0, 1, WHITE);
                     break;
                 }
                 case 1:
                 {
-                    DrawTextureEx(PNG_circleGreen, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    DrawTextureEx(PNG_circleGreen, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){8, 3}, 0, 1, WHITE);
                     // cout << (GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1)).x << "/" << (GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1)).y << endl;
                     break;
                 }
                 case 2:
                 {
-                    DrawTextureEx(PNG_circleYellow, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    DrawTextureEx(PNG_circleYellow, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){8, 3}, 0, 1, WHITE);
                     break;
                 }
                 case 3:
                 {
-                    DrawTextureEx(PNG_tick, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){5, 0}, 0, 1, WHITE);
+                    DrawTextureEx(PNG_tick, GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) + (Vector2){8, 3}, 0, 1, WHITE);
                     break;
                 }
                 }
-                // delete[] date;
+                for (int show_i = 5; show_i >= 0; show_i--)
+                {
+                    CreateTextBox(show[show_i]);
+                }
             }
             j++;
         }
         tmp = tmp->getNext();
     }
-    CreateTable_QLCB();
+
+    StatusHelp_QLCB();
 
     n_page = 1 + ((j - 1) / 10);
 
@@ -2515,9 +2516,10 @@ void CreateTextBox(TextBox box)
     DrawTextEx(FontArial, showtext, textpos, box.fontSize, 0, BLACK);
     if (box.mode == 1 && CheckCollisionPointRec(GetVMousePosition(), box.box) && MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 >= box.box.width)
     {
-        Rectangle fullBox = {box.box.x, box.box.y, MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20, 50};
+        Rectangle fullBox = {box.box.x + 3, box.box.y + 3, MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20, box.box.height - 6};
 
         DrawRectangleRec(fullBox, WHITE);
+        DrawRectangleRoundedLines(fullBox, 0, 0, 2, BLACK);
 
         textpos.x = CenterDataSetter(fullBox.width, fullBox.x, MeasureTextEx(FontArial, box.text, box.fontSize, 0).x);
         DrawTextEx(FontArial, box.text, textpos, box.fontSize, 0, BLACK);
