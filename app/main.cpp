@@ -4,6 +4,7 @@
 // using std::filesystem::current_path;
 int main()
 {
+     system("chcp 65001");
      // string test;
      // string key;
 
@@ -15,7 +16,7 @@ int main()
      // else
      //      cout << "no" << endl;
 
-     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "First Screen");
+     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "My PJ");
      mainGraphics();
      CloseWindow();
      return 0;

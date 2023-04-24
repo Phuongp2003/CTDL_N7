@@ -111,7 +111,7 @@ public:
     NodeCB *mid_point(NodeCB *node);
     NodeCB *sort(NodeCB *node);
 
-    void update();
+    bool update();
 };
 
 void linkAllLists(DSMB listMB, DsHanhKhach listHK, DanhSachCB listCB);

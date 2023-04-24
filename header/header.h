@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "raymath.h"
 
+#include <array>
 #include <conio.h>
 #include <ctime>
 #include <dos.h>
@@ -12,6 +13,7 @@
 #include <sstream>
 #include <string>
 
+using std::array;
 using std::cout;
 using std::endl;
 using std::ifstream;

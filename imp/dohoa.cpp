@@ -55,6 +55,16 @@ struct InputTextBox
     int indexPoint = 0;
 };
 
+struct TextBox
+{
+    char *text;
+    Rectangle box;
+    bool showBox = false;
+    int mode = 1;
+    bool isCenter = false;
+    int fontSize = 0;
+};
+
 BoMauNut HomeButtonColor{
     {153, 255, 153, 255},
     {80, 255, 80, 255},
@@ -381,7 +391,7 @@ void CreatePageBackground(int SoHang)
 void CreatePage_QLMB(DSMB &listMB)
 {
     CreatePageBackground(3);
-    static MayBay *data = new MayBay();
+    static MayBay *data = NULL;
     static char *preResult = (char *)"\0";
     static int status = 0;
     static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
@@ -943,11 +953,24 @@ MayBay *XuLy_QLMB(DSMB &listMB, int &status)
             {
                 if (j % 10 == index)
                     result = listMB.getMB(id);
-                DrawTextEx(FontArial, intTochar(j + 1, n_char), GetCellTextPos_Mid(start_pos, 5, cellW, 1, (j % 10) + 1, intTochar(j + 1, n_char), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, listMB.getMB(id)->getSoHieuMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 2, (j % 10) + 1, listMB.getMB(id)->getSoHieuMB(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, listMB.getMB(id)->getLoaiMB(), GetCellTextPos_Mid(start_pos, 5, cellW, 3, (j % 10) + 1, listMB.getMB(id)->getLoaiMB(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, intTochar(listMB.getMB(id)->getSoDay(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 4, (j % 10) + 1, intTochar(listMB.getMB(id)->getSoDay(), 3), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, intTochar(listMB.getMB(id)->getSoDong(), 3), GetCellTextPos_Mid(start_pos, 5, cellW, 5, (j % 10) + 1, intTochar(listMB.getMB(id)->getSoDong(), 3), 30), 30, 0, BLACK);
+                TextBox show[5];
+                const char *showText[5] = {
+
+                    intTochar(j + 1, n_char),
+                    listMB.getMB(id)->getSoHieuMB(),
+                    listMB.getMB(id)->getLoaiMB(),
+                    intTochar(listMB.getMB(id)->getSoDay(), 3),
+                    intTochar(listMB.getMB(id)->getSoDong(), 3)};
+                for (int show_i = 4; show_i >= 0; show_i--)
+                {
+                    show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1, (j % 10) + 1, showText[show_i], 30);
+                }
+                for (int show_i = 4; show_i >= 0; show_i--)
+                {
+                    CreateTextBox(show[show_i]);
+                }
+
+                // delete[] showText;
             }
             j++;
         }
@@ -979,44 +1002,12 @@ void CreateTable_QLMB()
     }
 }
 
-MayBay **showList_QLMB(DSMB &listMB, Vector2 start_pos, int current_page, float cellW[])
-{
-    typedef MayBay *MayBay_ptr;
-    MayBay_ptr *result = new MayBay_ptr[10];
-    for (int i = 0; i < 10; i++)
-    {
-        result[i] = new MayBay();
-    }
-    int size = listMB.getsize();
-    int n_char;
-    if (size <= 99)
-        n_char = 2;
-    else if (size >= 100 && size <= 999)
-        n_char = 3;
-    else
-        n_char = 4;
-    int i = (current_page - 1) * 10;
-    int j;
-    if (current_page * 10 < size)
-        j = current_page * 10;
-    else
-    {
-        j = size;
-        for (int i = size % 10; i < 10; i++)
-        {
-            result[i] = new MayBay();
-        }
-    }
-
-    return result;
-}
-
 // =-ChuyenBay
 
 void CreatePage_QLCB(DanhSachCB &listCB)
 {
     CreatePageBackground(5);
-    static NodeCB *data = new NodeCB();
+    static NodeCB *data = NULL;
     static char *preResult = (char *)"\0";
     static int status = 0;
     static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
@@ -1287,6 +1278,29 @@ void CreateTable_QLCB()
     {
         DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
     }
+    StatusHelp_QLCB();
+}
+
+void StatusHelp_QLCB()
+{
+    float cellW[7] = {90, 230, 230, 200, 230, 100, 50};
+    Vector2 cell = GetCellPos({StartPos.x + 35, StartPos.y + 60 + 100 + 80}, 7, cellW, 7, 1) - (Vector2){0, 50};
+
+    if (CheckCollisionPointRec(GetVMousePosition(), (Rectangle){cell.x, cell.y, cellW[6], 50}))
+    {
+        Rectangle box = {cell.x, cell.y, 300, 400};
+        DrawRectangleRounded(box, 0.125, 0, {255, 255, 255, 210});
+        DrawRectangleRoundedLines(box, 0.125, 0, 2, BROWN);
+
+        DrawRectangleRoundedLines({box.x + 20, box.y + 10, 150, 50}, 0, 0, 2, RED);
+
+        TextBox tittle;
+        tittle.text = (char *)"Ghi chú";
+        tittle.isCenter = true;
+        tittle.box = {box.x + 20, box.y + 10, 150, 50};
+
+        CreateTextBox(tittle);
+    }
 }
 
 // test
@@ -1466,7 +1480,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
         if (index == i)
             DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y, data_picker[i].w, data_picker[i].h}, 0, 1, 2, GREEN);
     }
-    result = new NodeCB();
+    result = NULL;
 
     // show list
     int size = listCB.getSize();
@@ -1496,14 +1510,28 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
             {
                 if (j % 10 == index)
                     result = tmp;
-                DrawTextEx(FontArial, intTochar(j % 10 + 1, n_char), GetCellTextPos_Mid(start_pos, 7, cellW, 1, j % 10 + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getMaCB(), GetCellTextPos_Mid(start_pos, 7, cellW, 2, j % 10 + 1, tmp->getNode().getMaCB(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getMaMayBay(), GetCellTextPos_Mid(start_pos, 7, cellW, 3, j % 10 + 1, tmp->getNode().getMaMayBay(), 30), 30, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getNgayGio().PrintDateHour().data(), GetCellTextPos_Mid(start_pos, 7, cellW, 4, j % 10 + 1, tmp->getNode().getNgayGio().PrintDateHour().data(), 20), 20, 0, BLACK);
-                DrawTextEx(FontArial, tmp->getNode().getNoiDen().data(), GetCellTextPos_Mid(start_pos, 7, cellW, 5, j % 10 + 1, tmp->getNode().getNoiDen().data(), 30), 30, 0, BLACK);
+
                 string dsVe = "";
-                dsVe = intToString(tmp->getNode().getDSVe().getSoVeConLai(), 3) + "/" + intToString(tmp->getNode().getDSVe().getSoVeToiDa(), 3);
-                DrawTextEx(FontArial, dsVe.data(), GetCellTextPos_Mid(start_pos, 7, cellW, 6, j % 10 + 1, dsVe.data(), 25), 25, 0, BLACK);
+                dsVe = intToString(tmp->getNode().getDSVe().getSoVeConLai(), 3) + '/' + intToString(tmp->getNode().getDSVe().getSoVeToiDa(), 3);
+                TextBox show[6];
+                const char *showText[6];
+                showText[0] = intTochar(j % 10 + 1, n_char);
+                showText[1] = tmp->getNode().getMaCB();
+                showText[2] = tmp->getNode().getMaMayBay();
+                showText[3] = tmp->getNode().getNgayGio().PrintDateHour_c();
+                showText[4] = tmp->getNode().getNoiDen().data();
+                showText[5] = dsVe.data();
+                for (int show_i = 5; show_i >= 0; show_i--)
+                {
+                    show[show_i] = GetCellTextBox(start_pos, 7, cellW, show_i + 1, (j % 10) + 1, showText[show_i], 30);
+                }
+                show[3].mode = 2;
+                show[5].mode = 2;
+                for (int show_i = 5; show_i >= 0; show_i--)
+                {
+                    CreateTextBox(show[show_i]);
+                }
+
                 switch (tmp->getNode().getTrangThai())
                 {
                 case 0:
@@ -1529,6 +1557,7 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
                     break;
                 }
                 }
+                // delete[] date;
             }
             j++;
         }
@@ -1551,8 +1580,8 @@ NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status)
 
     if (first_run)
         first_run = false;
-
     listCB.update();
+
     return result;
 }
 
@@ -1637,7 +1666,7 @@ void CreatePage_QLHK(DsHanhKhach &listHK)
 {
     CreatePageBackground(2);
 
-    static NodeHK *data = new NodeHK();
+    static NodeHK *data;
     static char *preResult = (char *)"\0";
     static int status = 0;
     static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
@@ -1687,7 +1716,8 @@ void CreatePage_QLHK(DsHanhKhach &listHK)
     {
     }
     data = XuLy_QLHK(listHK, status);
-    cout << data->getHanhKhach().getCmnd() << endl;
+    if (data != NULL)
+        cout << data->getHanhKhach().getCmnd() << endl;
 }
 
 void CreateTable_QLHK()
@@ -1751,7 +1781,7 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, int &status)
         if (index == i)
             DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y, data_picker[i].w, data_picker[i].h}, 0, 1, 2, GREEN);
     }
-    result = new NodeHK();
+    result = NULL;
 
     // show list
     Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
@@ -1780,11 +1810,19 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, int &status)
         {
             if (j % 10 == index)
                 result = tmp;
-            DrawTextEx(FontArial, intTochar(k + 1, n_char), GetCellTextPos_Mid(start_pos, 6, cellW, 1, j % 10 + 1, intTochar(k + 1, n_char), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, tmp->getHanhKhach().getCmnd().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 2, j % 10 + 1, tmp->getHanhKhach().getCmnd().data(), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, tmp->getHanhKhach().getHo().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 3, j % 10 + 1, tmp->getHanhKhach().getHo().data(), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, tmp->getHanhKhach().getTen().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 4, j % 10 + 1, tmp->getHanhKhach().getTen().data(), 30), 30, 0, BLACK);
-            DrawTextEx(FontArial, tmp->getHanhKhach().getPhai().data(), GetCellTextPos_Mid(start_pos, 6, cellW, 5, j % 10 + 1, tmp->getHanhKhach().getPhai().data(), 30), 30, 0, BLACK);
+
+            TextBox show[5];
+            const char *showText[5] = {0};
+            showText[0] = intTochar(k + 1, n_char);
+            showText[1] = tmp->getHanhKhach().getCmnd().c_str();
+            showText[2] = tmp->getHanhKhach().getHo().c_str();
+            showText[3] = tmp->getHanhKhach().getTen().c_str();
+            showText[4] = tmp->getHanhKhach().getPhai().c_str();
+            for (int show_i = 4; show_i >= 0; show_i--)
+            {
+                show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1, (j % 10) + 1, showText[show_i], 30);
+                CreateTextBox(show[show_i]);
+            }
         }
         j++;
         // }
@@ -1865,7 +1903,7 @@ void CreateTable(Vector2 vitriBang, int soCot, float cellW[], float total_cellW)
     DrawRectangleRoundedLines(hightlight_table, 0, 0, 3, BLACK);
 }
 
-Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text, float fontSize)
+TextBox GetCellTextBox(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text, float fontSize)
 {
     Vector2 ans;
     float cellPosX[soCot];
@@ -1874,9 +1912,18 @@ Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_t
     {
         cellPosX[i] = cellPosX[i - 1] + cellW[i - 1];
     }
-    ans = {CenterDataSetter(cellW[vi_tri_x - 1], cellPosX[vi_tri_x - 1], MeasureTextEx(FontArial, text, fontSize, 0).x),
-           CenterDataSetter(40, vitriBang.y + 50 + (vi_tri_y - 1) * 40, MeasureTextEx(FontArial, text, fontSize, 0).y)};
-    return ans;
+    TextBox res;
+    res.box = {
+        cellPosX[vi_tri_x - 1],
+        vitriBang.y + 50 + (vi_tri_y - 1) * 40,
+        cellW[vi_tri_x - 1],
+        40,
+    };
+    res.fontSize = fontSize;
+    res.isCenter = true;
+    res.text = (char *)text;
+
+    return res;
 }
 
 Vector2 GetCellPos(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y)
@@ -2379,7 +2426,6 @@ const char *CreateTextInputBox(InputTextBox &data)
         DrawTextEx(FontArial, data.name, textBoxPos, font_size, 0, data.MauChu);
     else
         DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, BROWN);
-    // cout << "index: " << indexPoint << endl;
     if (data.mouseClickOnText && ((data.framesCounter % 40 >= 5)))
         DrawTextEx(FontArial, "|", textBoxDot, font_size, 0, MAROON);
     if (!data.returnIfDone)
@@ -2404,6 +2450,78 @@ void resetInputTextBox(InputTextBox &box)
     box.letterCount = 0;
     box.framesCounter = 0;
     box.indexPoint = 0;
+}
+
+void CreateTextBox(TextBox box)
+{
+    Vector2 textpos = {box.box.x + 10, CenterDataSetter(box.box.height, box.box.y, MeasureTextEx(FontArial, "a", box.fontSize, 0).y)};
+
+    float text_w = 0.0f;
+    box.fontSize = (box.box.height * 2) / 3;
+
+    char showtext[40] = {0};
+
+    if (box.showBox)
+    {
+        DrawRectangleRec(box.box, WHITE);
+        DrawRectangleRoundedLines(box.box, 0, 0, 2, BLACK);
+    }
+
+    if (MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 < box.box.width)
+    {
+        text_w = MeasureTextEx(FontArial, box.text, box.fontSize, 0).x;
+        strcpy(showtext, box.text);
+    }
+    else if (box.mode == 1)
+    {
+        int i = 0;
+        float charW = 0;
+        while (MeasureTextEx(FontArial, showtext, box.fontSize, 0).x + charW < box.box.width)
+        {
+            showtext[i] = box.text[i];
+            showtext[i + 1] = 0;
+
+            char c[2] = {0};
+            c[0] = box.text[i + 1];
+            c[1] = 0;
+            charW = MeasureTextEx(FontArial, c, box.fontSize, 0).x;
+            if (charW == 0)
+                break;
+
+            i++;
+        }
+        text_w = MeasureTextEx(FontArial, showtext, box.fontSize, 0).x;
+    }
+    else if (box.mode == 2)
+    {
+        while (MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 >= box.box.width)
+        {
+            if (box.text[0] == 0)
+            {
+                text_w = 0;
+                break;
+            }
+            box.fontSize -= 2;
+        }
+        text_w = MeasureTextEx(FontArial, box.text, box.fontSize, 0).x;
+        strcpy(showtext, box.text);
+    }
+    if (box.isCenter)
+    {
+        textpos.x = CenterDataSetter(box.box.width, box.box.x, text_w);
+        textpos.y = CenterDataSetter(box.box.height, box.box.y, MeasureTextEx(FontArial, "a", box.fontSize, 0).y);
+    }
+
+    DrawTextEx(FontArial, showtext, textpos, box.fontSize, 0, BLACK);
+    if (box.mode == 1 && CheckCollisionPointRec(GetVMousePosition(), box.box) && MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 >= box.box.width)
+    {
+        Rectangle fullBox = {box.box.x, box.box.y, MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20, 50};
+
+        DrawRectangleRec(fullBox, WHITE);
+
+        textpos.x = CenterDataSetter(fullBox.width, fullBox.x, MeasureTextEx(FontArial, box.text, box.fontSize, 0).x);
+        DrawTextEx(FontArial, box.text, textpos, box.fontSize, 0, BLACK);
+    }
 }
 
 Vector2 GetVMousePosition()

@@ -196,16 +196,42 @@ bool Date::checkDateHour() // để set trang thái hoàn thành của chuyến 
 
 string Date::PrintDateHour() //
 {
-
-    return intToString(Ngay, 2) + " / " + intToString(Thang, 2) + " / " + intToString(Nam, 4) + " " + intToString(Gio, 2) + " : " + intToString(Phut, 2);
+    return intToString(Ngay, 2) + "/" + intToString(Thang, 2) + "/" + intToString(Nam, 4) + " " + intToString(Gio, 2) + ":" + intToString(Phut, 2);
 }
+
+// void Date::PrintDateHour_c(char *result) //
+// {
+//     result[0] = 0;
+//     char *dd = intTochar(Ngay, 2),
+//          *mm = intTochar(Thang, 2),
+//          *yyyy = intTochar(Nam, 4),
+//          *hh = intTochar(Gio, 2),
+//          *pp = intTochar(Phut, 2);
+
+//     strcat(result, dd);
+//     strcat(result, " / ");
+//     strcat(result, mm);
+//     strcat(result, " / ");
+//     strcat(result, yyyy);
+//     strcat(result, "  ");
+//     strcat(result, hh);
+//     strcat(result, " : ");
+//     strcat(result, pp);
+//     result[23] = 0;
+// }
+
+const char *Date::PrintDateHour_c()
+{
+    return PrintDateHour().c_str();
+}
+
 string Date::PrintDate()
 {
-    return intToString(Ngay, 2) + " / " + intToString(Thang, 2) + " / " + intToString(Nam, 4);
+    return intToString(Ngay, 2) + '/' + intToString(Thang, 2) + '/' + intToString(Nam, 4);
 }
 string Date::PrintHour()
 {
-    return intToString(Gio, 2) + " : " + intToString(Phut, 2);
+    return intToString(Gio, 2) + ":" + intToString(Phut, 2);
 }
 
 void Date::setToNow()
@@ -277,6 +303,8 @@ string intToString(int num, int size)
             str = "0" + str;
         }
     }
+
+    str[size] = 0;
 
     return str;
 }

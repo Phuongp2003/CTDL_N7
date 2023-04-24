@@ -57,6 +57,18 @@ struct Button;
  */
 struct InputTextBox;
 
+/**
+ * @brief tạo ô hiện kí tự, chống tràn chữ
+ *
+ * @param text The text to show
+ * @param box ô chứa
+ * @param showBox hiện ô chứa (mặc định false)
+ * @param mode chế độ hiển thị (1<mặc định> - Chống tràn, 2 - Tự căn)
+ * @param isCenter căn giữa (mặc định không)
+ * @param fontsize cỡ chữ (mặc định bằng 2/3 độ cao ô)
+ */
+struct TextBox;
+
 void LoadResources();
 void UnloadResources();
 void SetSizeWindow(); // done
@@ -74,6 +86,7 @@ MayBay **showList_QLMB(DSMB &listMB, Vector2 start_pos, int current_page, float 
 void CreatePage_QLCB(DanhSachCB &listCB);
 NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status);
 void CreateTable_QLCB();
+void StatusHelp_QLCB();
 
 void CreatePage_QLVe();
 void CreateTable_QLVe();
@@ -97,7 +110,7 @@ bool Warning_NoData();
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[], float cellH);
 Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[], const char *cell_tittle[]);
-Vector2 GetCellTextPos_Mid(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text, float fontSize);
+TextBox GetCellTextBox(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text, float fontSize);
 Vector2 GetCellPos(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y);
 
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width); // done
@@ -105,6 +118,7 @@ int SwitchPage(int current_page, int n_page, Vector2 pos);
 bool CreateButton(Button data);
 const char *CreateTextInputBox(InputTextBox &data);
 void resetInputTextBox(InputTextBox &box);
+void CreateTextBox(TextBox box);
 
 Vector2 GetVMousePosition(); // done
 void mainGraphics();

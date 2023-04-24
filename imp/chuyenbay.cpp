@@ -463,7 +463,8 @@ void DanhSachCB::ReadFromFile(ifstream &file)
 }
 void DanhSachCB::WritetToFile(ofstream &file)
 {
-    if (file.is_open())
+
+        if (file.is_open())
     {
         NodeCB *tmp = this->head;
         while (tmp != NULL) //
@@ -504,78 +505,7 @@ void DanhSachCB::WritetToFile(ofstream &file)
     file.close();
 }
 
-NodeCB *DanhSachCB::merge(NodeCB *left, NodeCB *right)
-{
-    if (left == NULL)
-    {
-        return right;
-    }
-    if (right == NULL)
-    {
-        return left;
-    }
-
-    NodeCB *final;
-
-    if (left->getNode() < right->getNode())
-    {
-        final = left;
-        final->setNext(merge(left->getNext(), right));
-    }
-    else
-    {
-        final = right;
-        final->setNext(merge(left, right->getNext()));
-    }
-    return final;
-}
-
-NodeCB *DanhSachCB::mid_point(NodeCB *node)
-{
-    if (node == NULL || !node->hasNext())
-    {
-        return node;
-    }
-
-    NodeCB *slow = head;
-    NodeCB *fast = head;
-
-    while (fast != NULL && fast->hasNext())
-    {
-        fast = fast->getNext();
-
-        if (!fast->hasNext())
-        {
-            break;
-        }
-
-        fast = fast->getNext();
-        slow = slow->getNext();
-    }
-
-    return slow;
-}
-
-NodeCB *DanhSachCB::sort(NodeCB *node)
-{
-    if (node == NULL || !node->hasNext())
-    {
-        return node;
-    }
-
-    NodeCB *mid = mid_point(node);
-    NodeCB *left = node;
-    NodeCB *right = mid->getNext();
-    mid->setNext(NULL);
-
-    left = sort(left);
-    right = sort(right);
-
-    NodeCB *final = merge(left, right);
-    return final;
-}
-
-void DanhSachCB::update()
+bool DanhSachCB::update()
 {
     Date now;
     now.setToNow();
@@ -619,7 +549,11 @@ void DanhSachCB::update()
         ifstream dataIn("../data/dataCB.txt", ios::in);
         ReadFromFile(dataIn);
         dataIn.close();
+
+        return true;
     }
+
+    return false;
 }
 
 void linkAllLists(DSMB listMB, DsHanhKhach listHK, DanhSachCB listCB)

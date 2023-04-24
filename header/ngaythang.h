@@ -30,6 +30,7 @@ public:
     bool checkGioNhapVoiGioHT();
     bool checkDateHour();
     string PrintDateHour();
+    const char *PrintDateHour_c();
     string PrintDate();
     string PrintHour();
     Date NgayHoanThanh();
