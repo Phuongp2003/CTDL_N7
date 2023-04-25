@@ -1288,6 +1288,7 @@ void StatusHelp_QLCB()
     if (CheckCollisionPointRec(GetVMousePosition(), (Rectangle){cell.x, cell.y, cellW[6], 50}))
     {
         Rectangle box = {cell.x, cell.y, 300, 400};
+        // 10 50 40 60 60 60 60 20
         DrawRectangleRounded(box, 0.125, 0, {255, 255, 255, 210});
         DrawRectangleRoundedLines(box, 0.125, 0, 2, BROWN);
 
@@ -1298,7 +1299,31 @@ void StatusHelp_QLCB()
         tittle.isCenter = true;
         tittle.box = {box.x + 20, box.y + 10, 150, 50};
 
+        TextBox Aval;
+        Aval.text = "Còn vé";
+        Aval.box = {box.x + 50, box.y + 100 - 5, 200, 50};
+
+        TextBox notAval;
+        notAval.text = "Hết vé";
+        notAval.box = {box.x + 50, box.y + 100 + 60 - 5, 200, 50};
+
+        TextBox complt;
+        complt.text = "Hoàn thành";
+        complt.box = {box.x + 50, box.y + 100 + 120 - 5, 200, 50};
+
+        TextBox disb;
+        disb.text = "Huỷ chuyến";
+        disb.box = {box.x + 50, box.y + 100 + 180 - 5, 200, 50};
+
         CreateTextBox(tittle);
+        DrawTextureEx(PNG_circleGreen, {box.x + 13, box.y + 100 + 16}, 0, 1, WHITE);
+        CreateTextBox(Aval);
+        DrawTextureEx(PNG_circleYellow, {box.x + 13, box.y + 100 + 60 + 16}, 0, 1, WHITE);
+        CreateTextBox(notAval);
+        DrawTextureEx(PNG_tick, {box.x + 13, box.y + 100 + 120 + 16}, 0, 1, WHITE);
+        CreateTextBox(complt);
+        DrawTextureEx(PNG_circleGray, {box.x + 13, box.y + 100 + 180 + 16}, 0, 1, WHITE);
+        CreateTextBox(disb);
     }
 }
 
