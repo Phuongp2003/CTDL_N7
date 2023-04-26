@@ -8,35 +8,34 @@ using std::ifstream;
 using std::ofstream;
 // DSMB *DanhSach;
 
-class MayBay
-{
+class MayBay {
 private:
-    char SoHieuMB[16]; // @note xây dựng hàm chỉ cho phép nhập 16 kí tự
-    char LoaiMB[41];   // 41 kí tự
-    int SoDay;
-    int SoDong;
-    int SoLuotTHCB;
+  char SoHieuMB[16]; // @note xây dựng hàm chỉ cho phép nhập 16 kí tự
+  char LoaiMB[41];   // 41 kí tự
+  int SoDay;
+  int SoDong;
+  int SoLuotTHCB;
 
 public: //
-    MayBay();
-    MayBay(const char *SoHieuMB, const char *LoaiMB, int SoDay, int SoDong);
-    void setSoHieuMB(const char *SoHieuMB);
-    char *getSoHieuMB();
-    void setLoaiMB(const char *LoaiMB);
-    char *getLoaiMB();
-    void setSoDay(int SoDay);
-    int getSoDay();
-    void setSoDong(int SoDong);
-    int getSoDong();
-    int getSoCho();
-    void show_MB();
-    bool Kiemtrasocho(int socho);
-    void DSChoNgoi();
-    void TangSLTHCB();
-    int getSoLuotBay();
+  MayBay();
+  MayBay(const char *SoHieuMB, const char *LoaiMB, int SoDay, int SoDong);
+  void setSoHieuMB(const char *SoHieuMB);
+  char *getSoHieuMB();
+  void setLoaiMB(const char *LoaiMB);
+  char *getLoaiMB();
+  void setSoDay(int SoDay);
+  int getSoDay();
+  void setSoDong(int SoDong);
+  int getSoDong();
+  int getSoCho();
+  void show_MB();
+  bool Kiemtrasocho(int socho);
+  void DSChoNgoi();
+  void TangSLTHCB();
+  int getSoLuotBay();
 
-    MayBay *getMB();
-    ~MayBay();
+  MayBay *getMB();
+  ~MayBay();
 };
 
 // MayBay *mb = new MayBay[300];
@@ -51,31 +50,30 @@ public: //
 
 // Danh sách con trỏ của máy bay
 //======================================================================
-class DSMB
-{
+class DSMB {
 private:
-    int size = 0;
-    MayBay *data[MAXMB];
+  int size = 0;
+  MayBay *data[MAXMB];
 
 public:
-    DSMB();
-    // void setsize(int size);
-    int getsize();
-    void getDSMB();
-    bool Is_Empty();
-    bool Is_Full();
-    // MayBay *New_MB(MayBay *maybay);
-    void Insert_MB(MayBay *maybay);
-    void Delete_MB(int index);
-    int FindMBpos(const char *_SoHieuMB);
-    MayBay *FindMB(const char *_SoHieuMB);
+  DSMB();
+  // void setsize(int size);
+  int getsize();
+  void getDSMB();
+  bool Is_Empty();
+  bool Is_Full();
+  // MayBay *New_MB(MayBay *maybay);
+  void Insert_MB(MayBay *maybay);
+  void Delete_MB(int index);
+  int FindMBpos(const char *_SoHieuMB);
+  MayBay *FindMB(const char *_SoHieuMB);
 
-    int vitri(const char *a, const char *b);
-    DSMB Find_DSMB(const char *SoHieuMB);
+  int vitri(const char *a, const char *b);
+  DSMB Find_DSMB(const char *SoHieuMB);
 
-    void Delete_DSMB();
-    MayBay *getMB(int index);
-    void ReadFromFile(ifstream &file);
-    void WritetoFile(ofstream &file);
-    ~DSMB(); //
+  void Delete_DSMB();
+  MayBay *getMB(int index);
+  void ReadFromFile(ifstream &file);
+  void WritetoFile(ofstream &file);
+  ~DSMB(); //
 };

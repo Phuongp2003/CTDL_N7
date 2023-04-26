@@ -52,7 +52,8 @@ struct Button;
  * @param MauNen mặc định: trắng
  * @param MauChu mặc định: đen
  * @param MauVien mặc định: đen
- * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ IN HOA và số) (4 - chỉ chữ) (5 - chỉ số) (6-7-8-9-10 dd-mm-yyyy-hh-mm)
+ * @param mode (1 - chữ, số và kí tự) (2 - chỉ chữ và số) (3 - chỉ chữ IN HOA và
+ * số) (4 - chỉ chữ) (5 - chỉ số) (6-7-8-9-10 dd-mm-yyyy-hh-mm)
  *
  */
 struct InputTextBox;
@@ -68,6 +69,7 @@ struct InputTextBox;
  * @param fontsize cỡ chữ (mặc định bằng 2/3 độ cao ô)
  */
 struct TextBox;
+struct QLMB_data;
 
 void LoadResources();
 void UnloadResources();
@@ -78,10 +80,10 @@ void CreateHomePage();       // done
 
 void CreatePageBackground(int SoHang); // done
 
-void CreatePage_QLMB(DSMB &listMB);
-MayBay *XuLy_QLMB(DSMB &listMB, int &status);
+void resetData_QLMB(QLMB_data &data);
+void CreatePage_QLMB(DSMB &listMB, QLMB_data &data);
+MayBay *XuLy_QLMB(DSMB &listMB, QLMB_data &data, int &status);
 void CreateTable_QLMB();
-MayBay **showList_QLMB(DSMB &listMB, Vector2 start_pos, int current_page, float cellW[]);
 
 void CreatePage_QLCB(DanhSachCB &listCB);
 NodeCB *XuLy_QLCB(DanhSachCB &listCB, int &status);
@@ -99,21 +101,27 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, int &status);
 void CreatePage_GioiThieu();
 
 void CreatePopupBackground();
-bool Popup_ThemMB(DSMB &listMB, int &status);
-bool Popup_HieuChinhMB(DSMB &listMB, MayBay *mb);
-bool Popup_XoaMB(DSMB &listMB, MayBay *mb, int &status);
+bool Popup_ThemMB(DSMB &listMB, QLMB_data &data, int &status);
+bool Popup_HieuChinhMB(DSMB &listMB, QLMB_data &data);
+bool Popup_XoaMB(DSMB &listMB, QLMB_data &data, int &status);
 bool Popup_ThemHK(DsHanhKhach &listHK, int &status);
 bool Popup_ThemCB(DanhSachCB &listCB, int &status);
 
 void ThanhQuanLy(); // done
 bool Warning_NoData();
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
-void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[], float cellH);
-Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[], const char *cell_tittle[]);
-TextBox GetCellTextBox(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y, const char *text, float fontSize);
-Vector2 GetCellPos(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x, int vi_tri_y);
+void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[],
+                   float cellH);
+Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[],
+                      const char *cell_tittle[]);
+TextBox GetCellTextBox(Vector2 vitriBang, int soCot, float cellW[],
+                       int vi_tri_x, int vi_tri_y, const char *text,
+                       float fontSize);
+Vector2 GetCellPos(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x,
+                   int vi_tri_y);
 
-float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua, float obj_width); // done
+float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua,
+                       float obj_width); // done
 int SwitchPage(int current_page, int n_page, Vector2 pos);
 bool CreateButton(Button data);
 const char *CreateTextInputBox(InputTextBox &data);
