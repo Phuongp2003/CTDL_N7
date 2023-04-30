@@ -1,65 +1,68 @@
 #include "../header/vemaybay.h"
-// hàm của DSVe
+// hàm của dsVe
 //
-VeMayBay::VeMayBay() {
-  IDVe = "A00";
-  CMND = "\0";
+VeMayBay::VeMayBay()
+{
+  idVe = "A00";
+  cmnd = "\0";
   // TrangThai = true; // true là chưa đặt
   //                   // false là đặt vé
 }
 
-VeMayBay::VeMayBay(string CMND) { this->CMND = CMND; }
+VeMayBay::VeMayBay(string cmnd) { this->cmnd = cmnd; }
 
-void VeMayBay::setIDVe(string ID) { this->IDVe = ID; }
+void VeMayBay::setIDVe(string idVe) { this->idVe = idVe; }
 
-string VeMayBay::getIDVe() { return this->IDVe; }
+string VeMayBay::getIDVe() { return this->idVe; }
 
-void VeMayBay::setHanhKhach(string CMND) { this->CMND = CMND; }
+void VeMayBay::setHanhKhach(string cmnd) { this->cmnd = cmnd; }
 
-string VeMayBay::getHanhKhach() { return this->CMND; }
+string VeMayBay::getHanhKhach() { return this->cmnd; }
 
 // void VeMayBay::setTrangThai(bool TrangThai) { this->TrangThai = TrangThai; }
 
 // bool VeMayBay::getTrangThai() { return this->TrangThai; }
 
 // ham DSvemaybay
-DSVeMayBay::DSVeMayBay() {
-  // DSVeMB=new VeMayBay[SoVeToiDa];
-  this->SoVeToiDa = 0;
-  this->SoVeDaDat = 0;
+DsVeMayBay::DsVeMayBay()
+{
+  // dsVeMB=new VeMayBay[soVeToiDa];
+  this->soVeToiDa = 0;
+  this->soVeDaDat = 0;
 }
 
-void DSVeMayBay::setSoVeToiDa(int SoVeToiDa) { this->SoVeToiDa = SoVeToiDa; }
+void DsVeMayBay::setSoVeToiDa(int soVeToiDa) { this->soVeToiDa = soVeToiDa; }
 
-void DSVeMayBay::setSoVeDaDat(int SoVeDaDat) { this->SoVeDaDat = SoVeDaDat; }
+int DsVeMayBay::getSoVeToiDa() { return soVeToiDa; }
 
-int DSVeMayBay::getSoVeToiDa() { return SoVeToiDa; }
+int DsVeMayBay::getSoVeConLai() { return soVeToiDa - soVeDaDat; }
 
-int DSVeMayBay::getSoVeDaDat() { return SoVeDaDat; }
+VeMayBay *DsVeMayBay::getDSVeMB() { return dsVeMB; }
 
-int DSVeMayBay::getSoVeConLai() { return SoVeToiDa - SoVeDaDat; }
-
-VeMayBay *DSVeMayBay::getDSVeMB() { return DSVeMB; }
-void DSVeMayBay::setDSVe(MayBay *MB) {
-  int SDay, SDong;
-  SDay = MB->getSoDay();
-  SDong = MB->getSoDong();
-  SoVeToiDa = SDay * SDong;
-  DSVeMB = new VeMayBay[SoVeToiDa];
-  for (int i = 0; i < SDay; i++) {
-    for (int j = 0; j < SDong; j++) {
-      string tmp_str;
-      tmp_str += IDChu[i];
-      tmp_str += IDSo[(j + 1) / 10];
-      tmp_str += IDSo[(j + 1) % 10];
-      tmp_str += '\0';
+void DsVeMayBay::setDSVe(MayBay *mayBay)
+{
+  int soDay, soDong;
+  soDay = mayBay->getSoDay();
+  soDong = mayBay->getSoDong();
+  soVeToiDa = soDay * soDong;
+  dsVeMB = new VeMayBay[soVeToiDa];
+  for (int i = 0; i < soDay; i++)
+  {
+    for (int j = 0; j < soDong; j++)
+    {
+      string tmpStr;
+      tmpStr += idChu[i];
+      tmpStr += idSo[(j + 1) / 10];
+      tmpStr += idSo[(j + 1) % 10];
+      tmpStr += '\0';
       // tmp_str = tmp_str;
-      DSVeMB[i * SDong + j].setIDVe(tmp_str);
+      dsVeMB[i * soDong + j].setIDVe(tmpStr);
     }
   }
 }
 
-void DSVeMayBay::setVe(VeMayBay Ve, int pos) { DSVeMB[pos] = Ve; }
-VeMayBay DSVeMayBay::getVe(int index) { return DSVeMB[index]; }
+void DsVeMayBay::setVe(VeMayBay veMB, int pos) { dsVeMB[pos] = veMB; }
 
-DSVeMayBay::~DSVeMayBay() {}
+VeMayBay DsVeMayBay::getVe(int index) { return dsVeMB[index]; }
+
+DsVeMayBay::~DsVeMayBay() {}

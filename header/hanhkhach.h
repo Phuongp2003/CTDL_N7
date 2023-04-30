@@ -7,62 +7,62 @@
 
 using namespace std;
 
-class HanhKhach {
+class HanhKhach
+{
 private:
-  string _cmnd;
-  string _ho;
-  string _ten;
-  int _phai; //  0 la nam, 1 la nu
+  string cmnd;
+  string ho;
+  string ten;
+  int phai; //  0 la nam, 1 la nu
 
 public:
   HanhKhach();
-  HanhKhach(string, string, string, int);
+  HanhKhach(string cmnd, string ho, string ten, int phai);
 
-  string getCmnd() const;
-  string getHo() const;
-  string getTen() const;
-  string getPhai() const;
+  string getCmnd();
+  string getHo();
+  string getTen();
+  string getPhai();
 
-  void setCmnd(string);
-  void setHo(string);
-  void setTen(string);
-  void setPhai(int);
+  void setCmnd(string cmnd);
+  void setHo(string ho);
+  void setTen(string ten);
+  void setPhai(int phai);
 };
 
-class NodeHK {
+class NodeHK
+{
 private:
-  HanhKhach _hanhKhach;
-  int _height;
+  HanhKhach hanhKhach;
   NodeHK *left;
   NodeHK *right;
 
 public:
   NodeHK();
-  NodeHK(HanhKhach);
+  NodeHK(HanhKhach hanhKhach);
 
-  HanhKhach getHanhKhach() const;
-  int getHeight() const;
-  NodeHK *getLeft() const;
-  NodeHK *getRight() const;
+  HanhKhach getHK();
+  NodeHK *getLeft();
+  NodeHK *getRight();
 
-  void setHeight(int);
-  void setLeft(NodeHK *);
-  void setRight(NodeHK *);
+  void setLeft(NodeHK *left);
+  void setRight(NodeHK *right);
 };
 
-class DsHanhKhach {
+class DsHanhKhach
+{
 private:
   NodeHK *root;
   int size = 0;
 
 public:
   DsHanhKhach();
-  bool insert(HanhKhach);
-  NodeHK *search(string);
-  void inOrderTraversal(NodeHK *);
+  bool insert(HanhKhach hanhKhach);
+  NodeHK *search(string cmnd);
+  void inOrderTraversal(NodeHK *node);
   void printInOrder();
   void showDsHanhKhach(string);
-  void writeToFile(NodeHK *);
+  void writeToFile(NodeHK *node);
   void readFromFile();
   NodeHK *getRoot();
   int getSize();

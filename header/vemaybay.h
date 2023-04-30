@@ -7,41 +7,43 @@
 
 #include "header.h"
 
-class VeMayBay {
+class VeMayBay
+{
 private:
-  string IDVe;
-  string CMND;
-  // bool TrangThai; // false là đã đặt
+  string idVe;
+  string cmnd;
+  // bool trangThai; // false là đã đặt
 
-public://
+public: //
   VeMayBay();
-  VeMayBay(string CMND);
-  void setIDVe(string ID);
+  VeMayBay(string cmnd);
+  void setIDVe(string id);
   string getIDVe();
-  void setHanhKhach(string CMND);
+  void setHanhKhach(string cmnd);
   string getHanhKhach();
-  // void setTrangThai(bool TrangThai);
+  // void setTrangThai(bool trangThai);
   // bool getTrangThai();
 };
 
-class DSVeMayBay {
+class DsVeMayBay
+{
 private:
-  VeMayBay *DSVeMB;
-  int SoVeToiDa;
-  int SoVeDaDat;
+  VeMayBay *dsVeMB;
+  int soVeToiDa;
+  int soVeDaDat;
 
 public:
-  DSVeMayBay();
+  DsVeMayBay();
 
-  void setSoVeToiDa(int SoVeToiDa);
-  void setSoVeDaDat(int SoVeDaDat);
+  void setSoVeToiDa(int soVeToiDa);
+  void setSoVeDaDat(int soVeDaDat);
 
   int getSoVeToiDa();
   int getSoVeDaDat();
   int getSoVeConLai();
   VeMayBay *getDSVeMB();
-  void setDSVe(MayBay *MB);
-  void setVe(VeMayBay Ve, int pos);
+  void setDSVe(MayBay *mayBay);
+  void setVe(VeMayBay ve, int pos);
   VeMayBay getVe(int index);
-  ~DSVeMayBay();
+  ~DsVeMayBay();
 };

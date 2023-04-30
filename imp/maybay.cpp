@@ -1,54 +1,75 @@
 #include "../header/maybay.h"
 #include <sstream>
 
-MayBay::MayBay() {
-  strcpy(SoHieuMB, "");
+MayBay::MayBay()
+{
+  strcpy(soHieuMB, "");
 
-  strcpy(LoaiMB, "");
-  SoDay = 0;
-  SoDong = 0;
-  SoLuotTHCB = 0;
+  strcpy(loaiMB, "");
+  soDay = 0;
+  soDong = 0;
+  soLuotThucHienCB = 0;
 }
-MayBay::MayBay(const char *_SoHieuMB, const char *LoaiMB, int SoDay,
-               int SoDong) {
-  strncpy(this->SoHieuMB, _SoHieuMB, 16);
-  this->SoHieuMB[16] = '\0';
+MayBay::MayBay(const char *soHieuMB, const char *loaiMB, int soDay,
+               int soDong)
+{
+  strncpy(this->soHieuMB, soHieuMB, 16);
+  this->soHieuMB[16] = '\0';
   // this->SoHieuMB = SoHieuMB;
-  strncpy(this->LoaiMB, LoaiMB, 41);
-  this->LoaiMB[41] = '\0';
-  this->SoDay = SoDay;
-  this->SoDong = SoDong;
-  SoLuotTHCB = 0;
+  strncpy(this->loaiMB, loaiMB, 41);
+  this->loaiMB[41] = '\0';
+  this->soDay = soDay;
+  this->soDong = soDong;
+  soLuotThucHienCB = 0;
 }
 
-void MayBay::setSoHieuMB(const char *SoHieuMB) {
+void MayBay::setSoHieuMB(const char *soHieuMB)
+{
 
-  strncpy(this->SoHieuMB, SoHieuMB, 16);
-  this->SoHieuMB[16] = '\0';
-  // strcpy(this->SoHieuMB, SoHieuMB);
+  strncpy(this->soHieuMB, soHieuMB, 16);
+  this->soHieuMB[16] = '\0';
+  // strcpy(this->SoHieuMB, soHieuMB);
 }
-char *MayBay::getSoHieuMB() { return this->SoHieuMB; }
-void MayBay::setLoaiMB(const char *LoaiMB) {
-  strncpy(this->LoaiMB, LoaiMB, 41);
-  this->LoaiMB[41] = '\0';
-}
-char *MayBay::getLoaiMB() { return this->LoaiMB; }
-void MayBay::setSoDay(int SoDay) { this->SoDay = SoDay; }
-int MayBay::getSoDay() { return this->SoDay; }
-void MayBay::setSoDong(int SoDong) { this->SoDong = SoDong; }
-int MayBay::getSoDong() {
-  return SoDong; //
-}
-int MayBay::getSoCho() { return SoDay * SoDong; }
 
-void MayBay::show_MB() {
+char *MayBay::getSoHieuMB() { return this->soHieuMB; }
+
+void MayBay::setLoaiMB(const char *loaiMB)
+{
+  strncpy(this->loaiMB, loaiMB, 41);
+  this->loaiMB[41] = '\0';
+}
+
+char *MayBay::getLoaiMB() { return this->loaiMB; }
+
+void MayBay::setSoDay(int soDay) { this->soDay = soDay; }
+
+int MayBay::getSoDay() { return this->soDay; }
+
+void MayBay::setSoDong(int soDong) { this->soDong = soDong; }
+
+int MayBay::getSoDong()
+{
+  return this->soDong; //
+}
+
+int MayBay::getSoCho()
+{
+  return this->soDay * this->soDong;
+}
+
+void MayBay::showMB()
+{
   cout << getSoHieuMB() << " " << getLoaiMB() << " " << getSoDay() << " "
        << getSoDong() << endl;
 }
-bool MayBay::Kiemtrasocho(int socho) { return socho >= 20; }
-string inttostring(int x) {
+
+bool MayBay::kiemTraSoCho(int soCho) { return soCho >= 20; }
+
+string intToString(int x)
+{
   string p = "";
-  while (x > 0) {
+  while (x > 0)
+  {
 
     int res = x % 10;
     p = char(res + 48) + p;
@@ -56,18 +77,22 @@ string inttostring(int x) {
   }
   return p;
 }
-void MayBay::DSChoNgoi() {
+void MayBay::dsChoNgoi()
+{
   string p;
-  string a[SoDay][SoDong];
-  for (int i = 0; i < SoDay; i++) {
+  string a[soDay][soDong];
+  for (int i = 0; i < soDay; i++)
+  {
     p = char(i + 65);
 
-    for (int j = 0; j < SoDong; j++) {
+    for (int j = 0; j < soDong; j++)
+    {
       string temp = p;
-      if (j <= 8) {
+      if (j <= 8)
+      {
         p = p + char(48);
       }
-      p = p + inttostring(j + 1);
+      p = p + intToString(j + 1);
 
       a[i][j] = p;
       p = temp;
@@ -78,123 +103,152 @@ void MayBay::DSChoNgoi() {
   }
 }
 
-void MayBay::TangSLTHCB() { this->SoLuotTHCB++; }
+void MayBay::tangSoLuotThucHienCB() { this->soLuotThucHienCB++; }
 
-int MayBay::getSoLuotBay() { return this->SoLuotTHCB; }
+int MayBay::getSoLuotBay() { return this->soLuotThucHienCB; }
 
 MayBay::~MayBay() {}
-DSMB::DSMB() { size = 0; }
 
-int DSMB::getsize() { return this->size; }
+DsMayBay::DsMayBay() { size = 0; }
 
-void DSMB::getDSMB() {
-  for (int i = 0; i < this->size; i++) {
-    data[i]->show_MB();
+int DsMayBay::getSize() { return this->size; }
+
+void DsMayBay::getDsMayBay()
+{
+  for (int i = 0; i < this->size; i++)
+  {
+    data[i]->showMB();
   }
 };
-bool DSMB::Is_Empty() { return size == 0; }
+bool DsMayBay::isEmpty() { return size == 0; }
 
-bool DSMB::Is_Full() { return size == MAXMB; }
+bool DsMayBay::isFull() { return size == MAXMB; }
 
-// MayBay *DSMB::New_MB(MayBay *maybay)
+// MayBay *DsMayBay::New_MB(MayBay *maybay)
 // {
 //     MayBay *p = new MayBay;
 //     p = maybay;
 //     return p;
 // }
 
-void DSMB::Insert_MB(MayBay *maybay) {
-  if (Is_Full() == true)
+void DsMayBay::insertMB(MayBay *maybay)
+{
+  if (isFull() == true)
     return;
   data[size] = maybay;
   size++;
 }
-void DSMB::Delete_MB(int index) {
+void DsMayBay::insertMB(int index)
+{
   delete data[index];
-  for (int i = index; i < this->size - 1; i++) {
+  for (int i = index; i < this->size - 1; i++)
+  {
     data[i] = data[i + 1];
   }
   this->size--; //
 }
 
-int DSMB::FindMBpos(
-    const char *_SoHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện
-                           // phải thoả DS.getsize()<=n-1 && >=0
+int DsMayBay::findPosMB(
+    const char *soHieuMB) // Hàm tìm kiếm thì khi nhập index thì có điều kiện
+                          // phải thoả DS.getsize()<=n-1 && >=0
 {
-  for (int i = 0; i < this->size; i++) {
-    if (strcmp(this->data[i]->getSoHieuMB(), _SoHieuMB) == 0)
+  for (int i = 0; i < this->size; i++)
+  {
+    if (strcmp(this->data[i]->getSoHieuMB(), soHieuMB) == 0)
       return i;
   }
   return -1;
 }
 
-MayBay *DSMB::FindMB(const char *_SoHieuMB) {
-  for (int i = 0; i < this->size; i++) {
-    if (strcmp(this->data[i]->getSoHieuMB(), _SoHieuMB) == 0)
+MayBay *DsMayBay::findMB(const char *soHieuMB)
+{
+  for (int i = 0; i < this->size; i++)
+  {
+    if (strcmp(this->data[i]->getSoHieuMB(), soHieuMB) == 0)
       return data[i];
   }
   return NULL;
 }
 
-int DSMB::vitri(const char *a, const char *b) {
+int DsMayBay::viTri(const char *a, const char *b)
+{
   int d = -1;
   if (strstr(a, b) != NULL)
     d = strlen(a) - strlen(strstr(a, b));
   return d;
 }
 // khi tìm và lấy cả danh sách máy bay thì stringsearch không được là == ""
-DSMB DSMB::Find_DSMB(const char *String_Search) {
-  DSMB *dsmb = new DSMB();
-  for (int j = 0; j < size; j++) {
-    if (isGotStr(data[j]->getSoHieuMB(), String_Search)) {
-      dsmb->Insert_MB(getMB(j));
+DsMayBay DsMayBay::findDsMB(const char *String_Search)
+{
+  DsMayBay *dsmb = new DsMayBay();
+  for (int j = 0; j < size; j++)
+  {
+    if (isGotStr(data[j]->getSoHieuMB(), String_Search))
+    {
+      dsmb->insertMB(getMB(j));
     }
   }
-  if (dsmb->getsize() == 0) {
+  if (dsmb->getSize() == 0)
+  {
     delete dsmb;
-    return *(new DSMB());
+    return *(new DsMayBay());
   }
   return *dsmb;
 }
 
-void DSMB::Delete_DSMB() {
-  for (int i = 0; i < this->size; i++) {
+void DsMayBay::deleteDsMB()
+{
+  for (int i = 0; i < this->size; i++)
+  {
     delete data[i];
   }
   this->size = 0;
 }
-MayBay *DSMB::getMB(int index) { return data[index]; }
-void DSMB::ReadFromFile(ifstream &file) {
-  if (file.is_open()) {
-    Delete_DSMB();
-    std::string sohieumb, loaimb, soday, sodong;
+
+MayBay *DsMayBay::getMB(int index) { return data[index]; }
+
+void DsMayBay::readFromFile(ifstream &file)
+{
+  if (file.is_open())
+  {
+    deleteDsMB();
+    std::string soHieuMB, loaiMB, soDay, soDong;
     std::string line = "";
-    while (std::getline(file, line)) {
+    while (std::getline(file, line))
+    {
       std::stringstream s(line);
-      std::getline(s, sohieumb, '|');
-      getline(s, loaimb, '|');
-      getline(s, soday, '|');
-      getline(s, sodong, '|');
-      Insert_MB(new MayBay(sohieumb.c_str(), loaimb.c_str(), stoi(soday),
-                           stoi(sodong)));
+      std::getline(s, soHieuMB, '|');
+      getline(s, loaiMB, '|');
+      getline(s, soDay, '|');
+      getline(s, soDong, '|');
+      insertMB(new MayBay(soHieuMB.c_str(), loaiMB.c_str(), stoi(soDay),
+                          stoi(soDong)));
     }
     file.close();
-  } else
+  }
+  else
     cout << "Error" << endl;
 }
-void DSMB::WritetoFile(ofstream &file) {
-  if (file.is_open()) {
-    for (int i = 0; i < size; i++) {
+
+void DsMayBay::writetoFile(ofstream &file)
+{
+  if (file.is_open())
+  {
+    for (int i = 0; i < size; i++)
+    {
       file << data[i]->getSoHieuMB() << "|" << data[i]->getLoaiMB() << "|"
            << data[i]->getSoDay() << "|" << data[i]->getSoDong() << "|"
            << "\n";
     }
-  } else {
+  }
+  else
+  {
     cout << "Error";
   }
   file.close();
 }
-DSMB::~DSMB() {
+DsMayBay::~DsMayBay()
+{
   // for(int i = 0; i<size; i++){
   //     delete data[i];
   // }

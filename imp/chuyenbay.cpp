@@ -3,108 +3,126 @@ using namespace std;
 
 // hàm của ChuyenBay
 
-ChuyenBay::ChuyenBay() {
-  strcpy(MaCB, "");
-  NgayGio = Date(1, 1, 1991, 0, 0);
-  NoiDen = "";
+ChuyenBay::ChuyenBay()
+{
+  strcpy(maCB, "");
+  ngayGio = Date(1, 1, 1991, 0, 0);
+  noiDen = "";
 }
 
-ChuyenBay::ChuyenBay(const char *_MaCB, string _NoiDen, Date _NgayGio,
-                     const char *_MaMayBay) {
-  strcpy(this->MaCB, _MaCB);
-  strcpy(this->IDMayBay, _MaMayBay);
-  this->NgayGio = _NgayGio;
-  this->NoiDen = _NoiDen;
-  this->TrangThai = ConVe;
+ChuyenBay::ChuyenBay(const char *maCB, string noiDen, Date ngayGio,
+                     const char *maMayBay)
+{
+  strcpy(this->maCB, maCB);
+  strcpy(this->idMayBay, maMayBay);
+  this->ngayGio = ngayGio;
+  this->noiDen = noiDen;
+  this->trangThai = ConVe;
 }
 
-char *ChuyenBay::getMaCB() { return this->MaCB; }
+char *ChuyenBay::getMaCB() { return this->maCB; }
 
-string ChuyenBay::getNoiDen() { return this->NoiDen; }
+string ChuyenBay::getNoiDen() { return this->noiDen; }
 
-Date ChuyenBay::getNgayGio() { return this->NgayGio; }
+Date ChuyenBay::getNgayGio() { return this->ngayGio; }
 
-void ChuyenBay::setTrangThai(int _TrangThai) { this->TrangThai = _TrangThai; }
+void ChuyenBay::setTrangThai(int trangThai) { this->trangThai = trangThai; }
 
-int ChuyenBay::getTrangThai() { return this->TrangThai; }
+int ChuyenBay::getTrangThai() { return this->trangThai; }
 
-const char *ChuyenBay::getMaMayBay() { return this->IDMayBay; }
+const char *ChuyenBay::getMaMayBay() { return this->idMayBay; }
 
-void ChuyenBay::setNgayGio(Date _NgayGio) { this->NgayGio = _NgayGio; }
+void ChuyenBay::setNgayGio(Date ngayGio) { this->ngayGio = ngayGio; }
 
-bool ChuyenBay::checkNoiDen(const char *noiden) {
-  if (isGotStr(NoiDen, noiden))
+bool ChuyenBay::checkNoiDen(const char *noiDen)
+{
+  if (isGotStr(noiDen, noiDen))
     return true;
   return false;
 }
 
-bool ChuyenBay::checkTime(int ngay, int thang, int nam, int gio, int phut) {
-  if (NgayGio == Date(ngay, thang, nam, gio, phut))
+bool ChuyenBay::checkTime(int ngay, int thang, int nam, int gio, int phut)
+{
+  if (ngayGio == Date(ngay, thang, nam, gio, phut))
     return true;
   return false;
 }
 
-bool ChuyenBay::checkMaCB(const char *maCB) {
-  if (isGotStr(MaCB, maCB))
+bool ChuyenBay::checkMaCB(const char *maCB)
+{
+  if (isGotStr(maCB, maCB))
     return true;
   return false;
 }
 
-void ChuyenBay::setDSVe(DSVeMayBay dsve) { DSVe = dsve; }
+void ChuyenBay::setDSVe(DsVeMayBay dsVe) { dsVe = dsVe; }
 
-DSVeMayBay ChuyenBay::getDSVe() { return this->DSVe; }
+DsVeMayBay ChuyenBay::getDSVe() { return this->dsVe; }
 
 /**
  * @brief Đây là hàm thử nghiệm
  *
  */
-void ChuyenBay::ThucHienCB(DSMB *DanhSachMB) {
-  //     this->TrangThai = HoanTat;
+void ChuyenBay::ThucHienCB(DsMayBay *dsMayBay)
+{
+  //     this->trangThai = HoanTat;
   //     MayBay *tmp;
-  //     tmp = DanhSachMB->getMB(DanhSachMB->Find_MB(this->MaCB));
+  //     tmp = dsMayBay->getMB(dsMayBay->Find_MB(this->maCb));
   //     tmp->TangSLTHCB();
 }
 
-Date ChuyenBay::NgayHoanThanh() {
+Date ChuyenBay::ngayHoanThanh()
+{
   Date date;
-  if (NgayGio.getGio() + 2 < 24) {
-    date.setNgay(NgayGio.getNgay());
-    date.setThang(NgayGio.getThang());
-    date.setNam(NgayGio.getNam());
-    date.setGio(NgayGio.getGio() + 2);
-    date.setPhut(NgayGio.getPhut());
-  } else {
-    date.setNgay(NgayGio.getNgay() + 1);
-    date.setThang(NgayGio.getThang());
-    date.setNam(NgayGio.getNam());
-    date.setGio(NgayGio.getGio() + 2 - 24);
-    date.setPhut(NgayGio.getPhut());
+  if (ngayGio.getGio() + 2 < 24)
+  {
+    date.setNgay(ngayGio.getNgay());
+    date.setThang(ngayGio.getThang());
+    date.setNam(ngayGio.getNam());
+    date.setGio(ngayGio.getGio() + 2);
+    date.setPhut(ngayGio.getPhut());
+  }
+  else
+  {
+    date.setNgay(ngayGio.getNgay() + 1);
+    date.setThang(ngayGio.getThang());
+    date.setNam(ngayGio.getNam());
+    date.setGio(ngayGio.getGio() + 2 - 24);
+    date.setPhut(ngayGio.getPhut());
   }
   int thang;
-  thang = NgayGio.getThang();
+  thang = ngayGio.getThang();
   if ((thang == 1 || thang == 3 || thang == 5 || thang == 7 || thang == 8 ||
        thang == 10) &&
-      date.getNgay() == 32) {
+      date.getNgay() == 32)
+  {
     date.setThang(thang + 1);
     date.setNgay(1);
   }
-  if (thang == 12 && date.getNgay() == 32) {
+  if (thang == 12 && date.getNgay() == 32)
+  {
     date.setThang(1);
     date.setNgay(1);
-    date.setNam(NgayGio.getNam() + 1);
+    date.setNam(ngayGio.getNam() + 1);
   }
   if ((thang == 4 || thang == 6 || thang == 9 || thang == 11) &&
-      date.getNgay() == 31) {
+      date.getNgay() == 31)
+  {
     date.setThang(thang + 1);
     date.setNgay(1);
   }
-  if (laNamNhuan(NgayGio.getNam()) == 1) {
-    if (thang == 2 && date.getNgay() == 30) {
+  if (laNamNhuan(ngayGio.getNam()) == 1)
+  {
+    if (thang == 2 && date.getNgay() == 30)
+    {
       date.setThang(3);
       date.setNgay(1);
     }
-  } else {
-    if (thang == 2 && date.getNgay() == 29) {
+  }
+  else
+  {
+    if (thang == 2 && date.getNgay() == 29)
+    {
       date.setThang(3);
       date.setNgay(1);
     }
@@ -112,110 +130,109 @@ Date ChuyenBay::NgayHoanThanh() {
   return date;
 }
 
-
-
-bool ChuyenBay::operator<(const ChuyenBay &other) {
-  int compare = strcmp(MaCB, other.MaCB);
+bool ChuyenBay::operator<(const ChuyenBay &other)
+{
+  int compare = strcmp(maCB, other.maCB);
   return (compare < 0) ? true : false;
 }
 
-ChuyenBay NodeCB::getNode() { return this->node; }
+ChuyenBay NodeCB::getNode() { return this->chuyenBay; }
 
-NodeCB::NodeCB() {
-  this->node = ChuyenBay();
+NodeCB::NodeCB()
+{
+  this->chuyenBay = ChuyenBay();
   this->next = NULL;
 }
 
-NodeCB::NodeCB(ChuyenBay node) {
-  this->node = node;
+NodeCB::NodeCB(ChuyenBay chuyenBay)
+{
+  this->chuyenBay = chuyenBay;
   this->next = NULL;
 }
 
-void NodeCB::setNode(ChuyenBay node) { this->node = node; }
+void NodeCB::setCb(ChuyenBay chuyenBay) { this->chuyenBay = chuyenBay; }
 
-bool NodeCB::hasNext() {
+bool NodeCB::hasNext()
+{
   if (this->next == NULL)
     return false;
   return true;
 }
 
-void NodeCB::setNext(NodeCB *node) { this->next = node; }
+void NodeCB::setNext(NodeCB *next) { this->next = next; }
 
 NodeCB *NodeCB::getNext() { return this->next; }
 
-NodeCB *NodeCB::getTail() {
+NodeCB *NodeCB::getTail()
+{
   NodeCB *tmp = this;
   while (tmp->hasNext())
     tmp = tmp->getNext();
   return tmp;
-}//
+} //
 
 bool NodeCB::Cach6tiengchua(Date another)
 {
-  if(
-    (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() 
-    <= another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
-    (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() 
-    >=another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60)
-    )
-      return true;
-  return false;//     
+  if (
+      (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() <= another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
+      (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() >= another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60))
+    return true;
+  return false; //
 }
 
-bool NodeCB::Cach6tiengchua(Date another)
+NodeCB::~NodeCB()
 {
-  if(
-    (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() 
-    <= another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
-    (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() 
-    >=another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60)
-    )
-      return true;
-  return false;//     
-}
-
-NodeCB::~NodeCB() {
   // delete next;
 }
 
-// Hàm của DanhSachCB
+// Hàm của DsChuyenBay
 
-DanhSachCB::DanhSachCB() {
+DsChuyenBay::DsChuyenBay()
+{
   this->head = NULL;
   size = 0;
 }
 
-DanhSachCB::DanhSachCB(NodeCB *node) { this->head = node; }
+DsChuyenBay::DsChuyenBay(NodeCB *cb) { this->head = cb; }
 
-void DanhSachCB::push(NodeCB *currNode, NodeCB *node) {
+void DsChuyenBay::push(NodeCB *currNode, NodeCB *node)
+{
   node->setNext(currNode->getNext());
   currNode->setNext(node);
 }
 
-void DanhSachCB::push_back(NodeCB *node) {
+void DsChuyenBay::pushBack(NodeCB *node)
+{
   NodeCB *tmp = this->head;
   tmp = tmp->getTail();
   push(tmp, node);
 }
 
-void DanhSachCB::push_front(NodeCB *node) {
-  if (this->head == NULL) {
+void DsChuyenBay::pushFront(NodeCB *node)
+{
+  if (this->head == NULL)
+  {
     setHead(node);
-  } else {
+  }
+  else
+  {
     node->setNext(this->head);
     this->head = node;
   }
 }
 
-void DanhSachCB::insertOrder(NodeCB *node) {
+void DsChuyenBay::insertOrder(NodeCB *node)
+{
   NodeCB *tmp = head;
 
-  if (strcmp(head->getNode().getMaCB(), node->getNode().getMaCB()) > 0) {
-    push_front(node);
+  if (strcmp(head->getNode().getMaCB(), node->getNode().getMaCB()) > 0)
+  {
+    pushFront(node);
     return;
   }
 
-  while (tmp != NULL) {
+  while (tmp != NULL)
+  {
     if (!tmp->hasNext() || strcmp(tmp->getNext()->getNode().getMaCB(),
                                   node->getNode().getMaCB()) > 0)
       break;
@@ -224,62 +241,76 @@ void DanhSachCB::insertOrder(NodeCB *node) {
   if (tmp != NULL)
     push(tmp, node);
   else
-    push_back(node);
+    pushBack(node);
 }
 
-void DanhSachCB::setHead(NodeCB *head) { this->head = head; }
+void DsChuyenBay::setHead(NodeCB *head) { this->head = head; }
 
-NodeCB *DanhSachCB::getHead() { return head; }
+NodeCB *DsChuyenBay::getHead() { return head; }
 
-void DanhSachCB::setSize() {
+void DsChuyenBay::setSize()
+{
   NodeCB *tmp = this->head;
   size = 0;
-  while (tmp != NULL) {
+  while (tmp != NULL)
+  {
     size++;
     tmp = tmp->getNext();
   }
 }
 
-int DanhSachCB::getSize() { return size; }
+int DsChuyenBay::getSize() { return size; }
 
-void DanhSachCB::pop(NodeCB *node) {
-  if (node == this->head) {
-    this->pop_first();
+void DsChuyenBay::pop(NodeCB *node)
+{
+  if (node == this->head)
+  {
+    this->popFirst();
     return;
-  } else if (!node->hasNext()) {
-    this->pop_back();
+  }
+  else if (!node->hasNext())
+  {
+    this->popBack();
     return;
   }
 
   NodeCB *tmp = this->head;
-  while (tmp->getNext() != node) {
+  while (tmp->getNext() != node)
+  {
     tmp = tmp->getNext();
   }
   tmp->setNext(node->getNext());
 }
 
-void DanhSachCB::pop_first() {
-  if (this->head != NULL) {
+void DsChuyenBay::popFirst()
+{
+  if (this->head != NULL)
+  {
     this->head = this->head->getNext();
     size--;
   }
 }
 
-void DanhSachCB::pop_back() {
+void DsChuyenBay::popBack()
+{
   if (this->head == NULL)
     return;
   NodeCB *tmp = this->head;
-  while (tmp->getNext()->hasNext()) {
+  while (tmp->getNext()->hasNext())
+  {
     tmp = tmp->getNext();
   }
   tmp->setNext(NULL);
   size--;
 }
 
-ChuyenBay DanhSachCB::TimCB(string _MaCB) {
+ChuyenBay DsChuyenBay::timCB(string maCB)
+{
   NodeCB *tmp = this->head;
-  while (tmp != NULL) {
-    if (tmp->getNode().getMaCB() == _MaCB) {
+  while (tmp != NULL)
+  {
+    if (tmp->getNode().getMaCB() == maCB)
+    {
       return tmp->getNode();
     }
     tmp = tmp->getNext();
@@ -288,12 +319,15 @@ ChuyenBay DanhSachCB::TimCB(string _MaCB) {
   return ChuyenBay();
 }
 
-bool DanhSachCB::MayBayDangSuDung(const char *SoHieuMB) {
+bool DsChuyenBay::mayBayDangSuDung(const char *soHieuMB)
+{
   NodeCB *tmp = this->head;
-  while (tmp != NULL) {
+  while (tmp != NULL)
+  {
     if (tmp->getNode().getTrangThai() == 1 ||
-        tmp->getNode().getTrangThai() == 2) {
-      if (tmp->getNode().getMaCB() == SoHieuMB)
+        tmp->getNode().getTrangThai() == 2)
+    {
+      if (tmp->getNode().getMaCB() == soHieuMB)
         return true;
     }
 
@@ -302,23 +336,26 @@ bool DanhSachCB::MayBayDangSuDung(const char *SoHieuMB) {
 
   return false;
 }
-bool DanhSachCB::DuocDatKhong(string CMND, ChuyenBay cb) {
+bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
+{
   NodeCB *tmp = this->head;
-  for (int i = 0; i < cb.getDSVe().getSoVeDaDat(); i++) {
-    if (cb.getDSVe().getVe(i).getHanhKhach() == CMND)
+  for (int i = 0; i < cb.getDSVe().getSoVeDaDat(); i++)
+  {
+    if (cb.getDSVe().getVe(i).getHanhKhach() == cmnd)
       return false;
   }
-  while (tmp != NULL) {
+  while (tmp != NULL)
+  {
     if (tmp->getNode().getTrangThai() == 1 &&
         tmp->getNode().getTrangThai() == 2 &&
         tmp->getNode().getNgayGio() == cb.getNgayGio() &&
-        tmp->Cach6tiengchua(cb.getNgayGio())==true
-      )
+        tmp->Cach6tiengchua(cb.getNgayGio()) == true)
     {
-      for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++) {
-        if(tmp->getNode().getDSVe().getVe(i).getHanhKhach()=="")
+      for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
+      {
+        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
           continue;
-        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == CMND)
+        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
           return false;
       }
     }
@@ -329,18 +366,21 @@ bool DanhSachCB::DuocDatKhong(string CMND, ChuyenBay cb) {
   return true;
 }
 
-void DanhSachCB::ReadFromFile(ifstream &file) {
-  if (file.is_open()) {
+void DsChuyenBay::readFromFile(ifstream &file)
+{
+  if (file.is_open())
+  {
     this->head = NULL;
-    string macb, noiden, trangthai, idmaybay, ngay, thang, nam, gio, phut,
+    string maCB, noiDen, trangThai, idMayBay, ngay, thang, nam, gio, phut,
         soVeMax, soVeAval;
     string line = "";
 
-    while (getline(file, line)) {
+    while (getline(file, line))
+    {
       stringstream s(line);
 
-      getline(s, macb, '|');
-      getline(s, idmaybay, '|');
+      getline(s, maCB, '|');
+      getline(s, idMayBay, '|');
 
       getline(s, ngay, '|');
       getline(s, thang, '|');
@@ -349,18 +389,19 @@ void DanhSachCB::ReadFromFile(ifstream &file) {
       getline(s, phut, '|');
       Date d = Date(stoi(ngay), stoi(thang), stoi(nam), stoi(gio), stoi(phut));
 
-      getline(s, noiden, '|');
-      ChuyenBay cb = ChuyenBay(macb.c_str(), noiden, d, idmaybay.c_str());
-      getline(s, trangthai, '|');
-      cb.setTrangThai(stoi(trangthai));
+      getline(s, noiDen, '|');
+      ChuyenBay cb = ChuyenBay(maCB.c_str(), noiDen, d, idMayBay.c_str());
+      getline(s, trangThai, '|');
+      cb.setTrangThai(stoi(trangThai));
 
       getline(s, soVeMax, '|');
       getline(s, soVeAval, '|');
-      DSVeMayBay dsve = DSVeMayBay();
-      dsve.setSoVeToiDa(stoi(soVeMax));
-      dsve.setSoVeDaDat(stoi(soVeMax) - stoi(soVeAval));
+      DsVeMayBay dsVe = DsVeMayBay();
+      dsVe.setSoVeToiDa(stoi(soVeMax));
+      dsVe.setSoVeDaDat(stoi(soVeMax) - stoi(soVeAval));
 
-      for (int i = 0; i < dsve.getSoVeDaDat(); i++) {
+      for (int i = 0; i < dsVe.getSoVeDaDat(); i++)
+      {
         string pos = "", cmnd = "";
 
         getline(s, pos, '|');
@@ -369,25 +410,30 @@ void DanhSachCB::ReadFromFile(ifstream &file) {
         getline(s, cmnd, '|');
         VeMayBay t_ve = VeMayBay(cmnd);
 
-        dsve.setVe(t_ve, stoi(pos));
+        dsVe.setVe(t_ve, stoi(pos));
       }
-      cb.setDSVe(dsve);
+      cb.setDSVe(dsVe);
 
       NodeCB *node = new NodeCB();
-      node->setNode(cb);
-      if (head == NULL) {
+      node->setCb(cb);
+      if (head == NULL)
+      {
         setHead(node);
-      } else
+      }
+      else
         insertOrder(node);
     }
     setSize();
     file.close();
-  } else
+  }
+  else
     cout << "Error" << endl;
 }
-void DanhSachCB::WritetToFile(ofstream &file) {
+void DsChuyenBay::writetToFile(ofstream &file)
+{
 
-  if (file.is_open()) {
+  if (file.is_open())
+  {
     NodeCB *tmp = this->head;
     while (tmp != NULL) //
     {
@@ -400,27 +446,31 @@ void DanhSachCB::WritetToFile(ofstream &file) {
            << tmp->getNode().getNoiDen() << "|" << tmp->getNode().getTrangThai()
            << "|";
 
-      DSVeMayBay t_ve = tmp->getNode().getDSVe();
+      DsVeMayBay t_ve = tmp->getNode().getDSVe();
       file << t_ve.getSoVeToiDa() << "|" << t_ve.getSoVeConLai() << "|";
 
-      for (int i = i; i < t_ve.getSoVeToiDa(); i++) {
+      for (int i = i; i < t_ve.getSoVeToiDa(); i++)
+      {
         if (t_ve.getVe(i).getHanhKhach() != "")
           file << i << "|" << t_ve.getVe(i).getHanhKhach() << "|";
       }
-      file << endl;//
+      file << endl; //
 
       if (tmp->hasNext())
         tmp = tmp->getNext();
       else
         break;
     }
-  } else {
+  }
+  else
+  {
     cout << "Error";
   }
   file.close();
 }
 
-bool DanhSachCB::update() {
+bool DsChuyenBay::update()
+{
   Date now;
   now.setToNow();
 
@@ -428,37 +478,42 @@ bool DanhSachCB::update() {
 
   NodeCB *tmp = this->head;
 
-  while (tmp != NULL) {
+  while (tmp != NULL)
+  {
     if (tmp->getNode().getTrangThai() == 1 ||
-        tmp->getNode().getTrangThai() == 2) {
-      if (tmp->getNode().NgayHoanThanh() < now) {
+        tmp->getNode().getTrangThai() == 2)
+    {
+      if (tmp->getNode().ngayHoanThanh() < now)
+      {
         ChuyenBay cb_t = tmp->getNode();
         cb_t.setTrangThai(HoanTat);
-        tmp->setNode(cb_t);
+        tmp->setCb(cb_t);
         changed = true;
       }
     }
 
     if (tmp->getNode().getTrangThai() == 1 &&
-        tmp->getNode().getDSVe().getSoVeConLai() == 0) {
+        tmp->getNode().getDSVe().getSoVeConLai() == 0)
+    {
       ChuyenBay cb_t = tmp->getNode();
       cb_t.setTrangThai(HetVe);
-      tmp->setNode(cb_t);
+      tmp->setCb(cb_t);
       changed = true;
     }
 
     tmp = tmp->getNext();
   }
 
-  if (changed) {
+  if (changed)
+  {
     // delete head;
 
     ofstream dataOut("../data/dataCB.txt", ios::in);
-    WritetToFile(dataOut);
+    writetToFile(dataOut);
     dataOut.close();
 
     ifstream dataIn("../data/dataCB.txt", ios::in);
-    ReadFromFile(dataIn);
+    readFromFile(dataIn);
     dataIn.close();
 
     return true;
@@ -467,12 +522,12 @@ bool DanhSachCB::update() {
   return false;
 }
 
-bool DanhSachCB::isAval(NodeCB *node, string MaCB)
+bool DsChuyenBay::isAval(NodeCB *node, string maCb)
 {
   ChuyenBay cb = node->getNode();
   while (node != NULL)
   {
-    if (cb.getMaCB() == MaCB && (cb.getTrangThai() == 1 || cb.getTrangThai() == 2))
+    if (cb.getMaCB() == maCb && (cb.getTrangThai() == 1 || cb.getTrangThai() == 2))
     {
       return false;
     }
@@ -481,17 +536,19 @@ bool DanhSachCB::isAval(NodeCB *node, string MaCB)
   return true;
 }
 
-void linkAllLists(DSMB listMB, DsHanhKhach listHK, DanhSachCB listCB) {
-  NodeCB *CB_index = listCB.getHead();
+void linkAllLists(DsMayBay listMB, DsHanhKhach listHK, DsChuyenBay listCB)
+{
+  NodeCB *indexCB = listCB.getHead();
 
-  while (CB_index != NULL) {
-    ChuyenBay tmp = CB_index->getNode();
-    DSVeMayBay tmp_ve = DSVeMayBay();
-    tmp_ve.setDSVe(listMB.FindMB(tmp.getMaMayBay()));
-    tmp.setDSVe(tmp_ve);
-    CB_index->setNode(tmp);
+  while (indexCB != NULL)
+  {
+    ChuyenBay tmp = indexCB->getNode();
+    DsVeMayBay tmpVe = DsVeMayBay();
+    tmpVe.setDSVe(listMB.findMB(tmp.getMaMayBay()));
+    tmp.setDSVe(tmpVe);
+    indexCB->setCb(tmp);
 
-    CB_index = CB_index->getNext();
+    indexCB = indexCB->getNext();
   }
 
   listCB.update();

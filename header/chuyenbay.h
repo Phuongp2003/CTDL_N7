@@ -11,14 +11,15 @@
 #define ConVe 1
 #define HetVe 2
 #define HoanTat 3
-class ChuyenBay {
+class ChuyenBay
+{
 private:
-  char MaCB[15];
-  Date NgayGio;
-  string NoiDen;
-  int TrangThai;
-  char IDMayBay[16];
-  DSVeMayBay DSVe;
+  char maCB[15];
+  Date ngayGio;
+  string noiDen;
+  int trangThai;
+  char idMayBay[16];
+  DsVeMayBay dsVe;
 
 public:
   /**
@@ -27,69 +28,71 @@ public:
    * @note Mã chuyến bay lúc nhập yêu cầu ít hơn 15 kí tự!
    */
   ChuyenBay();
-  ChuyenBay(const char *_MaCB, string _NoiDen, Date _NgayGio,
-            const char *_MaMayBay);
+  ChuyenBay(const char *maCB, string noiDen, Date ngayGio,
+            const char *maMayBay);
   char *getMaCB();
   string getNoiDen();
   Date getNgayGio();
-  void setNgayGio(Date _NgayGio);
+  void setNgayGio(Date ngayGio);
 
   /**
    *
    * @param _GiaTri 0-Huỷ chuyến, 1-Còn vé, 2-Hết vé, 3-Hoàn tất
    */
-  void setTrangThai(int _TrangThai);
+  void setTrangThai(int trangThai);
   int getTrangThai();
   const char *getMaMayBay();
 
-  bool checkNoiDen(const char *noiden);
+  bool checkNoiDen(const char *noiDen);
   bool checkTime(int ngay, int thang, int nam, int gio, int phut);
   bool checkMaCB(const char *maCB);
 
-  void setDSVe(DSVeMayBay dsve);
-  DSVeMayBay getDSVe();
+  void setDSVe(DsVeMayBay dsVe);
+  DsVeMayBay getDSVe();
 
-  void ThucHienCB(DSMB *DanhSachCB);
-  Date NgayHoanThanh();
-  
+  void ThucHienCB(DsMayBay *dsChuyenBay);
+  Date ngayHoanThanh();
+
   // node
   bool operator<(const ChuyenBay &other);
 };
 
-class NodeCB {
+class NodeCB
+{
 private:
-  ChuyenBay node;
+  ChuyenBay chuyenBay;
   NodeCB *next;
-//
+
 public:
   NodeCB();
-  NodeCB(ChuyenBay node);
+  NodeCB(ChuyenBay chuyenBay);
   ChuyenBay getNode();
-  void setNode(ChuyenBay node);
+  void setCb(ChuyenBay chuyenBay);
   bool hasNext();
-  void setNext(NodeCB *node);
+  void setNext(NodeCB *next);
   NodeCB *getNext();
   NodeCB *getTail();
   bool Cach6tiengchua(Date another);
   ~NodeCB();
-};//
+};
 
-class DanhSachCB {
+class DsChuyenBay
+{
 private:
   NodeCB *head;
   int size;
 
 public:
-  DanhSachCB();
-  DanhSachCB(NodeCB *cb);
+  DsChuyenBay();
+  DsChuyenBay(NodeCB *cb);
   void setHead(NodeCB *head);
   NodeCB *getHead();
 
   void setSize();
   int getSize();
   void push(NodeCB *currNode, NodeCB *node);
-  void push_back(NodeCB *node);
-  void push_front(NodeCB *node);
+  void pushBack(NodeCB *node);
+  void pushFront(NodeCB *node);
   void insertOrder(NodeCB *node);
 
   /**
@@ -97,20 +100,20 @@ public:
    *
    */
   void pop(NodeCB *node);
-  void pop_first(); //
-  void pop_back();
-  ChuyenBay TimCB(string _MaCB);
-  bool MayBayDangSuDung(const char *SoHieuMB);
-  bool DuocDatKhong(string CMND, ChuyenBay cb);
+  void popFirst(); //
+  void popBack();
+  ChuyenBay timCB(string maCB);
+  bool mayBayDangSuDung(const char *soHieuMB);
+  bool duocDatKhong(string cmnd, ChuyenBay cb);
 
-  void ReadFromFile(ifstream &file);
-  void WritetToFile(ofstream &file);
+  void readFromFile(ifstream &file);
+  void writetToFile(ofstream &file);
   NodeCB *merge(NodeCB *left, NodeCB *right);
   NodeCB *mid_point(NodeCB *node);
   NodeCB *sort(NodeCB *node);
 
   bool update();
-  bool isAval(NodeCB *node, string MaCB);
+  bool isAval(NodeCB *node, string maCB);
 };
 
-void linkAllLists(DSMB listMB, DsHanhKhach listHK, DanhSachCB listCB);
+void linkAllLists(DsMayBay listMB, DsHanhKhach listHK, DsChuyenBay listCB);

@@ -26,12 +26,36 @@ using std::string;
 #define MAXVe 100
 #define ENTER 13
 
-const char IDChu[26] = {
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+const char idChu[26] = {
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
 };
 
-const char IDSo[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+const char idSo[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 // class -----------------------------------------------------------------
 
@@ -45,24 +69,24 @@ class DsHanhKhach;
 
 // Máy bay
 class MayBay;
-class DSMB;
+class DsMayBay;
 
 // Vé máy bay
 class VeMayBay;
-class DSVeMayBay;
+class DsVeMayBay;
 
 // Chuyến bay
 class ChuyenBay;
 class NodeCB;
-class DanhSachCB;
+class DsChuyenBay;
 
 // Định nghĩa function ở file header của các file
 
 // Các hàm xử lí nhỏ
-char *intTochar(int value, int size); // done
+char *intToChar(int value, int size); // done
 float per1000(int number);            // done
 bool isGotStr(string _string, string _keyword);
 int getCharSize(const char *_char);
-int ChuanHoaKey(int key, const char *str, int index_pos, int mode);
+int chuanHoaKey(int key, const char *str, int index_pos, int mode);
 int strcmp(const char *str1, const char *str2);
 const char *strToChar(string str);

@@ -1,16 +1,17 @@
 #pragma once
 #include "header.h"
-class Date {
+class Date
+{
 private:
-  int Phut;
-  int Gio;
-  int Ngay;
-  int Thang;
-  int Nam;
+  int phut;
+  int gio;
+  int ngay;
+  int thang;
+  int nam;
 
 public:
   Date();
-  Date(int _Ngay, int _Thang, int _Nam, int _Gio, int _Phut);
+  Date(int ngay, int thang, int nam, int gio, int phut);
   void setToNow();
   void setGio(int);
   int getGio();
@@ -28,14 +29,14 @@ public:
   bool checkNgayNhapVoiNgayHT();
   bool checkGioNhapVoiGioHT();
   bool checkDateHour();
-  string PrintDateHour();
-  const char *PrintDateHour_c();
-  string PrintDate();
-  string PrintHour();
-  Date NgayHoanThanh();
-  
-  bool operator<(Date another);
-  bool operator==(Date another);
+  string printDateHour();
+  const char *printDateHour_c();
+  string printDate();
+  string printHour();
+  Date ngayHoanThanh();
+
+  bool operator<(Date &another);
+  bool operator==(Date &another);
 };
 // dd/mm/yyyy hh:mm
 // function

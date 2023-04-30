@@ -1,84 +1,106 @@
 #include "../header/hanhkhach.h"
 #include <sstream>
 
-HanhKhach::HanhKhach() : _cmnd(""), _ho(""), _ten(""), _phai(-1) {}
+HanhKhach::HanhKhach() : cmnd(""), ho(""), ten(""), phai(-1) {}
 
 HanhKhach::HanhKhach(string cmnd, string ho, string ten, int phai)
-    : _cmnd(cmnd), _ho(ho), _ten(ten), _phai(phai) {}
+{
+  this->cmnd = cmnd;
+  this->ho = ho;
+  this->ten = ten;
+  this->phai = phai;
+}
 
-string HanhKhach::getCmnd() const { return _cmnd; }
+string HanhKhach::getCmnd() { return this->cmnd; }
 
-string HanhKhach::getHo() const { return _ho; }
+string HanhKhach::getHo() { return this->ho; }
 
-string HanhKhach::getTen() const { return _ten; }
+string HanhKhach::getTen() { return this->ten; }
 
-string HanhKhach::getPhai() const {
-  if (_phai == 0) {
+string HanhKhach::getPhai()
+{
+  if (phai == 0)
+  {
     return "Nam";
-  } else
+  }
+  else
     return "Nu";
 }
 
-void HanhKhach::setCmnd(string cmnd) { _cmnd = cmnd; }
+void HanhKhach::setCmnd(string cmnd) { this->cmnd = cmnd; }
 
-void HanhKhach::setHo(string ho) { _ho = ho; }
+void HanhKhach::setHo(string ho) { this->ho = ho; }
 
-void HanhKhach::setTen(string ten) { _ten = ten; }
+void HanhKhach::setTen(string ten) { this->ten = ten; }
 
-void HanhKhach::setPhai(int phai) { _phai = phai; }
+void HanhKhach::setPhai(int phai) { this->phai = phai; }
 
 //------------------------------------------------------------
 
 NodeHK::NodeHK() {}
 
 NodeHK::NodeHK(HanhKhach hanhKhach)
-    : _hanhKhach(hanhKhach), _height(1), left(NULL), right(NULL) {}
+{
+  this->hanhKhach = hanhKhach;
+  this->left = NULL;
+  this->right = NULL;
+}
 
-HanhKhach NodeHK::getHanhKhach() const { return _hanhKhach; }
+HanhKhach NodeHK::getHK() { return this->hanhKhach; }
 
-int NodeHK::getHeight() const { return _height; }
+NodeHK *NodeHK::getLeft() { return this->left; }
 
-NodeHK *NodeHK::getLeft() const { return left; }
+NodeHK *NodeHK::getRight() { return this->right; }
 
-NodeHK *NodeHK::getRight() const { return right; }
+void NodeHK::setLeft(NodeHK *left) { this->left = left; }
 
-void NodeHK::setHeight(int height) { _height = height; }
-
-void NodeHK::setLeft(NodeHK *pLeft) { left = pLeft; }
-
-void NodeHK::setRight(NodeHK *pRight) { right = pRight; }
+void NodeHK::setRight(NodeHK *right) { this->right = right; }
 
 //------------------------------------------------------------
 
 DsHanhKhach::DsHanhKhach() : root(NULL) {}
 
-bool DsHanhKhach::insert(HanhKhach hanhKhach) {
-  if (root == NULL) {
+bool DsHanhKhach::insert(HanhKhach hanhKhach)
+{
+  if (root == NULL)
+  {
     root = new NodeHK(hanhKhach);
     writeToFile(root);
     return true;
   }
 
   NodeHK *current = root;
-  while (true) {
-    if (stoi(hanhKhach.getCmnd()) < stoi(current->getHanhKhach().getCmnd())) {
-      if (current->getLeft() == NULL) {
+  while (true)
+  {
+    if (stoi(hanhKhach.getCmnd()) < stoi(current->getHK().getCmnd()))
+    {
+      if (current->getLeft() == NULL)
+      {
         current->setLeft(new NodeHK(hanhKhach));
         writeToFile(current->getLeft());
         break;
-      } else {
+      }
+      else
+      {
         current = current->getLeft();
       }
-    } else if (stoi(hanhKhach.getCmnd()) >
-               stoi(current->getHanhKhach().getCmnd())) {
-      if (current->getRight() == NULL) {
+    }
+    else if (stoi(hanhKhach.getCmnd()) >
+             stoi(current->getHK().getCmnd()))
+    {
+      if (current->getRight() == NULL)
+      {
         current->setRight(new NodeHK(hanhKhach));
         writeToFile(current->getRight());
         break;
-      } else {
+      }
+      else
+      {
         current = current->getRight();
       }
-    } else {
+    }
+    else
+    {
       current = NULL;
       break;
     }
@@ -86,20 +108,28 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach) {
   return (current == NULL) ? false : true;
 }
 
-NodeHK *DsHanhKhach::search(string cmnd) {
-  if (root == NULL) {
+NodeHK *DsHanhKhach::search(string cmnd)
+{
+  if (root == NULL)
+  {
     return NULL;
   }
 
   NodeHK *current = root;
-  HanhKhach hanhKhach = current->getHanhKhach();
+  HanhKhach hanhKhach = current->getHK();
 
-  while (current != NULL) {
-    if (stoi(cmnd) == stoi(current->getHanhKhach().getCmnd())) {
+  while (current != NULL)
+  {
+    if (stoi(cmnd) == stoi(current->getHK().getCmnd()))
+    {
       return current;
-    } else if (stoi(cmnd) < stoi(current->getHanhKhach().getCmnd())) {
+    }
+    else if (stoi(cmnd) < stoi(current->getHK().getCmnd()))
+    {
       current = current->getLeft();
-    } else {
+    }
+    else
+    {
       current = current->getRight();
     }
   }
@@ -107,11 +137,13 @@ NodeHK *DsHanhKhach::search(string cmnd) {
   return NULL;
 }
 
-void DsHanhKhach::inOrderTraversal(NodeHK *node) {
-  if (node == NULL) {
+void DsHanhKhach::inOrderTraversal(NodeHK *node)
+{
+  if (node == NULL)
+  {
     return;
   }
-  HanhKhach hanhKhach = node->getHanhKhach();
+  HanhKhach hanhKhach = node->getHK();
   inOrderTraversal(node->getLeft());
   cout << hanhKhach.getCmnd() << " | " << hanhKhach.getHo() << " "
        << hanhKhach.getTen() << " | " << hanhKhach.getPhai() << "\n";
@@ -122,7 +154,7 @@ void DsHanhKhach::printInOrder() { inOrderTraversal(root); }
 
 // void DsHanhKhach::showDsHanhKhach(string maCb)
 // {
-//     DanhSachCB chuyenBay;
+//     DsChuyenBay chuyenBay;
 //     ChuyenBay cbCanTim = chuyenBay.TimCB(maCb);
 
 //     if (cbCanTim == NULL)
@@ -162,27 +194,33 @@ void DsHanhKhach::printInOrder() { inOrderTraversal(root); }
 //     }
 // }
 
-void DsHanhKhach::writeToFile(NodeHK *node) {
+void DsHanhKhach::writeToFile(NodeHK *node)
+{
   ofstream file;
   file.open("../data/dataHK.txt", ios::out | ios::app);
-  if (file.is_open()) {
-    HanhKhach hanhKhach = node->getHanhKhach();
+  if (file.is_open())
+  {
+    HanhKhach hanhKhach = node->getHK();
     string phai = (hanhKhach.getPhai() == "Nam") ? "0" : "1";
     file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|'
          << hanhKhach.getTen() << '|' << phai << '\n';
     file.close();
-  } else
+  }
+  else
     cout << "Error";
 }
 
-void DsHanhKhach::readFromFile() {
+void DsHanhKhach::readFromFile()
+{
   ifstream file;
   file.open("../data/dataHK.txt", ios::in);
-  if (file.is_open()) {
+  if (file.is_open())
+  {
     string line;
     string cmnd, ho, ten, phai_str;
     int phai;
-    while (getline(file, line)) {
+    while (getline(file, line))
+    {
       stringstream ss(line);
       getline(ss, cmnd, '|');
       getline(ss, ho, '|');
@@ -192,11 +230,13 @@ void DsHanhKhach::readFromFile() {
       insert(HanhKhach(cmnd, ho, ten, phai));
     }
     file.close();
-  } else {
+  }
+  else
+  {
     cout << "Error";
   }
 }
 
-int DsHanhKhach::getSize() { return size; }
+int DsHanhKhach::getSize() { return this->size; }
 
-NodeHK *DsHanhKhach::getRoot() { return root; }
+NodeHK *DsHanhKhach::getRoot() { return this->root; }
