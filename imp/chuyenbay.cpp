@@ -159,7 +159,7 @@ bool NodeCB::Cach6tiengchua(Date another)
     >=another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60)
     )
       return true;
-  return false;     
+  return false;//     
 }
 
 NodeCB::~NodeCB() {
@@ -395,7 +395,7 @@ void DanhSachCB::WritetToFile(ofstream &file) {
         if (t_ve.getVe(i).getHanhKhach() != "")
           file << i << "|" << t_ve.getVe(i).getHanhKhach() << "|";
       }
-      file << endl;
+      file << endl;//
 
       if (tmp->hasNext())
         tmp = tmp->getNext();

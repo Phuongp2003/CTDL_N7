@@ -72,7 +72,7 @@ public:
   NodeCB *getTail();
   bool Cach6tiengchua(Date another);
   ~NodeCB();
-};
+};//
 
 class DanhSachCB {
 private:
