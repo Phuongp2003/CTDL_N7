@@ -19,7 +19,7 @@
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [],
-      // "preLaunchTask": "build_project" //Mode chỉ f5 build + run
+      "preLaunchTask": "build_project" //Mode chỉ f5 build + run
   
     }
   ]

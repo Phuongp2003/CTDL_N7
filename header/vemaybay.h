@@ -20,8 +20,8 @@ public:
   string getIDVe();
   void setHanhKhach(string CMND);
   string getHanhKhach();
-  void setTrangThai(bool TrangThai);
-  bool getTrangThai();
+  // void setTrangThai(bool TrangThai);
+  // bool getTrangThai();
 };
 
 class DSVeMayBay {

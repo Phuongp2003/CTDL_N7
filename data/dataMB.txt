@@ -42,3 +42,4 @@ MB41|Airbus71|31|21|
 MB42|Airbus72|32|22|
 MB43|Airbus73|33|23|
 MB44|Airbus74|34|24|
+NNNNNNNNNNNNNNN|Mmmmmmmmmmm|3|2|

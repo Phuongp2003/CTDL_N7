@@ -33,7 +33,7 @@ public:
   string PrintDate();
   string PrintHour();
   Date NgayHoanThanh();
-
+  
   bool operator<(Date another);
   bool operator==(Date another);
 };

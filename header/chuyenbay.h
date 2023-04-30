@@ -51,6 +51,7 @@ public:
 
   void ThucHienCB(DSMB *DanhSachCB);
   Date NgayHoanThanh();
+  
   // node
   bool operator<(const ChuyenBay &other);
 };
@@ -69,7 +70,7 @@ public:
   void setNext(NodeCB *node);
   NodeCB *getNext();
   NodeCB *getTail();
-
+  bool Cach6tiengchua(Date another);
   ~NodeCB();
 };
 

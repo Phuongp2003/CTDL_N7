@@ -112,6 +112,8 @@ Date ChuyenBay::NgayHoanThanh() {
   return date;
 }
 
+
+
 bool ChuyenBay::operator<(const ChuyenBay &other) {
   int compare = strcmp(MaCB, other.MaCB);
   return (compare < 0) ? true : false;
@@ -146,6 +148,18 @@ NodeCB *NodeCB::getTail() {
   while (tmp->hasNext())
     tmp = tmp->getNext();
   return tmp;
+}
+
+bool NodeCB::Cach6tiengchua(Date another)
+{
+  if(
+    (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() 
+    <= another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
+    (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() 
+    >=another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60)
+    )
+      return true;
+  return false;     
 }
 
 NodeCB::~NodeCB() {
@@ -285,18 +299,13 @@ bool DanhSachCB::DuocDatKhong(string CMND, ChuyenBay cb) {
   while (tmp != NULL) {
     if (tmp->getNode().getTrangThai() == 1 &&
         tmp->getNode().getTrangThai() == 2 &&
-        tmp->getNode().getNgayGio().getNgay() == cb.getNgayGio().getNgay() &&
-        tmp->getNode().getNgayGio().getThang() == cb.getNgayGio().getThang() &&
-        tmp->getNode().getNgayGio().getNam() == cb.getNgayGio().getNam() &&
-        (tmp->getNode().getNgayGio().getGio() * 60 +
-                 tmp->getNode().getNgayGio().getPhut() <=
-             cb.getNgayGio().getGio() * 60 +
-                 tmp->getNode().getNgayGio().getPhut() - 6 * 60 ||
-         tmp->getNode().getNgayGio().getGio() * 60 +
-                 tmp->getNode().getNgayGio().getPhut() >=
-             cb.getNgayGio().getGio() * 60 +
-                 tmp->getNode().getNgayGio().getPhut() + 6 * 60)) {
-      for (int i = 0; i < tmp->getNode().getDSVe().getSoVeDaDat(); i++) {
+        tmp->getNode().getNgayGio() == cb.getNgayGio() &&
+        tmp->Cach6tiengchua(cb.getNgayGio())==true
+      )
+    {
+      for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++) {
+        if(tmp->getNode().getDSVe().getVe(i).getHanhKhach()=="")
+          continue;
         if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == CMND)
           return false;
       }
@@ -383,7 +392,7 @@ void DanhSachCB::WritetToFile(ofstream &file) {
       file << t_ve.getSoVeToiDa() << "|" << t_ve.getSoVeConLai() << "|";
 
       for (int i = i; i < t_ve.getSoVeToiDa(); i++) {
-        if (!t_ve.getVe(i).getTrangThai())
+        if (t_ve.getVe(i).getHanhKhach() != "")
           file << i << "|" << t_ve.getVe(i).getHanhKhach() << "|";
       }
       file << endl;

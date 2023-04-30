@@ -4,8 +4,8 @@
 VeMayBay::VeMayBay() {
   IDVe = "A00";
   CMND = "\0";
-  TrangThai = true; // true là chưa đặt
-                    // false là đặt vé
+  // TrangThai = true; // true là chưa đặt
+  //                   // false là đặt vé
 }
 
 VeMayBay::VeMayBay(string CMND) { this->CMND = CMND; }
@@ -18,9 +18,9 @@ void VeMayBay::setHanhKhach(string CMND) { this->CMND = CMND; }
 
 string VeMayBay::getHanhKhach() { return this->CMND; }
 
-void VeMayBay::setTrangThai(bool TrangThai) { this->TrangThai = TrangThai; }
+// void VeMayBay::setTrangThai(bool TrangThai) { this->TrangThai = TrangThai; }
 
-bool VeMayBay::getTrangThai() { return this->TrangThai; }
+// bool VeMayBay::getTrangThai() { return this->TrangThai; }
 
 // ham DSvemaybay
 DSVeMayBay::DSVeMayBay() {
