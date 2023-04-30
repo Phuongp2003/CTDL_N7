@@ -110,6 +110,7 @@ public:
   NodeCB *sort(NodeCB *node);
 
   bool update();
+  bool isAval(NodeCB *node, string MaCB);
 };
 
 void linkAllLists(DSMB listMB, DsHanhKhach listHK, DanhSachCB listCB);
