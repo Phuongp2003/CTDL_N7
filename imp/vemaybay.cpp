@@ -1,6 +1,6 @@
 #include "../header/vemaybay.h"
 // hàm của DSVe
-
+//
 VeMayBay::VeMayBay() {
   IDVe = "A00";
   CMND = "\0";

@@ -11,9 +11,9 @@ class VeMayBay {
 private:
   string IDVe;
   string CMND;
-  bool TrangThai; // false là đã đặt
+  // bool TrangThai; // false là đã đặt
 
-public:
+public://
   VeMayBay();
   VeMayBay(string CMND);
   void setIDVe(string ID);

@@ -148,7 +148,7 @@ NodeCB *NodeCB::getTail() {
   while (tmp->hasNext())
     tmp = tmp->getNext();
   return tmp;
-}
+}//
 
 bool NodeCB::Cach6tiengchua(Date another)
 {

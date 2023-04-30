@@ -60,7 +60,7 @@ class NodeCB {
 private:
   ChuyenBay node;
   NodeCB *next;
-
+//
 public:
   NodeCB();
   NodeCB(ChuyenBay node);
