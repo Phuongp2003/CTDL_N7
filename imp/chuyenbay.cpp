@@ -446,6 +446,20 @@ bool DanhSachCB::update() {
   return false;
 }
 
+bool DanhSachCB::isAval(NodeCB *node, string MaCB)
+{
+  ChuyenBay cb = node->getNode();
+  while (node != NULL)
+  {
+    if (cb.getMaCB() == MaCB && (cb.getTrangThai() == 1 || cb.getTrangThai() == 2))
+    {
+      return false;
+    }
+    node = node->getNext();
+  }
+  return true;
+}
+
 void linkAllLists(DSMB listMB, DsHanhKhach listHK, DanhSachCB listCB) {
   NodeCB *CB_index = listCB.getHead();
 
