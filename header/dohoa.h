@@ -115,6 +115,7 @@ bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data);
 bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data);
 bool Popup_ThemHK(DsHanhKhach &listHK);
 bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
+void Popup_getMB(QLCB_data &tabCB_data);
 
 void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();

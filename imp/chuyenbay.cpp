@@ -323,22 +323,23 @@ ChuyenBay DsChuyenBay::timCB(string maCB)
   return ChuyenBay();
 }
 
-bool DsChuyenBay::mayBayDangSuDung(const char *soHieuMB)
+bool DsChuyenBay::isAval(const char *soHieuMB)
 {
   NodeCB *tmp = this->head;
   while (tmp != NULL)
   {
-    if (tmp->getNode().getTrangThai() == 1 ||
-        tmp->getNode().getTrangThai() == 2)
+    if (tmp->getNode().getTrangThai() == 1 || tmp->getNode().getTrangThai() == 2)
     {
-      if (tmp->getNode().getMaCB() == soHieuMB)
-        return true;
+      cout << tmp->getNode().getMaMayBay() << "|\n"
+           << soHieuMB << "" << strcmp(tmp->getNode().getMaMayBay(), soHieuMB) << endl;
+      if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0)
+        return false;
     }
 
     tmp = tmp->getNext();
   }
 
-  return false;
+  return true;
 }
 bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 {
@@ -525,21 +526,6 @@ bool DsChuyenBay::update()
   }
 
   return false;
-}
-
-bool DsChuyenBay::isAval(NodeCB *node, string maCb)
-{
-  ChuyenBay cb = node->getNode();
-  while (node != NULL)
-  {
-    if (cb.getMaCB() == maCb &&
-        (cb.getTrangThai() == 1 || cb.getTrangThai() == 2))
-    {
-      return false;
-    }
-    node = node->getNext();
-  }
-  return true;
 }
 
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)

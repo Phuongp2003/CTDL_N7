@@ -103,13 +103,12 @@ public:
   void popFirst(); //
   void popBack();
   ChuyenBay timCB(string maCB);
-  bool mayBayDangSuDung(const char *soHieuMB);
   bool duocDatKhong(string cmnd, ChuyenBay cb);
 
   void readFromFile(DsMayBay listMB);
   void writetToFile();
 
   bool update();
-  bool isAval(NodeCB *node, string maCB);
+  bool isAval(const char *sohieuMB);
 };
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK);
