@@ -106,14 +106,10 @@ public:
   bool mayBayDangSuDung(const char *soHieuMB);
   bool duocDatKhong(string cmnd, ChuyenBay cb);
 
-  void readFromFile(ifstream &file);
-  void writetToFile(ofstream &file);
-  NodeCB *merge(NodeCB *left, NodeCB *right);
-  NodeCB *mid_point(NodeCB *node);
-  NodeCB *sort(NodeCB *node);
+  void readFromFile(DsMayBay listMB);
+  void writetToFile();
 
   bool update();
   bool isAval(NodeCB *node, string maCB);
 };
-
-void linkAllLists(DsMayBay listMB, DsHanhKhach listHK, DsChuyenBay listCB);
+void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK);

@@ -18,6 +18,7 @@ ChuyenBay::ChuyenBay(const char *maCB, string noiDen, Date ngayGio,
   this->ngayGio = ngayGio;
   this->noiDen = noiDen;
   this->trangThai = ConVe;
+  this->dsVe = *(new DsVeMayBay());
 }
 
 char *ChuyenBay::getMaCB() { return this->maCB; }
@@ -55,7 +56,7 @@ bool ChuyenBay::checkMaCB(const char *maCB)
   return false;
 }
 
-void ChuyenBay::setDSVe(DsVeMayBay dsVe) { dsVe = dsVe; }
+void ChuyenBay::setDSVe(DsVeMayBay dsVe) { this->dsVe = dsVe; }
 
 DsVeMayBay ChuyenBay::getDSVe() { return this->dsVe; }
 
@@ -173,9 +174,12 @@ NodeCB *NodeCB::getTail()
 
 bool NodeCB::Cach6tiengchua(Date another)
 {
-  if (
-      (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() <= another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
-      (getNode().getNgayGio().getGio() * 60 + getNode().getNgayGio().getPhut() >= another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60))
+  if ((getNode().getNgayGio().getGio() * 60 +
+           getNode().getNgayGio().getPhut() <=
+       another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
+      (getNode().getNgayGio().getGio() * 60 +
+           getNode().getNgayGio().getPhut() >=
+       another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60))
     return true;
   return false; //
 }
@@ -366,8 +370,9 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
   return true;
 }
 
-void DsChuyenBay::readFromFile(ifstream &file)
+void DsChuyenBay::readFromFile(DsMayBay listMB)
 {
+  ifstream file("../data/dataCB.txt", ios::in);
   if (file.is_open())
   {
     this->head = NULL;
@@ -377,6 +382,7 @@ void DsChuyenBay::readFromFile(ifstream &file)
 
     while (getline(file, line))
     {
+      bool isGood = true;
       stringstream s(line);
 
       getline(s, maCB, '|');
@@ -396,9 +402,14 @@ void DsChuyenBay::readFromFile(ifstream &file)
 
       getline(s, soVeMax, '|');
       getline(s, soVeAval, '|');
-      DsVeMayBay dsVe = DsVeMayBay();
+      DsVeMayBay dsVe = cb.getDSVe();
       dsVe.setSoVeToiDa(stoi(soVeMax));
       dsVe.setSoVeDaDat(stoi(soVeMax) - stoi(soVeAval));
+      MayBay *mbData = listMB.findMB(cb.getMaMayBay());
+      if (mbData == NULL)
+        isGood = false;
+      else
+        dsVe.setDSVe(mbData);
 
       for (int i = 0; i < dsVe.getSoVeDaDat(); i++)
       {
@@ -416,12 +427,13 @@ void DsChuyenBay::readFromFile(ifstream &file)
 
       NodeCB *node = new NodeCB();
       node->setCb(cb);
-      if (head == NULL)
-      {
-        setHead(node);
-      }
-      else
-        insertOrder(node);
+      if (isGood)
+        if (head == NULL)
+        {
+          setHead(node);
+        }
+        else
+          insertOrder(node);
     }
     setSize();
     file.close();
@@ -429,9 +441,9 @@ void DsChuyenBay::readFromFile(ifstream &file)
   else
     cout << "Error" << endl;
 }
-void DsChuyenBay::writetToFile(ofstream &file)
+void DsChuyenBay::writetToFile()
 {
-
+  ofstream file("../data/dataCB.txt", ios::in);
   if (file.is_open())
   {
     NodeCB *tmp = this->head;
@@ -506,15 +518,7 @@ bool DsChuyenBay::update()
 
   if (changed)
   {
-    // delete head;
-
-    ofstream dataOut("../data/dataCB.txt", ios::in);
-    writetToFile(dataOut);
-    dataOut.close();
-
-    ifstream dataIn("../data/dataCB.txt", ios::in);
-    readFromFile(dataIn);
-    dataIn.close();
+    writetToFile();
 
     return true;
   }
@@ -527,7 +531,8 @@ bool DsChuyenBay::isAval(NodeCB *node, string maCb)
   ChuyenBay cb = node->getNode();
   while (node != NULL)
   {
-    if (cb.getMaCB() == maCb && (cb.getTrangThai() == 1 || cb.getTrangThai() == 2))
+    if (cb.getMaCB() == maCb &&
+        (cb.getTrangThai() == 1 || cb.getTrangThai() == 2))
     {
       return false;
     }
@@ -536,20 +541,12 @@ bool DsChuyenBay::isAval(NodeCB *node, string maCb)
   return true;
 }
 
-void linkAllLists(DsMayBay listMB, DsHanhKhach listHK, DsChuyenBay listCB)
+void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
 {
-  NodeCB *indexCB = listCB.getHead();
+  ifstream DataMB("../data/dataMB.txt", ios::in);
+  listMB.readFromFile(DataMB);
+  DataMB.close();
 
-  while (indexCB != NULL)
-  {
-    ChuyenBay tmp = indexCB->getNode();
-    DsVeMayBay tmpVe = DsVeMayBay();
-    tmpVe.setDSVe(listMB.findMB(tmp.getMaMayBay()));
-    tmp.setDSVe(tmpVe);
-    indexCB->setCb(tmp);
-
-    indexCB = indexCB->getNext();
-  }
-
-  listCB.update();
+  listCB.readFromFile(listMB);
+  listHK.readFromFile();
 }

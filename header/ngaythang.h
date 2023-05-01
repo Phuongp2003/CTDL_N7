@@ -1,7 +1,6 @@
 #pragma once
 #include "header.h"
-class Date
-{
+class Date {
 private:
   int phut;
   int gio;
@@ -35,8 +34,8 @@ public:
   string printHour();
   Date ngayHoanThanh();
 
-  bool operator<(Date &another);
-  bool operator==(Date &another);
+  bool operator<(Date another);
+  bool operator==(Date another);
 };
 // dd/mm/yyyy hh:mm
 // function

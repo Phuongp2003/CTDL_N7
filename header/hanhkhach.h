@@ -5,8 +5,6 @@
 
 #include <fstream>
 
-using namespace std;
-
 class HanhKhach
 {
 private:

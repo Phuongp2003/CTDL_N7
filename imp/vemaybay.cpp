@@ -26,16 +26,19 @@ string VeMayBay::getHanhKhach() { return this->cmnd; }
 // ham DSvemaybay
 DsVeMayBay::DsVeMayBay()
 {
-  // dsVeMB=new VeMayBay[soVeToiDa];
   this->soVeToiDa = 0;
   this->soVeDaDat = 0;
 }
 
 void DsVeMayBay::setSoVeToiDa(int soVeToiDa) { this->soVeToiDa = soVeToiDa; }
 
+void DsVeMayBay::setSoVeDaDat(int soVeDaDat) { this->soVeDaDat = soVeDaDat; }
+
 int DsVeMayBay::getSoVeToiDa() { return soVeToiDa; }
 
 int DsVeMayBay::getSoVeConLai() { return soVeToiDa - soVeDaDat; }
+
+int DsVeMayBay::getSoVeDaDat() { return soVeDaDat; }
 
 VeMayBay *DsVeMayBay::getDSVeMB() { return dsVeMB; }
 

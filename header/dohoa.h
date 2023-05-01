@@ -69,7 +69,11 @@ struct InputTextBox;
  * @param fontsize cỡ chữ (mặc định bằng 2/3 độ cao ô)
  */
 struct TextBox;
+
+struct UI_controller;
 struct QLMB_data;
+struct QLCB_data;
+struct QLHK_data;
 
 void LoadResources();
 void UnloadResources();
@@ -81,12 +85,13 @@ void CreateHomePage();       // done
 void CreatePageBackground(int SoHang); // done
 
 void resetData_QLMB(QLMB_data &data);
-void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &data);
-MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &data, int &status);
+void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data);
+MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data);
 void CreateTable_QLMB();
 
-void CreatePage_QLCB(DsChuyenBay &listCB);
-NodeCB *XuLy_QLCB(DsChuyenBay &listCB, int &status);
+void resetData_QLCB(QLCB_data &data, QLCB_data &tabCB_data);
+void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
+NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 void CreateTable_QLCB();
 void StatusHelp_QLCB();
 
@@ -94,18 +99,19 @@ void CreatePage_QLVe();
 void CreateTable_QLVe();
 void XuLy_QLVe(ChuyenBay &cb);
 
-void CreatePage_QLHK(DsHanhKhach &listHK);
+void resetData_QLHK(QLHK_data &data);
+void CreatePage_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data);
 void CreateTable_QLHK();
-NodeHK *XuLy_QLHK(DsHanhKhach &listHK, int &status);
+NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data);
 
 void CreatePage_GioiThieu();
 
 void CreatePopupBackground();
-bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &data, int &status);
-bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &data);
-bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &data, int &status);
-bool Popup_ThemHK(DsHanhKhach &listHK, int &status);
-bool Popup_ThemCB(DsChuyenBay &listCB, int &status);
+bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data);
+bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data);
+bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data);
+bool Popup_ThemHK(DsHanhKhach &listHK);
+bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 
 void ThanhQuanLy(); // done
 bool Warning_NoData();
