@@ -37,7 +37,7 @@ void ChuyenBay::setNgayGio(Date ngayGio) { this->ngayGio = ngayGio; }
 
 bool ChuyenBay::checkNoiDen(const char *noiDen)
 {
-  if (isGotStr(noiDen, noiDen))
+  if (isGotStr(this->noiDen, noiDen))
     return true;
   return false;
 }
@@ -51,7 +51,7 @@ bool ChuyenBay::checkTime(int ngay, int thang, int nam, int gio, int phut)
 
 bool ChuyenBay::checkMaCB(const char *maCB)
 {
-  if (isGotStr(maCB, maCB))
+  if (isGotStr(this->maCB, maCB))
     return true;
   return false;
 }

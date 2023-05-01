@@ -7,3 +7,12 @@
 44|Tran Ba|Dung|0|
 4|Nguyen Thi My|Duyen|1|
 10|Trinh Huy|Hoang|0|
+25|Nguyen Le Hoai|Bac|0
+13|Pham Bui Nam|Phuong|0
+38|To Phan Kieu|Thuong|1
+7|Phan Quang|Trung|0
+19|Nguyen Tan|Quyen|0
+32|Vu Thi Thanh|Thuy|1
+44|Tran Ba|Dung|0
+4|Nguyen Thi My|Duyen|1
+10|Trinh Huy|Hoang|0

@@ -70,17 +70,20 @@ struct InputTextBox;
  */
 struct TextBox;
 
-struct UI_controller;
+struct UIcontroller;
 struct QLMB_data;
 struct QLCB_data;
 struct QLHK_data;
+
+void UI_switchTab(UIcontroller &control);
+void InitUIData(UIcontroller &control);
 
 void LoadResources();
 void UnloadResources();
 void SetSizeWindow(); // done
 
-void CreateHomeBackground(); // done
-void CreateHomePage();       // done
+void CreateHomeBackground();                // done
+void CreateHomePage(UIcontroller &control); // done
 
 void CreatePageBackground(int SoHang); // done
 
@@ -89,7 +92,7 @@ void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data);
 MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data);
 void CreateTable_QLMB();
 
-void resetData_QLCB(QLCB_data &data, QLCB_data &tabCB_data);
+void resetData_QLCB(QLCB_data &data);
 void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 void CreateTable_QLCB();
@@ -113,7 +116,7 @@ bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data);
 bool Popup_ThemHK(DsHanhKhach &listHK);
 bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 
-void ThanhQuanLy(); // done
+void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[],

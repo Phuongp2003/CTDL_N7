@@ -11,7 +11,7 @@
  * @note 4. Hành khách
  * @note 5. Giới thiệu
  */
-int current_page = 0;
+// int current_page = 0;
 
 Vector2 StartPos{per1000(10) * SCREEN_WIDTH, per1000(40) * SCREEN_HEIGHT};
 
@@ -133,6 +133,27 @@ struct QLHK_data
   int current_page = 1;
 };
 
+struct UIcontroller
+{
+  int current_tab = 0;
+  QLMB_data dataTabMB;
+  QLCB_data dataTabCB;
+  QLHK_data dataTabHK;
+};
+
+void UI_switchTab(UIcontroller &control, int idTab)
+{
+  InitUIData(control);
+  control.current_tab = idTab;
+}
+void InitUIData(UIcontroller &control)
+{
+  control.current_tab = 0;
+  resetData_QLMB(control.dataTabMB);
+  resetData_QLCB(control.dataTabCB);
+  resetData_QLHK(control.dataTabHK);
+}
+
 void resetData_QLMB(QLMB_data &data)
 {
   data.data = nullptr;
@@ -217,6 +238,32 @@ void resetData_QLCB(QLCB_data &data)
                        StartPos.y + 60 + 480, 60, 50};
   data.Phut.size = 2;
   data.Phut.showNKeyRemain = false;
+
+  data.searchNoiDen.tittle = "Nơi đến";
+  data.searchNoiDen.size = 20;
+  data.searchNoiDen.mode = 1;
+
+  // data.searchNgay.textBox = boxNgay;
+  // data.searchNgay.tittle = "DD";
+  // data.searchNgay.mode = 6;
+  // data.searchNgay.size = 2;
+  // data.searchNgay.showNKeyRemain = false;
+
+  // data.searchThang.textBox = boxThang;
+  // data.searchThang.tittle = "MM";
+  // data.searchThang.size = 2;
+  // data.searchThang.mode = 7;
+  // data.searchThang.showNKeyRemain = false;
+
+  // data.searchNam.textBox = boxNam;
+  // data.data.searchNam.tittle = "YYYY";
+  // data.searchNam.size = 4;
+  // data.searchNam.mode = 8;
+  // data.searchNam.showNKeyRemain = false;
+
+  data.searchMaCB.tittle = "Mã chuyến bay";
+  data.searchMaCB.size = 15;
+  data.searchMaCB.mode = 3;
 }
 
 void resetData_QLHK(QLHK_data &data) {}
@@ -375,7 +422,7 @@ void CreateHomeBackground()
   DrawRectangleRec(mainScreen, WHITE);
 }
 
-void CreateHomePage()
+void CreateHomePage(UIcontroller &control)
 {
   const int png_screen_w = 698;
   const int split_screen_w = 4;
@@ -461,7 +508,7 @@ void CreateHomePage()
       button[i].BoMau = HomeButtonColor;
       if (CreateButton(button[i]))
       {
-        current_page = i + 1;
+        UI_switchTab(control, i + 1);
       }
     }
   }
@@ -1112,7 +1159,10 @@ MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
       SwitchPage(current_page, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (current_page != swp)
+  {
     tabMB_data.pickdata_index = -1;
+    tabMB_data.data = nullptr;
+  }
   current_page = swp;
   if (current_page > n_page)
     current_page = 1;
@@ -1141,12 +1191,8 @@ void CreateTable_QLMB()
 void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
 {
   CreatePageBackground(5);
-  static NodeCB *data = NULL;
-  static char *preResult = (char *)"\0";
-  static int status = 0;
-  static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
 
-  if (current_popup == 0)
+  if (tabCB_data.current_popup == 0)
   { // tittle
     DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY",
                {StartPos.x + 60,
@@ -1171,7 +1217,7 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
     button[0].tittle = "Thêm chuyến bay";
     if (CreateButton(button[0]))
     {
-      current_popup = 1;
+      tabCB_data.current_popup = 1;
     }
     button[1].tittle = "Hiệu chỉnh CB";
     if (CreateButton(button[1]))
@@ -1199,13 +1245,13 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
     {
       cout << "Dat ve" << endl;
     }
-    data = XuLy_QLCB(listCB, tabCB_data);
+    tabCB_data.data = XuLy_QLCB(listCB, tabCB_data);
   }
-  else if (current_popup == 1)
+  else if (tabCB_data.current_popup == 1)
   {
     if (Popup_ThemCB(listCB, tabCB_data))
     {
-      current_popup = 0;
+      tabCB_data.current_popup = 0;
     }
   }
   // CreateTable_QLCB();
@@ -1214,8 +1260,6 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
 bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
 {
   CreatePopupBackground();
-  static string mess = "";
-  static int f_show_error = 0;
   DrawTextEx(
       FontArial, "Thêm máy bay",
       {CenterDataSetter(700, StartPos.x + 400,
@@ -1223,54 +1267,6 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
        CenterDataSetter(60, StartPos.y + 60 + 10,
                         MeasureTextEx(FontArial, "A", 50, 0).y)},
       50, 0, BLACK);
-
-  static InputTextBox MaCB;
-  MaCB.mode = 3;
-  MaCB.tittle = (char *)"Nhập mã chuyến bay";
-  MaCB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
-  MaCB.size = 15;
-  static InputTextBox MaMB;
-  MaMB.mode = 3;
-  MaMB.tittle = (char *)"Nhập số hiệu máy bay";
-  MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-  MaMB.size = 40;
-  static InputTextBox NoiDen;
-  NoiDen.mode = 1;
-  NoiDen.tittle = (char *)"Nhập nơi đến";
-  NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 900, 50};
-  NoiDen.size = 40;
-  static InputTextBox Ngay;
-  Ngay.mode = 6;
-  Ngay.tittle = (char *)"DD";
-  Ngay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 60, 50};
-  Ngay.size = 2;
-  Ngay.showNKeyRemain = false;
-  static InputTextBox Thang;
-  Thang.mode = 7;
-  Thang.tittle = (char *)"MM";
-  Thang.textBox = {StartPos.x + 300 + 70, StartPos.y + 60 + 480, 60, 50};
-  Thang.size = 2;
-  Thang.showNKeyRemain = false;
-  static InputTextBox Nam;
-  Nam.mode = 8;
-  Nam.tittle = (char *)"YYYY";
-  Nam.textBox = {StartPos.x + 300 + 70 + 70, StartPos.y + 60 + 480, 120, 50};
-  Nam.size = 4;
-  Nam.showNKeyRemain = false;
-  static InputTextBox Gio;
-  Gio.mode = 9;
-  Gio.tittle = (char *)"HH";
-  Gio.textBox = {StartPos.x + 300 + 70 + 70 + 150, StartPos.y + 60 + 480, 60,
-                 50};
-  Gio.size = 2;
-  Gio.showNKeyRemain = false;
-  static InputTextBox Phut;
-  Phut.mode = 10;
-  Phut.tittle = (char *)"MM";
-  Phut.textBox = {StartPos.x + 300 + 70 + 70 + 150 + 70, StartPos.y + 60 + 480,
-                  60, 50};
-  Phut.size = 2;
-  Phut.showNKeyRemain = false;
 
   const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y -
                          MeasureTextEx(FontArial, "A", 25, 0).y;
@@ -1280,19 +1276,19 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25},
              25, 0, RED);
-  const char *newMaCB = CreateTextInputBox(MaCB);
+  const char *newMaCB = CreateTextInputBox(tabCB_data.MaCB);
   DrawTextEx(FontArial, "Số hiệu máy bay",
              {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
   DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25},
              25, 0, RED);
-  const char *newMaMB = CreateTextInputBox(MaMB);
+  const char *newMaMB = CreateTextInputBox(tabCB_data.MaMB);
   DrawTextEx(FontArial, "Nơi đến",
              {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
   DrawTextEx(FontArial, "(Gồm chữ cái, kí tự và số)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
              25, 0, RED);
-  const char *newNoiDen = CreateTextInputBox(NoiDen);
+  const char *newNoiDen = CreateTextInputBox(tabCB_data.NoiDen);
   DrawTextEx(FontArial, "Thời gian bay",
              {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
   DrawTextEx(FontArial, "(Gồm CHỈ số, sai tự xoá dữ liệu của ô)",
@@ -1300,10 +1296,10 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
              25, 0, RED);
 
   Date check = Date(1, 1, 1901, 00, 00);
-  const char *newNgay = CreateTextInputBox(Ngay);
-  const char *newThang = CreateTextInputBox(Thang);
-  const char *newNam = CreateTextInputBox(Nam);
-  cout << Ngay.letterCount << "/" << Ngay.indexPoint << endl;
+  const char *newNgay = CreateTextInputBox(tabCB_data.Ngay);
+  const char *newThang = CreateTextInputBox(tabCB_data.Thang);
+  const char *newNam = CreateTextInputBox(tabCB_data.Nam);
+  cout << tabCB_data.Ngay.letterCount << "/" << tabCB_data.Ngay.indexPoint << endl;
   check = Date(stoi(newNgay[0] == 0 ? "1" : newNgay),
                stoi(newThang[0] == 0 ? "1" : newThang),
                stoi(newNam[0] == 0 ? "2000" : newNam), 00, 00);
@@ -1312,19 +1308,19 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
     int tmp = stoi(newNam[0] == 0 ? "2000" : newNam);
     if (Date(29, 2, tmp, 0, 0).checkNgay())
     {
-      mess = "Tháng không hợp lệ!";
-      resetInputTextBox(Thang);
+      tabCB_data.popup_errorMess = "Tháng không hợp lệ!";
+      resetInputTextBox(tabCB_data.Thang);
       newThang = "";
     }
     else
     {
-      mess = "Năm không hợp lệ!";
-      resetInputTextBox(Nam);
+      tabCB_data.popup_errorMess = "Năm không hợp lệ!";
+      resetInputTextBox(tabCB_data.Nam);
       newNam = "";
     }
   }
-  const char *newGio = CreateTextInputBox(Gio);
-  const char *newPhut = CreateTextInputBox(Phut);
+  const char *newGio = CreateTextInputBox(tabCB_data.Gio);
+  const char *newPhut = CreateTextInputBox(tabCB_data.Phut);
 
   Date newNgayBay = Date(stoi(newNgay[0] == 0 ? "0" : newNgay),
                          stoi(newThang[0] == 0 ? "0" : newThang),
@@ -1354,28 +1350,28 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   Cancel.BoMau = ArrowKey;
 
   // Hiện lỗi trong 5s
-  if (f_show_error <= 100)
+  if (tabCB_data.time_showError <= 100)
   {
     DrawTextEx(
-        FontArial, mess.data(),
+        FontArial, tabCB_data.popup_errorMess.data(),
         {CenterDataSetter(1100, StartPos.x + 200,
-                          MeasureTextEx(FontArial, mess.data(), 40, 0).x),
+                          MeasureTextEx(FontArial, tabCB_data.popup_errorMess.data(), 40, 0).x),
          CenterDataSetter(50, StartPos.y + 130,
                           MeasureTextEx(FontArial, "A", 40, 0).y)},
         40, 0, RED);
-    f_show_error++;
+    tabCB_data.time_showError++;
   }
   else
   {
-    mess = "";
-    f_show_error = 0;
+    tabCB_data.popup_errorMess = "";
+    tabCB_data.time_showError = 0;
   }
   if (CreateButton(OK))
   {
     char CheckCB[16];
     strcpy(CheckCB, newMaCB);
     if (!newNgayBay.checkNgay())
-      mess = "Ngày, tháng hoặc năm không hợp lệ!";
+      tabCB_data.popup_errorMess = "Ngày, tháng hoặc năm không hợp lệ!";
     else if (listCB.timCB(CheckCB).getMaCB()[0] == 0)
     {
       if (newMaCB[0] >= 32 && newMaMB[0] >= 32 && newNoiDen[0] >= 32 &&
@@ -1387,35 +1383,35 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
         listCB.writetToFile();
 
         tabCB_data.status = 1;
-        resetInputTextBox(MaCB);
-        resetInputTextBox(MaMB);
-        resetInputTextBox(NoiDen);
-        resetInputTextBox(Ngay);
-        resetInputTextBox(Thang);
-        resetInputTextBox(Nam);
-        resetInputTextBox(Gio);
-        resetInputTextBox(Phut);
-        mess = "";
+        resetInputTextBox(tabCB_data.MaCB);
+        resetInputTextBox(tabCB_data.MaMB);
+        resetInputTextBox(tabCB_data.NoiDen);
+        resetInputTextBox(tabCB_data.Ngay);
+        resetInputTextBox(tabCB_data.Thang);
+        resetInputTextBox(tabCB_data.Nam);
+        resetInputTextBox(tabCB_data.Gio);
+        resetInputTextBox(tabCB_data.Phut);
+        tabCB_data.popup_errorMess = "";
 
         return true;
       }
       else
       {
-        mess = "Nhập chưa đầy đủ thông tin!";
+        tabCB_data.popup_errorMess = "Nhập chưa đầy đủ thông tin!";
       }
     }
     else
     {
-      mess = "Mã chuyến bay đã được sử dụng!";
+      tabCB_data.popup_errorMess = "Mã chuyến bay đã được sử dụng!";
     }
   }
   if (CreateButton(Cancel))
   {
-    resetInputTextBox(MaCB);
-    resetInputTextBox(MaMB);
-    resetInputTextBox(NoiDen);
-    resetInputTextBox(Ngay);
-    mess = "";
+    resetInputTextBox(tabCB_data.MaCB);
+    resetInputTextBox(tabCB_data.MaMB);
+    resetInputTextBox(tabCB_data.NoiDen);
+    resetInputTextBox(tabCB_data.Ngay);
+    tabCB_data.popup_errorMess = "";
     return true;
   }
   return false;
@@ -1491,33 +1487,19 @@ void StatusHelp_QLCB()
 // test
 NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
 {
-  static NodeCB *result;
-  static int index = -1;
-  static bool first_run = true;
-  static bool findByDay = false;
   bool DKTimKiem = true;
   int numNgay = 1, numThang = 1, numNam = 1900, numGio = 0, numPhut = 0;
 
   float cellW[7] = {90, 230, 230, 200, 230, 100, 50};
   CreateTable_QLCB();
 
-  static int current_page = 1;
   int n_page = 1;
 
   const Vector2 search = {StartPos.x + 60, StartPos.y + 60 + 70};
 
   // VỊ trị box
   Rectangle boxMaCB = {search.x + 300 + 250, search.y, 350, 45};
-  Rectangle boxNgay = {search.x + 290, search.y + 55, 50, 45};
-  Rectangle boxThang = {boxNgay.x + 70, search.y + 55, 50, 45};
-  Rectangle boxNam = {boxThang.x + 70, search.y + 55, 80, 45};
-  Rectangle boxNoiDen = {boxNam.x + 80 + 150 + 20, search.y + 55, 350, 45};
-
-  static InputTextBox searchNoiDen;
-  static InputTextBox searchNgay;
-  static InputTextBox searchThang;
-  static InputTextBox searchNam;
-  static InputTextBox searchMaCB;
+  Rectangle boxNoiDen = {search.x + 80 + 150 + 20, search.y + 55, 350, 45};
 
   Button dayFilter;
   Button data_picker[10];
@@ -1525,115 +1507,90 @@ NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   NodeCB *tmp = listCB.getHead();
 
   // Cài đặt các ô nhập
-  searchNoiDen.textBox = boxNoiDen;
-  searchNoiDen.tittle = "Nơi đến";
-  searchNoiDen.size = 20;
-  searchNoiDen.mode = 1;
+  tabCB_data.searchNoiDen.textBox = boxNoiDen;
+  tabCB_data.searchMaCB.textBox = boxMaCB;
 
-  searchNgay.textBox = boxNgay;
-  searchNgay.tittle = "DD";
-  searchNgay.mode = 6;
-  searchNgay.size = 2;
-  searchNgay.showNKeyRemain = false;
-
-  searchThang.textBox = boxThang;
-  searchThang.tittle = "MM";
-  searchThang.size = 2;
-  searchThang.mode = 7;
-  searchThang.showNKeyRemain = false;
-
-  searchNam.textBox = boxNam;
-  searchNam.tittle = "YYYY";
-  searchNam.size = 4;
-  searchNam.mode = 8;
-  searchNam.showNKeyRemain = false;
-
-  searchMaCB.textBox = boxMaCB;
-  searchMaCB.tittle = "Mã chuyến bay";
-  searchMaCB.size = 15;
-  searchMaCB.mode = 3;
-
-  if (first_run)
-  {
-    strcpy(searchNgay.name, intToChar(numNgay, 2));
-    searchNgay.letterCount = 2;
-    strcpy(searchThang.name, intToChar(numThang, 2));
-    searchThang.letterCount = 2;
-    strcpy(searchNam.name, intToChar(numNam, 4));
-    searchNam.letterCount = 4;
-  }
+  // if (first_run)
+  // {
+  //   strcpy(searchNgay.name, intToChar(numNgay, 2));
+  //   searchNgay.letterCount = 2;
+  //   strcpy(searchThang.name, intToChar(numThang, 2));
+  //   searchThang.letterCount = 2;
+  //   strcpy(searchNam.name, intToChar(numNam, 4));
+  //   searchNam.letterCount = 4;
+  // }
 
   // search
 
   DrawRectangleRoundedLines({search.x - 5, search.y - 5, 1090, 105}, 0, 1, 3,
                             DARKBLUE);
 
-  if (!findByDay)
-  {
-    dayFilter.x = search.x + 5;
-    dayFilter.y = search.y + 5 + 55;
-    dayFilter.w = 470;
-    dayFilter.h = 40;
-    dayFilter.BoTron = false;
-    dayFilter.gotNothing = false;
-    dayFilter.gotText = true;
-    dayFilter.tittle = "LỌC THEO NGÀY";
-    dayFilter.font = FontArial;
-    dayFilter.BoMau = ArrowKey;
-  }
-  else
-  {
-    dayFilter.x = search.x + 5;
-    dayFilter.y = search.y + 5 + 55;
-    dayFilter.w = 30;
-    dayFilter.h = 40;
-    dayFilter.BoTron = false;
-    dayFilter.gotNothing = false;
-    dayFilter.gotText = true;
-    dayFilter.tittle = "X";
-    dayFilter.font = FontArial;
-    dayFilter.BoMau = ArrowKey;
-  }
+  // if (!findByDay)
+  // {
+  // dayFilter.x = search.x + 5;
+  // dayFilter.y = search.y + 5 + 55;
+  // dayFilter.w = 470;
+  // dayFilter.h = 40;
+  // dayFilter.BoTron = false;
+  // dayFilter.gotNothing = false;
+  // dayFilter.gotText = true;
+  // dayFilter.tittle = "LỌC THEO NGÀY";
+  // dayFilter.font = FontArial;
+  // dayFilter.BoMau = ArrowKey;
+  // }
+  // else
+  // {
+  dayFilter.x = search.x + 5;
+  dayFilter.y = search.y + 5 + 55;
+  dayFilter.w = 30;
+  dayFilter.h = 40;
+  dayFilter.BoTron = false;
+  dayFilter.gotNothing = false;
+  dayFilter.gotText = true;
+  dayFilter.tittle = "X";
+  dayFilter.font = FontArial;
+  dayFilter.BoMau = ArrowKey;
+  // }
 
   DrawTextEx(
       FontArial, "Mã chuyến bay:",
       {search.x + 10 + 300,
        CenterDataSetter(50, search.y, MeasureTextEx(FontArial, "a", 35, 0).y)},
       35, 0, RED);
-  const char *textMaCB = CreateTextInputBox(searchMaCB);
+  const char *textMaCB = CreateTextInputBox(tabCB_data.searchMaCB);
   DrawTextEx(FontArial, "Nơi đến:",
-             {search.x + 20 + 530,
+             {search.x + 20,
               CenterDataSetter(50, search.y + 55,
                                MeasureTextEx(FontArial, "a", 35, 0).y)},
              35, 0, RED);
-  const char *textNoiDen = CreateTextInputBox(searchNoiDen);
-  if (!findByDay)
-  {
-    if (CreateButton(dayFilter))
-      findByDay = true;
-  }
-  else
-  {
-    if (CreateButton(dayFilter))
-      findByDay = false;
+  const char *textNoiDen = CreateTextInputBox(tabCB_data.searchNoiDen);
+  // if (!findByDay)
+  // {
+  if (CreateButton(dayFilter))
+    cout << "hi;";
+  // }
+  // else
+  // {
+  //   if (CreateButton(dayFilter))
+  //     findByDay = false;
 
-    DrawTextEx(FontArial, "Ngày khởi hành:",
-               {search.x + 10 + 30,
-                CenterDataSetter(50, search.y + 55,
-                                 MeasureTextEx(FontArial, "a", 35, 0).y)},
-               35, 0, RED);
-    const char *textNgay = CreateTextInputBox(searchNgay);
-    const char *textThang = CreateTextInputBox(searchThang);
-    const char *textNam = CreateTextInputBox(searchNam);
-    if (textNgay[0] != 0)
-      numNgay = stoi(textNgay);
+  //   DrawTextEx(FontArial, "Ngày khởi hành:",
+  //              {search.x + 10 + 30,
+  //               CenterDataSetter(50, search.y + 55,
+  //                                MeasureTextEx(FontArial, "a", 35, 0).y)},
+  //              35, 0, RED);
+  //   const char *textNgay = CreateTextInputBox(searchNgay);
+  //   const char *textThang = CreateTextInputBox(searchThang);
+  //   const char *textNam = CreateTextInputBox(searchNam);
+  //   if (textNgay[0] != 0)
+  //     numNgay = stoi(textNgay);
 
-    if (textThang[0] != 0)
-      numThang = stoi(textThang);
+  //   if (textThang[0] != 0)
+  //     numThang = stoi(textThang);
 
-    if (textNam[0] != 0)
-      numNam = stoi(textNam);
-  }
+  //   if (textNam[0] != 0)
+  //     numNam = stoi(textNam);
+  // }
 
   // table
 
@@ -1665,20 +1622,20 @@ NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
     data_picker[i].BoMau.RounderPressed = RED;
     if (CreateButton(data_picker[i]))
     {
-      if (index != i)
+      if (tabCB_data.pickdata_index != i)
       {
 
-        index = i;
+        tabCB_data.pickdata_index = i;
       }
       else
-        index = -1;
+        tabCB_data.pickdata_index = -1;
     }
-    if (index == i)
+    if (tabCB_data.pickdata_index == i)
       DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y,
                                  data_picker[i].w, data_picker[i].h},
                                 0, 1, 2, GREEN);
   }
-  result = NULL;
+  tabCB_data.data = NULL;
 
   // show list
   int size = listCB.getSize();
@@ -1691,27 +1648,24 @@ NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   else
     n_char = 4;
 
-  int i = (current_page - 1) * 10;
+  int i = (tabCB_data.current_showPage - 1) * 10;
 
   int j = 0;
 
   for (int k = 0; k < size; k++)
   {
-    if (findByDay)
-      DKTimKiem = tmp->getNode().checkMaCB(textMaCB) &&
-                  tmp->getNode().checkTime(numNgay, numThang, numNam, numGio,
-                                           numPhut) &&
-                  tmp->getNode().checkNoiDen(textNoiDen);
-    else
-      DKTimKiem = tmp->getNode().checkMaCB(textMaCB) &&
-                  tmp->getNode().checkNoiDen(textNoiDen);
-
-    if (DKTimKiem)
+    // if (findByDay)
+    //   DKTimKiem = tmp->getNode().checkMaCB(textMaCB) &&
+    //               tmp->getNode().checkTime(numNgay, numThang, numNam, numGio,
+    //                                        numPhut) &&
+    //               tmp->getNode().checkNoiDen(textNoiDen);
+    if (tmp->getNode().checkMaCB(textMaCB) &&
+        tmp->getNode().checkNoiDen(textNoiDen))
     {
       if (j >= i && j <= i + 9)
       {
-        if (j % 10 == index)
-          result = tmp;
+        if (j % 10 == tabCB_data.pickdata_index)
+          tabCB_data.data = tmp;
 
         string dsVe = "";
         dsVe = intToString(tmp->getNode().getDSVe().getSoVeConLai(), 3) + '/' +
@@ -1785,22 +1739,22 @@ NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
 
   // page and switch page
   int swp =
-      SwitchPage(current_page, n_page,
+      SwitchPage(tabCB_data.current_showPage, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-  if (current_page != swp)
+  if (tabCB_data.current_showPage != swp)
   {
-    index = -1;
-    result = NULL;
+    tabCB_data.pickdata_index = -1;
+    tabCB_data.data = NULL;
   }
-  current_page = swp;
-  if (current_page > n_page)
-    current_page = 1;
+  tabCB_data.current_showPage = swp;
+  if (tabCB_data.current_showPage > n_page)
+    tabCB_data.current_showPage = 1;
 
-  if (first_run)
-    first_run = false;
+  // if (first_run)
+  //   first_run = false;
   listCB.update();
 
-  return result;
+  return tabCB_data.data;
 }
 
 void CreatePage_QLVe()
@@ -2211,7 +2165,7 @@ Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[],
   return ans;
 }
 
-void ThanhQuanLy()
+void ThanhQuanLy(UIcontroller &control)
 {
   const int button_width = 360;
   const int button_height = 50;
@@ -2251,13 +2205,13 @@ void ThanhQuanLy()
     button[i].BoMau = MauThanhQuanLy;
   }
   if (CreateButton(button[0]))
-    current_page = 0;
+    UI_switchTab(control, 0);
   for (int i = 1; i < 5; i++)
   {
-    if (current_page != i)
+    if (control.current_tab != i)
     {
       if (CreateButton(button[i]))
-        current_page = i;
+        UI_switchTab(control, i);
     }
     else
     {
@@ -2852,21 +2806,14 @@ Vector2 GetVMousePosition()
 // main function
 void mainGraphics()
 {
+  UIcontroller main;
+  InitUIData(main);
   // Settup data
 
   DsMayBay listMB = DsMayBay();
   DsChuyenBay listCB = DsChuyenBay();
   DsHanhKhach listHK = DsHanhKhach();
   getDataFromFile(listCB, listMB, listHK);
-
-  QLMB_data dataMB;
-  resetData_QLMB(dataMB);
-
-  QLCB_data dataCB;
-  resetData_QLCB(dataCB);
-
-  QLHK_data dataHK;
-  resetData_QLHK(dataHK);
 
   // Settup for before run graphics
 
@@ -2887,23 +2834,23 @@ void mainGraphics()
     BeginTextureMode(renderTexture);
     // Cách thao tác trên đồ hoạ
 
-    if (current_page != 0)
-      ThanhQuanLy();
-    switch (current_page)
+    if (main.current_tab != 0)
+      ThanhQuanLy(main);
+    switch (main.current_tab)
     {
     case 0:
     {
-      CreateHomePage();
+      CreateHomePage(main);
       break;
     }
     case 1:
     {
-      CreatePage_QLMB(listMB, dataMB);
+      CreatePage_QLMB(listMB, main.dataTabMB);
       break;
     }
     case 2:
     {
-      CreatePage_QLCB(listCB, dataCB);
+      CreatePage_QLCB(listCB, main.dataTabCB);
       break;
     }
     case 3:
@@ -2913,7 +2860,7 @@ void mainGraphics()
     }
     case 4:
     {
-      CreatePage_QLHK(listHK, dataHK);
+      CreatePage_QLHK(listHK, main.dataTabHK);
       break;
     }
     case 5:
@@ -2923,7 +2870,7 @@ void mainGraphics()
     }
     default:
     {
-      current_page = 0;
+      main.current_tab = 0;
     }
     }
 
