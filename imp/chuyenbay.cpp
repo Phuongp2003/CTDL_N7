@@ -355,13 +355,14 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
         tmp->getNode().getNgayGio() == cb.getNgayGio() &&
         tmp->Cach6tiengchua(cb.getNgayGio()) == true)
     {
-      for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
-      {
-        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
-          continue;
-        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
-          return false;
-      }
+      if (tmp->getNode().getDSVe().getSoVeDaDat() != 0)
+        for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
+        {
+          if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
+            continue;
+          if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
+            return false;
+        }
     }
 
     tmp = tmp->getNext();
