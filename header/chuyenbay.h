@@ -110,5 +110,6 @@ public:
 
   bool update();
   bool isAval(const char *sohieuMB);
+  bool isExist(const char *maCB);
 };
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK);
