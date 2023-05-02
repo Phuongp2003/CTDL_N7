@@ -65,7 +65,6 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
   if (root == NULL)
   {
     root = new NodeHK(hanhKhach);
-    writeToFile(root);
     return true;
   }
 
@@ -77,7 +76,6 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
       if (current->getLeft() == NULL)
       {
         current->setLeft(new NodeHK(hanhKhach));
-        writeToFile(current->getLeft());
         break;
       }
       else
@@ -91,7 +89,6 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
       if (current->getRight() == NULL)
       {
         current->setRight(new NodeHK(hanhKhach));
-        writeToFile(current->getRight());
         break;
       }
       else
@@ -194,7 +191,7 @@ void DsHanhKhach::printInOrder() { inOrderTraversal(root); }
 //     }
 // }
 
-void DsHanhKhach::writeToFile(NodeHK *node)
+void DsHanhKhach::writeToFileOneHK(NodeHK *node)
 {
   ofstream file;
   file.open("../data/dataHK.txt", ios::out | ios::app);
@@ -208,6 +205,28 @@ void DsHanhKhach::writeToFile(NodeHK *node)
   }
   else
     cout << "Error";
+}
+
+void DsHanhKhach::writeToFileHelper(ofstream &file, NodeHK *node) {
+  if (node == NULL) {
+    return;
+  }
+  HanhKhach hanhKhach = node->getHK();
+  string phai = (hanhKhach.getPhai() == "Nam") ? "0" : "1";
+  writeToFileHelper(file, node->getLeft());
+  file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|'
+       << hanhKhach.getTen() << '|' << phai << '\n';
+}
+
+void DsHanhKhach::writeToFileAllHK() {
+  ofstream file;
+  file.open("../data/dataHK.txt", ios::trunc);
+
+  if (file.is_open()) {
+    writeToFileHelper(file, root);
+  }
+
+  file.close();
 }
 
 void DsHanhKhach::readFromFile()
