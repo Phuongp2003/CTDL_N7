@@ -2339,22 +2339,22 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
   int i = (current_page - 1) * 10;
 
   int j = 0;
-  typedef NodeHK *NodeHK_ptr;
-  NodeHK_ptr Stack[size];
-  int StackP = -1;
-  NodeHK *tmp = listHK.getRoot();
-  for (int k = 0; tmp != NULL; k++)
+  
+  NodeHK *root = listHK.getRoot();
+  std::queue<NodeHK *> queue;
+  listHK.levelOrderTraversal(queue);
+  NodeHK *tmp;
+  int k = 0;
+
+  while (!queue.empty())
   {
-    // if (tmp->getNode().checkMaCB(textMaCB) &&
-    // tmp->getNode().checkTime(numNgay, numThang, numNam, numGio, numPhut) &&
-    // tmp->getNode().checkNoiDen(textNoiDen))
-    // {
     if (j >= i && j <= i + 9)
     {
       if (j % 10 == index)
-        result = tmp;
+        result = root;
 
       TextBox show[5];
+      tmp = queue.front();
       const char *showText[5] = {0};
       showText[0] = intToChar(k + 1, n_char);
       showText[1] = strToChar(tmp->getHK().getCmnd());
@@ -2369,16 +2369,11 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
       }
     }
     j++;
+    k++;
     // }
-    if (tmp->getRight() != NULL)
-      Stack[++StackP] = tmp->getRight();
-    if (tmp->getLeft() != NULL)
-      tmp = tmp->getLeft();
-    else if (StackP == -1)
-      break;
-    else
-      tmp = Stack[StackP--];
+    queue.pop();
   }
+
   n_page = 1 + ((j - 1) / 10);
 
   // page and switch page

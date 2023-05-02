@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <queue>
 
 using std::array;
 using std::cout;
@@ -22,6 +23,7 @@ using std::ofstream;
 using std::stoi;
 using std::string;
 using std::stringstream;
+using std::queue;
 
 // Hằng số ----------------------------------------------------------------
 
