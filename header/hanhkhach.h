@@ -63,7 +63,7 @@ public:
   NodeHK *search(string cmnd);
   void inOrderTraversal(NodeHK *node);
   void printInOrder();
-  void showDsHanhKhach(string);
+  queue<NodeHK *> getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay);
   void writeToFileOneHK(NodeHK *node);
   void writeToFileAllHK();
   void readFromFile();

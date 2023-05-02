@@ -104,7 +104,7 @@ public:
   void pop(NodeCB *node);
   void popFirst(); //
   void popBack();
-  ChuyenBay timCB(string maCB);
+  NodeCB *timCB(string maCB);
   bool duocDatKhong(string cmnd, ChuyenBay cb);
 
   void readFromFile(DsMayBay listMB);

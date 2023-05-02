@@ -149,47 +149,24 @@ void DsHanhKhach::inOrderTraversal(NodeHK *node)
 
 void DsHanhKhach::printInOrder() { inOrderTraversal(root); }
 
-// void DsHanhKhach::showDsHanhKhach(string maCb)
-// {
-//     DsChuyenBay chuyenBay;
-//     ChuyenBay cbCanTim = chuyenBay.TimCB(maCb);
+queue<NodeHK *> DsHanhKhach::getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay)
+{
+  NodeCB *nodeCB = dsChuyenBay.timCB(maCB);
+  queue<NodeHK *> queue;
 
-//     if (cbCanTim == NULL)
-//     {
-//         cout << "Khong ton tai chuyen bay";
-//         return;
-//     }
-
-//     cout << "DANH SACH HANH KHACH THUOC CHUYEN BAY " << cbCanTim->getMaCB();
-
-//     Date ngayGio = cbCanTim->getNgayGio();
-//     cout << "\nNgay gio khoi hanh: "
-//          << ngayGio.getThang() << "/"
-//          << ngayGio.getNgay() << "/"
-//          << ngayGio.getNam() << " "
-//          << ngayGio.getGio() << ":"
-//          << ngayGio.getPhut() << ". "
-//          << "Noi den: " << cbCanTim->getNoiDen() << "\n\n";
-
-//     cout << "STT\tSO VE\tSO CMND\t\tHO TEN\t\t\tPHAI";
-
-//     VeMayBay *dsVe = cbCanTim->getDSVe()->getDSVeMB();
-//     for (int i = 0; i < cbCanTim->getDSVe()->getSoVeToiDa(); i++)
-//     {
-//         if (!dsVe[i].getTrangThai())
-//         {
-//             NodeHK *tmp;
-//             tmp = this->search(dsVe[i].getHanhKhach());
-
-//             cout << i + 1 << '\t'
-//                  << dsVe[i].getIDVe() << '\t'
-//                  << tmp->getHanhKhach().getCmnd() << '\t'
-//                  << tmp->getHanhKhach().getHo() << ' '
-//                  << tmp->getHanhKhach().getTen() << '\t'
-//                  << tmp->getHanhKhach().getPhai() << '\t';
-//         }
-//     }
-// }
+  if (nodeCB == NULL) {
+    return queue;
+  }
+  VeMayBay *dsVe = nodeCB->getNode().getDSVe().getDSVeMB();
+  string cmnd;
+  NodeHK *nodeHK;
+  for (int i = 0; i < dsChuyenBay.getSize(); i++) {
+    cmnd = dsVe[i].getHanhKhach();
+    nodeHK = search(cmnd);
+    queue.push(nodeHK);
+  }
+  return queue;
+}
 
 void DsHanhKhach::writeToFileOneHK(NodeHK *node)
 {
