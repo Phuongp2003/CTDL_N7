@@ -377,6 +377,22 @@ bool DsChuyenBay::isAval(const char *soHieuMB)
 
   return true;
 }
+
+bool DsChuyenBay::isExist(const char *maCB)
+{
+  NodeCB *tmp = this->head;
+  while (tmp != NULL)
+  {
+
+    if (strcmp(tmp->getNode().getMaCB(), maCB) == 0)
+      return true;
+
+    tmp = tmp->getNext();
+  }
+
+  return true;
+}
+
 bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
