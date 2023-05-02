@@ -1182,6 +1182,8 @@ MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
   current_page = swp;
   if (current_page > n_page)
     current_page = 1;
+  if (tabMB_data.pickdata_index == -1)
+    tabMB_data.data = nullptr;
   return tabMB_data.data;
 }
 
@@ -1238,7 +1240,7 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
     button[1].tittle = "Hiệu chỉnh CB";
     if (CreateButton(button[1]))
     {
-      cout << "Sua" << endl;
+      tabCB_data.current_popup = 2;
     }
     button[2].tittle = "Xóa chuyến bay";
     // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 +
@@ -1270,14 +1272,92 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
       tabCB_data.current_popup = 0;
     }
   }
+  else if (tabCB_data.current_popup == 2)
+  {
+    if (Popup_HieuChinhCB(listCB, tabCB_data))
+    {
+      tabCB_data.current_popup = 0;
+    }
+  }
   // CreateTable_QLCB();
+}
+
+void Popup_getMB(DsChuyenBay listCB, QLCB_data &tabCB_data)
+{
+  MayBay *result;
+
+  CreatePageBackground(1);
+  TextBox tittle;
+  tittle.box = {StartPos.x + 60, StartPos.y + 60, 400, 50};
+  tittle.mode = 2;
+  tittle.text = (char *)"Hãy chọn máy bay!";
+
+  CreateTextBox(tittle);
+  result = XuLy_QLMB(tabCB_data.dsachMB, tabCB_data.dataMB);
+
+  Button button;
+
+  button.x = StartPos.x + 1201 + 29;
+  button.y = StartPos.y + 60 + 20 + 70 + 15;
+  button.w = 240;
+  button.h = 60;
+  button.BoTron = false;
+  button.gotNothing = false;
+  button.gotText = true;
+  button.font = FontArial;
+  button.BoMau = ArrowKey;
+
+  if (tabCB_data.dataMB.time_showError <= 100)
+  {
+    DrawTextEx(
+        FontArial, tabCB_data.dataMB.popup_errorMess.data(),
+        {CenterDataSetter(1100, StartPos.x + 200,
+                          MeasureTextEx(FontArial, tabCB_data.dataMB.popup_errorMess.data(), 40, 0).x),
+         CenterDataSetter(50, StartPos.y + 130,
+                          MeasureTextEx(FontArial, "A", 40, 0).y)},
+        40, 0, RED);
+    tabCB_data.dataMB.time_showError++;
+  }
+  else
+  {
+    tabCB_data.dataMB.popup_errorMess = "";
+    tabCB_data.dataMB.time_showError = 0;
+  }
+
+  // mini function
+  button.tittle = (char *)"Thêm máy bay";
+  bool check_mb = false;
+  if (tabCB_data.dataMB.data != NULL && !listCB.isAval(tabCB_data.dataMB.data->getSoHieuMB()))
+  {
+    check_mb = true;
+    tabCB_data.dataMB.popup_errorMess = "Máy bay đang bận!";
+    tabCB_data.dataMB.time_showError = 98;
+    // return;
+  }
+
+  if (CreateButton(button))
+  {
+    if (tabCB_data.dataMB.data == NULL)
+    {
+      tabCB_data.dataMB.popup_errorMess = "Chưa chọn máy bay nào!";
+      return;
+    }
+    else if (check_mb)
+      return;
+    tabCB_data.inChooseMB = false;
+    strcpy(tabCB_data.MaMB.name, tabCB_data.dataMB.data->getSoHieuMB());
+    tabCB_data.MaMB.letterCount = getCharSize(tabCB_data.dataMB.data->getSoHieuMB());
+    if (tabCB_data.MaCB.editMode)
+      tabCB_data.MaMB.tittle = tabCB_data.dataMB.data->getSoHieuMB();
+    resetData_QLMB(tabCB_data.dataMB);
+  }
 }
 
 bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
 {
   if (tabCB_data.inChooseMB)
   {
-    Popup_getMB(tabCB_data);
+    Popup_getMB(listCB, tabCB_data);
     return false;
   }
 
@@ -1309,7 +1389,7 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   Button getMB;
   getMB.x = StartPos.x + 300 + 900;
   getMB.y = StartPos.y + 60 + 280 + 2;
-  getMB.w = 300;
+  getMB.w = 200;
   getMB.h = 46;
   getMB.gotNothing = false;
   getMB.gotText = true;
@@ -1464,56 +1544,218 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   return false;
 }
 
-void Popup_getMB(QLCB_data &tabCB_data)
+bool Popup_HieuChinhCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
 {
-  MayBay *result;
+  CreatePopupBackground();
+  DrawTextEx(
+      FontArial, "Hiệu chỉnh chuyến bay",
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, "Thêm chuyến bay", 50, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10,
+                        MeasureTextEx(FontArial, "A", 50, 0).y)},
+      50, 0, BLACK);
+  if (tabCB_data.data == NULL)
+  {
+    if (Warning_NoData())
+      return true;
+    return false;
+  }
 
-  CreatePageBackground(1);
-  result = XuLy_QLMB(tabCB_data.dsachMB, tabCB_data.dataMB);
+  tabCB_data.MaCB.editMode = true;
+  tabCB_data.MaCB.tittle = tabCB_data.data->getNode().getMaCB();
+  tabCB_data.MaMB.editMode = true;
+  tabCB_data.MaMB.tittle = tabCB_data.data->getNode().getMaMayBay();
+  tabCB_data.NoiDen.editMode = true;
+  tabCB_data.NoiDen.tittle = strToChar(tabCB_data.data->getNode().getNoiDen());
+  tabCB_data.Ngay.editMode = true;
+  tabCB_data.Ngay.tittle = intToChar(tabCB_data.data->getNode().getNgayGio().getNgay(), 2);
+  tabCB_data.Thang.editMode = true;
+  tabCB_data.Thang.tittle = intToChar(tabCB_data.data->getNode().getNgayGio().getThang(), 2);
+  tabCB_data.Nam.editMode = true;
+  tabCB_data.Nam.tittle = intToChar(tabCB_data.data->getNode().getNgayGio().getNam(), 4);
+  tabCB_data.Gio.editMode = true;
+  tabCB_data.Gio.tittle = intToChar(tabCB_data.data->getNode().getNgayGio().getGio(), 2);
+  tabCB_data.Phut.editMode = true;
+  tabCB_data.Phut.tittle = intToChar(tabCB_data.data->getNode().getNgayGio().getPhut(), 2);
 
-  Button button;
+  if (tabCB_data.inChooseMB)
+  {
+    Popup_getMB(listCB, tabCB_data);
+    return false;
+  }
 
-  button.x = StartPos.x + 1201 + 29;
-  button.y = StartPos.y + 60 + 20 + 70 + 15;
-  button.w = 240;
-  button.h = 60;
-  button.BoTron = false;
-  button.gotNothing = false;
-  button.gotText = true;
-  button.font = FontArial;
-  button.BoMau = ArrowKey;
+  const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y -
+                         MeasureTextEx(FontArial, "A", 25, 0).y;
 
-  if (tabCB_data.dataMB.time_showError <= 100)
+  DrawTextEx(FontArial, "Mã mã chuyến bay",
+             {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+  DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
+             {StartPos.x + 300 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25},
+             25, 0, RED);
+  const char *newMaCB = CreateTextInputBox(tabCB_data.MaCB);
+  DrawTextEx(FontArial, "Số hiệu máy bay",
+             {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+  DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
+             {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25},
+             25, 0, RED);
+  const char *newMaMB = CreateTextInputBox(tabCB_data.MaMB);
+
+  Button getMB;
+  getMB.x = StartPos.x + 300 + 900;
+  getMB.y = StartPos.y + 60 + 280 + 2;
+  getMB.w = 200;
+  getMB.h = 46;
+  getMB.gotNothing = false;
+  getMB.gotText = true;
+  getMB.tittle = (char *)"Chọn máy bay";
+  getMB.font = FontArial;
+  getMB.BoMau = ArrowKey;
+
+  if (CreateButton(getMB))
+  {
+    tabCB_data.inChooseMB = true;
+    return false;
+  }
+
+  DrawTextEx(FontArial, "Nơi đến",
+             {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+  DrawTextEx(FontArial, "(Gồm chữ cái, kí tự và số)",
+             {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
+             25, 0, RED);
+  const char *newNoiDen = CreateTextInputBox(tabCB_data.NoiDen);
+  DrawTextEx(FontArial, "Thời gian bay",
+             {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+  DrawTextEx(FontArial, "(Gồm CHỈ số, sai tự xoá dữ liệu của ô)",
+             {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
+             25, 0, RED);
+
+  Date check = Date(1, 1, 1901, 0, 0);
+  const char *newNgay = CreateTextInputBox(tabCB_data.Ngay);
+  const char *newThang = CreateTextInputBox(tabCB_data.Thang);
+  const char *newNam = CreateTextInputBox(tabCB_data.Nam);
+  check = Date(stoi(newNgay[0] == 0 ? "1" : newNgay),
+               stoi(newThang[0] == 0 ? "1" : newThang),
+               stoi(newNam[0] == 0 ? "2000" : newNam), 00, 00);
+  if (strcmp(newThang, "00") == 0 || !check.checkNgay())
+  {
+    int tmp = stoi(newNam[0] == 0 ? "2000" : newNam);
+    if (Date(29, 2, tmp, 0, 0).checkNgay())
+    {
+      tabCB_data.popup_errorMess = "Tháng không hợp lệ!";
+      resetInputTextBox(tabCB_data.Thang);
+      newThang = "";
+    }
+    else
+    {
+      tabCB_data.popup_errorMess = "Năm không hợp lệ!";
+      resetInputTextBox(tabCB_data.Nam);
+      newNam = "";
+    }
+  }
+  const char *newGio = CreateTextInputBox(tabCB_data.Gio);
+  const char *newPhut = CreateTextInputBox(tabCB_data.Phut);
+
+  Date newNgayBay = Date(stoi(newNgay[0] == 0 ? "0" : newNgay),
+                         stoi(newThang[0] == 0 ? "0" : newThang),
+                         stoi(newNam[0] == 0 ? "0" : newNam),
+                         stoi(newGio[0] == 0 ? "25" : newGio),
+                         stoi(newPhut[0] == 0 ? "25" : newPhut));
+  Button OK;
+  OK.x = StartPos.x + 225 + 750;
+  OK.y = StartPos.y + 60 + 625;
+  OK.w = 300;
+  OK.h = 50;
+  OK.gotNothing = false;
+  OK.gotText = true;
+  OK.tittle = (char *)"Hoàn tất";
+  OK.font = FontArial;
+  OK.BoMau = ArrowKey;
+
+  Button Cancel;
+  Cancel.x = StartPos.x + 225;
+  Cancel.y = StartPos.y + 60 + 625;
+  Cancel.w = 300;
+  Cancel.h = 50;
+  Cancel.gotNothing = false;
+  Cancel.gotText = true;
+  Cancel.tittle = (char *)"Huỷ";
+  Cancel.font = FontArial;
+  Cancel.BoMau = ArrowKey;
+
+  // Hiện lỗi trong 5s
+  if (tabCB_data.time_showError <= 100)
   {
     DrawTextEx(
-        FontArial, tabCB_data.dataMB.popup_errorMess.data(),
+        FontArial, tabCB_data.popup_errorMess.data(),
         {CenterDataSetter(1100, StartPos.x + 200,
-                          MeasureTextEx(FontArial, tabCB_data.dataMB.popup_errorMess.data(), 40, 0).x),
+                          MeasureTextEx(FontArial, tabCB_data.popup_errorMess.data(), 40, 0).x),
          CenterDataSetter(50, StartPos.y + 130,
                           MeasureTextEx(FontArial, "A", 40, 0).y)},
         40, 0, RED);
-    tabCB_data.dataMB.time_showError++;
+    tabCB_data.time_showError++;
   }
   else
   {
-    tabCB_data.dataMB.popup_errorMess = "";
-    tabCB_data.dataMB.time_showError = 0;
+    tabCB_data.popup_errorMess = "";
+    tabCB_data.time_showError = 0;
   }
-
-  // mini function
-  button.tittle = (char *)"Thêm máy bay";
-  if (CreateButton(button))
+  if (CreateButton(OK))
   {
-    if (tabCB_data.dataMB.data == NULL)
+    char CheckCB[16];
+    strcpy(CheckCB, newMaCB);
+    if (!newNgayBay.checkNgay())
+      tabCB_data.popup_errorMess = "Ngày, tháng hoặc năm không hợp lệ!";
+    else if (tabCB_data.dsachMB.findPosMB(newMaMB) < 0)
+      tabCB_data.popup_errorMess = "Mã máy bay không tồn tại!";
+    else if (!listCB.isAval(newMaMB))
+      tabCB_data.popup_errorMess = "Máy bay đang được chuyển bay khác sử dụng!";
+    else if (!listCB.isExist(newMaCB) || strcmp(newMaCB, tabCB_data.data->getNode().getMaCB()) == 0)
     {
-      tabCB_data.dataMB.popup_errorMess = "Chưa chọn máy bay nào!";
-      return;
+      if (newMaCB[0] >= 32 && newMaMB[0] >= 32 && newNoiDen[0] >= 32 &&
+          newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
+          newGio[0] >= 32 && newPhut[0] >= 32)
+      {
+        ChuyenBay result = ChuyenBay(newMaCB, newNoiDen, newNgayBay, newMaMB);
+        DsVeMayBay newDSVe;
+        newDSVe.setDSVe(tabCB_data.dsachMB.findMB(newMaMB));
+        result.setDSVe(newDSVe);
+        listCB.insertOrder(new NodeCB(result));
+        listCB.writetToFile();
+        listCB.setSize();
+
+        tabCB_data.status = 1;
+        resetInputTextBox(tabCB_data.MaCB);
+        resetInputTextBox(tabCB_data.MaMB);
+        resetInputTextBox(tabCB_data.NoiDen);
+        resetInputTextBox(tabCB_data.Ngay);
+        resetInputTextBox(tabCB_data.Thang);
+        resetInputTextBox(tabCB_data.Nam);
+        resetInputTextBox(tabCB_data.Gio);
+        resetInputTextBox(tabCB_data.Phut);
+        tabCB_data.popup_errorMess = "";
+
+        return true;
+      }
+      else
+      {
+        tabCB_data.popup_errorMess = "Nhập chưa đầy đủ thông tin!";
+      }
     }
-    tabCB_data.inChooseMB = false;
-    strcpy(tabCB_data.MaMB.name, tabCB_data.dataMB.data->getSoHieuMB());
-    tabCB_data.MaMB.letterCount = getCharSize(tabCB_data.dataMB.data->getSoHieuMB());
-    resetData_QLMB(tabCB_data.dataMB);
+    else
+    {
+      tabCB_data.popup_errorMess = "Mã chuyến bay đã được sử dụng!";
+    }
   }
+  if (CreateButton(Cancel))
+  {
+    resetInputTextBox(tabCB_data.MaCB);
+    resetInputTextBox(tabCB_data.MaMB);
+    resetInputTextBox(tabCB_data.NoiDen);
+    resetInputTextBox(tabCB_data.Ngay);
+    tabCB_data.popup_errorMess = "";
+    return true;
+  }
+  return false;
 }
 
 void CreateTable_QLCB()
