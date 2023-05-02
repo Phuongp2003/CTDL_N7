@@ -218,7 +218,7 @@ float Date::soVoi1_1_1900_0_0()
     {
       dateOfMonth+=a[i-1];
     }
-  }
+  }//
   date=ngay-1;
   return (dateOfYear+dateOfMonth+date)+float(gio+(float(phut)/60.0))/24.0;
 }

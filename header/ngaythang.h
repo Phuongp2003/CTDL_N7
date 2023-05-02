@@ -20,7 +20,7 @@ public:
   int getNgay();
   void setThang(int);
   int getThang();
-  void setNam(int);
+  void setNam(int);//
   int getNam();
   void showTG();
   bool checkNgay();

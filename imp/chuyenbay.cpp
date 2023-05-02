@@ -156,7 +156,7 @@ bool ChuyenBay::cach(int hour,Date another)
   {
     return true;
   }
-  return 0;
+  return 0;//
   // if ((ngayGio.getGio() * 60 +
   //          getNode().getNgayGio().getPhut() <=
   //      another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
