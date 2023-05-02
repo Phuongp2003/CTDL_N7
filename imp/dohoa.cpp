@@ -157,6 +157,13 @@ void UI_switchTab(UIcontroller &control, int idTab)
     control.dataTabCB.dsachMB = control.listMB;
   }
 
+  if (control.current_tab != 0)
+  {
+    resetData_QLCB(control.dataTabCB);
+    resetData_QLMB(control.dataTabMB);
+    resetData_QLHK(control.dataTabHK);
+  }
+
   control.current_tab = idTab;
 }
 void InitUIData(UIcontroller &control)
