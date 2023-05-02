@@ -1495,7 +1495,7 @@ bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
       tabCB_data.popup_errorMess = "Mã máy bay không tồn tại!";
     else if (!listCB.isAval(newMaMB))
       tabCB_data.popup_errorMess = "Máy bay đang được chuyển bay khác sử dụng!";
-    else if (listCB.timCB(CheckCB).getMaCB()[0] == 0)
+    else if (listCB.timCB(CheckCB)->getNode().getMaCB()[0] == 0)
     {
       if (newMaCB[0] >= 32 && newMaMB[0] >= 32 && newNoiDen[0] >= 32 &&
           newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
@@ -2334,12 +2334,12 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
   int j = 0;
   
   NodeHK *root = listHK.getRoot();
-  std::queue<NodeHK *> queue;
+  Queue queue = Queue(size);
   listHK.levelOrderTraversal(queue);
   NodeHK *tmp;
   int k = 0;
 
-  while (!queue.empty())
+  while (!queue.isEmpty())
   {
     if (j >= i && j <= i + 9)
     {
@@ -2347,7 +2347,7 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
         result = root;
 
       TextBox show[5];
-      tmp = queue.front();
+      tmp = queue.getFront();
       const char *showText[5] = {0};
       showText[0] = intToChar(k + 1, n_char);
       showText[1] = strToChar(tmp->getHK().getCmnd());

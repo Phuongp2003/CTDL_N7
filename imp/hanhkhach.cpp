@@ -65,6 +65,7 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
   if (root == NULL)
   {
     root = new NodeHK(hanhKhach);
+    size++;
     return true;
   }
 
@@ -76,6 +77,7 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
       if (current->getLeft() == NULL)
       {
         current->setLeft(new NodeHK(hanhKhach));
+        size++;
         break;
       }
       else
@@ -89,6 +91,7 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
       if (current->getRight() == NULL)
       {
         current->setRight(new NodeHK(hanhKhach));
+        size++;
         break;
       }
       else
@@ -149,18 +152,20 @@ void DsHanhKhach::inOrderTraversal(NodeHK *node)
 
 void DsHanhKhach::printInOrder() { inOrderTraversal(root); }
 
-queue<NodeHK *> DsHanhKhach::getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay)
+Queue DsHanhKhach::getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay)
 {
   NodeCB *nodeCB = dsChuyenBay.timCB(maCB);
-  queue<NodeHK *> queue;
+  Queue queue = Queue(this->size);
 
-  if (nodeCB == NULL) {
+  if (nodeCB == NULL)
+  {
     return queue;
   }
   VeMayBay *dsVe = nodeCB->getNode().getDSVe().getDSVeMB();
   string cmnd;
   NodeHK *nodeHK;
-  for (int i = 0; i < dsChuyenBay.getSize(); i++) {
+  for (int i = 0; i < dsChuyenBay.getSize(); i++)
+  {
     cmnd = dsVe[i].getHanhKhach();
     nodeHK = search(cmnd);
     queue.push(nodeHK);
@@ -263,7 +268,7 @@ int DsHanhKhach::getHeight(NodeHK *node)
   }
 }
 
-void DsHanhKhach::levelOrderTraversalHelper(NodeHK *node, int level, queue<NodeHK *> &queue)
+void DsHanhKhach::levelOrderTraversalHelper(NodeHK *node, int level, Queue &queue)
 {
   if (node == NULL)
   {
@@ -280,7 +285,7 @@ void DsHanhKhach::levelOrderTraversalHelper(NodeHK *node, int level, queue<NodeH
   }
 }
 
-void DsHanhKhach::levelOrderTraversal(queue<NodeHK *> &queue)
+void DsHanhKhach::levelOrderTraversal(Queue &queue)
 {
   int height = getHeight(root);
 

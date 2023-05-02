@@ -12,7 +12,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <queue>
 
 using std::array;
 using std::cout;
@@ -23,7 +22,6 @@ using std::ofstream;
 using std::stoi;
 using std::string;
 using std::stringstream;
-using std::queue;
 
 // Hằng số ----------------------------------------------------------------
 
@@ -60,6 +58,8 @@ class DsVeMayBay;
 class ChuyenBay;
 class NodeCB;
 class DsChuyenBay;
+
+class Queue;
 
 // Định nghĩa function ở file header của các file
 
