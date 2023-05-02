@@ -54,6 +54,8 @@ private:
   int size = 0;
 
   void writeToFileHelper(ofstream &file, NodeHK *node);
+  void levelOrderTraversalHelper(NodeHK *node, int level, queue<NodeHK *> &queue);
+  int getHeight(NodeHK *node);
 
 public:
   DsHanhKhach();
@@ -67,6 +69,7 @@ public:
   void readFromFile();
   NodeHK *getRoot();
   int getSize();
+  void levelOrderTraversal(queue<NodeHK *> &queue);
 };
 
 // function

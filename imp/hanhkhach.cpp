@@ -207,8 +207,10 @@ void DsHanhKhach::writeToFileOneHK(NodeHK *node)
     cout << "Error";
 }
 
-void DsHanhKhach::writeToFileHelper(ofstream &file, NodeHK *node) {
-  if (node == NULL) {
+void DsHanhKhach::writeToFileHelper(ofstream &file, NodeHK *node)
+{
+  if (node == NULL)
+  {
     return;
   }
   HanhKhach hanhKhach = node->getHK();
@@ -218,11 +220,13 @@ void DsHanhKhach::writeToFileHelper(ofstream &file, NodeHK *node) {
        << hanhKhach.getTen() << '|' << phai << '\n';
 }
 
-void DsHanhKhach::writeToFileAllHK() {
+void DsHanhKhach::writeToFileAllHK()
+{
   ofstream file;
   file.open("../data/dataHK.txt", ios::trunc);
 
-  if (file.is_open()) {
+  if (file.is_open())
+  {
     writeToFileHelper(file, root);
   }
 
@@ -259,3 +263,52 @@ void DsHanhKhach::readFromFile()
 int DsHanhKhach::getSize() { return this->size; }
 
 NodeHK *DsHanhKhach::getRoot() { return this->root; }
+
+int DsHanhKhach::getHeight(NodeHK *node)
+{
+  if (node == NULL)
+  {
+    return 0;
+  }
+  else
+  {
+    int leftHeight = getHeight(node->getLeft());
+    int rightHeight = getHeight(node->getRight());
+
+    if (leftHeight > rightHeight)
+    {
+      return leftHeight + 1;
+    }
+    else
+    {
+      return rightHeight + 1;
+    }
+  }
+}
+
+void DsHanhKhach::levelOrderTraversalHelper(NodeHK *node, int level, queue<NodeHK *> &queue)
+{
+  if (node == NULL)
+  {
+    return;
+  }
+  if (level == 1)
+  {
+    queue.push(node);
+  }
+  else
+  {
+    levelOrderTraversalHelper(node->getLeft(), level - 1, queue);
+    levelOrderTraversalHelper(node->getRight(), level - 1, queue);
+  }
+}
+
+void DsHanhKhach::levelOrderTraversal(queue<NodeHK *> &queue)
+{
+  int height = getHeight(root);
+
+  for (int i = 1; i <= height; i++)
+  {
+    levelOrderTraversalHelper(root, i, queue);
+  }
+}
