@@ -131,6 +131,42 @@ Date ChuyenBay::ngayHoanThanh()
   return date;
 }
 
+// int ChuyenBay::soSanhNgay(Date another)//1: CB >another,0: CB=another,-1:CB<another
+// {
+//   if(ngayGio.getNam()>another.getNam()) return 1;
+//   else if(ngayGio.getNam()<another.getNam()) return -1;
+//   else 
+//   {
+//       if(ngayGio.getThang()>another.getThang()) return 1;
+//       else if(ngayGio.getThang()<another.getThang()) return -1;
+//       else 
+//       {
+//         if(ngayGio.getNgay()>another.getNgay()) return 1;
+//         else if(ngayGio.getNgay()<another.getNgay()) return -1;
+//         else return 0;
+//       }
+//   }
+// }
+
+bool ChuyenBay::cach(int hour,Date another)
+{
+  int date1=ngayGio.soVoi1_1_1900_0_0();
+  int date2=another.soVoi1_1_1900_0_0();
+  if(date1>=date2+float(hour)/24.0 || date1<=date2+float(hour)/24.0)
+  {
+    return true;
+  }
+  return 0;
+  // if ((ngayGio.getGio() * 60 +
+  //          getNode().getNgayGio().getPhut() <=
+  //      another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
+  //     (getNode().getNgayGio().getGio() * 60 +
+  //          getNode().getNgayGio().getPhut() >=
+  //      another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60))
+  //   return true;
+  // return false; //
+}
+
 bool ChuyenBay::operator<(const ChuyenBay &other)
 {
   int compare = strcmp(maCB, other.maCB);
@@ -354,7 +390,7 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
     if (tmp->getNode().getTrangThai() == 1 &&
         tmp->getNode().getTrangThai() == 2 &&
         tmp->getNode().getNgayGio() == cb.getNgayGio() &&
-        tmp->Cach6tiengchua(cb.getNgayGio()) == true)
+        tmp->getNode().cach(6,cb.getNgayGio())==true)
     {
       if (tmp->getNode().getDSVe().getSoVeDaDat() != 0)
         for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)

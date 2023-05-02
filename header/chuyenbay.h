@@ -52,6 +52,8 @@ public:
 
   void ThucHienCB(DsMayBay *dsChuyenBay);
   Date ngayHoanThanh();
+  // int soSanhNgay(Date another);
+  bool cach(int hour,Date another);
 
   // node
   bool operator<(const ChuyenBay &other);

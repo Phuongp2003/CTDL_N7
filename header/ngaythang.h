@@ -33,6 +33,9 @@ public:
   string printDate();
   string printHour();
   Date ngayHoanThanh();
+  float soVoi1_1_1900_0_0();
+  
+  
 
   bool operator<(Date another);
   bool operator==(Date another);

@@ -90,7 +90,7 @@ bool Date::checkGio() {
     return false;
 }
 
-bool Date::checkNgayNhapVoiNgayHT() {
+bool Date::checkNgayNhapVoiNgayHT() {//hàm check xem ngày khởi hành của chuyến bay khi nhập vào có hợp lí không
   time_t now = time(0);
   tm *ltm = localtime(&now);
   bool t_nam = 0;
@@ -114,7 +114,7 @@ bool Date::checkNgayNhapVoiNgayHT() {
   return false;
 }
 
-bool Date::checkGioNhapVoiGioHT() {
+bool Date::checkGioNhapVoiGioHT() {//hàm check xem giờ khởi hành của chuyến bay khi nhập vào có hợp lí không
   time_t now = time(0);
   tm *ltm = localtime(&now);
   bool t_gio = 0;
@@ -153,7 +153,7 @@ bool Date::checkDateHour() // để set trang thái hoàn thành của chuyến 
     t_ngay = true;
   else
     t_ngay = false;
-  if (gio == ltm->tm_hour)
+  if (gio == ltm->tm_hour) 
     t_gio = true;
   else
     t_gio = false;
@@ -201,6 +201,28 @@ string Date::printDate() {
 string Date::printHour() {
   return intToString(gio, 2) + ":" + intToString(phut, 2);
 }
+
+float Date::soVoi1_1_1900_0_0()
+{
+  float dateOfYear=0, dateOfMonth=0,date=0;
+  for(int i=1900;i<nam;i++)
+  {
+    if(laNamNhuan(nam)) dateOfYear+=366;
+    else dateOfYear+=365;
+  }
+  int a[]={31,28,31,30,31,30,31,31,30,31,30,31};
+  if(laNamNhuan(nam)) a[1]=29;
+  if(thang>1)
+  {
+    for(int i=1;i<thang;i++)
+    {
+      dateOfMonth+=a[i-1];
+    }
+  }
+  date=ngay-1;
+  return (dateOfYear+dateOfMonth+date)+float(gio+(float(phut)/60.0))/24.0;
+}
+
 
 void Date::setToNow() {
   time_t now = time(0);
