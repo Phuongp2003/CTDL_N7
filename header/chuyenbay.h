@@ -114,4 +114,4 @@ public:
   bool isAval(const char *sohieuMB,ChuyenBay cb);
   bool isExist(const char *maCB);
 };
-void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK);
+void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK);//

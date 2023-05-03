@@ -366,7 +366,7 @@ bool DsChuyenBay::isAval(const char *soHieuMB,ChuyenBay cb)
   {
     if(tmp->getNode().cach(3,cb.getNgayGio()))
     {
-      if ( tmp->getNode().getTrangThai() == ConVe 
+      if ( tmp->getNode().getTrangThai() == ConVe //
       || tmp->getNode().getTrangThai() == HetVe 
       || tmp->getNode().getTrangThai() == HoanTat )
       {
