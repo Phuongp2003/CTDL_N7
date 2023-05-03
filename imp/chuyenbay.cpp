@@ -359,18 +359,24 @@ ChuyenBay DsChuyenBay::timCB(string maCB)
   return ChuyenBay();
 }
 
-bool DsChuyenBay::isAval(const char *soHieuMB)
+bool DsChuyenBay::isAval(const char *soHieuMB,ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
   while (tmp != NULL)
   {
-    if (tmp->getNode().getTrangThai() == 1 || tmp->getNode().getTrangThai() == 2)
+    if(tmp->getNode().cach(3,cb.getNgayGio()))
     {
-      cout << tmp->getNode().getMaMayBay() << "|\n"
-           << soHieuMB << "" << strcmp(tmp->getNode().getMaMayBay(), soHieuMB) << endl;
-      if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0)
-        return false;
+      if ( tmp->getNode().getTrangThai() == ConVe 
+      || tmp->getNode().getTrangThai() == HetVe 
+      || tmp->getNode().getTrangThai() == HoanTat )
+      {
+        // cout << tmp->getNode().getMaMayBay() << "|\n"
+        //      << soHieuMB << "" << strcmp(tmp->getNode().getMaMayBay(), soHieuMB) << endl;
+        if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0)
+          return false;
+      }
     }
+    
 
     tmp = tmp->getNext();
   }
@@ -396,26 +402,25 @@ bool DsChuyenBay::isExist(const char *maCB)
 bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
-  for (int i = 0; i < cb.getDSVe().getSoVeDaDat(); i++)
-  {
-    if (cb.getDSVe().getVe(i).getHanhKhach() == cmnd)
-      return false;
-  }
+  // for (int i = 0; i < cb.getDSVe().getSoVeToiDa(); i++)
+  // {
+  //   if (cb.getDSVe().getVe(i).getHanhKhach() == cmnd)
+  //     return false;
+  // }
   while (tmp != NULL)
   {
-    if (tmp->getNode().getTrangThai() == 1 &&
-        tmp->getNode().getTrangThai() == 2 &&
-        tmp->getNode().getNgayGio() == cb.getNgayGio() &&
+    
+    if ((tmp->getNode().getTrangThai() == ConVe ||
+        tmp->getNode().getTrangThai() == HetVe )&&
         tmp->getNode().cach(6,cb.getNgayGio())==true)
     {
-      if (tmp->getNode().getDSVe().getSoVeDaDat() != 0)
-        for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
-        {
-          if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
-            continue;
-          if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
-            return false;
-        }
+      for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
+      {
+        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
+          continue;
+        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
+          return false;
+      }
     }
 
     tmp = tmp->getNext();

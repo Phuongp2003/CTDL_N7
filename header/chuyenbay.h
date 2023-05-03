@@ -111,7 +111,7 @@ public:
   void writetToFile();
 
   bool update();
-  bool isAval(const char *sohieuMB);
+  bool isAval(const char *sohieuMB,ChuyenBay cb);
   bool isExist(const char *maCB);
 };
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK);
