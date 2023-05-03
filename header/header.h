@@ -59,6 +59,8 @@ class ChuyenBay;
 class NodeCB;
 class DsChuyenBay;
 
+class Queue;
+
 // Định nghĩa function ở file header của các file
 
 // Các hàm xử lí nhỏ

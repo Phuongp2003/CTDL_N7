@@ -344,19 +344,19 @@ void DsChuyenBay::popBack()
   size--;
 }
 
-ChuyenBay DsChuyenBay::timCB(string maCB)
+NodeCB *DsChuyenBay::timCB(string maCB)
 {
   NodeCB *tmp = this->head;
   while (tmp != NULL)
   {
     if (tmp->getNode().getMaCB() == maCB)
     {
-      return tmp->getNode();
+      return tmp;
     }
     tmp = tmp->getNext();
   }
 
-  return ChuyenBay();
+  return NULL;
 }
 
 bool DsChuyenBay::isAval(const char *soHieuMB,ChuyenBay cb)

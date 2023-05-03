@@ -65,7 +65,7 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
   if (root == NULL)
   {
     root = new NodeHK(hanhKhach);
-    writeToFile(root);
+    size++;
     return true;
   }
 
@@ -77,7 +77,7 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
       if (current->getLeft() == NULL)
       {
         current->setLeft(new NodeHK(hanhKhach));
-        writeToFile(current->getLeft());
+        size++;
         break;
       }
       else
@@ -91,7 +91,7 @@ bool DsHanhKhach::insert(HanhKhach hanhKhach)
       if (current->getRight() == NULL)
       {
         current->setRight(new NodeHK(hanhKhach));
-        writeToFile(current->getRight());
+        size++;
         break;
       }
       else
@@ -152,49 +152,28 @@ void DsHanhKhach::inOrderTraversal(NodeHK *node)
 
 void DsHanhKhach::printInOrder() { inOrderTraversal(root); }
 
-// void DsHanhKhach::showDsHanhKhach(string maCb)
-// {
-//     DsChuyenBay chuyenBay;
-//     ChuyenBay cbCanTim = chuyenBay.TimCB(maCb);
+Queue DsHanhKhach::getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay)
+{
+  NodeCB *nodeCB = dsChuyenBay.timCB(maCB);
+  Queue queue = Queue(this->size);
 
-//     if (cbCanTim == NULL)
-//     {
-//         cout << "Khong ton tai chuyen bay";
-//         return;
-//     }
+  if (nodeCB == NULL)
+  {
+    return queue;
+  }
+  VeMayBay *dsVe = nodeCB->getNode().getDSVe().getDSVeMB();
+  string cmnd;
+  NodeHK *nodeHK;
+  for (int i = 0; i < dsChuyenBay.getSize(); i++)
+  {
+    cmnd = dsVe[i].getHanhKhach();
+    nodeHK = search(cmnd);
+    queue.push(nodeHK);
+  }
+  return queue;
+}
 
-//     cout << "DANH SACH HANH KHACH THUOC CHUYEN BAY " << cbCanTim->getMaCB();
-
-//     Date ngayGio = cbCanTim->getNgayGio();
-//     cout << "\nNgay gio khoi hanh: "
-//          << ngayGio.getThang() << "/"
-//          << ngayGio.getNgay() << "/"
-//          << ngayGio.getNam() << " "
-//          << ngayGio.getGio() << ":"
-//          << ngayGio.getPhut() << ". "
-//          << "Noi den: " << cbCanTim->getNoiDen() << "\n\n";
-
-//     cout << "STT\tSO VE\tSO CMND\t\tHO TEN\t\t\tPHAI";
-
-//     VeMayBay *dsVe = cbCanTim->getDSVe()->getDSVeMB();
-//     for (int i = 0; i < cbCanTim->getDSVe()->getSoVeToiDa(); i++)
-//     {
-//         if (!dsVe[i].getTrangThai())
-//         {
-//             NodeHK *tmp;
-//             tmp = this->search(dsVe[i].getHanhKhach());
-
-//             cout << i + 1 << '\t'
-//                  << dsVe[i].getIDVe() << '\t'
-//                  << tmp->getHanhKhach().getCmnd() << '\t'
-//                  << tmp->getHanhKhach().getHo() << ' '
-//                  << tmp->getHanhKhach().getTen() << '\t'
-//                  << tmp->getHanhKhach().getPhai() << '\t';
-//         }
-//     }
-// }
-
-void DsHanhKhach::writeToFile(NodeHK *node)
+void DsHanhKhach::writeToFileOneHK(NodeHK *node)
 {
   ofstream file;
   file.open("../data/dataHK.txt", ios::out | ios::app);
@@ -208,6 +187,32 @@ void DsHanhKhach::writeToFile(NodeHK *node)
   }
   else
     cout << "Error";
+}
+
+void DsHanhKhach::writeToFileHelper(ofstream &file, NodeHK *node)
+{
+  if (node == NULL)
+  {
+    return;
+  }
+  HanhKhach hanhKhach = node->getHK();
+  string phai = (hanhKhach.getPhai() == "Nam") ? "0" : "1";
+  writeToFileHelper(file, node->getLeft());
+  file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|'
+       << hanhKhach.getTen() << '|' << phai << '\n';
+}
+
+void DsHanhKhach::writeToFileAllHK()
+{
+  ofstream file;
+  file.open("../data/dataHK.txt", ios::trunc);
+
+  if (file.is_open())
+  {
+    writeToFileHelper(file, root);
+  }
+
+  file.close();
 }
 
 void DsHanhKhach::readFromFile()
@@ -240,3 +245,52 @@ void DsHanhKhach::readFromFile()
 int DsHanhKhach::getSize() { return this->size; }
 
 NodeHK *DsHanhKhach::getRoot() { return this->root; }
+
+int DsHanhKhach::getHeight(NodeHK *node)
+{
+  if (node == NULL)
+  {
+    return 0;
+  }
+  else
+  {
+    int leftHeight = getHeight(node->getLeft());
+    int rightHeight = getHeight(node->getRight());
+
+    if (leftHeight > rightHeight)
+    {
+      return leftHeight + 1;
+    }
+    else
+    {
+      return rightHeight + 1;
+    }
+  }
+}
+
+void DsHanhKhach::levelOrderTraversalHelper(NodeHK *node, int level, Queue &queue)
+{
+  if (node == NULL)
+  {
+    return;
+  }
+  if (level == 1)
+  {
+    queue.push(node);
+  }
+  else
+  {
+    levelOrderTraversalHelper(node->getLeft(), level - 1, queue);
+    levelOrderTraversalHelper(node->getRight(), level - 1, queue);
+  }
+}
+
+void DsHanhKhach::levelOrderTraversal(Queue &queue)
+{
+  int height = getHeight(root);
+
+  for (int i = 1; i <= height; i++)
+  {
+    levelOrderTraversalHelper(root, i, queue);
+  }
+}

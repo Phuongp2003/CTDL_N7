@@ -1,6 +1,7 @@
 #pragma once
 #include "chuyenbay.h"
 #include "header.h"
+#include "queue.h"
 // #include "vemaybay.h"
 
 #include <fstream>
@@ -53,17 +54,23 @@ private:
   NodeHK *root;
   int size = 0;
 
+  void writeToFileHelper(ofstream &file, NodeHK *node);
+  void levelOrderTraversalHelper(NodeHK *node, int level, Queue &queue);
+  int getHeight(NodeHK *node);
+
 public:
   DsHanhKhach();
   bool insert(HanhKhach hanhKhach);
   NodeHK *search(string cmnd);
   void inOrderTraversal(NodeHK *node);
   void printInOrder();
-  void showDsHanhKhach(string);
-  void writeToFile(NodeHK *node);
+  Queue getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay);
+  void writeToFileOneHK(NodeHK *node);
+  void writeToFileAllHK();
   void readFromFile();
   NodeHK *getRoot();
   int getSize();
+  void levelOrderTraversal(Queue &queue);
 };
 
 // function

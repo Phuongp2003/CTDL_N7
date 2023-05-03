@@ -18,5 +18,6 @@ int main() {
   InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "My PJ");
   mainGraphics();
   CloseWindow();
+
   return 0;
 }
