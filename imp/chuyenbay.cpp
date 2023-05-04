@@ -394,6 +394,21 @@ bool DsChuyenBay::isExist(const char *maCB)
   return false;
 }
 
+bool DsChuyenBay::isUsed(const char* maMB)
+{
+ NodeCB *tmp = this->head;
+  while (tmp != NULL)
+  {
+
+    if (strcmp(tmp->getNode().getMaMayBay(), maMB) == 0)
+      return true;
+
+    tmp = tmp->getNext();
+  }
+
+  return false; 
+}
+
 bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
