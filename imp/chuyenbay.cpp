@@ -135,11 +135,11 @@ Date ChuyenBay::ngayHoanThanh()
 // {
 //   if(ngayGio.getNam()>another.getNam()) return 1;
 //   else if(ngayGio.getNam()<another.getNam()) return -1;
-//   else 
+//   else
 //   {
 //       if(ngayGio.getThang()>another.getThang()) return 1;
 //       else if(ngayGio.getThang()<another.getThang()) return -1;
-//       else 
+//       else
 //       {
 //         if(ngayGio.getNgay()>another.getNgay()) return 1;
 //         else if(ngayGio.getNgay()<another.getNgay()) return -1;
@@ -148,15 +148,16 @@ Date ChuyenBay::ngayHoanThanh()
 //   }
 // }
 
-bool ChuyenBay::cach(int hour,Date another)
+// @return true nếu thời gian của CBay hiện tại cách xa <Date another> <hour> tiếng trở lên
+bool ChuyenBay::cach(int hour, Date another)
 {
-  int date1=ngayGio.soVoi1_1_1900_0_0();
-  int date2=another.soVoi1_1_1900_0_0();
-  if(date1>=date2+float(hour)/24.0 || date1<=date2+float(hour)/24.0)
+  int date1 = ngayGio.soVoi1_1_1900_0_0();
+  int date2 = another.soVoi1_1_1900_0_0();
+  if (abs(date1 - date2) >= float(hour) / 24.0)
   {
     return true;
   }
-  return 0;//
+  return 0; //
   // if ((ngayGio.getGio() * 60 +
   //          getNode().getNgayGio().getPhut() <=
   //      another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
@@ -359,24 +360,17 @@ NodeCB *DsChuyenBay::timCB(string maCB)
   return NULL;
 }
 
-bool DsChuyenBay::isAval(const char *soHieuMB,ChuyenBay cb)
+bool DsChuyenBay::isAval(const char *soHieuMB, Date timeCB, const char *_maCB)
 {
   NodeCB *tmp = this->head;
   while (tmp != NULL)
   {
-    if(tmp->getNode().cach(3,cb.getNgayGio()))
+    if (!tmp->getNode().cach(3, timeCB))
     {
-      if ( tmp->getNode().getTrangThai() == ConVe //
-      || tmp->getNode().getTrangThai() == HetVe 
-      || tmp->getNode().getTrangThai() == HoanTat )
-      {
-        // cout << tmp->getNode().getMaMayBay() << "|\n"
-        //      << soHieuMB << "" << strcmp(tmp->getNode().getMaMayBay(), soHieuMB) << endl;
-        if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0)
-          return false;
-      }
+      cout << tmp->getNode().getNgayGio().printDateHour() << " / " << timeCB.printDateHour() << endl;
+      if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0 && strcmp(tmp->getNode().getMaCB(), _maCB))
+        return false;
     }
-    
 
     tmp = tmp->getNext();
   }
@@ -396,7 +390,7 @@ bool DsChuyenBay::isExist(const char *maCB)
     tmp = tmp->getNext();
   }
 
-  return true;
+  return false;
 }
 
 bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
@@ -409,10 +403,10 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
   // }
   while (tmp != NULL)
   {
-    
+
     if ((tmp->getNode().getTrangThai() == ConVe ||
-        tmp->getNode().getTrangThai() == HetVe )&&
-        tmp->getNode().cach(6,cb.getNgayGio())==true)
+         tmp->getNode().getTrangThai() == HetVe) &&
+        tmp->getNode().cach(6, cb.getNgayGio()) == true)
     {
       for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
       {

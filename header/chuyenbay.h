@@ -53,7 +53,7 @@ public:
   void ThucHienCB(DsMayBay *dsChuyenBay);
   Date ngayHoanThanh();
   // int soSanhNgay(Date another);
-  bool cach(int hour,Date another);
+  bool cach(int hour, Date another);
 
   // node
   bool operator<(const ChuyenBay &other);
@@ -96,7 +96,7 @@ public:
   void pushBack(NodeCB *node);
   void pushFront(NodeCB *node);
   void insertOrder(NodeCB *node);
-//
+  //
   /**
    * @brief xoá chuyến bay hiện chọn
    *
@@ -111,7 +111,7 @@ public:
   void writetToFile();
 
   bool update();
-  bool isAval(const char *sohieuMB,ChuyenBay cb);
+  bool isAval(const char *soHieuMB, Date timeCb, const char *_maCB);
   bool isExist(const char *maCB);
 };
-void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK);//
+void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK); //
