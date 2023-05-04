@@ -590,7 +590,7 @@ void CreatePageBackground(int SoHang)
 // =-MayBay
 void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
 {
-  CreatePageBackground(3);
+  CreatePageBackground(4);
 
   // tittle
   DrawTextEx(FontArial, "DANH SÁCH MÁY BAY",
@@ -601,8 +601,8 @@ void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
 
   if (tabMB_data.current_popup == 0)
   {
-    Button button[3];
-    for (int i = 0; i < 3; i++)
+    Button button[4];
+    for (int i = 0; i < 4; i++)
     {
       button[i].x = StartPos.x + 1201 + 29;
       button[i].y = StartPos.y + 60 + 20 + 70 + 15 + 75 * i;
@@ -632,6 +632,11 @@ void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
     {
       tabMB_data.current_popup = 3;
     }
+    button[3].tittle = "Thống kê S.lượt bay";
+    if (CreateButton(button[3]))
+    {
+      tabMB_data.current_popup = 4;
+    }
     tabMB_data.data = XuLy_QLMB(listMB, tabMB_data);
     // if (data->getSoHieuMB()[0] >= 36)
     // {
@@ -652,6 +657,11 @@ void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
   {
     if (Popup_XoaMB(listMB, tabMB_data))
       tabMB_data.current_popup = 0;
+  }
+  else if (tabMB_data.current_popup == 4)
+  {
+    // if (Popup_XoaMB(listMB, tabMB_data))
+    //   tabMB_data.current_popup = 0;
   }
   // cout << data->getSoHieuMB() << endl;
 }
@@ -938,6 +948,121 @@ bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data)
       FontArial, "Xoá máy bay?",
       {CenterDataSetter(700, StartPos.x + 400,
                         MeasureTextEx(FontArial, "Xoá máy bay", 50, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10,
+                        MeasureTextEx(FontArial, "A", 50, 0).y)},
+      50, 0, BLACK);
+  DrawTextEx(
+      FontArial, "Máy bay có các thông tin như sau: ",
+      {CenterDataSetter(
+           1100, StartPos.x + 200,
+           MeasureTextEx(FontArial, "Máy bay có các thông tin như sau: ", 40, 0)
+               .x),
+       CenterDataSetter(50, StartPos.y + 130,
+                        MeasureTextEx(FontArial, "A", 40, 0).y)},
+      40, 0, RED);
+
+  if (tabMB_data.data != NULL)
+  {
+    DrawTextEx(FontArial, "Mã máy bay",
+               {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 180, 900, 50}, WHITE);
+    DrawRectangleRoundedLines(
+        {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50}, 0, 1, 2, BLACK);
+    DrawTextEx(FontArial, tabMB_data.data->getSoHieuMB(),
+               {StartPos.x + 300 + 5,
+                CenterDataSetter(60, StartPos.y + 60 + 180,
+                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
+               40, 0, BLACK);
+
+    DrawTextEx(FontArial, "Hãng máy bay",
+               {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 280, 900, 50}, WHITE);
+    DrawRectangleRoundedLines(
+        {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50}, 0, 1, 2, BLACK);
+    DrawTextEx(FontArial, tabMB_data.data->getLoaiMB(),
+               {StartPos.x + 300 + 5,
+                CenterDataSetter(60, StartPos.y + 60 + 280,
+                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
+               40, 0, BLACK);
+
+    DrawTextEx(FontArial, "Số dòng",
+               {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, WHITE);
+    DrawRectangleRoundedLines(
+        {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, 0, 1, 2, BLACK);
+    DrawTextEx(FontArial, intToChar(tabMB_data.data->getSoDong(), 2),
+               {StartPos.x + 300 + 5,
+                CenterDataSetter(60, StartPos.y + 60 + 380,
+                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
+               40, 0, BLACK);
+
+    DrawTextEx(FontArial, "Số dãy",
+               {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 480, 500, 50}, WHITE);
+    DrawRectangleRoundedLines(
+        {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, 0, 1, 2, BLACK);
+    DrawTextEx(FontArial, intToChar(tabMB_data.data->getSoDay(), 2),
+               {StartPos.x + 300 + 5,
+                CenterDataSetter(60, StartPos.y + 60 + 480,
+                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
+               40, 0, BLACK);
+
+    Button OK;
+    OK.x = StartPos.x + 225 + 750;
+    OK.y = StartPos.y + 60 + 625;
+    OK.w = 300;
+    OK.h = 50;
+    OK.gotNothing = false;
+    OK.gotText = true;
+    OK.tittle = (char *)"Đồng ý!";
+    OK.font = FontArial;
+    OK.BoMau = ArrowKey;
+
+    Button Cancel;
+    Cancel.x = StartPos.x + 225;
+    Cancel.y = StartPos.y + 60 + 625;
+    Cancel.w = 300;
+    Cancel.h = 50;
+    Cancel.gotNothing = false;
+    Cancel.gotText = true;
+    Cancel.tittle = (char *)"Huỷ";
+    Cancel.font = FontArial;
+    Cancel.BoMau = ArrowKey;
+
+    if (CreateButton(OK))
+    {
+      char CheckMB[16];
+      strcpy(CheckMB, tabMB_data.data->getSoHieuMB());
+      listMB.insertMB(listMB.findPosMB(CheckMB));
+
+      ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
+      listMB.writetoFile(fileWrite);
+      fileWrite.close();
+
+      tabMB_data.status = -1;
+
+      return true;
+    }
+    if (CreateButton(Cancel))
+    {
+      return true;
+    }
+  }
+  else
+  {
+    if (Warning_NoData())
+      return true;
+  }
+  return false;
+}
+
+bool Popup_Thongkesoluotbay(DsMayBay &listMB, QLMB_data &tabMB_data)
+{
+  CreatePopupBackground();
+  DrawTextEx(
+      FontArial, "Thống kê số lượt bay",
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, "Thống kê số lượt bay", 50, 0).x),
        CenterDataSetter(60, StartPos.y + 60 + 10,
                         MeasureTextEx(FontArial, "A", 50, 0).y)},
       50, 0, BLACK);
