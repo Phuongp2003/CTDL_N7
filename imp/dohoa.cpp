@@ -2327,6 +2327,27 @@ void CreateTable_QLHK()
   }
 }
 
+void showHanhKhach(HanhKhach hanhKhach, int n_char, Vector2 start_pos, float *cellW, int &j, int order)
+{
+  TextBox show[5];
+  const char *showText[5] = {0};
+  showText[0] = intToChar(order + 1, n_char);
+  showText[1] = strToChar(hanhKhach.getCmnd());
+  showText[2] = strToChar(hanhKhach.getHo());
+  showText[3] = strToChar(hanhKhach.getTen());
+  showText[4] = strToChar(hanhKhach.getPhai());
+  for (int show_i = 4; show_i >= 0; show_i--)
+  {
+    show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
+                                  (j % 10) + 1, showText[show_i], 30);
+    show[show_i].isCenter = false;
+  }
+  for (int show_i = 4; show_i >= 0; show_i--)
+  {
+    CreateTextBox(show[show_i]);
+  }
+}
+
 NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
 {
   static NodeHK *result;
@@ -2394,41 +2415,73 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
   int j = 0;
 
   NodeHK *root = listHK.getRoot();
-  Queue queue = Queue(size);
-  listHK.levelOrderTraversal(queue);
-  NodeHK *tmp;
-  int k = 0;
+  // Queue queue = Queue(size);
+  // listHK.levelOrderTraversal(queue);
+  // NodeHK *tmp;
+  // int k = 0;
+
+  // while (!queue.isEmpty())
+  // {
+  //   if (j >= i && j <= i + 9)
+  //   {
+  //     if (j % 10 == index)
+  //       result = root;
+
+  //     TextBox show[5];
+  //     tmp = queue.getFront();
+  //     const char *showText[5] = {0};
+  //     showText[0] = intToChar(k + 1, n_char);
+  //     showText[1] = strToChar(tmp->getHK().getCmnd());
+  //     showText[2] = strToChar(tmp->getHK().getHo());
+  //     showText[3] = strToChar(tmp->getHK().getTen());
+  //     showText[4] = strToChar(tmp->getHK().getPhai());
+  //     for (int show_i = 4; show_i >= 0; show_i--)
+  //     {
+  //       show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
+  //                                     (j % 10) + 1, showText[show_i], 30);
+  //       show[show_i].isCenter = false;
+  //     }
+  //     for (int show_i = 4; show_i >= 0; show_i--)
+  //     {
+  //       CreateTextBox(show[show_i]);
+  //     }
+  //   }
+  //   j++;
+  //   k++;
+  //   // }
+  //   queue.pop();
+  // }
+
+  Queue queue = Queue();
+  NodeHK *currNode;
+  int order = 0;
+  if (root != NULL)
+  {
+    queue.push(root);
+  }
 
   while (!queue.isEmpty())
   {
+    currNode = queue.getFront();
+    queue.pop();
     if (j >= i && j <= i + 9)
     {
       if (j % 10 == index)
         result = root;
 
-      TextBox show[5];
-      tmp = queue.getFront();
-      const char *showText[5] = {0};
-      showText[0] = intToChar(k + 1, n_char);
-      showText[1] = strToChar(tmp->getHK().getCmnd());
-      showText[2] = strToChar(tmp->getHK().getHo());
-      showText[3] = strToChar(tmp->getHK().getTen());
-      showText[4] = strToChar(tmp->getHK().getPhai());
-      for (int show_i = 4; show_i >= 0; show_i--)
-      {
-        show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
-                                      (j % 10) + 1, showText[show_i], 30);
-        show[show_i].isCenter = false;
-      }
-      for (int show_i = 4; show_i >= 0; show_i--)
-      {
-        CreateTextBox(show[show_i]);
-      }
+      showHanhKhach(currNode->getHK(), n_char, start_pos, cellW, j, order);
+    }
+
+    if (currNode->getLeft() != NULL)
+    {
+      queue.push(currNode->getLeft());
+    }
+    if (currNode->getRight() != NULL)
+    {
+      queue.push(currNode->getRight());
     }
     j++;
-    k++;
-    // }
-    queue.pop();
+    order++;
   }
 
   n_page = 1 + ((j - 1) / 10);

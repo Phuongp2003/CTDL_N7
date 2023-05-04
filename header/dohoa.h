@@ -6,6 +6,7 @@
 #include "maybay.h"
 #include "ngaythang.h"
 #include "vemaybay.h"
+#include "queue.h"
 #include <list>
 
 // Kích thước cửa sổ mặc định

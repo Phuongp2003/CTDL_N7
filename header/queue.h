@@ -1,19 +1,34 @@
 #pragma once
 #include "header.h"
+#include "hanhkhach.h"
+
+class NodeQueue
+{
+private:
+    NodeHK *data;
+    NodeQueue *next;
+
+public:
+    NodeQueue(NodeHK *data);
+    NodeHK *getData();
+    void setData(NodeHK *data);
+    NodeQueue *getNext();
+    void setNext(NodeQueue *next);
+};
 
 class Queue
 {
 private:
-    NodeHK **arr;
-    int front;
-    int rear;
-    int size;
+    NodeQueue *front;
+    NodeQueue *rear;
 
 public:
-    Queue(int size);
-    void push(NodeHK *node);
-    void pop();
+    Queue();
     NodeHK *getFront();
+    void setFront(NodeQueue *front);
+    NodeQueue *getRear();
+    void setRear(NodeQueue *rear);
+    void push(NodeHK *data);
+    void pop();
     bool isEmpty();
-    bool isFull();
 };
