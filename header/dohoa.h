@@ -114,9 +114,11 @@ void CreatePopupBackground();
 bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data);
 bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data);
 bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data);
+bool Popup_Thongkesoluotbay(DsMayBay &listMB, QLMB_data &tabMB_data);
 bool Popup_ThemHK(DsHanhKhach &listHK);
 bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 bool Popup_HieuChinhCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
+bool Popup_XoaCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 void Popup_getMB(DsChuyenBay listCB, QLCB_data &tabCB_data, Date gioBay);
 
 void ThanhQuanLy(UIcontroller &control); // done
