@@ -151,9 +151,9 @@ Date ChuyenBay::ngayHoanThanh()
 // @return true nếu thời gian của CBay hiện tại cách xa <Date another> <hour> tiếng trở lên
 bool ChuyenBay::cach(int hour, Date another)
 {
-  int date1 = ngayGio.soVoi1_1_1900_0_0();
-  int date2 = another.soVoi1_1_1900_0_0();
-  if (abs(date1 - date2) >= float(hour) / 24.0)
+  long long date1 = ngayGio.soVoi1_1_1900_0_0();
+  long long date2 = another.soVoi1_1_1900_0_0();
+  if (abs(date1 - date2) > hour*60)
   {
     return true;
   }

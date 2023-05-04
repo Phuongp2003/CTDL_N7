@@ -202,9 +202,9 @@ string Date::printHour() {
   return intToString(gio, 2) + ":" + intToString(phut, 2);
 }
 
-float Date::soVoi1_1_1900_0_0()
+long long Date::soVoi1_1_1900_0_0()
 {
-  float dateOfYear=0, dateOfMonth=0,date=0;
+  long long dateOfYear=0, dateOfMonth=0,date=0;
   for(int i=1900;i<nam;i++)
   {
     if(laNamNhuan(nam)) dateOfYear+=366;
@@ -220,7 +220,7 @@ float Date::soVoi1_1_1900_0_0()
     }
   }//
   date=ngay-1;
-  return (dateOfYear+dateOfMonth+date)+float(gio+(float(phut)/60.0))/24.0;
+  return (dateOfYear+dateOfMonth+date)*24*60 + gio*60 + phut;
 }
 
 

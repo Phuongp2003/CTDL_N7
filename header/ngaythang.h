@@ -33,7 +33,7 @@ public:
   string printDate();
   string printHour();
   Date ngayHoanThanh();
-  float soVoi1_1_1900_0_0();
+  long long soVoi1_1_1900_0_0();
   
   
 
