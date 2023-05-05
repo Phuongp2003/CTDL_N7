@@ -84,7 +84,7 @@ struct InputTextBox
 
 struct TextBox
 {
-  char *text;
+  const char *text;
   Rectangle box;
   bool showBox = false;
   int mode = 1;
@@ -108,23 +108,6 @@ struct QLMB_data
   int current_showPage = 1;
 };
 
-struct QLCB_data
-{
-  NodeCB *data = nullptr;
-  DsMayBay dsachMB;
-  int status = 0;
-
-  int current_popup = 0;
-  string popup_errorMess = "";
-  int time_showError = 0;
-  InputTextBox MaCB, MaMB, NoiDen, Ngay, Thang, Nam, Gio, Phut;
-  bool inChooseMB = false;
-  QLMB_data dataMB;
-
-  InputTextBox searchMaCB, searchNoiDen, searchNgay, searchThang, searchNam;
-  int pickdata_index = -1;
-  int current_showPage = 1;
-};
 struct QLHK_data
 {
   NodeHK *data;
@@ -136,6 +119,32 @@ struct QLHK_data
   int current_page = 1;
 };
 
+struct QLVe_data
+{
+  int current_page = 1;
+  int position = -1;
+  VeMayBay data = VeMayBay();
+};
+
+struct QLCB_data
+{
+  NodeCB *data = nullptr;
+  DsMayBay dsachMB;
+  DsHanhKhach dsachHK;
+  int status = 0;
+
+  int current_popup = 0;
+  string popup_errorMess = "";
+  int time_showError = 0;
+  InputTextBox MaCB, MaMB, NoiDen, Ngay, Thang, Nam, Gio, Phut;
+  bool inChooseMB = false;
+  QLMB_data dataMB;
+  QLVe_data dataDSVe;
+
+  InputTextBox searchMaCB, searchNoiDen, searchNgay, searchThang, searchNam;
+  int pickdata_index = -1;
+  int current_showPage = 1;
+};
 struct UIcontroller
 {
   int current_tab = 0;
@@ -155,6 +164,7 @@ void UI_switchTab(UIcontroller &control, int idTab)
   if (idTab == 2)
   {
     control.dataTabCB.dsachMB = control.listMB;
+    control.dataTabCB.dsachHK = control.listHK;
   }
 
   if (control.current_tab != 0)
@@ -287,8 +297,9 @@ void resetData_QLCB(QLCB_data &data)
   data.searchMaCB.mode = 3;
 
   resetData_QLMB(data.dataMB);
+  resetData_QLDSVe(data.dataDSVe);
 
-  data.data = nullptr;
+  data.data = NULL;
   data.status = 0;
 
   data.current_popup = 0;
@@ -325,6 +336,13 @@ BoMauNut MauThanhQuanLy{
     {25, 25, 255, 255},
 
 };
+
+void resetData_QLDSVe(QLVe_data &data)
+{
+  data.current_page = 1;
+  data.position = -1;
+  data.data = VeMayBay();
+}
 
 Vector2 operator-(const Vector2 first, const Vector2 second)
 {
@@ -965,47 +983,35 @@ bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data)
   {
     DrawTextEx(FontArial, "Mã máy bay",
                {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
-    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 180, 900, 50}, WHITE);
-    DrawRectangleRoundedLines(
-        {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50}, 0, 1, 2, BLACK);
-    DrawTextEx(FontArial, tabMB_data.data->getSoHieuMB(),
-               {StartPos.x + 300 + 5,
-                CenterDataSetter(60, StartPos.y + 60 + 180,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, BLACK);
+    TextBox Box_maMB;
+    Box_maMB.box = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
+    Box_maMB.showBox = true;
+    Box_maMB.text = tabMB_data.data->getSoHieuMB();
+    CreateTextBox(Box_maMB);
 
     DrawTextEx(FontArial, "Hãng máy bay",
                {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
-    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 280, 900, 50}, WHITE);
-    DrawRectangleRoundedLines(
-        {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50}, 0, 1, 2, BLACK);
-    DrawTextEx(FontArial, tabMB_data.data->getLoaiMB(),
-               {StartPos.x + 300 + 5,
-                CenterDataSetter(60, StartPos.y + 60 + 280,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, BLACK);
+    TextBox Box_loaiMB;
+    Box_loaiMB.box = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+    Box_loaiMB.showBox = true;
+    Box_loaiMB.text = tabMB_data.data->getLoaiMB();
+    CreateTextBox(Box_loaiMB);
 
     DrawTextEx(FontArial, "Số dòng",
                {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
-    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, WHITE);
-    DrawRectangleRoundedLines(
-        {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, 0, 1, 2, BLACK);
-    DrawTextEx(FontArial, intToChar(tabMB_data.data->getSoDong(), 2),
-               {StartPos.x + 300 + 5,
-                CenterDataSetter(60, StartPos.y + 60 + 380,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, BLACK);
+    TextBox Box_soDong;
+    Box_soDong.box = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
+    Box_soDong.showBox = true;
+    Box_soDong.text = intToChar(tabMB_data.data->getSoDong(), 2);
+    CreateTextBox(Box_soDong);
 
     DrawTextEx(FontArial, "Số dãy",
                {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
-    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 480, 500, 50}, WHITE);
-    DrawRectangleRoundedLines(
-        {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, 0, 1, 2, BLACK);
-    DrawTextEx(FontArial, intToChar(tabMB_data.data->getSoDay(), 2),
-               {StartPos.x + 300 + 5,
-                CenterDataSetter(60, StartPos.y + 60 + 480,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, BLACK);
+    TextBox Box_soDay;
+    Box_soDay.box = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
+    Box_soDay.showBox = true;
+    Box_soDay.text = intToChar(tabMB_data.data->getSoDay(), 2);
+    CreateTextBox(Box_soDay);
 
     Button OK;
     OK.x = StartPos.x + 225 + 750;
@@ -1388,22 +1394,16 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
       tabCB_data.current_popup = 2;
     }
     button[2].tittle = "Xóa chuyến bay";
-    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 +
-    // 75 + 75, 240, 60, false, , FontArial, ArrowKey))
     if (CreateButton(button[2]))
     {
-      cout << "Xoa" << endl;
+      tabCB_data.current_popup = 3;
     }
     button[3].tittle = "Xem danh sach vé";
-    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 +
-    // 75 + 75, 240, 60, false, , FontArial, ArrowKey))
     if (CreateButton(button[3]))
     {
-      cout << "XemDSVe" << endl;
+      tabCB_data.current_popup = 4;
     }
     button[4].tittle = "Đặt vé";
-    // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15 +
-    // 75 + 75, 240, 60, false, , FontArial, ArrowKey))
     if (CreateButton(button[4]))
     {
       cout << "Dat ve" << endl;
@@ -1423,6 +1423,24 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
     {
       tabCB_data.current_popup = 0;
     }
+  }
+  else if (tabCB_data.current_popup == 3)
+  {
+    if (Popup_XoaCB(listCB, tabCB_data))
+    {
+      tabCB_data.current_popup = 0;
+    }
+  }
+  else if (tabCB_data.current_popup == 4)
+  {
+    XuLy_QLVe(tabCB_data);
+  }
+  else if (tabCB_data.current_popup == 5)
+  {
+    // if (Popup_datVe(listCB, tabCB_data))
+    // {
+    //   tabCB_data.current_popup = 0;
+    // }
   }
   // CreateTable_QLCB();
 }
@@ -1952,6 +1970,129 @@ bool Popup_HieuChinhCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   return false;
 }
 
+bool Popup_XoaCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
+{
+  CreatePopupBackground();
+  DrawTextEx(
+      FontArial, "Xoá chuyến bay",
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, "Thêm chuyến bay", 50, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10,
+                        MeasureTextEx(FontArial, "A", 50, 0).y)},
+      50, 0, BLACK);
+  if (tabCB_data.data == NULL)
+  {
+    if (Warning_NoData())
+      return true;
+    return false;
+  }
+  TextBox Box_maCB;
+  Box_maCB.box = tabCB_data.MaCB.textBox;
+  Box_maCB.showBox = true;
+  Box_maCB.text = tabCB_data.data->getNode().getMaCB();
+  CreateTextBox(Box_maCB);
+
+  TextBox Box_maMB;
+  Box_maMB.box = tabCB_data.MaMB.textBox;
+  Box_maMB.showBox = true;
+  Box_maMB.text = tabCB_data.data->getNode().getMaMayBay();
+  CreateTextBox(Box_maMB);
+
+  TextBox Box_noiDen;
+  Box_noiDen.box = tabCB_data.NoiDen.textBox;
+  Box_noiDen.showBox = true;
+  Box_noiDen.text = strToChar(tabCB_data.data->getNode().getNoiDen());
+  CreateTextBox(Box_noiDen);
+
+  TextBox Box_ngayBay;
+  Box_ngayBay.box = tabCB_data.Ngay.textBox;
+  Box_ngayBay.box.width += 300;
+  Box_ngayBay.showBox = true;
+  Box_ngayBay.text = strToChar(tabCB_data.data->getNode().getNgayGio().printDateHour());
+  CreateTextBox(Box_ngayBay);
+
+  DrawTextEx(FontArial, "Thời gian bay",
+             {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+
+  DrawTextEx(FontArial, "Mã mã chuyến bay",
+             {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+
+  DrawTextEx(FontArial, "Số hiệu máy bay",
+             {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+
+  DrawTextEx(FontArial, "Nơi đến",
+             {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+
+  Button OK;
+  OK.x = StartPos.x + 225 + 750;
+  OK.y = StartPos.y + 60 + 625;
+  OK.w = 300;
+  OK.h = 50;
+  OK.gotNothing = false;
+  OK.gotText = true;
+  OK.tittle = (char *)"Hoàn tất";
+  OK.font = FontArial;
+  OK.BoMau = ArrowKey;
+
+  Button Cancel;
+  Cancel.x = StartPos.x + 225;
+  Cancel.y = StartPos.y + 60 + 625;
+  Cancel.w = 300;
+  Cancel.h = 50;
+  Cancel.gotNothing = false;
+  Cancel.gotText = true;
+  Cancel.tittle = (char *)"Huỷ";
+  Cancel.font = FontArial;
+  Cancel.BoMau = ArrowKey;
+
+  // Hiện lỗi trong 5s
+  if (tabCB_data.time_showError <= 100)
+  {
+    DrawTextEx(
+        FontArial, tabCB_data.popup_errorMess.data(),
+        {CenterDataSetter(1100, StartPos.x + 200,
+                          MeasureTextEx(FontArial, tabCB_data.popup_errorMess.data(), 40, 0).x),
+         CenterDataSetter(50, StartPos.y + 130,
+                          MeasureTextEx(FontArial, "A", 40, 0).y)},
+        40, 0, RED);
+    tabCB_data.time_showError++;
+  }
+  else
+  {
+    tabCB_data.popup_errorMess = "";
+    tabCB_data.time_showError = 0;
+  }
+  if (CreateButton(OK))
+  {
+    listCB.pop(tabCB_data.data);
+    listCB.writetToFile();
+    listCB.setSize();
+
+    tabCB_data.status = 1;
+    resetInputTextBox(tabCB_data.MaCB);
+    resetInputTextBox(tabCB_data.MaMB);
+    resetInputTextBox(tabCB_data.NoiDen);
+    resetInputTextBox(tabCB_data.Ngay);
+    resetInputTextBox(tabCB_data.Thang);
+    resetInputTextBox(tabCB_data.Nam);
+    resetInputTextBox(tabCB_data.Gio);
+    resetInputTextBox(tabCB_data.Phut);
+    tabCB_data.popup_errorMess = "";
+
+    return true;
+  }
+  if (CreateButton(Cancel))
+  {
+    resetInputTextBox(tabCB_data.MaCB);
+    resetInputTextBox(tabCB_data.MaMB);
+    resetInputTextBox(tabCB_data.NoiDen);
+    resetInputTextBox(tabCB_data.Ngay);
+    tabCB_data.popup_errorMess = "";
+    return true;
+  }
+  return false;
+}
+
 void CreateTable_QLCB()
 {
   const char *cell_tittle[7] = {"STT", "Mã CB", "Số hiệu MB", "Ngày giờ",
@@ -2298,7 +2439,7 @@ void CreatePage_QLVe()
   // CreateTable_QLVe();
 
   ChuyenBay *cb = new ChuyenBay("CB01", "Da Lat", {25, 4, 2023, 10, 0}, "MB1");
-  XuLy_QLVe(*cb);
+  // XuLy_QLVe(*cb);
 }
 
 void CreateTable_QLVe()
@@ -2314,36 +2455,31 @@ void CreateTable_QLVe()
               3, cellW, 700);
 }
 
-void XuLy_QLVe(ChuyenBay &cb)
+void XuLy_QLVe(QLCB_data &tabCB_data)
 {
-  DsMayBay ds;
-  MayBay *mb = new MayBay("MB1", "AB1", 17, 25);
-  ds.insertMB(mb);
-  DsVeMayBay dsve = DsVeMayBay();
-  dsve.setDSVe(ds.findMB(cb.getMaMayBay()));
-  cb.setDSVe(dsve);
-  static int current_page = 1;
+  ChuyenBay currCB = tabCB_data.data->getNode();
   int n_page = 1;
-  int size = dsve.getSoVeToiDa();
-  static int index = -1;
-  int i = (current_page - 1) * 10;
+  // int size = dsve.getSoVeToiDa();
+  int i = (tabCB_data.dataDSVe.current_page - 1) * 10;
   int j = 0;
+  int sDay = tabCB_data.dsachMB.findMB(currCB.getMaMayBay())->getSoDay(),
+      sDong = tabCB_data.dsachMB.findMB(currCB.getMaMayBay())->getSoDong();
   // if (current_page * 10 < size)
   //     j = current_page * 100;
   // else
   //     j = size;
   Rectangle r;
   r = {CenterDataSetter(1200, StartPos.x,
-                        (ds.findMB(cb.getMaMayBay())->getSoDay()) * 50 +
-                            (ds.findMB(cb.getMaMayBay())->getSoDay() - 1) * 20),
+                        (sDay)*50 +
+                            (sDay - 1) * 20),
        StartPos.y + 85, 50, 30};
   Button button;
-  for (int a = 0; a < ds.findMB(cb.getMaMayBay())->getSoDong(); a++)
+  for (int a = 0; a < sDong; a++)
   {
 
     if (j >= i && j <= i + 9)
     {
-      for (int m = 0; m < ds.findMB(cb.getMaMayBay())->getSoDay(); m++)
+      for (int m = 0; m < sDay; m++)
       {
         button.x = r.x + m * 70;
         button.y = r.y + (a % 10) * 40;
@@ -2353,16 +2489,13 @@ void XuLy_QLVe(ChuyenBay &cb)
         button.gotNothing = false;
         button.gotText = true;
         button.tittle =
-            cb.getDSVe()
-                .getVe(m * ds.findMB(cb.getMaMayBay())->getSoDong() + a)
-                .getIDVe()
-                .c_str();
+            strToChar(currCB.getDSVe().getVe(m * sDong + a).getIDVe());
         button.font = FontArial;
         button.BoMau = ArrowKey;
         if (CreateButton(button))
         {
-          index = m * (ds.findMB(cb.getMaMayBay())->getSoDong()) + j;
-          cout << index << endl;
+          tabCB_data.dataDSVe.position = m * (sDong) + j;
+          cout << tabCB_data.dataDSVe.position << endl;
         };
       }
     }
@@ -2372,13 +2505,16 @@ void XuLy_QLVe(ChuyenBay &cb)
   n_page = 1 + ((j - 1) / 10);
 
   int swp =
-      SwitchPage(current_page, n_page,
+      SwitchPage(tabCB_data.dataDSVe.current_page, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-  if (current_page != swp)
-    index = -1;
-  current_page = swp;
-  if (current_page > n_page)
-    current_page = 1;
+  if (tabCB_data.dataDSVe.current_page != swp)
+  {
+    tabCB_data.dataDSVe.position = -1;
+    tabCB_data.dataDSVe.current_page = swp;
+  }
+
+  if (tabCB_data.dataDSVe.current_page > n_page)
+    tabCB_data.dataDSVe.current_page = 1;
 }
 
 void CreatePage_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
@@ -2461,6 +2597,27 @@ void CreateTable_QLHK()
   }
 }
 
+void showHanhKhach(HanhKhach hanhKhach, int n_char, Vector2 start_pos, float *cellW, int &j, int order)
+{
+  TextBox show[5];
+  const char *showText[5] = {0};
+  showText[0] = intToChar(order + 1, n_char);
+  showText[1] = strToChar(hanhKhach.getCmnd());
+  showText[2] = strToChar(hanhKhach.getHo());
+  showText[3] = strToChar(hanhKhach.getTen());
+  showText[4] = strToChar(hanhKhach.getPhai());
+  for (int show_i = 4; show_i >= 0; show_i--)
+  {
+    show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
+                                  (j % 10) + 1, showText[show_i], 30);
+    show[show_i].isCenter = false;
+  }
+  for (int show_i = 4; show_i >= 0; show_i--)
+  {
+    CreateTextBox(show[show_i]);
+  }
+}
+
 NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
 {
   static NodeHK *result;
@@ -2528,41 +2685,73 @@ NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
   int j = 0;
 
   NodeHK *root = listHK.getRoot();
-  Queue queue = Queue(size);
-  listHK.levelOrderTraversal(queue);
-  NodeHK *tmp;
-  int k = 0;
+  // Queue queue = Queue(size);
+  // listHK.levelOrderTraversal(queue);
+  // NodeHK *tmp;
+  // int k = 0;
+
+  // while (!queue.isEmpty())
+  // {
+  //   if (j >= i && j <= i + 9)
+  //   {
+  //     if (j % 10 == index)
+  //       result = root;
+
+  //     TextBox show[5];
+  //     tmp = queue.getFront();
+  //     const char *showText[5] = {0};
+  //     showText[0] = intToChar(k + 1, n_char);
+  //     showText[1] = strToChar(tmp->getHK().getCmnd());
+  //     showText[2] = strToChar(tmp->getHK().getHo());
+  //     showText[3] = strToChar(tmp->getHK().getTen());
+  //     showText[4] = strToChar(tmp->getHK().getPhai());
+  //     for (int show_i = 4; show_i >= 0; show_i--)
+  //     {
+  //       show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
+  //                                     (j % 10) + 1, showText[show_i], 30);
+  //       show[show_i].isCenter = false;
+  //     }
+  //     for (int show_i = 4; show_i >= 0; show_i--)
+  //     {
+  //       CreateTextBox(show[show_i]);
+  //     }
+  //   }
+  //   j++;
+  //   k++;
+  //   // }
+  //   queue.pop();
+  // }
+
+  Queue queue = Queue();
+  NodeHK *currNode;
+  int order = 0;
+  if (root != NULL)
+  {
+    queue.push(root);
+  }
 
   while (!queue.isEmpty())
   {
+    currNode = queue.getFront();
+    queue.pop();
     if (j >= i && j <= i + 9)
     {
       if (j % 10 == index)
         result = root;
 
-      TextBox show[5];
-      tmp = queue.getFront();
-      const char *showText[5] = {0};
-      showText[0] = intToChar(k + 1, n_char);
-      showText[1] = strToChar(tmp->getHK().getCmnd());
-      showText[2] = strToChar(tmp->getHK().getHo());
-      showText[3] = strToChar(tmp->getHK().getTen());
-      showText[4] = strToChar(tmp->getHK().getPhai());
-      for (int show_i = 4; show_i >= 0; show_i--)
-      {
-        show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
-                                      (j % 10) + 1, showText[show_i], 30);
-        show[show_i].isCenter = false;
-      }
-      for (int show_i = 4; show_i >= 0; show_i--)
-      {
-        CreateTextBox(show[show_i]);
-      }
+      showHanhKhach(currNode->getHK(), n_char, start_pos, cellW, j, order);
+    }
+
+    if (currNode->getLeft() != NULL)
+    {
+      queue.push(currNode->getLeft());
+    }
+    if (currNode->getRight() != NULL)
+    {
+      queue.push(currNode->getRight());
     }
     j++;
-    k++;
-    // }
-    queue.pop();
+    order++;
   }
 
   n_page = 1 + ((j - 1) / 10);
@@ -3231,13 +3420,13 @@ void resetInputTextBox(InputTextBox &box)
 
 void CreateTextBox(TextBox box)
 {
+  float text_w = 0.0f;
+  box.fontSize = (box.box.height * 2) / 3;
+
   Vector2 textpos = {
       box.box.x + 10,
       CenterDataSetter(box.box.height, box.box.y,
                        MeasureTextEx(FontArial, "a", box.fontSize, 0).y)};
-
-  float text_w = 0.0f;
-  box.fontSize = (box.box.height * 2) / 3;
 
   char showtext[40] = {0};
 

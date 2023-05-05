@@ -153,7 +153,7 @@ bool ChuyenBay::cach(int hour, Date another)
 {
   long long date1 = ngayGio.soVoi1_1_1900_0_0();
   long long date2 = another.soVoi1_1_1900_0_0();
-  if (abs(date1 - date2) > hour*60)
+  if (abs(date1 - date2) > hour * 60)
   {
     return true;
   }
@@ -365,9 +365,10 @@ bool DsChuyenBay::isAval(const char *soHieuMB, Date timeCB, const char *_maCB)
   NodeCB *tmp = this->head;
   while (tmp != NULL)
   {
+    if (tmp->getNode().getTrangThai() == HuyChuyen)
+      continue;
     if (!tmp->getNode().cach(3, timeCB))
     {
-      cout << tmp->getNode().getNgayGio().printDateHour() << " / " << timeCB.printDateHour() << endl;
       if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0 && strcmp(tmp->getNode().getMaCB(), _maCB))
         return false;
     }
