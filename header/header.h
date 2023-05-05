@@ -30,8 +30,32 @@ using std::stringstream;
 #define ENTER 13
 
 const char idChu[26] = {
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
 };
 
 const char idSo[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -71,3 +95,5 @@ int getCharSize(const char *_char);
 int chuanHoaKey(int key, const char *str, int index_pos, int mode);
 int strcmp(const char *str1, const char *str2);
 const char *strToChar(string str);
+void Selection_Sort(int A[], int n);
+void swap(int &a, int &b);

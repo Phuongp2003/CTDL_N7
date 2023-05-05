@@ -568,6 +568,7 @@ bool DsChuyenBay::update()
         ChuyenBay cb_t = tmp->getNode();
         cb_t.setTrangThai(HoanTat);
         tmp->setCb(cb_t);
+        // tmp->getNode().ThucHienCB();
         changed = true;
       }
     }

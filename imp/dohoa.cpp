@@ -660,8 +660,8 @@ void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
   }
   else if (tabMB_data.current_popup == 4)
   {
-    // if (Popup_XoaMB(listMB, tabMB_data))
-    //   tabMB_data.current_popup = 0;
+    if (Popup_Thongkesoluotbay(listMB, tabMB_data))
+      tabMB_data.current_popup = 0;
   }
   // cout << data->getSoHieuMB() << endl;
 }
@@ -1033,7 +1033,7 @@ bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data)
     {
       char CheckMB[16];
       strcpy(CheckMB, tabMB_data.data->getSoHieuMB());
-      listMB.insertMB(listMB.findPosMB(CheckMB));
+      listMB.deleteMB(listMB.findPosMB(CheckMB));
 
       ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
       listMB.writetoFile(fileWrite);
@@ -1058,115 +1058,123 @@ bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data)
 
 bool Popup_Thongkesoluotbay(DsMayBay &listMB, QLMB_data &tabMB_data)
 {
-  CreatePopupBackground();
+  CreatePageBackground(1);
+  Button button;
+  button.x = StartPos.x + 1201 + 29;
+  button.y = StartPos.y + 60 + 20 + 70 + 15;
+  button.w = 240;
+  button.h = 60;
+  button.gotNothing = false;
+  button.gotText = true;
+  button.font = FontArial;
+  button.BoMau = ArrowKey;
+
+  button.tittle = "Quay lại";
+
+  // search
+  Rectangle searchText = {StartPos.x + 60, StartPos.y + 60 + 100 + 15, 880, 50};
+  DrawRectangleRec(searchText, WHITE);
+  DrawRectangleRoundedLines(searchText, 0, 1, 3, BLACK);
+  tabMB_data.searchKeyword.textBox = searchText;
+
+  DrawTextEx(FontArial, "Search", {searchText.x, searchText.y}, 40, 0, BLUE);
+
+  tabMB_data.keyword = CreateTextInputBox(tabMB_data.searchKeyword);
+
+  Button button1;
+
+  button1.x = searchText.x + searchText.width;
+  button1.y = searchText.y;
+  button1.w = 200;
+  button1.h = 50;
+  button1.gotNothing = false;
+  button1.gotText = true;
+  button1.tittle = "TÌM KIẾM";
+  button1.font = FontArial;
+  button1.BoMau = ArrowKey;
+
+  if (CreateButton(button1))
+  {
+    cout << "Tim kiem" << endl;
+  }
+
   DrawTextEx(
       FontArial, "Thống kê số lượt bay",
-      {CenterDataSetter(700, StartPos.x + 400,
-                        MeasureTextEx(FontArial, "Thống kê số lượt bay", 50, 0).x),
-       CenterDataSetter(60, StartPos.y + 60 + 10,
-                        MeasureTextEx(FontArial, "A", 50, 0).y)},
-      50, 0, BLACK);
-  DrawTextEx(
-      FontArial, "Máy bay có các thông tin như sau: ",
-      {CenterDataSetter(
-           1100, StartPos.x + 200,
-           MeasureTextEx(FontArial, "Máy bay có các thông tin như sau: ", 40, 0)
-               .x),
-       CenterDataSetter(50, StartPos.y + 130,
-                        MeasureTextEx(FontArial, "A", 40, 0).y)},
-      40, 0, RED);
+      {CenterDataSetter(1200, StartPos.x,
+                        MeasureTextEx(FontArial, "Thống kê số lượt bay", 60, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10 + 40,
+                        MeasureTextEx(FontArial, "A", 60, 0).y)},
+      60, 0, BLACK);
+  const char *cell_tittle[3] = {"STT", "Mã MB", "Số lượt bay"};
 
-  if (tabMB_data.data != NULL)
+  float cellW[3] = {180, 450, 450};
+  CreateTable({StartPos.x + 35, StartPos.y + 60 + 100 + 80}, 3, cellW, 1080);
+  Vector2 *tittle_pos = GetTittlePos(
+      {StartPos.x + 35, StartPos.y + 60 + 100 + 80}, 3, cellW, cell_tittle);
+  for (int i = 0; i < 3; i++)
   {
-    DrawTextEx(FontArial, "Mã máy bay",
-               {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
-    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 180, 900, 50}, WHITE);
-    DrawRectangleRoundedLines(
-        {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50}, 0, 1, 2, BLACK);
-    DrawTextEx(FontArial, tabMB_data.data->getSoHieuMB(),
-               {StartPos.x + 300 + 5,
-                CenterDataSetter(60, StartPos.y + 60 + 180,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, BLACK);
-
-    DrawTextEx(FontArial, "Hãng máy bay",
-               {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
-    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 280, 900, 50}, WHITE);
-    DrawRectangleRoundedLines(
-        {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50}, 0, 1, 2, BLACK);
-    DrawTextEx(FontArial, tabMB_data.data->getLoaiMB(),
-               {StartPos.x + 300 + 5,
-                CenterDataSetter(60, StartPos.y + 60 + 280,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, BLACK);
-
-    DrawTextEx(FontArial, "Số dòng",
-               {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
-    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, WHITE);
-    DrawRectangleRoundedLines(
-        {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, 0, 1, 2, BLACK);
-    DrawTextEx(FontArial, intToChar(tabMB_data.data->getSoDong(), 2),
-               {StartPos.x + 300 + 5,
-                CenterDataSetter(60, StartPos.y + 60 + 380,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, BLACK);
-
-    DrawTextEx(FontArial, "Số dãy",
-               {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
-    DrawRectangleRec({StartPos.x + 300, StartPos.y + 60 + 480, 500, 50}, WHITE);
-    DrawRectangleRoundedLines(
-        {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50}, 0, 1, 2, BLACK);
-    DrawTextEx(FontArial, intToChar(tabMB_data.data->getSoDay(), 2),
-               {StartPos.x + 300 + 5,
-                CenterDataSetter(60, StartPos.y + 60 + 480,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, BLACK);
-
-    Button OK;
-    OK.x = StartPos.x + 225 + 750;
-    OK.y = StartPos.y + 60 + 625;
-    OK.w = 300;
-    OK.h = 50;
-    OK.gotNothing = false;
-    OK.gotText = true;
-    OK.tittle = (char *)"Đồng ý!";
-    OK.font = FontArial;
-    OK.BoMau = ArrowKey;
-
-    Button Cancel;
-    Cancel.x = StartPos.x + 225;
-    Cancel.y = StartPos.y + 60 + 625;
-    Cancel.w = 300;
-    Cancel.h = 50;
-    Cancel.gotNothing = false;
-    Cancel.gotText = true;
-    Cancel.tittle = (char *)"Huỷ";
-    Cancel.font = FontArial;
-    Cancel.BoMau = ArrowKey;
-
-    if (CreateButton(OK))
+    DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
+  }
+  static int current_page = 1;
+  int n_page = 1; // 1 + (spt/10)
+  int size = listMB.getSize();
+  int n_char;
+  if (size <= 99)
+    n_char = 2;
+  else if (size >= 100 && size <= 999)
+    n_char = 3;
+  else
+    n_char = 4;
+  int i = (current_page - 1) * 10;
+  int j = 0;
+  Vector2 start_pos = {StartPos.x + 60, StartPos.y + 110 + 70 + 60};
+  int *A = listMB.sapXepThongKe();
+  MayBay **dsMB = listMB.getMB();
+  for (int id = 0; id < size; id++)
+  {
+    if (isGotStr(dsMB[id]->getSoHieuMB(), tabMB_data.keyword))
     {
-      char CheckMB[16];
-      strcpy(CheckMB, tabMB_data.data->getSoHieuMB());
-      listMB.insertMB(listMB.findPosMB(CheckMB));
+      if (j >= i && j <= i + 9)
+      {
 
-      ofstream fileWrite("../data/dataMB.txt", ios::out | ios::trunc);
-      listMB.writetoFile(fileWrite);
-      fileWrite.close();
+        TextBox show[3];
+        const char *showText[3] = {
+            intToChar(j + 1, n_char),
+            dsMB[A[id]]->getSoHieuMB(),//listMB.getMB()[listMB.sapXepThongKe()[id]]->getSoHieuMB()
+            intToChar(dsMB[A[id]]->getSoLuotBay(), 3)};
+        for (int show_i = 2; show_i >= 0; show_i--)
+        {
+          show[show_i] = GetCellTextBox(start_pos, 3, cellW, show_i + 1,
+                                        (j % 10) + 1, showText[show_i], 30);
+        }
+        for (int show_i = 2; show_i >= 0; show_i--)
+        {
+          CreateTextBox(show[show_i]);
+        }
 
-      tabMB_data.status = -1;
-
-      return true;
-    }
-    if (CreateButton(Cancel))
-    {
-      return true;
+        // delete[] showText;
+      }
+      j++;
     }
   }
-  else
+  delete[] A;
+  n_page = 1 + ((j - 1) / 10);
+
+  // page and switch page
+  int swp =
+      SwitchPage(current_page, n_page,
+                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+
+  current_page = swp;
+  if (current_page > n_page)
+    current_page = 1;
+
+  if (CreateButton(button))
   {
-    if (Warning_NoData())
-      return true;
+    current_page = 1;
+    resetInputTextBox(tabMB_data.searchKeyword);
+    // tabMB_data.current_popup =0;
+    return true;
   }
   return false;
 }
@@ -1274,21 +1282,22 @@ MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
   // }
 
   Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
+  MayBay **temp = listMB.getMB();
   for (int id = 0; id < size; id++)
   {
-    if (isGotStr(listMB.getMB(id)->getSoHieuMB(), tabMB_data.keyword))
+    if (isGotStr(temp[id]->getSoHieuMB(), tabMB_data.keyword))
     {
       if (j >= i && j <= i + 9)
       {
         if (j % 10 == tabMB_data.pickdata_index)
-          tabMB_data.data = listMB.getMB(id);
+          tabMB_data.data = temp[id];
         TextBox show[5];
         const char *showText[5] = {
 
-            intToChar(j + 1, n_char), listMB.getMB(id)->getSoHieuMB(),
-            listMB.getMB(id)->getLoaiMB(),
-            intToChar(listMB.getMB(id)->getSoDay(), 3),
-            intToChar(listMB.getMB(id)->getSoDong(), 3)};
+            intToChar(j + 1, n_char), temp[id]->getSoHieuMB(),
+            temp[id]->getLoaiMB(),
+            intToChar(temp[id]->getSoDay(), 3),
+            intToChar(temp[id]->getSoDong(), 3)};
         for (int show_i = 4; show_i >= 0; show_i--)
         {
           show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
@@ -2677,7 +2686,7 @@ Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[],
   }
 
   float pos_y_table_title = CenterDataSetter(
-      50, StartPos.y + 60 + 100 + 80, MeasureTextEx(FontArial, "A", 40, 0).y);
+      50, vitriBang.y, MeasureTextEx(FontArial, "A", 40, 0).y);
   float pos_x_table_title[5];
 
   for (int i = 0; i < soCot; i++) //

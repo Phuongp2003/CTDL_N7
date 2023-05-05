@@ -20,6 +20,7 @@ private:
 public: //
   MayBay();
   MayBay(const char *soHieuMB, const char *loaiMB, int soDay, int soDong);
+  MayBay(const char *soHieuMB, const char *loaiMB, int soDay, int soDong, int soLuotThucHienCB);
   void setSoHieuMB(const char *soHieuMB);
   char *getSoHieuMB();
   void setLoaiMB(const char *loaiMB);
@@ -66,7 +67,7 @@ public:
   bool isFull();
   // MayBay *New_MB(MayBay *mayBay);
   void insertMB(MayBay *mayBay);
-  void insertMB(int index);
+  void deleteMB(int index);
   int findPosMB(const char *soHieuMB);
   MayBay *findMB(const char *soHieuMB);
 
@@ -74,7 +75,8 @@ public:
   DsMayBay findDsMB(const char *soHieuMB);
 
   void deleteDsMB();
-  MayBay *getMB(int index);
+  MayBay **getMB();
+  int *sapXepThongKe();
   void readFromFile(ifstream &file);
   void writetoFile(ofstream &file);
   ~DsMayBay(); //
