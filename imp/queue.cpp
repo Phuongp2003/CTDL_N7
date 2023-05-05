@@ -1,62 +1,90 @@
 #include "../header/queue.h"
 
-Queue::Queue(int size)
+NodeQueue::NodeQueue(NodeHK *data)
 {
-    this->size = size;
-    arr = new NodeHK *[size];
-    this->front = -1;
-    this->rear = -1;
+    this->data = data;
+    this->next = NULL;
 }
 
-bool Queue::isEmpty()
+NodeHK *NodeQueue::getData()
 {
-    return this->front == -1 || this->rear == -1;
+    return this->data;
 }
 
-bool Queue::isFull()
+NodeQueue *NodeQueue::getNext()
 {
-    return this->rear - this->front + 1 == 0 || 
-        this->rear - this->front + 1 == this->size;
+    return this->next;
 }
 
-void Queue::push(NodeHK *node)
+void NodeQueue::setData(NodeHK *data)
 {
-    if (isFull())
+    this->data = data;
+}
+
+void NodeQueue::setNext(NodeQueue *next)
+{
+    this->next = next;
+}
+
+//-----------------------------
+
+Queue::Queue()
+{
+    this->front = NULL;
+    this->rear = NULL;
+}
+
+void Queue::setFront(NodeQueue *front)
+{
+    this->front = front;
+}
+
+NodeQueue *Queue::getRear()
+{
+    return this->rear;
+}
+
+void Queue::setRear(NodeQueue *rear)
+{
+    this->rear = rear;
+}
+
+void Queue::push(NodeHK *data)
+{
+    NodeQueue *tmp = new NodeQueue(data);
+
+    if (rear == NULL)
     {
+        this->front = tmp;
+        this->rear = tmp;
         return;
     }
-    if (this->front == -1) {
-        this->front = 0;
-        this->rear = -1;
-    }
-    if (this->rear == this->size - 1) {
-        this->rear = -1;
-    }
-    ++this->rear;
-    arr[this->rear] = node;
+    this->rear->setNext(tmp);
+    this->rear = tmp;
 }
 
 void Queue::pop()
 {
-    if (isEmpty())
+    if (this->front == NULL)
     {
         return;
     }
-    if (this->front == this->rear)
+    NodeQueue *tmp = this->front;
+    this->front = this->front->getNext();
+
+    if (this->front == NULL)
     {
-        this->front = -1;
-        this->rear = -1;
+        this->rear = NULL;
     }
-    else
-    {
-        this->front++;
-        if (this->front == this->size) {
-            this->front = 0;
-        }
-    }
+    delete tmp;
 }
 
 NodeHK *Queue::getFront()
 {
-    return arr[this->front];
+    return this->front->getData();
+}
+
+bool Queue::isEmpty()
+{
+    return this->front == NULL;
 }

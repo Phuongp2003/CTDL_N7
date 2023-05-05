@@ -152,26 +152,26 @@ void DsHanhKhach::inOrderTraversal(NodeHK *node)
 
 void DsHanhKhach::printInOrder() { inOrderTraversal(root); }
 
-Queue DsHanhKhach::getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay)
-{
-    NodeCB *nodeCB = dsChuyenBay.timCB(maCB);
-    Queue queue = Queue(this->size);
+// Queue DsHanhKhach::getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay)
+// {
+//     NodeCB *nodeCB = dsChuyenBay.timCB(maCB);
+//     Queue queue = Queue(this->size);
 
-    if (nodeCB == NULL)
-    {
-        return queue;
-    }
-    VeMayBay *dsVe = nodeCB->getNode().getDSVe().getDSVeMB();
-    string cmnd;
-    NodeHK *nodeHK;
-    for (int i = 0; i < dsChuyenBay.getSize(); i++)
-    {
-        cmnd = dsVe[i].getHanhKhach();
-        nodeHK = search(cmnd);
-        queue.push(nodeHK);
-    }
-    return queue;
-}
+//     if (nodeCB == NULL)
+//     {
+//         return queue;
+//     }
+//     VeMayBay *dsVe = nodeCB->getNode().getDSVe().getDSVeMB();
+//     string cmnd;
+//     NodeHK *nodeHK;
+//     for (int i = 0; i < dsChuyenBay.getSize(); i++)
+//     {
+//         cmnd = dsVe[i].getHanhKhach();
+//         nodeHK = search(cmnd);
+//         queue.push(nodeHK);
+//     }
+//     return queue;
+// }
 
 void DsHanhKhach::writeToFileOneHK(NodeHK *node)
 {
@@ -197,9 +197,10 @@ void DsHanhKhach::writeToFileHelper(ofstream &file, NodeHK *node)
     }
     HanhKhach hanhKhach = node->getHK();
     string phai = (hanhKhach.getPhai() == "Nam") ? "0" : "1";
-    writeToFileHelper(file, node->getLeft());
     file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|'
          << hanhKhach.getTen() << '|' << phai << '\n';
+    writeToFileHelper(file, node->getLeft());
+    writeToFileHelper(file, node->getRight());
 }
 
 void DsHanhKhach::writeToFileAllHK()
@@ -268,29 +269,29 @@ int DsHanhKhach::getHeight(NodeHK *node)
     }
 }
 
-void DsHanhKhach::levelOrderTraversalHelper(NodeHK *node, int level, Queue &queue)
-{
-    if (node == NULL)
-    {
-        return;
-    }
-    if (level == 1)
-    {
-        queue.push(node);
-    }
-    else
-    {
-        levelOrderTraversalHelper(node->getLeft(), level - 1, queue);
-        levelOrderTraversalHelper(node->getRight(), level - 1, queue);
-    }
-}
+// void DsHanhKhach::levelOrderTraversalHelper(NodeHK *node, int level, Queue &queue)
+// {
+//     if (node == NULL)
+//     {
+//         return;
+//     }
+//     if (level == 1)
+//     {
+//         queue.push(node);
+//     }
+//     else
+//     {
+//         levelOrderTraversalHelper(node->getLeft(), level - 1, queue);
+//         levelOrderTraversalHelper(node->getRight(), level - 1, queue);
+//     }
+// }
 
-void DsHanhKhach::levelOrderTraversal(Queue &queue)
-{
-    int height = getHeight(root);
+// void DsHanhKhach::levelOrderTraversal(Queue &queue)
+// {
+//     int height = getHeight(root);
 
-    for (int i = 1; i <= height; i++)
-    {
-        levelOrderTraversalHelper(root, i, queue);
-    }
-}
+//     for (int i = 1; i <= height; i++)
+//     {
+//         levelOrderTraversalHelper(root, i, queue);
+//     }
+// }
