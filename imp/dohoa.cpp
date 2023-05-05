@@ -119,6 +119,13 @@ struct QLHK_data
   int current_page = 1;
 };
 
+struct QLVe_data
+{
+  int current_page = 1;
+  int position = -1;
+  VeMayBay data = VeMayBay();
+};
+
 struct QLCB_data
 {
   NodeCB *data = nullptr;
@@ -132,6 +139,7 @@ struct QLCB_data
   InputTextBox MaCB, MaMB, NoiDen, Ngay, Thang, Nam, Gio, Phut;
   bool inChooseMB = false;
   QLMB_data dataMB;
+  QLVe_data dataDSVe;
 
   InputTextBox searchMaCB, searchNoiDen, searchNgay, searchThang, searchNam;
   int pickdata_index = -1;
@@ -289,8 +297,9 @@ void resetData_QLCB(QLCB_data &data)
   data.searchMaCB.mode = 3;
 
   resetData_QLMB(data.dataMB);
+  resetData_QLDSVe(data.dataDSVe);
 
-  data.data = nullptr;
+  data.data = NULL;
   data.status = 0;
 
   data.current_popup = 0;
@@ -327,6 +336,13 @@ BoMauNut MauThanhQuanLy{
     {25, 25, 255, 255},
 
 };
+
+void resetData_QLDSVe(QLVe_data &data)
+{
+  data.current_page = 1;
+  data.position = -1;
+  data.data = VeMayBay();
+}
 
 Vector2 operator-(const Vector2 first, const Vector2 second)
 {
@@ -1376,7 +1392,7 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
     button[3].tittle = "Xem danh sach vé";
     if (CreateButton(button[3]))
     {
-      cout << "XemDSVe" << endl;
+      tabCB_data.current_popup = 4;
     }
     button[4].tittle = "Đặt vé";
     if (CreateButton(button[4]))
@@ -1408,10 +1424,7 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   }
   else if (tabCB_data.current_popup == 4)
   {
-    // if (Popup_showDSVe(listCB, tabCB_data))
-    // {
-    //   tabCB_data.current_popup = 0;
-    // }
+    XuLy_QLVe(tabCB_data);
   }
   else if (tabCB_data.current_popup == 5)
   {
@@ -2417,7 +2430,7 @@ void CreatePage_QLVe()
   // CreateTable_QLVe();
 
   ChuyenBay *cb = new ChuyenBay("CB01", "Da Lat", {25, 4, 2023, 10, 0}, "MB1");
-  XuLy_QLVe(*cb);
+  // XuLy_QLVe(*cb);
 }
 
 void CreateTable_QLVe()
@@ -2433,36 +2446,31 @@ void CreateTable_QLVe()
               3, cellW, 700);
 }
 
-void XuLy_QLVe(ChuyenBay &cb)
+void XuLy_QLVe(QLCB_data &tabCB_data)
 {
-  DsMayBay ds;
-  MayBay *mb = new MayBay("MB1", "AB1", 17, 25);
-  ds.insertMB(mb);
-  DsVeMayBay dsve = DsVeMayBay();
-  dsve.setDSVe(ds.findMB(cb.getMaMayBay()));
-  cb.setDSVe(dsve);
-  static int current_page = 1;
+  ChuyenBay currCB = tabCB_data.data->getNode();
   int n_page = 1;
-  int size = dsve.getSoVeToiDa();
-  static int index = -1;
-  int i = (current_page - 1) * 10;
+  // int size = dsve.getSoVeToiDa();
+  int i = (tabCB_data.dataDSVe.current_page - 1) * 10;
   int j = 0;
+  int sDay = tabCB_data.dsachMB.findMB(currCB.getMaMayBay())->getSoDay(),
+      sDong = tabCB_data.dsachMB.findMB(currCB.getMaMayBay())->getSoDong();
   // if (current_page * 10 < size)
   //     j = current_page * 100;
   // else
   //     j = size;
   Rectangle r;
   r = {CenterDataSetter(1200, StartPos.x,
-                        (ds.findMB(cb.getMaMayBay())->getSoDay()) * 50 +
-                            (ds.findMB(cb.getMaMayBay())->getSoDay() - 1) * 20),
+                        (sDay)*50 +
+                            (sDay - 1) * 20),
        StartPos.y + 85, 50, 30};
   Button button;
-  for (int a = 0; a < ds.findMB(cb.getMaMayBay())->getSoDong(); a++)
+  for (int a = 0; a < sDong; a++)
   {
 
     if (j >= i && j <= i + 9)
     {
-      for (int m = 0; m < ds.findMB(cb.getMaMayBay())->getSoDay(); m++)
+      for (int m = 0; m < sDay; m++)
       {
         button.x = r.x + m * 70;
         button.y = r.y + (a % 10) * 40;
@@ -2472,16 +2480,13 @@ void XuLy_QLVe(ChuyenBay &cb)
         button.gotNothing = false;
         button.gotText = true;
         button.tittle =
-            cb.getDSVe()
-                .getVe(m * ds.findMB(cb.getMaMayBay())->getSoDong() + a)
-                .getIDVe()
-                .c_str();
+            strToChar(currCB.getDSVe().getVe(m * sDong + a).getIDVe());
         button.font = FontArial;
         button.BoMau = ArrowKey;
         if (CreateButton(button))
         {
-          index = m * (ds.findMB(cb.getMaMayBay())->getSoDong()) + j;
-          cout << index << endl;
+          tabCB_data.dataDSVe.position = m * (sDong) + j;
+          cout << tabCB_data.dataDSVe.position << endl;
         };
       }
     }
@@ -2491,13 +2496,16 @@ void XuLy_QLVe(ChuyenBay &cb)
   n_page = 1 + ((j - 1) / 10);
 
   int swp =
-      SwitchPage(current_page, n_page,
+      SwitchPage(tabCB_data.dataDSVe.current_page, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-  if (current_page != swp)
-    index = -1;
-  current_page = swp;
-  if (current_page > n_page)
-    current_page = 1;
+  if (tabCB_data.dataDSVe.current_page != swp)
+  {
+    tabCB_data.dataDSVe.position = -1;
+    tabCB_data.dataDSVe.current_page = swp;
+  }
+
+  if (tabCB_data.dataDSVe.current_page > n_page)
+    tabCB_data.dataDSVe.current_page = 1;
 }
 
 void CreatePage_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)

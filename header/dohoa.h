@@ -74,6 +74,7 @@ struct UIcontroller;
 struct QLMB_data;
 struct QLCB_data;
 struct QLHK_data;
+struct QLVe_data;
 
 void UI_switchTab(UIcontroller &control);
 void InitUIData(UIcontroller &control);
@@ -98,9 +99,10 @@ NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 void CreateTable_QLCB();
 void StatusHelp_QLCB();
 
+void resetData_QLDSVe(QLVe_data &data);
 void CreatePage_QLVe();
 void CreateTable_QLVe();
-void XuLy_QLVe(ChuyenBay &cb);
+void XuLy_QLVe(QLCB_data &tabCB_data);
 
 void resetData_QLHK(QLHK_data &data);
 void CreatePage_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data);
