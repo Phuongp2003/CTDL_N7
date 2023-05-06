@@ -394,9 +394,9 @@ bool DsChuyenBay::isExist(const char *maCB)
   return false;
 }
 
-bool DsChuyenBay::isUsed(const char* maMB)
+bool DsChuyenBay::isUsed(const char *maMB)
 {
- NodeCB *tmp = this->head;
+  NodeCB *tmp = this->head;
   while (tmp != NULL)
   {
 
@@ -406,7 +406,7 @@ bool DsChuyenBay::isUsed(const char* maMB)
     tmp = tmp->getNext();
   }
 
-  return false; 
+  return false;
 }
 
 bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
@@ -488,7 +488,8 @@ void DsChuyenBay::readFromFile(DsMayBay listMB)
         if (pos == "")
           break;
         getline(s, cmnd, '|');
-        VeMayBay t_ve = VeMayBay(cmnd);
+        VeMayBay t_ve = dsVe.getVe(stoi(pos));
+        t_ve.setHanhKhach(cmnd);
 
         dsVe.setVe(t_ve, stoi(pos));
       }
@@ -512,35 +513,32 @@ void DsChuyenBay::readFromFile(DsMayBay listMB)
 }
 void DsChuyenBay::writetToFile()
 {
-  ofstream file("../data/dataCB.txt", ios::in);
+  ofstream file("../data/dataCB.txt", ios::out);
   if (file.is_open())
   {
     NodeCB *tmp = this->head;
     while (tmp != NULL) //
     {
-      file << tmp->getNode().getMaCB() << "|" << tmp->getNode().getMaMayBay()
-           << "|" << tmp->getNode().getNgayGio().getNgay() << "|"
+      file << tmp->getNode().getMaCB() << "|"
+           << tmp->getNode().getMaMayBay() << "|"
+           << tmp->getNode().getNgayGio().getNgay() << "|"
            << tmp->getNode().getNgayGio().getThang() << "|"
            << tmp->getNode().getNgayGio().getNam() << "|"
            << tmp->getNode().getNgayGio().getGio() << "|"
            << tmp->getNode().getNgayGio().getPhut() << "|"
-           << tmp->getNode().getNoiDen() << "|" << tmp->getNode().getTrangThai()
-           << "|";
+           << tmp->getNode().getNoiDen() << "|"
+           << tmp->getNode().getTrangThai() << "|";
 
-      DsVeMayBay t_ve = tmp->getNode().getDSVe();
-      file << t_ve.getSoVeToiDa() << "|" << t_ve.getSoVeConLai() << "|";
+      file << tmp->getNode().getDSVe().getSoVeToiDa() << "|" << tmp->getNode().getDSVe().getSoVeConLai() << "|";
 
-      for (int i = i; i < t_ve.getSoVeToiDa(); i++)
+      for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
       {
-        if (t_ve.getVe(i).getHanhKhach() != "")
-          file << i << "|" << t_ve.getVe(i).getHanhKhach() << "|";
+        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() != "")
+          file << i << "|" << tmp->getNode().getDSVe().getVe(i).getHanhKhach() << "|";
       }
       file << endl; //
 
-      if (tmp->hasNext())
-        tmp = tmp->getNext();
-      else
-        break;
+      tmp = tmp->getNext();
     }
   }
   else
@@ -603,4 +601,13 @@ void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
 
   listCB.readFromFile(listMB);
   listHK.readFromFile();
+}
+
+void setDataToFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
+{
+  ofstream DataMBout("../data/dataMB.txt", ios::out);
+  listMB.writetoFile(DataMBout);
+  DataMBout.close();
+  listHK.writeToFileAllHK();
+  listCB.writetToFile();
 }

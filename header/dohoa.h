@@ -5,8 +5,8 @@
 #include "header.h"
 #include "maybay.h"
 #include "ngaythang.h"
-#include "vemaybay.h"
 #include "queue.h"
+#include "vemaybay.h"
 #include <list>
 
 // Kích thước cửa sổ mặc định
@@ -103,7 +103,6 @@ void StatusHelp_QLCB();
 void resetData_QLDSVe(QLVe_data &data);
 void CreatePage_QLVe();
 void CreateTable_QLVe();
-void XuLy_QLVe(QLCB_data &tabCB_data);
 
 void resetData_QLHK(QLHK_data &data);
 void CreatePage_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data);
@@ -121,6 +120,8 @@ bool Popup_ThemHK(DsHanhKhach &listHK);
 bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 bool Popup_HieuChinhCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 bool Popup_XoaCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
+bool Popup_chonVe(QLCB_data &tabCB_data);
+bool Popup_showListHK(QLCB_data &tabCB_data);
 void Popup_getMB(DsChuyenBay listCB, QLCB_data &tabCB_data, Date gioBay);
 
 void ThanhQuanLy(UIcontroller &control); // done

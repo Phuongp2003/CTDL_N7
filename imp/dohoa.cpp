@@ -174,6 +174,9 @@ void UI_switchTab(UIcontroller &control, int idTab)
     resetData_QLHK(control.dataTabHK);
   }
 
+  setDataToFile(control.listCB, control.listMB, control.listHK);
+  getDataFromFile(control.listCB, control.listMB, control.listHK);
+
   control.current_tab = idTab;
 }
 void InitUIData(UIcontroller &control)
@@ -1212,7 +1215,6 @@ MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
   CreateTable_QLMB();
 
   // data
-  static int current_page = 1;
   int n_page = 1; // 1 + (spt/10)
   // if (status == 1)
   // {
@@ -1270,7 +1272,7 @@ MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
     n_char = 3;
   else
     n_char = 4;
-  int i = (current_page - 1) * 10;
+  int i = (tabMB_data.current_showPage - 1) * 10;
   int j = 0;
   // if (current_page * 10 < size)
   //     j = current_page * 10;
@@ -1314,16 +1316,16 @@ MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
 
   // page and switch page
   int swp =
-      SwitchPage(current_page, n_page,
+      SwitchPage(tabMB_data.current_showPage, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-  if (current_page != swp)
+  if (tabMB_data.current_showPage != swp)
   {
     tabMB_data.pickdata_index = -1;
     tabMB_data.data = nullptr;
   }
-  current_page = swp;
-  if (current_page > n_page)
-    current_page = 1;
+  tabMB_data.current_showPage = swp;
+  if (tabMB_data.current_showPage > n_page)
+    tabMB_data.current_showPage = 1;
   if (tabMB_data.pickdata_index == -1)
     tabMB_data.data = nullptr;
   return tabMB_data.data;
@@ -1331,8 +1333,8 @@ MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data)
 
 void CreateTable_QLMB()
 {
-  const char *cell_tittle[5] = {"STT", "Mã máy bay", "Tên máy bay", "Số dòng",
-                                "Số dãy"};
+  const char *cell_tittle[5] = {"STT", "Mã máy bay", "Tên máy bay",
+                                "Số dãy", "Số dòng"};
 
   float cellW[5] = {100, 300, 380, 150, 150};
   CreateTable({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 5, cellW, 1080);
@@ -1397,7 +1399,7 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
     button[4].tittle = "Đặt vé";
     if (CreateButton(button[4]))
     {
-      cout << "Dat ve" << endl;
+      tabCB_data.current_popup = 5;
     }
     tabCB_data.data = XuLy_QLCB(listCB, tabCB_data);
   }
@@ -1424,16 +1426,23 @@ void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   }
   else if (tabCB_data.current_popup == 4)
   {
-    XuLy_QLVe(tabCB_data);
+    if (Popup_showListHK(tabCB_data))
+    {
+      tabCB_data.current_popup = 0;
+    }
   }
   else if (tabCB_data.current_popup == 5)
   {
-    // if (Popup_datVe(listCB, tabCB_data))
-    // {
-    //   tabCB_data.current_popup = 0;
-    // }
+    if (Popup_chonVe(tabCB_data))
+    {
+      tabCB_data.current_popup = 0;
+    }
   }
-  // CreateTable_QLCB();
+
+  if (listCB.update())
+  {
+    getDataFromFile(listCB, tabCB_data.dsachMB, tabCB_data.dsachHK);
+  }
 }
 
 void Popup_getMB(DsChuyenBay listCB, QLCB_data &tabCB_data, Date gioBay)
@@ -2084,6 +2093,154 @@ bool Popup_XoaCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
   return false;
 }
 
+bool Popup_showListHK(QLCB_data &tabCB_data)
+{
+  ChuyenBay currCB = tabCB_data.data->getNode();
+  int n_page = 1 + (currCB.getDSVe().getSoVeDaDat() - 1) / 10;
+
+  float cellW[5] = {100, 180, 300, 350, 150};
+  const char *cell_tittle[5] = {"STT", "Mã vé", "Số CMND", "Họ và tên đệm", "Tên"};
+  Vector2 start_pos = {CenterDataSetter(1200, StartPos.x, 1080), StartPos.y + 60 + 80 + 100};
+  CreateTable(start_pos, 5, cellW, 1080);
+  Vector2 *tittle_pos = GetTittlePos(start_pos, 5, cellW, cell_tittle);
+  for (int i = 0; i < 5; i++)
+  {
+    DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
+  }
+
+  int n_char;
+  if (currCB.getDSVe().getSoVeDaDat() <= 99)
+    n_char = 2;
+  else if (currCB.getDSVe().getSoVeDaDat() >= 100)
+    n_char = 3;
+
+  if (currCB.getDSVe().getSoVeDaDat() == 0)
+  {
+  }
+  else
+  {
+    int iVe = 0;
+    for (int i = 0; i < currCB.getDSVe().getSoVeToiDa(); i++)
+    {
+
+      VeMayBay tmp = currCB.getDSVe().getVe(i);
+      if (tmp.getHanhKhach() == "")
+        continue;
+
+      const char *showText[5];
+      showText[0] = intToChar(iVe % 10 + 1, n_char);
+      showText[1] = strToChar(tmp.getIDVe());
+      showText[2] = strToChar(tmp.getHanhKhach());
+      showText[3] = strToChar(tabCB_data.dsachHK.search(tmp.getHanhKhach())->getHK().getHo());
+      showText[4] = strToChar(tabCB_data.dsachHK.search(tmp.getHanhKhach())->getHK().getTen());
+
+      TextBox show[5];
+      for (int j = 0; j < 5; j++)
+      {
+        show[j] = GetCellTextBox(start_pos, 5, cellW, j + 1, (iVe % 10) + 1, showText[j], 30);
+      }
+      for (int j = 4; j >= 0; j--)
+      {
+        CreateTextBox(show[j]);
+      }
+    }
+  }
+
+  int swp =
+      SwitchPage(tabCB_data.dataDSVe.current_page, n_page,
+                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+  if (tabCB_data.dataDSVe.current_page != swp)
+  {
+    tabCB_data.dataDSVe.position = -1;
+    tabCB_data.dataDSVe.current_page = swp;
+  }
+
+  if (tabCB_data.dataDSVe.current_page > n_page)
+    tabCB_data.dataDSVe.current_page = 1;
+
+  return false;
+}
+
+bool Popup_chonVe(QLCB_data &tabCB_data)
+{
+
+  ChuyenBay currCB = tabCB_data.data->getNode();
+  int n_page = 1;
+  // int size = dsve.getSoVeToiDa();
+  int sDay = tabCB_data.dsachMB.findMB(currCB.getMaMayBay())->getSoDay(),
+      sDong = tabCB_data.dsachMB.findMB(currCB.getMaMayBay())->getSoDong();
+  int IndexSoDongMax = sDong;
+  if (sDong > 10)
+    IndexSoDongMax = (tabCB_data.dataDSVe.current_page) * 10;
+  if (IndexSoDongMax > sDong)
+    IndexSoDongMax = sDong;
+  // if (current_page * 10 < size)
+  //     j = current_page * 100;
+  // else
+  //     j = size;
+  Rectangle r;
+  r = {0,
+       CenterDataSetter(12 * 40, StartPos.y + 60 + 70 + 80, sDay * 40),
+       70, 30};
+  if (sDong > 10)
+    r.x = CenterDataSetter(1200, StartPos.x, 10 * 100);
+  else
+    r.x = CenterDataSetter(1200, StartPos.x, (sDong)*100);
+
+  DrawTextPro(FontArial,
+              "Dãy",
+              // {StartPos.x + 20, CenterDataSetter(12 * 40, StartPos.y + 60 + 70 + 80, 40)},
+              // {StartPos.x + 20, CenterDataSetter(12 * 40, StartPos.y + 60 + 70 + 80, 40)},
+              {r.x - MeasureTextEx(FontArial, "Day", 40, 0).y,
+               CenterDataSetter(12 * 40, StartPos.y + 60 + 70 + 80, MeasureTextEx(FontArial, "Day", 40, 0).x) +
+                   MeasureTextEx(FontArial, "Day", 40, 0).x},
+              {0, 0},
+              -90, 40, 0, RED);
+
+  DrawTextEx(FontArial,
+             "Dòng",
+             {CenterDataSetter(1200, StartPos.x, MeasureTextEx(FontArial, "Dong", 40, 0).x), r.y - MeasureTextEx(FontArial, "A", 40, 0).y - 5},
+             40, 0, RED);
+  Button button;
+  for (int a = 0; a < sDay; a++)
+  {
+    for (int m = (tabCB_data.dataDSVe.current_page - 1) * 10; m < IndexSoDongMax; m++)
+    {
+      button.x = r.x + (m % 10) * 100 + 15;
+      button.y = r.y + a * 40;
+      button.w = r.width;
+      button.h = r.height;
+      button.gotNothing = false;
+      button.gotText = true;
+      button.tittle =
+          strToChar(currCB.getDSVe().getVe(a * sDong + m).getIDVe());
+      button.font = FontArial;
+      button.BoMau = ArrowKey;
+      if (CreateButton(button))
+      {
+        tabCB_data.dataDSVe.position = a * (sDong) + m;
+        cout << tabCB_data.dataDSVe.position << endl;
+      };
+    }
+  }
+
+  n_page = 1 + ((sDong - 1) / 10);
+
+  int swp =
+      SwitchPage(tabCB_data.dataDSVe.current_page, n_page,
+                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+  if (tabCB_data.dataDSVe.current_page != swp)
+  {
+    tabCB_data.dataDSVe.position = -1;
+    tabCB_data.dataDSVe.current_page = swp;
+  }
+
+  if (tabCB_data.dataDSVe.current_page > n_page)
+    tabCB_data.dataDSVe.current_page = 1;
+
+  return false;
+}
+
 void CreateTable_QLCB()
 {
   const char *cell_tittle[7] = {"STT", "Mã CB", "Số hiệu MB", "Ngày giờ",
@@ -2419,8 +2576,6 @@ NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
 
   // if (first_run)
   //   first_run = false;
-  listCB.update();
-
   return tabCB_data.data;
 }
 
@@ -2444,68 +2599,6 @@ void CreateTable_QLVe()
   CreateTable({CenterDataSetter(1080, StartPos.x + 60, 700),
                StartPos.y + 60 + 100 + 80},
               3, cellW, 700);
-}
-
-void XuLy_QLVe(QLCB_data &tabCB_data)
-{
-  ChuyenBay currCB = tabCB_data.data->getNode();
-  int n_page = 1;
-  // int size = dsve.getSoVeToiDa();
-  int i = (tabCB_data.dataDSVe.current_page - 1) * 10;
-  int j = 0;
-  int sDay = tabCB_data.dsachMB.findMB(currCB.getMaMayBay())->getSoDay(),
-      sDong = tabCB_data.dsachMB.findMB(currCB.getMaMayBay())->getSoDong();
-  // if (current_page * 10 < size)
-  //     j = current_page * 100;
-  // else
-  //     j = size;
-  Rectangle r;
-  r = {CenterDataSetter(1200, StartPos.x,
-                        (sDay)*50 +
-                            (sDay - 1) * 20),
-       StartPos.y + 85, 50, 30};
-  Button button;
-  for (int a = 0; a < sDong; a++)
-  {
-
-    if (j >= i && j <= i + 9)
-    {
-      for (int m = 0; m < sDay; m++)
-      {
-        button.x = r.x + m * 70;
-        button.y = r.y + (a % 10) * 40;
-        button.w = r.width;
-        button.h = r.height;
-        button.BoTron = false;
-        button.gotNothing = false;
-        button.gotText = true;
-        button.tittle =
-            strToChar(currCB.getDSVe().getVe(m * sDong + a).getIDVe());
-        button.font = FontArial;
-        button.BoMau = ArrowKey;
-        if (CreateButton(button))
-        {
-          tabCB_data.dataDSVe.position = m * (sDong) + j;
-          cout << tabCB_data.dataDSVe.position << endl;
-        };
-      }
-    }
-    j++;
-  }
-
-  n_page = 1 + ((j - 1) / 10);
-
-  int swp =
-      SwitchPage(tabCB_data.dataDSVe.current_page, n_page,
-                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-  if (tabCB_data.dataDSVe.current_page != swp)
-  {
-    tabCB_data.dataDSVe.position = -1;
-    tabCB_data.dataDSVe.current_page = swp;
-  }
-
-  if (tabCB_data.dataDSVe.current_page > n_page)
-    tabCB_data.dataDSVe.current_page = 1;
 }
 
 void CreatePage_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data)
