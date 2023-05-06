@@ -10,6 +10,7 @@ MayBay::MayBay()
   soDong = 0;
   soLuotThucHienCB = 0;
 }
+
 MayBay::MayBay(const char *soHieuMB, const char *loaiMB, int soDay,
                int soDong)
 {
@@ -21,6 +22,19 @@ MayBay::MayBay(const char *soHieuMB, const char *loaiMB, int soDay,
   this->soDay = soDay;
   this->soDong = soDong;
   soLuotThucHienCB = 0;
+}
+
+MayBay::MayBay(const char *soHieuMB, const char *loaiMB, int soDay,
+               int soDong, int soLuotThucHienCB)
+{
+  strncpy(this->soHieuMB, soHieuMB, 16);
+  this->soHieuMB[16] = '\0';
+  // this->SoHieuMB = SoHieuMB;
+  strncpy(this->loaiMB, loaiMB, 41);
+  this->loaiMB[41] = '\0';
+  this->soDay = soDay;
+  this->soDong = soDong;
+  this->soLuotThucHienCB = soLuotThucHienCB;
 }
 
 void MayBay::setSoHieuMB(const char *soHieuMB)
@@ -138,7 +152,7 @@ void DsMayBay::insertMB(MayBay *maybay)
   data[size] = maybay;
   size++;
 }
-void DsMayBay::insertMB(int index)
+void DsMayBay::deleteMB(int index)
 {
   delete data[index];
   for (int i = index; i < this->size - 1; i++)
@@ -178,23 +192,23 @@ int DsMayBay::viTri(const char *a, const char *b)
   return d;
 }
 // khi tìm và lấy cả danh sách máy bay thì stringsearch không được là == ""
-DsMayBay DsMayBay::findDsMB(const char *String_Search)
-{
-  DsMayBay *dsmb = new DsMayBay();
-  for (int j = 0; j < size; j++)
-  {
-    if (isGotStr(data[j]->getSoHieuMB(), String_Search))
-    {
-      dsmb->insertMB(getMB(j));
-    }
-  }
-  if (dsmb->getSize() == 0)
-  {
-    delete dsmb;
-    return *(new DsMayBay());
-  }
-  return *dsmb;
-}
+// DsMayBay DsMayBay::findDsMB(const char *String_Search)
+// {
+//   DsMayBay *dsmb = new DsMayBay();
+//   for (int j = 0; j < size; j++)
+//   {
+//     if (isGotStr(data[j]->getSoHieuMB(), String_Search))
+//     {
+//       dsmb->insertMB(getMB(j));
+//     }
+//   }
+//   if (dsmb->getSize() == 0)
+//   {
+//     delete dsmb;
+//     return *(new DsMayBay());
+//   }
+//   return *dsmb;
+// }
 
 void DsMayBay::deleteDsMB()
 {
@@ -205,14 +219,14 @@ void DsMayBay::deleteDsMB()
   this->size = 0;
 }
 
-MayBay *DsMayBay::getMB(int index) { return data[index]; }
+MayBay **DsMayBay::getMB() { return data; }
 
 void DsMayBay::readFromFile(ifstream &file)
 {
   if (file.is_open())
   {
     deleteDsMB();
-    std::string soHieuMB, loaiMB, soDay, soDong;
+    std::string soHieuMB, loaiMB, soDay, soDong, soLuotThucHienCB;
     std::string line = "";
     while (std::getline(file, line))
     {
@@ -221,13 +235,40 @@ void DsMayBay::readFromFile(ifstream &file)
       getline(s, loaiMB, '|');
       getline(s, soDay, '|');
       getline(s, soDong, '|');
+      getline(s, soLuotThucHienCB, '|');
       insertMB(new MayBay(soHieuMB.c_str(), loaiMB.c_str(), stoi(soDay),
-                          stoi(soDong)));
+                          stoi(soDong), stoi(soLuotThucHienCB)));
     }
     file.close();
   }
   else
     cout << "Error" << endl;
+}
+
+int *DsMayBay::sapXepThongKe()
+{
+  int *A = new int[size];
+  for (int i = 0; i < size; i++)
+  {
+    A[i] = i;
+  }
+
+  int max, vitrimax;
+  int i, j;
+  for (i = 0; i < size - 1; i++)
+  {
+    max = data[A[i]]->getSoLuotBay();
+    vitrimax = i;
+    for (j = i + 1; j < size; j++)
+      if (data[A[j]]->getSoLuotBay() > max)
+      {
+        max = data[A[j]]->getSoLuotBay();
+        vitrimax = j;
+      }
+    swap(A[vitrimax], A[i]);
+  }
+
+  return A;
 }
 
 void DsMayBay::writetoFile(ofstream &file)
@@ -238,6 +279,7 @@ void DsMayBay::writetoFile(ofstream &file)
     {
       file << data[i]->getSoHieuMB() << "|" << data[i]->getLoaiMB() << "|"
            << data[i]->getSoDay() << "|" << data[i]->getSoDong() << "|"
+           <<data[i]->getSoLuotBay()<<"|"
            << "\n";
     }
   }

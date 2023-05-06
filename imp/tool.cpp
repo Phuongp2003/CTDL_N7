@@ -242,3 +242,23 @@ const char *strToChar(string str)
 
   return result;
 }
+void Selection_Sort(int A[], int n)
+{
+  int min, vitrimin;
+  int i,j;
+  for (i=0; i< n-1; i++)
+  {
+    min = A[i];    vitrimin=i;
+    for (j=i+1; j<n; j++)
+      if (A[j] < min)
+      { min = A[j];	vitrimin=j;
+      }
+    // Doi cho 2 phan tu A[i] va A[vitrimin]
+    min = A[vitrimin] ;    A[vitrimin] = A[i];    A[i] = min;
+  }
+}
+void swap(int &a,int &b){
+  int c=a;
+  a=b;
+  b=c;
+}

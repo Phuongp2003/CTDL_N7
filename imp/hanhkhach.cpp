@@ -1,4 +1,5 @@
 #include "../header/hanhkhach.h"
+#include "../header/queue.h"
 #include <sstream>
 
 HanhKhach::HanhKhach() : cmnd(""), ho(""), ten(""), phai(-1) {}
@@ -182,7 +183,7 @@ void DsHanhKhach::writeToFileOneHK(NodeHK *node)
         HanhKhach hanhKhach = node->getHK();
         string phai = (hanhKhach.getPhai() == "Nam") ? "0" : "1";
         file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|'
-             << hanhKhach.getTen() << '|' << phai << '\n';
+             << hanhKhach.getTen() << '|' << phai << "|\n";
         file.close();
     }
     else
@@ -206,11 +207,39 @@ void DsHanhKhach::writeToFileHelper(ofstream &file, NodeHK *node)
 void DsHanhKhach::writeToFileAllHK()
 {
     ofstream file;
-    file.open("../data/dataHK.txt", ios::trunc);
+    file.open("../data/dataHK.txt", ios::out);
 
-    if (file.is_open())
+    if (!file.is_open())
     {
-        writeToFileHelper(file, root);
+        // writeToFileHelper(file, root);
+        return;
+    }
+    if (root == NULL)
+    {
+        return;
+    }
+
+    NodeHK *currNode;
+    Queue queue;
+    string phai;
+    queue.push(root);
+
+    while (!queue.isEmpty())
+    {
+        currNode = queue.getFront();
+        queue.pop();
+        phai = (currNode->getHK().getPhai() == "Nam") ? "0" : "1";
+        file << currNode->getHK().getCmnd() << '|' << currNode->getHK().getHo() << '|'
+             << currNode->getHK().getTen() << '|' << phai << "|\n";
+
+        if (currNode->getLeft() != NULL)
+        {
+            queue.push(currNode->getLeft());
+        }
+        if (currNode->getRight() != NULL)
+        {
+            queue.push(currNode->getRight());
+        }
     }
 
     file.close();
