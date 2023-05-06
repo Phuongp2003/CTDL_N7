@@ -279,7 +279,7 @@ void DsMayBay::writetoFile(ofstream &file)
     {
       file << data[i]->getSoHieuMB() << "|" << data[i]->getLoaiMB() << "|"
            << data[i]->getSoDay() << "|" << data[i]->getSoDong() << "|"
-           <<data[i]->getSoLuotBay()<<"|"
+           << data[i]->getSoLuotBay() << "|"
            << "\n";
     }
   }
