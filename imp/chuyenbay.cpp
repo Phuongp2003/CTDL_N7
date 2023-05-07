@@ -596,19 +596,14 @@ bool DsChuyenBay::update()
 
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
 {
-  ifstream DataMB("../data/dataMB.txt", ios::in);
-  listMB.readFromFile(DataMB);
-  DataMB.close();
-
+  listMB.readFromFile();
   listCB.readFromFile(listMB);
   listHK.readFromFile();
 }
 
 void setDataToFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
 {
-  ofstream DataMBout("../data/dataMB.txt", ios::out);
-  listMB.writetoFile(DataMBout);
-  DataMBout.close();
+  listMB.writetoFile();
   listHK.writeToFileAllHK();
   listCB.writetToFile();
 }
