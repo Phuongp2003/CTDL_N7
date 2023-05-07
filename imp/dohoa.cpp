@@ -698,7 +698,6 @@ void CreatePopupBackground()
 bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data)
 {
   CreatePopupBackground();
-  static int error = 0;
   DrawTextEx(
       FontArial, "Thêm máy bay",
       {CenterDataSetter(700, StartPos.x + 400,
@@ -724,13 +723,13 @@ bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data)
   const char *newLoaiMayBay = CreateTextInputBox(tabMB_data.LoaiMB);
   DrawTextEx(FontArial, "Số dòng",
              {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
-  DrawTextEx(FontArial, "(Gồm CHỈ số)",
+  DrawTextEx(FontArial, "(Gồm CHỈ số, nho hon hoac bang 25)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
              25, 0, RED);
   const char *newSoDong = CreateTextInputBox(tabMB_data.SoDong);
   DrawTextEx(FontArial, "Số dãy",
              {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
-  DrawTextEx(FontArial, "(Gồm CHỈ số)",
+  DrawTextEx(FontArial, "(Gồm CHỈ số, nho hon hoac bang 12)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
              25, 0, RED);
   const char *newSoDay = CreateTextInputBox(tabMB_data.SoDay);
@@ -756,23 +755,16 @@ bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data)
   Cancel.tittle = (char *)"Huỷ";
   Cancel.font = FontArial;
   Cancel.BoMau = ArrowKey;
-  if (error == 1)
-    DrawTextEx(FontArial, "Máy Bay đã tồn tại!",
-               {CenterDataSetter(
-                    1100, StartPos.x + 200,
-                    MeasureTextEx(FontArial, "Máy Bay đã tồn tại!", 40, 0).x),
-                CenterDataSetter(50, StartPos.y + 130,
-                                 MeasureTextEx(FontArial, "A", 40, 0).y)},
-               40, 0, RED);
-  else if (error == 2)
-    DrawTextEx(
-        FontArial, "Nhập chưa đủ thông tin!",
-        {CenterDataSetter(
-             1100, StartPos.x + 200,
-             MeasureTextEx(FontArial, "Nhập chưa đủ thông tin!", 40, 0).x),
-         CenterDataSetter(50, StartPos.y + 130,
-                          MeasureTextEx(FontArial, "A", 40, 0).y)},
-        40, 0, RED);
+  
+  DrawTextEx(
+      FontArial, strToChar(tabMB_data.popup_errorMess),
+      {CenterDataSetter(
+           1100, StartPos.x + 200,
+           MeasureTextEx(FontArial, strToChar(tabMB_data.popup_errorMess), 40, 0).x),
+       CenterDataSetter(50, StartPos.y + 130,
+                        MeasureTextEx(FontArial, "A", 40, 0).y)},
+      40, 0, RED);
+
   if (CreateButton(OK))
   {
     char CheckMB[16];
@@ -782,6 +774,21 @@ bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data)
       if (newMaMB[0] >= 32 && newLoaiMayBay[0] >= 32 && newSoDay[0] >= 32 &&
           newSoDong[0] >= 32)
       {
+        if (atoi(newSoDong) < 1 || atoi(newSoDong) > 25)
+        {
+          tabMB_data.popup_errorMess = "So dong khong hop le!";
+          return false;
+        }
+        if (atoi(newSoDay) < 1 || atoi(newSoDay) > 12)
+        {
+          tabMB_data.popup_errorMess = "So day khong hop le!";
+          return false;
+        }
+        if (atoi(newSoDong) * atoi(newSoDay) < 20)
+        {
+          tabMB_data.popup_errorMess = "So cho phai lon hon hoac bang 20!";
+          return false;
+        }
         MayBay *result =
             new MayBay(newMaMB, newLoaiMayBay, atoi(newSoDay), atoi(newSoDong));
         listMB.insertMB(result);
@@ -794,18 +801,18 @@ bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data)
         resetInputTextBox(tabMB_data.LoaiMB);
         resetInputTextBox(tabMB_data.SoDong);
         resetInputTextBox(tabMB_data.SoDay);
-        error = 0;
+        tabMB_data.popup_errorMess = "";
 
         return true;
       }
       else
       {
-        error = 2;
+        tabMB_data.popup_errorMess = "Nhập chưa đủ thông tin!";
       }
     }
     else
     {
-      error = 1;
+      tabMB_data.popup_errorMess = "Máy Bay đã tồn tại!";
     }
   }
   if (CreateButton(Cancel))
@@ -815,7 +822,7 @@ bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data)
     resetInputTextBox(tabMB_data.SoDong);
     resetInputTextBox(tabMB_data.SoDay);
 
-    error = 0;
+    tabMB_data.popup_errorMess = "";
     return true;
   }
   return false;
@@ -824,7 +831,6 @@ bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data)
 bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data)
 {
   CreatePopupBackground();
-  static string mess = "";
   DrawTextEx(FontArial, "Sửa thông tin máy bay",
              {CenterDataSetter(
                   700, StartPos.x + 400,
@@ -864,14 +870,14 @@ bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data)
     DrawTextEx(FontArial, "Số dòng",
                {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
     DrawTextEx(
-        FontArial, "(Gồm CHỈ số)",
+        FontArial, "(Gồm CHỈ số, nho hon hoac bang 25)",
         {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25,
         0, RED);
     const char *newSoDong = CreateTextInputBox(tabMB_data.SoDong);
     DrawTextEx(FontArial, "Số dãy",
                {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
     DrawTextEx(
-        FontArial, "(Gồm CHỈ số)",
+        FontArial, "(Gồm CHỈ số, nho hon hoac bang 12)",
         {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25,
         0, RED);
     const char *newSoDay = CreateTextInputBox(tabMB_data.SoDay);
@@ -899,9 +905,9 @@ bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data)
     Cancel.BoMau = ArrowKey;
 
     DrawTextEx(
-        FontArial, mess.data(),
+        FontArial, strToChar(tabMB_data.popup_errorMess),
         {CenterDataSetter(1100, StartPos.x + 200,
-                          MeasureTextEx(FontArial, mess.data(), 40, 0).x),
+                          MeasureTextEx(FontArial, strToChar(tabMB_data.popup_errorMess), 40, 0).x),
          CenterDataSetter(50, StartPos.y + 130,
                           MeasureTextEx(FontArial, "A", 40, 0).y)},
         40, 0, RED);
@@ -917,6 +923,21 @@ bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data)
         if (newMaMB[0] >= 32 && newLoaiMB[0] >= 32 && newSoDay[0] >= 32 &&
             newSoDong[0] >= 32)
         {
+          if (atoi(newSoDong) < 1 || atoi(newSoDong) > 25)
+          {
+            tabMB_data.popup_errorMess = "So dong khong hop le!";
+            return false;
+          }
+          if (atoi(newSoDay) < 1 || atoi(newSoDay) > 12)
+          {
+            tabMB_data.popup_errorMess = "So day khong hop le!";
+            return false;
+          }
+          if (atoi(newSoDong) * atoi(newSoDay) < 20)
+          {
+            tabMB_data.popup_errorMess = "So cho phai lon hon hoac bang 20!";
+            return false;
+          }
           tabMB_data.data->setSoHieuMB(newMaMB);
           tabMB_data.data->setLoaiMB(newLoaiMB);
           tabMB_data.data->setSoDong(atoi(newSoDong));
@@ -930,18 +951,18 @@ bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data)
           resetInputTextBox(tabMB_data.LoaiMB);
           resetInputTextBox(tabMB_data.SoDong);
           resetInputTextBox(tabMB_data.SoDay);
-          mess = "";
+          tabMB_data.popup_errorMess = "";
 
           return true;
         }
         else
         {
-          mess = "Nhập chưa đủ thông tin!";
+          tabMB_data.popup_errorMess = "Nhập chưa đủ thông tin!";
         }
       }
       else
       {
-        mess = "Mã máy bay đã tồn tại!";
+        tabMB_data.popup_errorMess = "Mã máy bay đã tồn tại!";
       }
     }
 
@@ -1149,7 +1170,7 @@ bool Popup_Thongkesoluotbay(DsMayBay &listMB, QLMB_data &tabMB_data)
         TextBox show[3];
         const char *showText[3] = {
             intToChar(j + 1, n_char),
-            dsMB[A[id]]->getSoHieuMB(),//listMB.getMB()[listMB.sapXepThongKe()[id]]->getSoHieuMB()
+            dsMB[A[id]]->getSoHieuMB(), // listMB.getMB()[listMB.sapXepThongKe()[id]]->getSoHieuMB()
             intToChar(dsMB[A[id]]->getSoLuotBay(), 3)};
         for (int show_i = 2; show_i >= 0; show_i--)
         {
