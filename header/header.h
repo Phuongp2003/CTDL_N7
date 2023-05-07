@@ -97,3 +97,4 @@ int strcmp(const char *str1, const char *str2);
 const char *strToChar(string str);
 void Selection_Sort(int A[], int n);
 void swap(int &a, int &b);
+string intToString(int x);

@@ -262,3 +262,15 @@ void swap(int &a,int &b){
   a=b;
   b=c;
 }
+string intToString(int x)
+{
+  string p = "";
+  while (x > 0)
+  {
+
+    int res = x % 10;
+    p = char(res + 48) + p;
+    x = x / 10;
+  }
+  return p;
+}
