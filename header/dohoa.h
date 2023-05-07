@@ -127,7 +127,7 @@ bool Popup_datVe(QLCB_data &tabCB_data);
 
 void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();
-int Warning_Confirm();
+int Warning_Confirm();//
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[],
                    float cellH);

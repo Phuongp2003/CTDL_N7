@@ -2130,7 +2130,7 @@ bool Popup_XoaCB(DsChuyenBay &listCB, QLCB_data &tabCB_data)
                           MeasureTextEx(FontArial, "A", 40, 0).y)},
         40, 0, RED);
     tabCB_data.time_showError++;
-  }
+  }//
   else
   {
     tabCB_data.popup_errorMess = "";
