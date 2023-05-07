@@ -90,13 +90,13 @@ void CreateHomePage(UIcontroller &control); // done
 void CreatePageBackground(int SoHang); // done
 
 void resetData_QLMB(QLMB_data &data);
-void CreatePage_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data);
-MayBay *XuLy_QLMB(DsMayBay &listMB, QLMB_data &tabMB_data);
+void CreatePage_QLMB(UIcontroller &control);
+MayBay *XuLy_QLMB(UIcontroller &control);
 void CreateTable_QLMB();
 
 void resetData_QLCB(QLCB_data &data);
-void CreatePage_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
-NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
+void CreatePage_QLCB(UIcontroller &control);
+NodeCB *XuLy_QLCB(UIcontroller &control);
 void CreateTable_QLCB();
 void StatusHelp_QLCB();
 
@@ -105,29 +105,29 @@ void CreatePage_QLVe();
 void CreateTable_QLVe();
 
 void resetData_QLHK(QLHK_data &data);
-void CreatePage_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data);
+void CreatePage_QLHK(UIcontroller &control);
 void CreateTable_QLHK();
-NodeHK *XuLy_QLHK(DsHanhKhach &listHK, QLHK_data &tabHK_data);
+NodeHK *XuLy_QLHK(UIcontroller &control);
 
 void CreatePage_GioiThieu();
 
 void CreatePopupBackground();
-bool Popup_ThemMB(DsMayBay &listMB, QLMB_data &tabMB_data);
-bool Popup_HieuChinhMB(DsMayBay &listMB, QLMB_data &tabMB_data);
-bool Popup_XoaMB(DsMayBay &listMB, QLMB_data &tabMB_data);
-bool Popup_Thongkesoluotbay(DsMayBay &listMB, QLMB_data &tabMB_data);
-bool Popup_ThemHK(DsHanhKhach &listHK);
-bool Popup_ThemCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
-bool Popup_HieuChinhCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
-bool Popup_XoaCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
-bool Popup_chonVe(QLCB_data &tabCB_data);
-bool Popup_showListHK(QLCB_data &tabCB_data);
-void Popup_getMB(DsChuyenBay listCB, QLCB_data &tabCB_data, Date gioBay);
-bool Popup_datVe(QLCB_data &tabCB_data);
+bool Popup_ThemMB(UIcontroller &control);
+bool Popup_HieuChinhMB(UIcontroller &control);
+bool Popup_XoaMB(UIcontroller &control);
+bool Popup_Thongkesoluotbay(UIcontroller &control);
+bool Popup_ThemHK(UIcontroller &control);
+bool Popup_ThemCB(UIcontroller &control);
+bool Popup_HieuChinhCB(UIcontroller &control);
+bool Popup_XoaCB(UIcontroller &control);
+bool Popup_chonVe(UIcontroller &control);
+bool Popup_showListHK(UIcontroller &control);
+void Popup_getMB(UIcontroller &control, Date gioBay);
+bool Popup_datVe(UIcontroller &control);
 
 void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();
-int Warning_Confirm();//
+int Warning_Confirm(); //
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[],
                    float cellH);
