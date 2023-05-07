@@ -1420,6 +1420,7 @@ void CreateTable_QLMB()
 
 void CreatePage_QLCB(UIcontroller &control)
 {
+
   CreatePageBackground(5);
 
   if (control.dataTabCB.current_popup == 0)
@@ -1431,6 +1432,7 @@ void CreatePage_QLCB(UIcontroller &control)
                50, 0, BLUE);
 
     // mini function
+
     Button button[5];
     for (int i = 0; i < 5; i++)
     {
@@ -1447,19 +1449,23 @@ void CreatePage_QLCB(UIcontroller &control)
     button[0].tittle = "Thêm chuyến bay";
     if (CreateButton(button[0]))
     {
+
       control.dataTabCB.current_popup = 1;
     }
+
     button[1].tittle = "Hiệu chỉnh CB";
     if (CreateButton(button[1]))
     {
       control.dataTabCB.current_popup = 2;
     }
-    button[2].tittle = "Xóa chuyến bay";
+    button[2].tittle = "Huỷ chuyến bay";
     if (CreateButton(button[2]))
     {
+      
       control.dataTabCB.current_popup = 3;
     }
-    button[3].tittle = "Xem danh sach vé";
+
+    button[3].tittle = "Xem danh sách vé";
     if (CreateButton(button[3]))
     {
       control.dataTabCB.current_popup = 4;
@@ -1470,9 +1476,11 @@ void CreatePage_QLCB(UIcontroller &control)
       control.dataTabCB.current_popup = 5;
     }
     control.dataTabCB.data = XuLy_QLCB(control);
+    
   }
   else if (control.dataTabCB.current_popup == 1)
   {
+
     if (Popup_ThemCB(control))
     {
       control.dataTabCB.current_popup = 0;
@@ -1480,17 +1488,45 @@ void CreatePage_QLCB(UIcontroller &control)
   }
   else if (control.dataTabCB.current_popup == 2)
   {
+    // if(!(control.dataTabCB.data->getNode().getTrangThai()==HoanTat))
+    // {
     if (Popup_HieuChinhCB(control))
     {
       control.dataTabCB.current_popup = 0;
     }
+
+    // else
+    // {
+    //   CreatePageBackground(7);
+    //   // control.dataTabCB.current_popup = 0;
+    //   control.dataTabCB.data = XuLy_QLCB(control);
+      
+    //   DrawRectangle(StartPos.x + 1201+29, StartPos.y + 60 + 20 + 70 + 15 + 75 * 2, 240, 60,
+    //               BLACK);
+      
+
+    // }
   }
   else if (control.dataTabCB.current_popup == 3)
   {
-    if (Popup_XoaCB(control))
+    // if(!(control.dataTabCB.data->getNode().getTrangThai()==HoanTat))
+    // {
+      cout<<control.dataTabCB.data->getNode().getTrangThai()<<endl;
+    if (Popup_HuyCB(control))
     {
       control.dataTabCB.current_popup = 0;
     }
+    // }
+    // else
+    // {
+    //   CreatePageBackground(7);
+    //   control.dataTabCB.current_popup = 0;
+      
+    //   DrawRectangle(StartPos.x + 1201+29, StartPos.y + 60 + 20 + 70 + 15 + 75 * 2, 240, 60,
+    //               BLACK);
+      
+
+    // }
   }
   else if (control.dataTabCB.current_popup == 4)
   {
@@ -1819,7 +1855,7 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   DrawTextEx(
       FontArial, "Hiệu chỉnh chuyến bay",
       {CenterDataSetter(700, StartPos.x + 400,
-                        MeasureTextEx(FontArial, "Thêm chuyến bay", 50, 0).x),
+                        MeasureTextEx(FontArial, "Hiệu chỉnh chuyến bay", 50, 0).x),
        CenterDataSetter(60, StartPos.y + 60 + 10,
                         MeasureTextEx(FontArial, "A", 50, 0).y)},
       50, 0, BLACK);
@@ -1856,7 +1892,7 @@ bool Popup_HieuChinhCB(UIcontroller &control)
              {StartPos.x + 300 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25},
              25, 0, RED);
 
-  Date check = Date(1, 1, 1901, 00, 00);
+  Date check = Date(1, 1, 2000, 00, 00);
   const char *newNgay = CreateTextInputBox(control.dataTabCB.Ngay);
   const char *newThang = CreateTextInputBox(control.dataTabCB.Thang);
   const char *newNam = CreateTextInputBox(control.dataTabCB.Nam);
@@ -1889,7 +1925,7 @@ bool Popup_HieuChinhCB(UIcontroller &control)
                          stoi(newGio[0] == 0 ? "25" : newGio),
                          stoi(newPhut[0] == 0 ? "25" : newPhut));
 
-  DrawTextEx(FontArial, "Mã mã chuyến bay",
+  DrawTextEx(FontArial, "Mã chuyến bay",
              {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
   DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25},
@@ -2038,13 +2074,13 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   return false;
 }
 
-bool Popup_XoaCB(UIcontroller &control)
+bool Popup_HuyCB(UIcontroller &control)
 {
   CreatePopupBackground();
   DrawTextEx(
-      FontArial, "Xoá chuyến bay",
+      FontArial, "Huỷ chuyến bay",
       {CenterDataSetter(700, StartPos.x + 400,
-                        MeasureTextEx(FontArial, "Thêm chuyến bay", 50, 0).x),
+                        MeasureTextEx(FontArial, "Huỷ chuyến bay", 50, 0).x),
        CenterDataSetter(60, StartPos.y + 60 + 10,
                         MeasureTextEx(FontArial, "A", 50, 0).y)},
       50, 0, BLACK);
@@ -2082,7 +2118,7 @@ bool Popup_XoaCB(UIcontroller &control)
   DrawTextEx(FontArial, "Thời gian bay",
              {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
 
-  DrawTextEx(FontArial, "Mã mã chuyến bay",
+  DrawTextEx(FontArial, "Mã chuyến bay",
              {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
 
   DrawTextEx(FontArial, "Số hiệu máy bay",
@@ -2132,10 +2168,15 @@ bool Popup_XoaCB(UIcontroller &control)
   }
   if (CreateButton(OK))
   {
-    control.listCB.pop(control.dataTabCB.data);
+    control.dataTabCB.data->getNode().setTrangThai(HuyChuyen);
+    cout<<control.dataTabCB.data->getNode().getTrangThai()<<endl;
+    control.listCB.writetToFile();
+    // control.listCB.setSize();
+    ChuyenBay result = control.dataTabCB.data->getNode();
+    result.setTrangThai(HuyChuyen);
+    control.dataTabCB.data->setCb(result);
     control.listCB.writetToFile();
     control.listCB.setSize();
-
     control.dataTabCB.status = 1;
     resetInputTextBox(control.dataTabCB.MaCB);
     resetInputTextBox(control.dataTabCB.MaMB);
@@ -2816,6 +2857,7 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
 
   // if (first_run)
   //   first_run = false;
+
   return control.dataTabCB.data;
 }
 

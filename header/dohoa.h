@@ -119,7 +119,7 @@ bool Popup_Thongkesoluotbay(UIcontroller &control);
 bool Popup_ThemHK(UIcontroller &control);
 bool Popup_ThemCB(UIcontroller &control);
 bool Popup_HieuChinhCB(UIcontroller &control);
-bool Popup_XoaCB(UIcontroller &control);
+bool Popup_HuyCB(UIcontroller &control);
 bool Popup_chonVe(UIcontroller &control);
 bool Popup_showListHK(UIcontroller &control);
 void Popup_getMB(UIcontroller &control, Date gioBay);
