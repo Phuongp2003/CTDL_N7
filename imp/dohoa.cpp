@@ -2172,7 +2172,7 @@ bool Popup_showListHK(UIcontroller &control)
     else if (tmp_c == 1)
     {
       control.dataTabCB.dataDSVe.inDelete = false;
-      // control.dataTabCB.data->getNode().getDSVe(). //xoa ve
+      control.dataTabCB.data->getNode().getDSVe().deleteVe(control.dataTabCB.dataDSVe.position);
     }
   }
 

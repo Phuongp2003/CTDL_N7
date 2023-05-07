@@ -70,5 +70,6 @@ VeMayBay DsVeMayBay::getVe(int index) { return dsVeMB[index]; }
 void DsVeMayBay::deleteVe(int index)
 {
   dsVeMB[index].setHanhKhach("");
+  soVeDaDat--;
 }
 DsVeMayBay::~DsVeMayBay() {}
