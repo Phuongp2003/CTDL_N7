@@ -50,7 +50,7 @@ public:
   void setDSVe(DsVeMayBay dsVe);
   DsVeMayBay getDSVe();
 
-  void ThucHienCB(DsMayBay *dsChuyenBay);
+  void ThucHienCB(DsMayBay * dsChuyenBay);
   Date ngayHoanThanh();
   // int soSanhNgay(Date another);
   bool cach(int hour, Date another);

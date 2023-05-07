@@ -100,7 +100,7 @@ NodeCB *XuLy_QLCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 void CreateTable_QLCB();
 void StatusHelp_QLCB();
 
-void resetData_QLDSVe(QLVe_data &data);
+void resetData_QLVe(QLVe_data &data);
 void CreatePage_QLVe();
 void CreateTable_QLVe();
 
@@ -123,6 +123,7 @@ bool Popup_XoaCB(DsChuyenBay &listCB, QLCB_data &tabCB_data);
 bool Popup_chonVe(QLCB_data &tabCB_data);
 bool Popup_showListHK(QLCB_data &tabCB_data);
 void Popup_getMB(DsChuyenBay listCB, QLCB_data &tabCB_data, Date gioBay);
+bool Popup_datVe(QLCB_data &tabCB_data);
 
 void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();
