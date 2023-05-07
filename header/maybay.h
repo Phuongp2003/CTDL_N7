@@ -6,6 +6,7 @@
 
 using std::ifstream;
 using std::ofstream;
+using std::ios;
 // DsMayBay *DanhSach;
 
 class MayBay
@@ -31,8 +32,7 @@ public: //
   int getSoDong();
   int getSoCho();
   void showMB();
-  bool kiemTraSoCho(int soCho);
-  void dsChoNgoi();
+  bool kiemTraSoCho();
   void tangSoLuotThucHienCB();
   int getSoLuotBay();
 
@@ -40,15 +40,6 @@ public: //
   ~MayBay();
 };
 
-// MayBay *mb = new MayBay[300];
-
-// typedef struct MAYBAY MB;
-// struct listMB
-// {
-//     int n;
-//     MAYBAY *nodes[MAXMB];
-// };
-// typedef struct listMB LISTMB;
 
 // Danh sách con trỏ của máy bay
 //======================================================================
@@ -60,24 +51,19 @@ private:
 
 public:
   DsMayBay();
-  // void setsize(int size);
   int getSize();
-  void getDsMayBay();
   bool isEmpty();
   bool isFull();
-  // MayBay *New_MB(MayBay *mayBay);
   void insertMB(MayBay *mayBay);
   void deleteMB(int index);
   int findPosMB(const char *soHieuMB);
   MayBay *findMB(const char *soHieuMB);
-
-  int viTri(const char *a, const char *b);
   DsMayBay findDsMB(const char *soHieuMB);
-
   void deleteDsMB();
   MayBay **getMB();
   int *sapXepThongKe();
-  void readFromFile(ifstream &file);
-  void writetoFile(ofstream &file);
+  void readFromFile();
+  void writetoFile();
+  void writetoFileWhenAdd();
   ~DsMayBay(); //
 };
