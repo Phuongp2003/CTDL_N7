@@ -103,6 +103,8 @@ void DsMayBay::insertMB(MayBay *maybay)
 }
 void DsMayBay::deleteMB(int index)
 {
+  if (isEmpty() == true)
+    return;
   delete data[index];
   for (int i = index; i < this->size - 1; i++)
   {
@@ -133,25 +135,6 @@ MayBay *DsMayBay::findMB(const char *soHieuMB)
   return NULL;
 }
 
-// khi tìm và lấy cả danh sách máy bay thì stringsearch không được là == ""
-// DsMayBay DsMayBay::findDsMB(const char *String_Search)
-// {
-//   DsMayBay *dsmb = new DsMayBay();
-//   for (int j = 0; j < size; j++)
-//   {
-//     if (isGotStr(data[j]->getSoHieuMB(), String_Search))
-//     {
-//       dsmb->insertMB(getMB(j));
-//     }
-//   }
-//   if (dsmb->getSize() == 0)
-//   {
-//     delete dsmb;
-//     return *(new DsMayBay());
-//   }
-//   return *dsmb;
-// }
-
 void DsMayBay::deleteDsMB()
 {
   for (int i = 0; i < this->size; i++)
@@ -162,6 +145,8 @@ void DsMayBay::deleteDsMB()
 }
 
 MayBay **DsMayBay::getMB() { return data; }
+
+MayBay* DsMayBay::getMB(int index) {return data[index];}
 
 void DsMayBay::readFromFile()
 {

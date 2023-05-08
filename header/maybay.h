@@ -61,6 +61,7 @@ public:
   DsMayBay findDsMB(const char *soHieuMB);
   void deleteDsMB();
   MayBay **getMB();
+  MayBay* getMB(int index);
   int *sapXepThongKe();
   void readFromFile();
   void writetoFile();
