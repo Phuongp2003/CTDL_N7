@@ -660,6 +660,13 @@ void CreatePageBackground(int SoHang)
 void CreatePage_QLMB(UIcontroller &control)
 {
   CreatePageBackground(4);
+  if (control.dataTabMB.data == NULL && !(control.dataTabMB.current_popup == 0 || control.dataTabMB.current_popup == 1 || control.dataTabMB.current_popup == 4))
+  {
+    CreatePopupBackground();
+    if (Warning_NoData())
+      control.dataTabMB.current_popup = 0;
+    return;
+  }
 
   // tittle
   DrawTextEx(FontArial, "DANH SÁCH MÁY BAY",
@@ -899,145 +906,138 @@ bool Popup_HieuChinhMB(UIcontroller &control)
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              50, 0, BLACK);
 
-  if (control.dataTabMB.data != NULL)
+  control.dataTabMB.MaMB.editMode = true;
+  control.dataTabMB.MaMB.tittle = control.dataTabMB.data->getSoHieuMB();
+  control.dataTabMB.LoaiMB.editMode = true;
+  control.dataTabMB.LoaiMB.tittle = control.dataTabMB.data->getLoaiMB();
+  control.dataTabMB.SoDong.editMode = true;
+  control.dataTabMB.SoDong.tittle = intToChar(control.dataTabMB.data->getSoDong(), 3);
+  control.dataTabMB.SoDay.editMode = true;
+  control.dataTabMB.SoDay.tittle = intToChar(control.dataTabMB.data->getSoDay(), 3);
+
+  const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y -
+                         MeasureTextEx(FontArial, "A", 25, 0).y;
+
+  DrawTextEx(FontArial, "Mã máy bay",
+             {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+  DrawTextEx(
+      FontArial, "(Gồm chữ cái IN HOA và số)",
+      {StartPos.x + 300 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25,
+      0, RED);
+  const char *newMaMB = CreateTextInputBox(control.dataTabMB.MaMB);
+  DrawTextEx(FontArial, "Hãng máy bay",
+             {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+  DrawTextEx(
+      FontArial, "(Gồm chữ cái và số)",
+      {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25,
+      0, RED);
+  const char *newLoaiMB = CreateTextInputBox(control.dataTabMB.LoaiMB);
+  DrawTextEx(FontArial, "Số dòng",
+             {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+  DrawTextEx(
+      FontArial, "(Gồm CHỈ số, nho hon hoac bang 25)",
+      {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25,
+      0, RED);
+  const char *newSoDong = CreateTextInputBox(control.dataTabMB.SoDong);
+  DrawTextEx(FontArial, "Số dãy",
+             {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+  DrawTextEx(
+      FontArial, "(Gồm CHỈ số, nho hon hoac bang 12)",
+      {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25,
+      0, RED);
+  const char *newSoDay = CreateTextInputBox(control.dataTabMB.SoDay);
+
+  Button OK;
+  OK.x = StartPos.x + 225 + 750;
+  OK.y = StartPos.y + 60 + 625;
+  OK.w = 300;
+  OK.h = 50;
+  OK.gotNothing = false;
+  OK.gotText = true;
+  OK.tittle = (char *)"Hoàn tất";
+  OK.font = FontArial;
+  OK.BoMau = ArrowKey;
+
+  Button Cancel;
+  Cancel.x = StartPos.x + 225;
+  Cancel.y = StartPos.y + 60 + 625;
+  Cancel.w = 300;
+  Cancel.h = 50;
+  Cancel.gotNothing = false;
+  Cancel.gotText = true;
+  Cancel.tittle = (char *)"Huỷ";
+  Cancel.font = FontArial;
+  Cancel.BoMau = ArrowKey;
+
+  DrawTextEx(
+      FontArial, strToChar(control.dataTabMB.popup_errorMess),
+      {CenterDataSetter(1100, StartPos.x + 200,
+                        MeasureTextEx(FontArial, strToChar(control.dataTabMB.popup_errorMess), 40, 0).x),
+       CenterDataSetter(50, StartPos.y + 130,
+                        MeasureTextEx(FontArial, "A", 40, 0).y)},
+      40, 0, RED);
+
+  if (CreateButton(OK))
   {
-    control.dataTabMB.MaMB.editMode = true;
-    control.dataTabMB.MaMB.tittle = control.dataTabMB.data->getSoHieuMB();
-    control.dataTabMB.LoaiMB.editMode = true;
-    control.dataTabMB.LoaiMB.tittle = control.dataTabMB.data->getLoaiMB();
-    control.dataTabMB.SoDong.editMode = true;
-    control.dataTabMB.SoDong.tittle = intToChar(control.dataTabMB.data->getSoDong(), 3);
-    control.dataTabMB.SoDay.editMode = true;
-    control.dataTabMB.SoDay.tittle = intToChar(control.dataTabMB.data->getSoDay(), 3);
-
-    const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y -
-                           MeasureTextEx(FontArial, "A", 25, 0).y;
-
-    DrawTextEx(FontArial, "Mã máy bay",
-               {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
-    DrawTextEx(
-        FontArial, "(Gồm chữ cái IN HOA và số)",
-        {StartPos.x + 300 + 300, StartPos.y + 60 + 130 + 10 + hFont40_25}, 25,
-        0, RED);
-    const char *newMaMB = CreateTextInputBox(control.dataTabMB.MaMB);
-    DrawTextEx(FontArial, "Hãng máy bay",
-               {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
-    DrawTextEx(
-        FontArial, "(Gồm chữ cái và số)",
-        {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25}, 25,
-        0, RED);
-    const char *newLoaiMB = CreateTextInputBox(control.dataTabMB.LoaiMB);
-    DrawTextEx(FontArial, "Số dòng",
-               {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
-    DrawTextEx(
-        FontArial, "(Gồm CHỈ số, nho hon hoac bang 25)",
-        {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25,
-        0, RED);
-    const char *newSoDong = CreateTextInputBox(control.dataTabMB.SoDong);
-    DrawTextEx(FontArial, "Số dãy",
-               {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
-    DrawTextEx(
-        FontArial, "(Gồm CHỈ số, nho hon hoac bang 12)",
-        {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25,
-        0, RED);
-    const char *newSoDay = CreateTextInputBox(control.dataTabMB.SoDay);
-
-    Button OK;
-    OK.x = StartPos.x + 225 + 750;
-    OK.y = StartPos.y + 60 + 625;
-    OK.w = 300;
-    OK.h = 50;
-    OK.gotNothing = false;
-    OK.gotText = true;
-    OK.tittle = (char *)"Hoàn tất";
-    OK.font = FontArial;
-    OK.BoMau = ArrowKey;
-
-    Button Cancel;
-    Cancel.x = StartPos.x + 225;
-    Cancel.y = StartPos.y + 60 + 625;
-    Cancel.w = 300;
-    Cancel.h = 50;
-    Cancel.gotNothing = false;
-    Cancel.gotText = true;
-    Cancel.tittle = (char *)"Huỷ";
-    Cancel.font = FontArial;
-    Cancel.BoMau = ArrowKey;
-
-    DrawTextEx(
-        FontArial, strToChar(control.dataTabMB.popup_errorMess),
-        {CenterDataSetter(1100, StartPos.x + 200,
-                          MeasureTextEx(FontArial, strToChar(control.dataTabMB.popup_errorMess), 40, 0).x),
-         CenterDataSetter(50, StartPos.y + 130,
-                          MeasureTextEx(FontArial, "A", 40, 0).y)},
-        40, 0, RED);
-
-    if (CreateButton(OK))
+    char CheckMB[16];
+    strcpy(CheckMB, newMaMB);
+    if (control.listMB.findPosMB(CheckMB) < 0 ||
+        control.listMB.findPosMB(CheckMB) ==
+            control.listMB.findPosMB(control.dataTabMB.data->getSoHieuMB()))
     {
-      char CheckMB[16];
-      strcpy(CheckMB, newMaMB);
-      if (control.listMB.findPosMB(CheckMB) < 0 ||
-          control.listMB.findPosMB(CheckMB) ==
-              control.listMB.findPosMB(control.dataTabMB.data->getSoHieuMB()))
+      if (newMaMB[0] >= 32 && newLoaiMB[0] >= 32 && newSoDay[0] >= 32 &&
+          newSoDong[0] >= 32)
       {
-        if (newMaMB[0] >= 32 && newLoaiMB[0] >= 32 && newSoDay[0] >= 32 &&
-            newSoDong[0] >= 32)
+        if (atoi(newSoDong) < 1 || atoi(newSoDong) > 25)
         {
-          if (atoi(newSoDong) < 1 || atoi(newSoDong) > 25)
-          {
-            control.dataTabMB.popup_errorMess = "So dong khong hop le!";
-            return false;
-          }
-          if (atoi(newSoDay) < 1 || atoi(newSoDay) > 12)
-          {
-            control.dataTabMB.popup_errorMess = "So day khong hop le!";
-            return false;
-          }
-          if (atoi(newSoDong) * atoi(newSoDay) < 20)
-          {
-            control.dataTabMB.popup_errorMess = "So cho phai lon hon hoac bang 20!";
-            return false;
-          }
-          control.dataTabMB.data->setSoHieuMB(newMaMB);
-          control.dataTabMB.data->setLoaiMB(newLoaiMB);
-          control.dataTabMB.data->setSoDong(atoi(newSoDong));
-          control.dataTabMB.data->setSoDay(atoi(newSoDay));
-
-          control.listMB.writetoFile();
-
-          resetInputTextBox(control.dataTabMB.MaMB);
-          resetInputTextBox(control.dataTabMB.LoaiMB);
-          resetInputTextBox(control.dataTabMB.SoDong);
-          resetInputTextBox(control.dataTabMB.SoDay);
-          control.dataTabMB.popup_errorMess = "";
-
-          return true;
+          control.dataTabMB.popup_errorMess = "So dong khong hop le!";
+          return false;
         }
-        else
+        if (atoi(newSoDay) < 1 || atoi(newSoDay) > 12)
         {
-          control.dataTabMB.popup_errorMess = "Nhập chưa đủ thông tin!";
+          control.dataTabMB.popup_errorMess = "So day khong hop le!";
+          return false;
         }
+        if (atoi(newSoDong) * atoi(newSoDay) < 20)
+        {
+          control.dataTabMB.popup_errorMess = "So cho phai lon hon hoac bang 20!";
+          return false;
+        }
+        control.dataTabMB.data->setSoHieuMB(newMaMB);
+        control.dataTabMB.data->setLoaiMB(newLoaiMB);
+        control.dataTabMB.data->setSoDong(atoi(newSoDong));
+        control.dataTabMB.data->setSoDay(atoi(newSoDay));
+
+        control.listMB.writetoFile();
+
+        resetInputTextBox(control.dataTabMB.MaMB);
+        resetInputTextBox(control.dataTabMB.LoaiMB);
+        resetInputTextBox(control.dataTabMB.SoDong);
+        resetInputTextBox(control.dataTabMB.SoDay);
+        control.dataTabMB.popup_errorMess = "";
+
+        return true;
       }
       else
       {
-        control.dataTabMB.popup_errorMess = "Mã máy bay đã tồn tại!";
+        control.dataTabMB.popup_errorMess = "Nhập chưa đủ thông tin!";
       }
     }
-
-    if (CreateButton(Cancel))
+    else
     {
-      resetInputTextBox(control.dataTabMB.MaMB);
-      resetInputTextBox(control.dataTabMB.LoaiMB);
-      resetInputTextBox(control.dataTabMB.SoDong);
-      resetInputTextBox(control.dataTabMB.SoDay);
-      return true;
+      control.dataTabMB.popup_errorMess = "Mã máy bay đã tồn tại!";
     }
   }
-  else
+
+  if (CreateButton(Cancel))
   {
-    if (Warning_NoData())
-      return true;
+    resetInputTextBox(control.dataTabMB.MaMB);
+    resetInputTextBox(control.dataTabMB.LoaiMB);
+    resetInputTextBox(control.dataTabMB.SoDong);
+    resetInputTextBox(control.dataTabMB.SoDay);
+    return true;
   }
+
   return false;
 }
 
@@ -1061,84 +1061,77 @@ bool Popup_XoaMB(UIcontroller &control)
                         MeasureTextEx(FontArial, "A", 40, 0).y)},
       40, 0, RED);
 
-  if (control.dataTabMB.data != NULL)
+  DrawTextEx(FontArial, "Mã máy bay",
+             {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
+  TextBox Box_maMB;
+  Box_maMB.box = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
+  Box_maMB.showBox = true;
+  Box_maMB.text = control.dataTabMB.data->getSoHieuMB();
+  CreateTextBox(Box_maMB);
+
+  DrawTextEx(FontArial, "Hãng máy bay",
+             {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+  TextBox Box_loaiMB;
+  Box_loaiMB.box = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+  Box_loaiMB.showBox = true;
+  Box_loaiMB.text = control.dataTabMB.data->getLoaiMB();
+  CreateTextBox(Box_loaiMB);
+
+  DrawTextEx(FontArial, "Số dòng",
+             {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+  TextBox Box_soDong;
+  Box_soDong.box = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
+  Box_soDong.showBox = true;
+  Box_soDong.text = intToChar(control.dataTabMB.data->getSoDong(), 2);
+  CreateTextBox(Box_soDong);
+
+  DrawTextEx(FontArial, "Số dãy",
+             {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+  TextBox Box_soDay;
+  Box_soDay.box = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
+  Box_soDay.showBox = true;
+  Box_soDay.text = intToChar(control.dataTabMB.data->getSoDay(), 2);
+  CreateTextBox(Box_soDay);
+
+  Button OK;
+  OK.x = StartPos.x + 225 + 750;
+  OK.y = StartPos.y + 60 + 625;
+  OK.w = 300;
+  OK.h = 50;
+  OK.gotNothing = false;
+  OK.gotText = true;
+  OK.tittle = (char *)"Đồng ý!";
+  OK.font = FontArial;
+  OK.BoMau = ArrowKey;
+
+  Button Cancel;
+  Cancel.x = StartPos.x + 225;
+  Cancel.y = StartPos.y + 60 + 625;
+  Cancel.w = 300;
+  Cancel.h = 50;
+  Cancel.gotNothing = false;
+  Cancel.gotText = true;
+  Cancel.tittle = (char *)"Huỷ";
+  Cancel.font = FontArial;
+  Cancel.BoMau = ArrowKey;
+
+  if (CreateButton(OK))
   {
-    DrawTextEx(FontArial, "Mã máy bay",
-               {StartPos.x + 300, StartPos.y + 60 + 130 + 10}, 40, 0, BROWN);
-    TextBox Box_maMB;
-    Box_maMB.box = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
-    Box_maMB.showBox = true;
-    Box_maMB.text = control.dataTabMB.data->getSoHieuMB();
-    CreateTextBox(Box_maMB);
+    char CheckMB[16];
+    strcpy(CheckMB, control.dataTabMB.data->getSoHieuMB());
+    control.listMB.deleteMB(control.listMB.findPosMB(CheckMB));
 
-    DrawTextEx(FontArial, "Hãng máy bay",
-               {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
-    TextBox Box_loaiMB;
-    Box_loaiMB.box = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-    Box_loaiMB.showBox = true;
-    Box_loaiMB.text = control.dataTabMB.data->getLoaiMB();
-    CreateTextBox(Box_loaiMB);
+    control.listMB.writetoFile();
 
-    DrawTextEx(FontArial, "Số dòng",
-               {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
-    TextBox Box_soDong;
-    Box_soDong.box = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
-    Box_soDong.showBox = true;
-    Box_soDong.text = intToChar(control.dataTabMB.data->getSoDong(), 2);
-    CreateTextBox(Box_soDong);
+    control.dataTabMB.status = -1;
 
-    DrawTextEx(FontArial, "Số dãy",
-               {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
-    TextBox Box_soDay;
-    Box_soDay.box = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
-    Box_soDay.showBox = true;
-    Box_soDay.text = intToChar(control.dataTabMB.data->getSoDay(), 2);
-    CreateTextBox(Box_soDay);
-
-    Button OK;
-    OK.x = StartPos.x + 225 + 750;
-    OK.y = StartPos.y + 60 + 625;
-    OK.w = 300;
-    OK.h = 50;
-    OK.gotNothing = false;
-    OK.gotText = true;
-    OK.tittle = (char *)"Đồng ý!";
-    OK.font = FontArial;
-    OK.BoMau = ArrowKey;
-
-    Button Cancel;
-    Cancel.x = StartPos.x + 225;
-    Cancel.y = StartPos.y + 60 + 625;
-    Cancel.w = 300;
-    Cancel.h = 50;
-    Cancel.gotNothing = false;
-    Cancel.gotText = true;
-    Cancel.tittle = (char *)"Huỷ";
-    Cancel.font = FontArial;
-    Cancel.BoMau = ArrowKey;
-
-    if (CreateButton(OK))
-    {
-      char CheckMB[16];
-      strcpy(CheckMB, control.dataTabMB.data->getSoHieuMB());
-      control.listMB.deleteMB(control.listMB.findPosMB(CheckMB));
-
-      control.listMB.writetoFile();
-
-      control.dataTabMB.status = -1;
-
-      return true;
-    }
-    if (CreateButton(Cancel))
-    {
-      return true;
-    }
+    return true;
   }
-  else
+  if (CreateButton(Cancel))
   {
-    if (Warning_NoData())
-      return true;
+    return true;
   }
+
   return false;
 }
 
@@ -1440,6 +1433,20 @@ void CreatePage_QLCB(UIcontroller &control)
 {
 
   CreatePageBackground(5);
+  if (control.dataTabCB.data == NULL && !(control.dataTabCB.current_popup == 0 || control.dataTabCB.current_popup == 1 || control.dataTabCB.current_popup == 5))
+  {
+    CreatePopupBackground();
+    DrawTextEx(
+        FontArial, "Lỗi",
+        {CenterDataSetter(700, StartPos.x + 400,
+                          MeasureTextEx(FontArial, "Loi", 50, 0).x),
+         CenterDataSetter(60, StartPos.y + 60 + 10,
+                          MeasureTextEx(FontArial, "A", 50, 0).y)},
+        50, 0, BLACK);
+    if (Warning_NoData())
+      control.dataTabCB.current_popup = 0;
+    return;
+  }
 
   if (control.dataTabCB.current_popup == 0)
   { // tittle
@@ -1603,21 +1610,21 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
   Cancel.font = FontArial;
   Cancel.BoMau = ArrowKey;
 
-  if (control.dataTabCB.dataMB.time_showError <= 100)
+  if (control.dataTabMB.time_showError <= 100)
   {
     DrawTextEx(
         FontArial, control.dataTabCB.dataMB.popup_errorMess.data(),
         {CenterDataSetter(1100, StartPos.x + 200,
-                          MeasureTextEx(FontArial, control.dataTabCB.dataMB.popup_errorMess.data(), 40, 0).x),
+                          MeasureTextEx(FontArial, control.dataTabMB.popup_errorMess.data(), 40, 0).x),
          CenterDataSetter(50, StartPos.y + 130,
                           MeasureTextEx(FontArial, "A", 40, 0).y)},
         40, 0, RED);
-    control.dataTabCB.dataMB.time_showError++;
+    control.dataTabMB.time_showError++;
   }
   else
   {
-    control.dataTabCB.dataMB.popup_errorMess = "";
-    control.dataTabCB.dataMB.time_showError = 0;
+    control.dataTabMB.popup_errorMess = "";
+    control.dataTabMB.time_showError = 0;
   }
 
   // mini function
@@ -1629,34 +1636,34 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
     maCB_t = "";
   else
     maCB_t = control.dataTabCB.data->getNode().getMaCB();
-  if (control.dataTabCB.dataMB.data != NULL && !control.listCB.isAval(control.dataTabCB.dataMB.data->getSoHieuMB(), gioBay, maCB_t))
+  if (control.dataTabMB.data != NULL && !control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
   {
     check_mb = true;
-    control.dataTabCB.dataMB.popup_errorMess = "Máy bay đang bận!";
-    control.dataTabCB.dataMB.time_showError = 98;
+    control.dataTabMB.popup_errorMess = "Máy bay đang bận!";
+    control.dataTabMB.time_showError = 98;
     // return;
   }
 
   if (CreateButton(OK))
   {
-    if (control.dataTabCB.dataMB.data == NULL)
+    if (control.dataTabMB.data == NULL)
     {
-      control.dataTabCB.dataMB.popup_errorMess = "Chưa chọn máy bay nào!";
+      control.dataTabMB.popup_errorMess = "Chưa chọn máy bay nào!";
       return;
     }
     else if (check_mb)
       return;
     control.dataTabCB.inChooseMB = false;
-    strcpy(control.dataTabCB.MaMB.name, control.dataTabCB.dataMB.data->getSoHieuMB());
-    control.dataTabCB.MaMB.letterCount = getCharSize(control.dataTabCB.dataMB.data->getSoHieuMB());
+    strcpy(control.dataTabCB.MaMB.name, control.dataTabMB.data->getSoHieuMB());
+    control.dataTabCB.MaMB.letterCount = getCharSize(control.dataTabMB.data->getSoHieuMB());
     if (control.dataTabCB.MaCB.editMode)
-      control.dataTabCB.MaMB.tittle = control.dataTabCB.dataMB.data->getSoHieuMB();
-    resetData_QLMB(control.dataTabCB.dataMB);
+      control.dataTabCB.MaMB.tittle = control.dataTabMB.data->getSoHieuMB();
+    resetData_QLMB(control.dataTabMB);
   }
   if (CreateButton(Cancel))
   {
     control.dataTabCB.inChooseMB = false;
-    resetData_QLMB(control.dataTabCB.dataMB);
+    resetData_QLMB(control.dataTabMB);
   }
 }
 
@@ -1874,12 +1881,6 @@ bool Popup_HieuChinhCB(UIcontroller &control)
        CenterDataSetter(60, StartPos.y + 60 + 10,
                         MeasureTextEx(FontArial, "A", 50, 0).y)},
       50, 0, BLACK);
-  if (control.dataTabCB.data == NULL)
-  {
-    if (Warning_NoData())
-      return true;
-    return false;
-  }
 
   control.dataTabCB.MaCB.editMode = true;
   control.dataTabCB.MaCB.tittle = control.dataTabCB.data->getNode().getMaCB();
@@ -2099,12 +2100,6 @@ bool Popup_HuyCB(UIcontroller &control)
        CenterDataSetter(60, StartPos.y + 60 + 10,
                         MeasureTextEx(FontArial, "A", 50, 0).y)},
       50, 0, BLACK);
-  if (control.dataTabCB.data == NULL)
-  {
-    if (Warning_NoData())
-      return true;
-    return false;
-  }
   TextBox Box_maCB;
   Box_maCB.box = control.dataTabCB.MaCB.textBox;
   Box_maCB.showBox = true;
