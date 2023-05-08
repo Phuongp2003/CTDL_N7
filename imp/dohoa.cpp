@@ -3696,6 +3696,8 @@ const char *CreateTextInputBox(InputTextBox &data)
                        MeasureTextEx(FontArial, data.name, font_size, 0).y)};
 
   // show text
+  DrawRectangleRec(data.textBox, data.MauNen);
+  DrawRectangleRoundedLines(data.textBox, 0, 1, 2, data.MauVien);
   if (data.name[0] != '\0')
     DrawTextEx(FontArial, data.name, textBoxPos, font_size, 0, data.MauChu);
   else
@@ -3836,8 +3838,6 @@ const char *CreateTextInputBox(InputTextBox &data)
   }
   strcpy(result, data.name);
 
-  DrawRectangleRec(data.textBox, data.MauNen);
-  DrawRectangleRoundedLines(data.textBox, 0, 1, 2, data.MauVien);
   if (data.showNKeyRemain)
   {
     DrawTextEx(FontArial, intToChar(data.size - data.letterCount, 2),
