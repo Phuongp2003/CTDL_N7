@@ -97,7 +97,7 @@ bool Date::checkNgayNhapVoiNgayHT() {//hàm check xem ngày khởi hành của c
   bool t_thang = 0;
   bool t_ngay = 0;
 
-  if (nam < 1900 + ltm->tm_year)
+  if (nam > 1900 + ltm->tm_year)
     t_nam = false;
   else
     t_nam = true;

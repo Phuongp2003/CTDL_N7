@@ -163,6 +163,8 @@ void DsMayBay::deleteDsMB()
 
 MayBay **DsMayBay::getMB() { return data; }
 
+MayBay* DsMayBay::getMB(int index) {return data[index];}
+
 void DsMayBay::readFromFile()
 {
   ifstream file("../data/dataMB.txt", ios::in);

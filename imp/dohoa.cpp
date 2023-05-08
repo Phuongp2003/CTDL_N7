@@ -2038,6 +2038,8 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   {
     if (!newNgayBay.checkNgay())
       control.dataTabCB.popup_errorMess = "Ngày, tháng hoặc năm không hợp lệ!";
+    else if (!(newNgayBay.checkNgayNhapVoiNgayHT() == true) || !(newNgayBay.checkGioNhapVoiGioHT() == true))
+      control.dataTabCB.popup_errorMess = "Chuyến bay phải được lập cách 1 ngày!";
     else if (control.listMB.findPosMB(newMaMB) < 0)
       control.dataTabCB.popup_errorMess = "Mã máy bay không tồn tại!";
     else if (!control.listCB.isAval(newMaMB, newNgayBay, newMaCB))
