@@ -42,6 +42,8 @@ struct BoMauNut
 };
 struct Button
 {
+  bool isActive = true;
+
   float x;
   float y;
   float w;
@@ -60,6 +62,8 @@ struct Button
 
 struct InputTextBox
 {
+  bool isActive = true;
+
   Rectangle textBox;
   const char *tittle = "";
   int size = 27;
@@ -678,6 +682,20 @@ void CreatePage_QLMB(UIcontroller &control)
       button[i].gotText = true;
       button[i].font = FontArial;
       button[i].BoMau = ArrowKey;
+    }
+
+    // disable button if no data
+    if (control.dataTabMB.data == NULL)
+    {
+      button[1].isActive = false;
+      button[2].isActive = false;
+      button[3].isActive = false;
+    }
+    else
+    {
+      button[1].isActive = true;
+      button[2].isActive = true;
+      button[3].isActive = true;
     }
 
     // mini function
@@ -1461,7 +1479,7 @@ void CreatePage_QLCB(UIcontroller &control)
     button[2].tittle = "Huỷ chuyến bay";
     if (CreateButton(button[2]))
     {
-      
+
       control.dataTabCB.current_popup = 3;
     }
 
@@ -1476,7 +1494,6 @@ void CreatePage_QLCB(UIcontroller &control)
       control.dataTabCB.current_popup = 5;
     }
     control.dataTabCB.data = XuLy_QLCB(control);
-    
   }
   else if (control.dataTabCB.current_popup == 1)
   {
@@ -1500,10 +1517,9 @@ void CreatePage_QLCB(UIcontroller &control)
     //   CreatePageBackground(7);
     //   // control.dataTabCB.current_popup = 0;
     //   control.dataTabCB.data = XuLy_QLCB(control);
-      
+
     //   DrawRectangle(StartPos.x + 1201+29, StartPos.y + 60 + 20 + 70 + 15 + 75 * 2, 240, 60,
     //               BLACK);
-      
 
     // }
   }
@@ -1511,7 +1527,7 @@ void CreatePage_QLCB(UIcontroller &control)
   {
     // if(!(control.dataTabCB.data->getNode().getTrangThai()==HoanTat))
     // {
-      cout<<control.dataTabCB.data->getNode().getTrangThai()<<endl;
+    cout << control.dataTabCB.data->getNode().getTrangThai() << endl;
     if (Popup_HuyCB(control))
     {
       control.dataTabCB.current_popup = 0;
@@ -1521,10 +1537,9 @@ void CreatePage_QLCB(UIcontroller &control)
     // {
     //   CreatePageBackground(7);
     //   control.dataTabCB.current_popup = 0;
-      
+
     //   DrawRectangle(StartPos.x + 1201+29, StartPos.y + 60 + 20 + 70 + 15 + 75 * 2, 240, 60,
     //               BLACK);
-      
 
     // }
   }
@@ -2169,7 +2184,7 @@ bool Popup_HuyCB(UIcontroller &control)
   if (CreateButton(OK))
   {
     control.dataTabCB.data->getNode().setTrangThai(HuyChuyen);
-    cout<<control.dataTabCB.data->getNode().getTrangThai()<<endl;
+    cout << control.dataTabCB.data->getNode().getTrangThai() << endl;
     control.listCB.writetToFile();
     // control.listCB.setSize();
     ChuyenBay result = control.dataTabCB.data->getNode();
@@ -3551,6 +3566,16 @@ bool CreateButton(Button data)
           data.w, data.x,
           MeasureTextEx(data.font, data.tittle, data.h / 2.0f, 0).x),
       data.h / 5.0f + data.y};
+
+  if (!data.isActive)
+  {
+    DrawRectangleRounded(Button, 0.5f, 0.5f, data.BoMau.isPressed);
+    DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0,
+               data.BoMau.text2);
+
+    return false;
+  }
+
   if (!data.RounderChangeColor)
   {
     data.BoMau.RounderHovered = data.BoMau.Rounder;
@@ -3660,6 +3685,7 @@ bool CreateButton(Button data)
 
 const char *CreateTextInputBox(InputTextBox &data)
 {
+
   char name_cpy[data.size] = "\0";
   char *result = new char[data.size];
   const int font_size = data.textBox.height * per1000(700);
@@ -3668,6 +3694,18 @@ const char *CreateTextInputBox(InputTextBox &data)
       data.textBox.x + 5,
       CenterDataSetter(data.textBox.height, data.textBox.y,
                        MeasureTextEx(FontArial, data.name, font_size, 0).y)};
+
+  // show text
+  if (data.name[0] != '\0')
+    DrawTextEx(FontArial, data.name, textBoxPos, font_size, 0, data.MauChu);
+  else
+    DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, BROWN);
+
+  if (!data.isActive)
+  {
+    return "\0";
+  }
+
   Vector2 MousePos = {0.0f, 0.0f};
   strcpy(name_cpy, data.name);
   name_cpy[data.letterCount + data.indexPoint] = '\0';
@@ -3807,12 +3845,12 @@ const char *CreateTextInputBox(InputTextBox &data)
                 data.textBox.y + data.textBox.height / 3},
                data.textBox.height * per1000(400), 0, DARKGREEN);
   }
-  if (data.name[0] != '\0')
-    DrawTextEx(FontArial, data.name, textBoxPos, font_size, 0, data.MauChu);
-  else
-    DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, BROWN);
+
+  // show index point
   if (data.mouseClickOnText && ((data.framesCounter % 40 >= 5)))
     DrawTextEx(FontArial, "|", textBoxDot, font_size, 0, MAROON);
+
+  // return
   if (!data.returnIfDone)
     return result;
   else
