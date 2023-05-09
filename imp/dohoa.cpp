@@ -2520,7 +2520,12 @@ bool Popup_chonChuyen(UIcontroller &control)
   CreatePageBackground(2);
   if (control.dataTabCB.inGetTicket)
   {
-    return Popup_chonVe(control);
+    if (Popup_chonVe(control))
+    {
+      control.dataTabCB.inShowFightAvail = false;
+      return true;
+    }
+    return false;
   }
 
   control.dataTabCB.inShowFightAvail = true;
