@@ -839,8 +839,8 @@ void CreatePage_QLMB(UIcontroller &control)
     button[3].tittle = "Thống kê S.lượt bay";
     if (CreateButton(button[3]))
     {
-      control.dataTabMB.Sw_table_page.reset();
       control.dataTabMB.current_popup = 4;
+      // control.dataTabMB.Sw_table_page.reset();
     }
     control.dataTabMB.data = XuLy_QLMB(control);
     // if (data->getSoHieuMB()[0] >= 36)
@@ -866,7 +866,10 @@ void CreatePage_QLMB(UIcontroller &control)
   else if (control.dataTabMB.current_popup == 4)
   {
     if (Popup_Thongkesoluotbay(control))
+    {
       control.dataTabMB.current_popup = 0;
+      // control.dataTabMB.Sw_table_page.reset();
+    }
   }
   // cout << data->getSoHieuMB() << endl;
 }
@@ -1310,7 +1313,7 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
     DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
   }
 
-  control.dataTabMB.current_showPage = 1;
+  // control.dataTabMB.current_showPage = 1;
   int n_page = 1; // 1 + (spt/10)
   int size = control.listMB.getSize();
   int n_char;
@@ -1478,7 +1481,7 @@ MayBay *XuLy_QLMB(UIcontroller &control)
   Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
   for (int id = 0; id < size; id++)
   {
-    if (control.listMB.getMB(id)->getSoHieuMB(), control.dataTabMB.keyword)
+    if (isGotStr(control.listMB.getMB(id)->getSoHieuMB(), control.dataTabMB.keyword))
     {
       if (j >= i && j <= i + 9)
       {
