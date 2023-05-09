@@ -696,13 +696,11 @@ void CreatePage_QLMB(UIcontroller &control)
     {
       button[1].isActive = false;
       button[2].isActive = false;
-      button[3].isActive = false;
     }
     else
     {
       button[1].isActive = true;
       button[2].isActive = true;
-      button[3].isActive = true;
     }
 
     // mini function
@@ -935,14 +933,14 @@ bool Popup_HieuChinhMB(UIcontroller &control)
   DrawTextEx(FontArial, "Số dòng",
              {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
   DrawTextEx(
-      FontArial, "(Gồm CHỈ số, nho hon hoac bang 25)",
+      FontArial, "(Gồm CHỈ số, nhỏ hơn hoặc bằng 25)",
       {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25}, 25,
       0, RED);
   const char *newSoDong = CreateTextInputBox(control.dataTabMB.SoDong);
   DrawTextEx(FontArial, "Số dãy",
              {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
   DrawTextEx(
-      FontArial, "(Gồm CHỈ số, nho hon hoac bang 12)",
+      FontArial, "(Gồm CHỈ số, nhỏ hơn hoặc bằng 12)",
       {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25}, 25,
       0, RED);
   const char *newSoDay = CreateTextInputBox(control.dataTabMB.SoDay);
@@ -1610,21 +1608,21 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
   Cancel.font = FontArial;
   Cancel.BoMau = ArrowKey;
 
-  if (control.dataTabMB.time_showError <= 100)
+  if (control.dataTabCB.time_showError <= 100)
   {
     DrawTextEx(
-        FontArial, control.dataTabCB.dataMB.popup_errorMess.data(),
+        FontArial, control.dataTabCB.popup_errorMess.data(),
         {CenterDataSetter(1100, StartPos.x + 200,
-                          MeasureTextEx(FontArial, control.dataTabMB.popup_errorMess.data(), 40, 0).x),
+                          MeasureTextEx(FontArial, control.dataTabCB.popup_errorMess.data(), 40, 0).x),
          CenterDataSetter(50, StartPos.y + 130,
                           MeasureTextEx(FontArial, "A", 40, 0).y)},
         40, 0, RED);
-    control.dataTabMB.time_showError++;
+    control.dataTabCB.time_showError++;
   }
   else
   {
-    control.dataTabMB.popup_errorMess = "";
-    control.dataTabMB.time_showError = 0;
+    control.dataTabCB.popup_errorMess = "";
+    control.dataTabCB.time_showError = 0;
   }
 
   // mini function
@@ -1639,8 +1637,8 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
   if (control.dataTabMB.data != NULL && !control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
   {
     check_mb = true;
-    control.dataTabMB.popup_errorMess = "Máy bay đang bận!";
-    control.dataTabMB.time_showError = 98;
+    control.dataTabCB.popup_errorMess = "Máy bay đang bận!";
+    control.dataTabCB.time_showError = 98;
     // return;
   }
 
@@ -1648,7 +1646,7 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
   {
     if (control.dataTabMB.data == NULL)
     {
-      control.dataTabMB.popup_errorMess = "Chưa chọn máy bay nào!";
+      control.dataTabCB.popup_errorMess = "Chưa chọn máy bay nào!";
       return;
     }
     else if (check_mb)
