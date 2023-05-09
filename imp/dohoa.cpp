@@ -189,12 +189,12 @@ struct QLHK_data
     pickdata_index = -1;
     current_page = 1;
 
-    i_CMND.mode = 3;
+    i_CMND.mode = 5;
     i_CMND.tittle = (char *)"Nhập số CMND/CCCD";
     i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
     i_CMND.size = 15;
 
-    i_Ho.mode = 3;
+    i_Ho.mode = 1;
     i_Ho.tittle = (char *)"Nhập họ và tên đệm";
     i_Ho.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 580, 50};
     i_Ho.size = 40;
