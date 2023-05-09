@@ -76,6 +76,7 @@ struct QLMB_data;
 struct QLCB_data;
 struct QLHK_data;
 struct QLVe_data;
+struct PageSwitcher;
 
 void UI_switchTab(UIcontroller &control);
 void InitUIData(UIcontroller &control);
@@ -143,7 +144,7 @@ Vector2 GetCellPos(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x,
 
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua,
                        float obj_width); // done
-int SwitchPage(int current_page, int n_page, Vector2 pos);
+int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos);
 bool CreateButton(Button data);
 const char *CreateTextInputBox(InputTextBox &data);
 void resetInputTextBox(InputTextBox &box);

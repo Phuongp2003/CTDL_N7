@@ -96,6 +96,26 @@ struct TextBox
   int fontSize = 0;
 };
 
+struct PageSwitcher
+{
+  bool editmode = false;
+  InputTextBox fast_switcher;
+  PageSwitcher()
+  {
+    fast_switcher.editMode = true;
+    fast_switcher.size = 2;
+    fast_switcher.MauVien = BROWN;
+    fast_switcher.mode = 5;
+    fast_switcher.returnIfDone = true;
+    fast_switcher.showNKeyRemain = false;
+  }
+  void reset()
+  {
+    editmode = false;
+    resetInputTextBox(fast_switcher);
+  }
+};
+
 struct QLMB_data
 {
   MayBay *data = NULL;
@@ -110,11 +130,46 @@ struct QLMB_data
   const char *keyword;
   InputTextBox searchKeyword;
   int current_showPage = 1;
+
+  PageSwitcher Sw_table_page;
+
+  QLMB_data()
+  {
+    data = NULL;
+    current_popup = 0;
+    popup_errorMess = "";
+    time_showError = 0;
+
+    MaMB.mode = 3;
+    MaMB.tittle = (char *)"Nhập số hiệu máy bay";
+    MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
+    MaMB.size = 15;
+    LoaiMB.mode = 2;
+    LoaiMB.tittle = (char *)"Nhập loại máy bay";
+    LoaiMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+    LoaiMB.size = 40;
+    SoDong.mode = 5;
+    SoDong.tittle = (char *)"Nhập số dòng của máy bay";
+    SoDong.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
+    SoDong.size = 3;
+    SoDay.mode = 5;
+    SoDay.tittle = (char *)"Nhập số dãy của máy bay";
+    SoDay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
+    SoDay.size = 3;
+
+    pickdata_index = -1;
+    keyword = "";
+    searchKeyword.mode = 3;
+    searchKeyword.tittle = "Nhập nội dung tìm kiếm";
+    current_showPage = 1;
+
+    Sw_table_page = PageSwitcher();
+  }
 };
 
 struct QLHK_data
 {
-  NodeHK *data;
+  NodeHK *data = nullptr;
   int status = 0;
 
   int current_popup = 0;
@@ -123,6 +178,34 @@ struct QLHK_data
   int current_page = 1;
 
   InputTextBox i_CMND, i_Ho, i_Ten;
+
+  PageSwitcher Sw_table_page;
+
+  QLHK_data()
+  {
+    data = nullptr;
+    status = 0;
+    current_popup = 0;
+    pickdata_index = -1;
+    current_page = 1;
+
+    i_CMND.mode = 3;
+    i_CMND.tittle = (char *)"Nhập số CMND/CCCD";
+    i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+    i_CMND.size = 15;
+
+    i_Ho.mode = 3;
+    i_Ho.tittle = (char *)"Nhập họ và tên đệm";
+    i_Ho.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 580, 50};
+    i_Ho.size = 40;
+
+    i_Ten.mode = 1;
+    i_Ten.tittle = (char *)"Nhập tên";
+    i_Ten.textBox = {StartPos.x + 300 + 600, StartPos.y + 60 + 380, 300, 50};
+    i_Ten.size = 40;
+
+    Sw_table_page = PageSwitcher();
+  }
 };
 
 struct QLVe_data
@@ -133,6 +216,18 @@ struct QLVe_data
   VeMayBay data = VeMayBay();
 
   bool inDelete = false;
+
+  PageSwitcher Sw_table_page;
+
+  QLVe_data()
+  {
+    current_page = 1;
+    position = -1;
+    data = VeMayBay();
+    inDelete = false;
+
+    Sw_table_page = PageSwitcher();
+  }
 };
 
 struct QLCB_data
@@ -156,6 +251,77 @@ struct QLCB_data
   bool inGetTicket = false;
   bool inSetTicket = false;
   bool gotNewTicket = false;
+
+  PageSwitcher Sw_table_page;
+
+  QLCB_data()
+  {
+    data = nullptr;
+    status = 0;
+    current_popup = 0;
+    popup_errorMess = "";
+    time_showError = 0;
+    inChooseMB = false;
+    dataDSVe = QLVe_data();
+
+    MaCB.mode = 3;
+    MaCB.tittle = (char *)"Nhập mã chuyến bay";
+    MaCB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+    MaCB.size = 15;
+    MaMB.mode = 3;
+    MaMB.tittle = (char *)"Nhập số hiệu máy bay";
+    MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 900, 50};
+    MaMB.size = 40;
+    NoiDen.mode = 1;
+    NoiDen.tittle = (char *)"Nhập nơi đến";
+    NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
+    NoiDen.size = 40;
+    Ngay.mode = 6;
+    Ngay.tittle = (char *)"DD";
+    Ngay.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 60, 50};
+    Ngay.size = 2;
+    Ngay.showNKeyRemain = false;
+    Thang.mode = 7;
+    Thang.tittle = (char *)"MM";
+    Thang.textBox = {StartPos.x + 300 + 70, StartPos.y + 60 + 180, 60, 50};
+    Thang.size = 2;
+    Thang.showNKeyRemain = false;
+    Nam.mode = 8;
+    Nam.tittle = (char *)"YYYY";
+    Nam.textBox = {StartPos.x + 300 + 70 + 70, StartPos.y + 60 + 180, 120,
+                   50};
+    Nam.size = 4;
+    Nam.showNKeyRemain = false;
+    Gio.mode = 9;
+    Gio.tittle = (char *)"HH";
+    Gio.textBox = {StartPos.x + 300 + 70 + 70 + 150, StartPos.y + 60 + 180,
+                   60, 50};
+    Gio.size = 2;
+    Gio.showNKeyRemain = false;
+    Phut.mode = 10;
+    Phut.tittle = (char *)"MM";
+    Phut.textBox = {StartPos.x + 300 + 70 + 70 + 150 + 70,
+                    StartPos.y + 60 + 180, 60, 50};
+    Phut.size = 2;
+    Phut.showNKeyRemain = false;
+
+    searchMaCB.tittle = "Mã chuyến bay";
+    searchMaCB.size = 15;
+    searchMaCB.mode = 3;
+    searchNoiDen.tittle = "Nơi đến";
+    searchNoiDen.size = 20;
+    searchNoiDen.mode = 1;
+
+    pickdata_index = -1;
+    current_showPage = 1;
+
+    fbDay = Date(1, 1, 0, 0, 0);
+    inShowFightAvail = false;
+    inGetTicket = false;
+    gotNewTicket = false;
+
+    Sw_table_page = PageSwitcher();
+  }
 };
 struct UIcontroller
 {
@@ -188,12 +354,9 @@ void UI_switchTab(UIcontroller &control, int idTab)
 void InitUIData(UIcontroller &control)
 {
   control.current_tab = 0;
-  resetData_QLMB(control.dataTabMB);
-
-  resetData_QLCB(control.dataTabCB);
-  // resetData_QLVe(control.dataTabCB.dataDSVe);
-
-  resetData_QLHK(control.dataTabHK);
+  control.dataTabMB = QLMB_data();
+  control.dataTabCB = QLCB_data();
+  control.dataTabHK = QLHK_data();
 }
 
 void resetData_QLMB(QLMB_data &data)
@@ -205,91 +368,48 @@ void resetData_QLMB(QLMB_data &data)
   data.popup_errorMess = "";
   data.time_showError = 0;
   resetInputTextBox(data.MaMB);
-  data.MaMB.mode = 3;
   data.MaMB.tittle = (char *)"Nhập số hiệu máy bay";
-  data.MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
-  data.MaMB.size = 15;
   resetInputTextBox(data.LoaiMB);
-  data.LoaiMB.mode = 2;
   data.LoaiMB.tittle = (char *)"Nhập loại máy bay";
-  data.LoaiMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-  data.LoaiMB.size = 40;
   resetInputTextBox(data.SoDong);
-  data.SoDong.mode = 5;
   data.SoDong.tittle = (char *)"Nhập số dòng của máy bay";
-  data.SoDong.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
-  data.SoDong.size = 3;
   resetInputTextBox(data.SoDay);
-  data.SoDay.mode = 5;
   data.SoDay.tittle = (char *)"Nhập số dãy của máy bay";
-  data.SoDay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
-  data.SoDay.size = 3;
 
   data.pickdata_index = -1;
   data.keyword = "";
   resetInputTextBox(data.searchKeyword);
-  data.searchKeyword.mode = 3;
   data.searchKeyword.tittle = "Nhập nội dung tìm kiếm";
   data.current_showPage = 1;
+
+  data.Sw_table_page.reset();
 }
 
 void resetData_QLCB(QLCB_data &data)
 {
   resetInputTextBox(data.MaCB);
-  data.MaCB.mode = 3;
   data.MaCB.tittle = (char *)"Nhập mã chuyến bay";
-  data.MaCB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-  data.MaCB.size = 15;
 
   resetInputTextBox(data.MaMB);
-  data.MaMB.mode = 3;
   data.MaMB.tittle = (char *)"Nhập số hiệu máy bay";
-  data.MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 900, 50};
-  data.MaMB.size = 40;
 
   resetInputTextBox(data.NoiDen);
-  data.NoiDen.mode = 1;
   data.NoiDen.tittle = (char *)"Nhập nơi đến";
-  data.NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
-  data.NoiDen.size = 40;
 
   resetInputTextBox(data.Ngay);
-  data.Ngay.mode = 6;
   data.Ngay.tittle = (char *)"DD";
-  data.Ngay.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 60, 50};
-  data.Ngay.size = 2;
-  data.Ngay.showNKeyRemain = false;
 
   resetInputTextBox(data.Thang);
-  data.Thang.mode = 7;
   data.Thang.tittle = (char *)"MM";
-  data.Thang.textBox = {StartPos.x + 300 + 70, StartPos.y + 60 + 180, 60, 50};
-  data.Thang.size = 2;
-  data.Thang.showNKeyRemain = false;
 
   resetInputTextBox(data.Nam);
-  data.Nam.mode = 8;
   data.Nam.tittle = (char *)"YYYY";
-  data.Nam.textBox = {StartPos.x + 300 + 70 + 70, StartPos.y + 60 + 180, 120,
-                      50};
-  data.Nam.size = 4;
-  data.Nam.showNKeyRemain = false;
 
   resetInputTextBox(data.Gio);
-  data.Gio.mode = 9;
   data.Gio.tittle = (char *)"HH";
-  data.Gio.textBox = {StartPos.x + 300 + 70 + 70 + 150, StartPos.y + 60 + 180,
-                      60, 50};
-  data.Gio.size = 2;
-  data.Gio.showNKeyRemain = false;
 
   resetInputTextBox(data.Phut);
-  data.Phut.mode = 10;
   data.Phut.tittle = (char *)"MM";
-  data.Phut.textBox = {StartPos.x + 300 + 70 + 70 + 150 + 70,
-                       StartPos.y + 60 + 180, 60, 50};
-  data.Phut.size = 2;
-  data.Phut.showNKeyRemain = false;
 
   resetInputTextBox(data.searchNoiDen);
   data.searchNoiDen.tittle = "Nơi đến";
@@ -316,8 +436,6 @@ void resetData_QLCB(QLCB_data &data)
 
   resetInputTextBox(data.searchMaCB);
   data.searchMaCB.tittle = "Mã chuyến bay";
-  data.searchMaCB.size = 15;
-  data.searchMaCB.mode = 3;
 
   resetData_QLVe(data.dataDSVe);
 
@@ -331,11 +449,18 @@ void resetData_QLCB(QLCB_data &data)
 
   data.pickdata_index = -1;
   data.current_showPage = 1;
+
+  data.fbDay = Date(1, 1, 0, 0, 0);
+  data.inShowFightAvail = false;
+  data.inGetTicket = false;
+  data.gotNewTicket = false;
+
+  data.Sw_table_page.reset();
 }
 
 void resetData_QLHK(QLHK_data &data)
 {
-  data.data;
+  data.data = nullptr;
   data.status = 0;
 
   data.current_popup = 0;
@@ -344,22 +469,12 @@ void resetData_QLHK(QLHK_data &data)
   data.current_page = 1;
 
   resetInputTextBox(data.i_CMND);
-  data.i_CMND.mode = 3;
-  data.i_CMND.tittle = (char *)"Nhập số CMND/CCCD";
-  data.i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-  data.i_CMND.size = 15;
 
   resetInputTextBox(data.i_Ho);
-  data.i_Ho.mode = 3;
-  data.i_Ho.tittle = (char *)"Nhập họ và tên đệm";
-  data.i_Ho.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 580, 50};
-  data.i_Ho.size = 40;
 
   resetInputTextBox(data.i_Ten);
-  data.i_Ten.mode = 1;
-  data.i_Ten.tittle = (char *)"Nhập tên";
-  data.i_Ten.textBox = {StartPos.x + 300 + 600, StartPos.y + 60 + 380, 300, 50};
-  data.i_Ten.size = 40;
+
+  data.Sw_table_page.reset();
 }
 
 void resetData_QLVe(QLVe_data &data)
@@ -367,6 +482,9 @@ void resetData_QLVe(QLVe_data &data)
   data.current_page = 1;
   data.position = -1;
   data.data = VeMayBay();
+  data.inDelete = false;
+
+  data.Sw_table_page.reset();
 }
 
 BoMauNut HomeButtonColor{{153, 255, 153, 255},
@@ -721,6 +839,7 @@ void CreatePage_QLMB(UIcontroller &control)
     button[3].tittle = "Thống kê S.lượt bay";
     if (CreateButton(button[3]))
     {
+      control.dataTabMB.Sw_table_page.reset();
       control.dataTabMB.current_popup = 4;
     }
     control.dataTabMB.data = XuLy_QLMB(control);
@@ -1190,7 +1309,8 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
   {
     DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
   }
-  static int current_page = 1;
+
+  control.dataTabMB.current_showPage = 1;
   int n_page = 1; // 1 + (spt/10)
   int size = control.listMB.getSize();
   int n_char;
@@ -1200,7 +1320,7 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
     n_char = 3;
   else
     n_char = 4;
-  int i = (current_page - 1) * 10;
+  int i = (control.dataTabMB.current_showPage - 1) * 10;
   int j = 0;
   Vector2 start_pos = {StartPos.x + 60, StartPos.y + 110 + 70 + 60};
   int *A = control.listMB.sapXepThongKe();
@@ -1237,16 +1357,16 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
 
   // page and switch page
   int swp =
-      SwitchPage(current_page, n_page,
+      SwitchPage(control.dataTabMB.Sw_table_page, control.dataTabMB.current_showPage, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
 
-  current_page = swp;
-  if (current_page > n_page)
-    current_page = 1;
+  control.dataTabMB.current_showPage = swp;
+  if (control.dataTabMB.current_showPage > n_page)
+    control.dataTabMB.current_showPage = 1;
 
   if (CreateButton(button))
   {
-    current_page = 1;
+    control.dataTabMB.current_showPage = 1;
     resetInputTextBox(control.dataTabMB.searchKeyword);
     // control.dataTabMB.current_popup =0;
     return true;
@@ -1390,7 +1510,7 @@ MayBay *XuLy_QLMB(UIcontroller &control)
 
   // page and switch page
   int swp =
-      SwitchPage(control.dataTabMB.current_showPage, n_page,
+      SwitchPage(control.dataTabMB.Sw_table_page, control.dataTabMB.current_showPage, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabMB.current_showPage != swp)
   {
@@ -1507,6 +1627,7 @@ void CreatePage_QLCB(UIcontroller &control)
     if (CreateButton(button[4]))
     {
       control.dataTabCB.pickdata_index = -1;
+      control.dataTabCB.Sw_table_page.reset();
       control.dataTabCB.data == nullptr;
       control.dataTabCB.current_popup = 5;
     }
@@ -1551,6 +1672,7 @@ void CreatePage_QLCB(UIcontroller &control)
   {
     if (Popup_chonChuyen(control))
     {
+      control.dataTabCB.Sw_table_page.reset();
       control.dataTabCB.pickdata_index = -1;
       control.dataTabCB.data == nullptr;
       control.dataTabCB.current_popup = 0;
@@ -2324,7 +2446,7 @@ bool Popup_showListHK(UIcontroller &control)
   }
 
   int swp =
-      SwitchPage(control.dataTabCB.dataDSVe.current_page, n_page,
+      SwitchPage(control.dataTabCB.Sw_table_page, control.dataTabCB.dataDSVe.current_page, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabCB.dataDSVe.current_page != swp)
   {
@@ -2494,7 +2616,7 @@ bool Popup_chonVe(UIcontroller &control)
   n_page = 1 + ((sDong - 1) / 10);
 
   int swp =
-      SwitchPage(control.dataTabCB.dataDSVe.current_page, n_page,
+      SwitchPage(control.dataTabCB.Sw_table_page, control.dataTabCB.dataDSVe.current_page, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabCB.dataDSVe.current_page != swp)
   {
@@ -2930,7 +3052,7 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
 
   // page and switch page
   int swp =
-      SwitchPage(control.dataTabCB.current_showPage, n_page,
+      SwitchPage(control.dataTabCB.Sw_table_page, control.dataTabCB.current_showPage, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabCB.current_showPage != swp)
   {
@@ -2970,18 +3092,13 @@ void CreatePage_QLHK(UIcontroller &control)
 {
   CreatePageBackground(2);
 
-  static NodeHK *data;
-  static char *preResult = (char *)"\0";
-  static int status = 0;
-  static int current_popup = 0; // 0-k hien/ 1-them/ 2-sua/ 3-xoa
-
   DrawTextEx(FontArial, "DANH SÁCH HÀNH KHÁCH",
              {StartPos.x + 60,
               CenterDataSetter(100, StartPos.y + 60,
                                MeasureTextEx(FontArial, "A", 60, 0).y)},
              60, 0, BLUE);
 
-  if (current_popup == 0)
+  if (control.dataTabHK.current_page == 0)
   { // mini function
     Button button[2];
     for (int i = 0; i < 2; i++)
@@ -2999,12 +3116,12 @@ void CreatePage_QLHK(UIcontroller &control)
     button[0].tittle = "Quản lý vé";
     if (CreateButton(button[0]))
     {
-      current_popup = 1;
+      control.dataTabHK.current_popup = 1;
     }
     button[1].tittle = "Huỷ vé";
     if (CreateButton(button[1]))
     {
-      current_popup = 2;
+      control.dataTabHK.current_popup = 2;
     }
     // if (CreateButton(StartPos.x + 1201 + 29, StartPos.y + 60 + 20 + 70 + 15,
     // 240, 60, false, "Quản lý vé", FontArial, ArrowKey))
@@ -3019,15 +3136,15 @@ void CreatePage_QLHK(UIcontroller &control)
 
     CreateTable_QLHK();
   }
-  else if (current_popup = 1)
+  else if (control.dataTabHK.current_popup = 1)
   {
   }
-  else if (current_popup = 2)
+  else if (control.dataTabHK.current_popup = 2)
   {
   }
-  data = XuLy_QLHK(control);
-  if (data != NULL)
-    cout << data->getHK().getCmnd() << endl;
+  control.dataTabHK.data = XuLy_QLHK(control);
+  if (control.dataTabHK.data != NULL)
+    cout << control.dataTabHK.data->getHK().getCmnd() << endl;
 }
 
 void CreateTable_QLHK()
@@ -3069,8 +3186,6 @@ void showHanhKhach(HanhKhach hanhKhach, int n_char, Vector2 start_pos, float *ce
 
 NodeHK *XuLy_QLHK(UIcontroller &control)
 {
-  static NodeHK *result;
-  static int index = -1;
   const Vector2 search = {StartPos.x + 60, StartPos.y + 60 + 70};
 
   // table
@@ -3078,7 +3193,6 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
   CreateTable_QLHK();
 
   // data
-  static int current_page = 1;
   int n_page = 1;
   if (control.dataTabHK.status == 1)
   {
@@ -3102,20 +3216,20 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
     data_picker[i].BoMau.RounderPressed = RED;
     if (CreateButton(data_picker[i]))
     {
-      if (index != i)
+      if (control.dataTabHK.pickdata_index != i)
       {
 
-        index = i;
+        control.dataTabHK.pickdata_index = i;
       }
       else
-        index = -1;
+        control.dataTabHK.pickdata_index = -1;
     }
-    if (index == i)
+    if (control.dataTabHK.pickdata_index == i)
       DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y,
                                  data_picker[i].w, data_picker[i].h},
                                 0, 1, 2, GREEN);
   }
-  result = NULL;
+  control.dataTabHK.data = NULL;
 
   // show list
   Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
@@ -3129,7 +3243,7 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
   else
     n_char = 4;
 
-  int i = (current_page - 1) * 10;
+  int i = (control.dataTabHK.current_page - 1) * 10;
 
   int j = 0;
 
@@ -3143,7 +3257,7 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
   // {
   //   if (j >= i && j <= i + 9)
   //   {
-  //     if (j % 10 == index)
+  //     if (j % 10 == control.dataTabHK.pickdata_index)
   //       result = root;
 
   //     TextBox show[5];
@@ -3185,8 +3299,8 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
     queue.pop();
     if (j >= i && j <= i + 9)
     {
-      if (j % 10 == index)
-        result = root;
+      if (j % 10 == control.dataTabHK.pickdata_index)
+        control.dataTabHK.data = root;
 
       showHanhKhach(currNode->getHK(), n_char, start_pos, cellW, j, order);
     }
@@ -3207,14 +3321,14 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
 
   // page and switch page
   int swp =
-      SwitchPage(current_page, n_page,
+      SwitchPage(control.dataTabCB.Sw_table_page, control.dataTabHK.current_page, n_page,
                  {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
-  if (current_page != swp)
-    index = -1;
-  current_page = swp;
-  if (current_page > n_page)
-    current_page = 1;
-  return result;
+  if (control.dataTabHK.current_page != swp)
+    control.dataTabHK.pickdata_index = -1;
+  control.dataTabHK.current_page = swp;
+  if (control.dataTabHK.current_page > n_page)
+    control.dataTabHK.current_page = 1;
+  return control.dataTabHK.data;
 }
 
 void CreatePage_GioiThieu() { CreatePageBackground(0); }
@@ -3500,9 +3614,8 @@ float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua,
   return doDai_khung_chua / 2.0f + vi_tri_khung_chua - obj_width / 2.0f;
 }
 
-int SwitchPage(int current_page, int n_page, Vector2 pos)
+int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos)
 {
-  static bool editmode = false;
   Rectangle textBox = {pos.x + 50, pos.y, 160, 50};
   Rectangle pg1 = {textBox.x + textBox.width + 2, textBox.y, 70 - 4, 50};
   Rectangle pg2 = {textBox.x + textBox.width + 70 + 2, textBox.y, 70 - 4, 50};
@@ -3588,19 +3701,19 @@ int SwitchPage(int current_page, int n_page, Vector2 pos)
 
   if (CheckCollisionPointRec(GetVMousePosition(), pg1) &&
       IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-    editmode = true;
-  static InputTextBox fast_switcher;
-  fast_switcher.textBox = pg1;
-  fast_switcher.editMode = true;
-  fast_switcher.tittle = intToChar(current_page, 2);
-  fast_switcher.size = 2;
-  fast_switcher.MauVien = BROWN;
-  fast_switcher.mode = 5;
-  fast_switcher.returnIfDone = true;
-  fast_switcher.showNKeyRemain = false;
-  if (editmode)
+    data.editmode = true;
+
+  data.fast_switcher.textBox = pg1;
+  data.fast_switcher.editMode = true;
+  data.fast_switcher.tittle = intToChar(current_page, 2);
+  data.fast_switcher.size = 2;
+  data.fast_switcher.MauVien = BROWN;
+  data.fast_switcher.mode = 5;
+  data.fast_switcher.returnIfDone = true;
+  data.fast_switcher.showNKeyRemain = false;
+  if (data.editmode)
   {
-    const char *page_t = CreateTextInputBox(fast_switcher);
+    const char *page_t = CreateTextInputBox(data.fast_switcher);
     if (page_t[0] == 0)
       page_n = current_page;
     else
@@ -3608,14 +3721,14 @@ int SwitchPage(int current_page, int n_page, Vector2 pos)
     if (!(page_n > 0 && page_n <= n_page))
     {
       page_n = current_page;
-      resetInputTextBox(fast_switcher);
+      resetInputTextBox(data.fast_switcher);
     }
   }
 
   if (page_n != current_page)
   {
-    resetInputTextBox(fast_switcher);
-    editmode = false;
+    resetInputTextBox(data.fast_switcher);
+    data.editmode = false;
     return page_n;
   }
   if (status == -1)
