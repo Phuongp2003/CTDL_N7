@@ -5,8 +5,8 @@
 #define MAXMB 300
 
 using std::ifstream;
-using std::ofstream;
 using std::ios;
+using std::ofstream;
 // DsMayBay *DanhSach;
 
 class MayBay
@@ -40,7 +40,6 @@ public: //
   ~MayBay();
 };
 
-
 // Danh sách con trỏ của máy bay
 //======================================================================
 class DsMayBay
@@ -60,8 +59,7 @@ public:
   MayBay *findMB(const char *soHieuMB);
   DsMayBay findDsMB(const char *soHieuMB);
   void deleteDsMB();
-  MayBay **getMB();
-  MayBay* getMB(int index);
+  MayBay *getMB(int index);
   int *sapXepThongKe();
   void readFromFile();
   void writetoFile();

@@ -96,6 +96,7 @@ void CreateTable_QLMB();
 
 void resetData_QLCB(QLCB_data &data);
 void CreatePage_QLCB(UIcontroller &control);
+void ShowListCB(UIcontroller &control, int first, const char *textMaCB, const char *textNoiDen, bool showAvail, Date ngayBay);
 NodeCB *XuLy_QLCB(UIcontroller &control);
 void CreateTable_QLCB();
 void StatusHelp_QLCB();
@@ -120,6 +121,7 @@ bool Popup_ThemHK(UIcontroller &control);
 bool Popup_ThemCB(UIcontroller &control);
 bool Popup_HieuChinhCB(UIcontroller &control);
 bool Popup_HuyCB(UIcontroller &control);
+bool Popup_chonChuyen(UIcontroller &control);
 bool Popup_chonVe(UIcontroller &control);
 bool Popup_showListHK(UIcontroller &control);
 void Popup_getMB(UIcontroller &control, Date gioBay);

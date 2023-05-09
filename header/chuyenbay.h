@@ -44,13 +44,13 @@ public:
   const char *getMaMayBay();
 
   bool checkNoiDen(const char *noiDen);
-  bool checkTime(int ngay, int thang, int nam, int gio, int phut);
+  bool checkTime(Date time);
   bool checkMaCB(const char *maCB);
 
   void setDSVe(DsVeMayBay dsVe);
   DsVeMayBay getDSVe();
 
-  void ThucHienCB(DsMayBay * dsChuyenBay);
+  void ThucHienCB(DsMayBay *dsChuyenBay);
   Date ngayHoanThanh();
   // int soSanhNgay(Date another);
   bool cach(int hour, Date another);

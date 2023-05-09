@@ -42,9 +42,9 @@ bool ChuyenBay::checkNoiDen(const char *noiDen)
   return false;
 }
 
-bool ChuyenBay::checkTime(int ngay, int thang, int nam, int gio, int phut)
+bool ChuyenBay::checkTime(Date time)
 {
-  if (ngayGio == Date(ngay, thang, nam, gio, phut))
+  if (ngayGio == time)
     return true;
   return false;
 }
@@ -366,7 +366,10 @@ bool DsChuyenBay::isAval(const char *soHieuMB, Date timeCB, const char *_maCB)
   while (tmp != NULL)
   {
     if (tmp->getNode().getTrangThai() == HuyChuyen)
+    {
+      tmp = tmp->getNext();
       continue;
+    }
     if (!tmp->getNode().cach(3, timeCB))
     {
       if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0 && strcmp(tmp->getNode().getMaCB(), _maCB))

@@ -145,14 +145,15 @@ struct QLCB_data
   int time_showError = 0;
   InputTextBox MaCB, MaMB, NoiDen, Ngay, Thang, Nam, Gio, Phut;
   bool inChooseMB = false;
-  QLMB_data dataMB;
   QLVe_data dataDSVe;
-  QLHK_data dataDSHK;
 
   InputTextBox searchMaCB, searchNoiDen, searchNgay, searchThang, searchNam;
   int pickdata_index = -1;
   int current_showPage = 1;
 
+  Date fbDay = Date(1, 1, 0, 0, 0);
+  bool inShowFightAvail = false;
+  bool inGetTicket = false;
   bool inSetTicket = false;
   bool gotNewTicket = false;
 };
@@ -191,8 +192,6 @@ void InitUIData(UIcontroller &control)
 
   resetData_QLCB(control.dataTabCB);
   // resetData_QLVe(control.dataTabCB.dataDSVe);
-  resetData_QLMB(control.dataTabCB.dataMB);
-  resetData_QLHK(control.dataTabCB.dataDSHK);
 
   resetData_QLHK(control.dataTabHK);
 }
@@ -320,7 +319,6 @@ void resetData_QLCB(QLCB_data &data)
   data.searchMaCB.size = 15;
   data.searchMaCB.mode = 3;
 
-  resetData_QLMB(data.dataMB);
   resetData_QLVe(data.dataDSVe);
 
   data.data = NULL;
@@ -1206,10 +1204,9 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
   int j = 0;
   Vector2 start_pos = {StartPos.x + 60, StartPos.y + 110 + 70 + 60};
   int *A = control.listMB.sapXepThongKe();
-  MayBay **dsMB = control.listMB.getMB();
   for (int id = 0; id < size; id++)
   {
-    if (isGotStr(dsMB[id]->getSoHieuMB(), control.dataTabMB.keyword))
+    if (isGotStr(control.listMB.getMB(id)->getSoHieuMB(), control.dataTabMB.keyword))
     {
       if (j >= i && j <= i + 9)
       {
@@ -1217,8 +1214,8 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
         TextBox show[3];
         const char *showText[3] = {
             intToChar(j + 1, n_char),
-            dsMB[A[id]]->getSoHieuMB(), // control.listMB.getMB()[control.listMB.sapXepThongKe()[id]]->getSoHieuMB()
-            intToChar(dsMB[A[id]]->getSoLuotBay(), 3)};
+            control.listMB.getMB(A[id])->getSoHieuMB(), // control.listMB.getMB()[control.listMB.sapXepThongKe()[id]]->getSoHieuMB()
+            intToChar(control.listMB.getMB(A[id])->getSoLuotBay(), 3)};
         for (int show_i = 2; show_i >= 0; show_i--)
         {
           show[show_i] = GetCellTextBox(start_pos, 3, cellW, show_i + 1,
@@ -1234,6 +1231,7 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
       j++;
     }
   }
+
   delete[] A;
   n_page = 1 + ((j - 1) / 10);
 
@@ -1358,22 +1356,21 @@ MayBay *XuLy_QLMB(UIcontroller &control)
   // }
 
   Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
-  MayBay **temp = control.listMB.getMB();
   for (int id = 0; id < size; id++)
   {
-    if (isGotStr(temp[id]->getSoHieuMB(), control.dataTabMB.keyword))
+    if (control.listMB.getMB(id)->getSoHieuMB(), control.dataTabMB.keyword)
     {
       if (j >= i && j <= i + 9)
       {
         if (j % 10 == control.dataTabMB.pickdata_index)
-          control.dataTabMB.data = temp[id];
+          control.dataTabMB.data = control.listMB.getMB(id);
         TextBox show[5];
         const char *showText[5] = {
 
-            intToChar(j + 1, n_char), temp[id]->getSoHieuMB(),
-            temp[id]->getLoaiMB(),
-            intToChar(temp[id]->getSoDay(), 3),
-            intToChar(temp[id]->getSoDong(), 3)};
+            intToChar(j + 1, n_char), control.listMB.getMB(id)->getSoHieuMB(),
+            control.listMB.getMB(id)->getLoaiMB(),
+            intToChar(control.listMB.getMB(id)->getSoDay(), 3),
+            intToChar(control.listMB.getMB(id)->getSoDong(), 3)};
         for (int show_i = 4; show_i >= 0; show_i--)
         {
           show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
@@ -1469,10 +1466,23 @@ void CreatePage_QLCB(UIcontroller &control)
       button[i].font = FontArial;
       button[i].BoMau = ArrowKey;
     }
+    // disable button if no data
+    if (control.dataTabCB.data == NULL)
+    {
+      button[1].isActive = false;
+      button[2].isActive = false;
+      button[3].isActive = false;
+    }
+    else
+    {
+      button[1].isActive = true;
+      button[2].isActive = true;
+      button[3].isActive = true;
+    }
+
     button[0].tittle = "Thêm chuyến bay";
     if (CreateButton(button[0]))
     {
-
       control.dataTabCB.current_popup = 1;
     }
 
@@ -1496,8 +1506,11 @@ void CreatePage_QLCB(UIcontroller &control)
     button[4].tittle = "Đặt vé";
     if (CreateButton(button[4]))
     {
+      control.dataTabCB.pickdata_index = -1;
+      control.dataTabCB.data == nullptr;
       control.dataTabCB.current_popup = 5;
     }
+
     control.dataTabCB.data = XuLy_QLCB(control);
   }
   else if (control.dataTabCB.current_popup == 1)
@@ -1516,17 +1529,6 @@ void CreatePage_QLCB(UIcontroller &control)
     {
       control.dataTabCB.current_popup = 0;
     }
-
-    // else
-    // {
-    //   CreatePageBackground(7);
-    //   // control.dataTabCB.current_popup = 0;
-    //   control.dataTabCB.data = XuLy_QLCB(control);
-
-    //   DrawRectangle(StartPos.x + 1201+29, StartPos.y + 60 + 20 + 70 + 15 + 75 * 2, 240, 60,
-    //               BLACK);
-
-    // }
   }
   else if (control.dataTabCB.current_popup == 3)
   {
@@ -1537,16 +1539,6 @@ void CreatePage_QLCB(UIcontroller &control)
     {
       control.dataTabCB.current_popup = 0;
     }
-    // }
-    // else
-    // {
-    //   CreatePageBackground(7);
-    //   control.dataTabCB.current_popup = 0;
-
-    //   DrawRectangle(StartPos.x + 1201+29, StartPos.y + 60 + 20 + 70 + 15 + 75 * 2, 240, 60,
-    //               BLACK);
-
-    // }
   }
   else if (control.dataTabCB.current_popup == 4)
   {
@@ -1557,8 +1549,10 @@ void CreatePage_QLCB(UIcontroller &control)
   }
   else if (control.dataTabCB.current_popup == 5)
   {
-    if (Popup_chonVe(control))
+    if (Popup_chonChuyen(control))
     {
+      control.dataTabCB.pickdata_index = -1;
+      control.dataTabCB.data == nullptr;
       control.dataTabCB.current_popup = 0;
     }
   }
@@ -2356,16 +2350,83 @@ bool Popup_showListHK(UIcontroller &control)
   return false;
 }
 
+bool Popup_chonChuyen(UIcontroller &control)
+{
+  CreatePageBackground(2);
+  if (control.dataTabCB.inGetTicket)
+  {
+    return Popup_chonVe(control);
+  }
+
+  control.dataTabCB.inShowFightAvail = true;
+
+  DrawTextEx(FontArial, "HÃY CHỌN CHUYẾN BAY",
+             {StartPos.x + 60,
+              CenterDataSetter(70, StartPos.y + 60,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             50, 0, BLUE);
+
+  control.dataTabCB.data = XuLy_QLCB(control);
+
+  Button OK;
+
+  if (control.dataTabCB.data == NULL)
+  {
+    OK.isActive = false;
+  }
+  else
+  {
+    OK.isActive = true;
+  }
+  OK.x = StartPos.x + 1201 + 29;
+  OK.y = StartPos.y + 60 + 20 + 70 + 15;
+  OK.w = 240;
+  OK.h = 60;
+  OK.BoTron = false;
+  OK.gotNothing = false;
+  OK.gotText = true;
+  OK.tittle = "Chọn chuyến này!";
+  OK.font = FontArial;
+  OK.BoMau = ArrowKey;
+
+  Button Cancel;
+
+  Cancel.x = StartPos.x + 1201 + 29;
+  Cancel.y = StartPos.y + 60 + 20 + 70 + 15 + 75;
+  Cancel.w = 240;
+  Cancel.h = 60;
+  Cancel.BoTron = false;
+  Cancel.gotNothing = false;
+  Cancel.gotText = true;
+  Cancel.tittle = "Quay lại";
+  Cancel.font = FontArial;
+  Cancel.BoMau = ArrowKey;
+  if (CreateButton(OK))
+  {
+    control.dataTabCB.inGetTicket = true;
+  }
+  if (CreateButton(Cancel))
+  {
+    control.dataTabCB.inShowFightAvail = false;
+    return true;
+  }
+  return false;
+}
+
 bool Popup_chonVe(UIcontroller &control)
 {
+  CreatePageBackground(1);
   if (control.dataTabCB.inSetTicket)
   {
     if (Popup_datVe(control))
     {
       control.dataTabCB.inSetTicket = false;
-      if (!control.dataTabCB.gotNewTicket)
-        return false;
-      return true;
+      if (control.dataTabCB.gotNewTicket)
+      {
+        control.dataTabCB.inGetTicket = false;
+        control.dataTabCB.inSetTicket = false;
+        return true;
+      }
     }
     return false;
   }
@@ -2425,7 +2486,7 @@ bool Popup_chonVe(UIcontroller &control)
       if (CreateButton(button))
       {
         control.dataTabCB.dataDSVe.position = a * (sDong) + m;
-        cout << control.dataTabCB.dataDSVe.position << endl;
+        control.dataTabCB.inSetTicket = true;
       };
     }
   }
@@ -2444,20 +2505,21 @@ bool Popup_chonVe(UIcontroller &control)
   if (control.dataTabCB.dataDSVe.current_page > n_page)
     control.dataTabCB.dataDSVe.current_page = 1;
 
-  Button OK;
-  OK.x = StartPos.x + 225 + 750;
-  OK.y = StartPos.y + 60 + 625;
-  OK.w = 300;
-  OK.h = 50;
-  OK.gotNothing = false;
-  OK.gotText = true;
-  OK.tittle = (char *)"Hoàn tất";
-  OK.font = FontArial;
-  OK.BoMau = ArrowKey;
+  Button Cancel;
+  Cancel.x = StartPos.x + 1201 + 29;
+  Cancel.y = StartPos.y + 60 + 20 + 70 + 15;
+  Cancel.w = 240;
+  Cancel.h = 60;
+  Cancel.gotNothing = false;
+  Cancel.gotText = true;
+  Cancel.tittle = (char *)"Huỷ";
+  Cancel.font = FontArial;
+  Cancel.BoMau = ArrowKey;
 
-  if (CreateButton(OK))
+  if (CreateButton(Cancel))
   {
-    control.dataTabCB.inSetTicket = true;
+    control.dataTabCB.inGetTicket = false;
+    return true;
   }
 
   return false;
@@ -2466,11 +2528,19 @@ bool Popup_chonVe(UIcontroller &control)
 bool Popup_datVe(UIcontroller &control)
 {
   CreatePopupBackground();
+  string tittle = "Đặt vé " + control.dataTabCB.data->getNode().getDSVe().getVe(control.dataTabCB.dataDSVe.position).getIDVe();
+  DrawTextEx(
+      FontArial, strToChar(tittle),
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, strToChar(tittle), 50, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10,
+                        MeasureTextEx(FontArial, "A", 50, 0).y)},
+      50, 0, BLACK);
 
   string o_CMND, o_Ho, o_Ten;
-  o_CMND = CreateTextInputBox(control.dataTabCB.dataDSHK.i_CMND);
-  o_Ho = CreateTextInputBox(control.dataTabCB.dataDSHK.i_Ho);
-  o_Ten = CreateTextInputBox(control.dataTabCB.dataDSHK.i_Ten);
+  o_CMND = CreateTextInputBox(control.dataTabHK.i_CMND);
+  o_Ho = CreateTextInputBox(control.dataTabHK.i_Ho);
+  o_Ten = CreateTextInputBox(control.dataTabHK.i_Ten);
 
   Button OK;
   OK.x = StartPos.x + 225 + 750;
@@ -2508,24 +2578,24 @@ bool Popup_datVe(UIcontroller &control)
     m_cb.setDSVe(m_dsVe);
     control.dataTabCB.data->setCb(m_cb);
 
-    resetInputTextBox(control.dataTabCB.dataDSHK.i_CMND);
-    resetInputTextBox(control.dataTabCB.dataDSHK.i_Ho);
-    resetInputTextBox(control.dataTabCB.dataDSHK.i_Ten);
+    resetInputTextBox(control.dataTabHK.i_CMND);
+    resetInputTextBox(control.dataTabHK.i_Ho);
+    resetInputTextBox(control.dataTabHK.i_Ten);
     control.dataTabCB.popup_errorMess = "";
 
-    resetData_QLHK(control.dataTabCB.dataDSHK);
+    resetData_QLHK(control.dataTabHK);
 
     control.dataTabCB.gotNewTicket = true;
     return true;
   }
   if (CreateButton(Cancel))
   {
-    resetInputTextBox(control.dataTabCB.dataDSHK.i_CMND);
-    resetInputTextBox(control.dataTabCB.dataDSHK.i_Ho);
-    resetInputTextBox(control.dataTabCB.dataDSHK.i_Ten);
+    resetInputTextBox(control.dataTabHK.i_CMND);
+    resetInputTextBox(control.dataTabHK.i_Ho);
+    resetInputTextBox(control.dataTabHK.i_Ten);
     control.dataTabCB.popup_errorMess = "";
 
-    resetData_QLHK(control.dataTabCB.dataDSHK);
+    resetData_QLHK(control.dataTabHK);
 
     return true;
   }
@@ -2599,7 +2669,110 @@ void StatusHelp_QLCB()
   }
 }
 
-// test
+void ShowListCB(UIcontroller &control, int first, const char *textMaCB, const char *textNoiDen, bool showAvail, Date ngayBay)
+{
+  float cellW[7] = {90, 230, 230, 200, 230, 100, 50};
+  Vector2 start_pos = {StartPos.x + 35, StartPos.y + 60 + 70 + 110};
+
+  int size = control.listCB.getSize();
+
+  int n_char;
+  if (size <= 99)
+    n_char = 2;
+  else if (size >= 100 && size <= 999)
+    n_char = 3;
+  else
+    n_char = 4;
+
+  NodeCB *tmp = control.listCB.getHead();
+  int i = (control.dataTabCB.current_showPage - 1) * 10;
+  int j = 0;
+  for (int k = 0; k < size; k++)
+  {
+    bool DKTimKiem = tmp->getNode().checkMaCB(textMaCB) &&
+                     tmp->getNode().checkNoiDen(textNoiDen);
+
+    if (!(ngayBay == Date(1, 1, 0, 0, 0)))
+      DKTimKiem = DKTimKiem &&
+                  tmp->getNode().checkTime(ngayBay);
+    if (showAvail)
+      DKTimKiem = DKTimKiem &&
+                  tmp->getNode().getTrangThai() == ConVe;
+
+    if (DKTimKiem)
+    {
+      if (j >= i && j <= i + 9)
+      {
+        if (j % 10 == control.dataTabCB.pickdata_index)
+          control.dataTabCB.data = tmp;
+
+        string dsVe = "";
+        dsVe = intToString(tmp->getNode().getDSVe().getSoVeConLai(), 3) + '/' +
+               intToString(tmp->getNode().getDSVe().getSoVeToiDa(), 3);
+        TextBox show[6];
+        const char *showText[6];
+        showText[0] = intToChar(j + 1, n_char);
+        showText[1] = tmp->getNode().getMaCB();
+        showText[2] = tmp->getNode().getMaMayBay();
+        showText[3] = strToChar(tmp->getNode().getNgayGio().printDateHour());
+        showText[4] = strToChar(tmp->getNode().getNoiDen());
+        showText[5] = strToChar(dsVe);
+        for (int show_i = 5; show_i >= 0; show_i--)
+        {
+          show[show_i] = GetCellTextBox(start_pos, 7, cellW, show_i + 1,
+                                        (j % 10) + 1, showText[show_i], 30);
+        }
+        show[3].mode = 2;
+        show[5].mode = 2;
+        switch (tmp->getNode().getTrangThai())
+        {
+        case 0:
+        {
+
+          DrawTextureEx(PNG_circleGray,
+                        GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) +
+                            (Vector2){8, 3},
+                        0, 1, WHITE);
+          break;
+        }
+        case 1:
+        {
+          DrawTextureEx(PNG_circleGreen,
+                        GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) +
+                            (Vector2){8, 3},
+                        0, 1, WHITE);
+          // cout << (GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1)).x << "/"
+          // << (GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1)).y << endl;
+          break;
+        }
+        case 2:
+        {
+          DrawTextureEx(PNG_circleYellow,
+                        GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) +
+                            (Vector2){8, 3},
+                        0, 1, WHITE);
+          break;
+        }
+        case 3:
+        {
+          DrawTextureEx(PNG_tick,
+                        GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) +
+                            (Vector2){8, 3},
+                        0, 1, WHITE);
+          break;
+        }
+        }
+        for (int show_i = 5; show_i >= 0; show_i--)
+        {
+          CreateTextBox(show[show_i]);
+        }
+      }
+      j++;
+    }
+    tmp = tmp->getNext();
+  }
+}
+
 NodeCB *XuLy_QLCB(UIcontroller &control)
 {
   bool DKTimKiem = true;
@@ -2619,7 +2792,6 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   Button dayFilter;
   Button data_picker[10];
   Vector2 start_pos = {StartPos.x + 35, StartPos.y + 60 + 70 + 110};
-  NodeCB *tmp = control.listCB.getHead();
 
   // Cài đặt các ô nhập
   control.dataTabCB.searchNoiDen.textBox = boxNoiDen;
@@ -2636,7 +2808,6 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   // }
 
   // search
-
   DrawRectangleRoundedLines({search.x - 5, search.y - 5, 1090, 105}, 0, 1, 3,
                             DARKBLUE);
 
@@ -2724,7 +2895,6 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   // }
 
   // Pick data
-
   for (int i = 0; i < 10; i++)
   {
     data_picker[i].x = StartPos.x + 35;
@@ -2752,105 +2922,11 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   }
   control.dataTabCB.data = NULL;
 
-  // show list
-  int size = control.listCB.getSize();
-
-  int n_char;
-  if (size <= 99)
-    n_char = 2;
-  else if (size >= 100 && size <= 999)
-    n_char = 3;
-  else
-    n_char = 4;
-
   int i = (control.dataTabCB.current_showPage - 1) * 10;
-
-  int j = 0;
-
-  for (int k = 0; k < size; k++)
-  {
-    // if (findByDay)
-    //   DKTimKiem = tmp->getNode().checkMaCB(textMaCB) &&
-    //               tmp->getNode().checkTime(numNgay, numThang, numNam, numGio,
-    //                                        numPhut) &&
-    //               tmp->getNode().checkNoiDen(textNoiDen);
-    if (tmp->getNode().checkMaCB(textMaCB) &&
-        tmp->getNode().checkNoiDen(textNoiDen))
-    {
-      if (j >= i && j <= i + 9)
-      {
-        if (j % 10 == control.dataTabCB.pickdata_index)
-          control.dataTabCB.data = tmp;
-
-        string dsVe = "";
-        dsVe = intToString(tmp->getNode().getDSVe().getSoVeConLai(), 3) + '/' +
-               intToString(tmp->getNode().getDSVe().getSoVeToiDa(), 3);
-        TextBox show[6];
-        const char *showText[6];
-        showText[0] = intToChar(j % 10 + 1, n_char);
-        showText[1] = tmp->getNode().getMaCB();
-        showText[2] = tmp->getNode().getMaMayBay();
-        showText[3] = strToChar(tmp->getNode().getNgayGio().printDateHour());
-        showText[4] = strToChar(tmp->getNode().getNoiDen());
-        showText[5] = strToChar(dsVe);
-        for (int show_i = 5; show_i >= 0; show_i--)
-        {
-          show[show_i] = GetCellTextBox(start_pos, 7, cellW, show_i + 1,
-                                        (j % 10) + 1, showText[show_i], 30);
-        }
-        show[3].mode = 2;
-        show[5].mode = 2;
-        switch (tmp->getNode().getTrangThai())
-        {
-        case 0:
-        {
-
-          DrawTextureEx(PNG_circleGray,
-                        GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) +
-                            (Vector2){8, 3},
-                        0, 1, WHITE);
-          break;
-        }
-        case 1:
-        {
-          DrawTextureEx(PNG_circleGreen,
-                        GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) +
-                            (Vector2){8, 3},
-                        0, 1, WHITE);
-          // cout << (GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1)).x << "/"
-          // << (GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1)).y << endl;
-          break;
-        }
-        case 2:
-        {
-          DrawTextureEx(PNG_circleYellow,
-                        GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) +
-                            (Vector2){8, 3},
-                        0, 1, WHITE);
-          break;
-        }
-        case 3:
-        {
-          DrawTextureEx(PNG_tick,
-                        GetCellPos(start_pos, 7, cellW, 7, j % 10 + 1) +
-                            (Vector2){8, 3},
-                        0, 1, WHITE);
-          break;
-        }
-        }
-        for (int show_i = 5; show_i >= 0; show_i--)
-        {
-          CreateTextBox(show[show_i]);
-        }
-      }
-      j++;
-    }
-    tmp = tmp->getNext();
-  }
-
+  ShowListCB(control, i, textMaCB, textNoiDen, control.dataTabCB.inShowFightAvail, control.dataTabCB.fbDay);
   StatusHelp_QLCB();
 
-  n_page = 1 + ((j - 1) / 10);
+  n_page = 1 + ((control.listCB.getSize() - 1) / 10);
 
   // page and switch page
   int swp =
@@ -2864,9 +2940,6 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   control.dataTabCB.current_showPage = swp;
   if (control.dataTabCB.current_showPage > n_page)
     control.dataTabCB.current_showPage = 1;
-
-  // if (first_run)
-  //   first_run = false;
 
   return control.dataTabCB.data;
 }

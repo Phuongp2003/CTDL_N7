@@ -144,8 +144,6 @@ void DsMayBay::deleteDsMB()
   this->size = 0;
 }
 
-MayBay **DsMayBay::getMB() { return data; }
-
 MayBay* DsMayBay::getMB(int index) {return data[index];}
 
 void DsMayBay::readFromFile()
