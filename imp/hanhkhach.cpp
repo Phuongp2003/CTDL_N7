@@ -53,6 +53,8 @@ NodeHK *NodeHK::getLeft() { return this->left; }
 
 NodeHK *NodeHK::getRight() { return this->right; }
 
+void NodeHK::setHK(HanhKhach hanhKhach) { this->hanhKhach = hanhKhach; }
+
 void NodeHK::setLeft(NodeHK *left) { this->left = left; }
 
 void NodeHK::setRight(NodeHK *right) { this->right = right; }

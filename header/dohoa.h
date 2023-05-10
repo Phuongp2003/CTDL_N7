@@ -114,11 +114,12 @@ NodeHK *XuLy_QLHK(UIcontroller &control);
 void CreatePage_GioiThieu();
 
 void CreatePopupBackground();
+//-
 bool Popup_ThemMB(UIcontroller &control);
 bool Popup_HieuChinhMB(UIcontroller &control);
 bool Popup_XoaMB(UIcontroller &control);
 bool Popup_Thongkesoluotbay(UIcontroller &control);
-bool Popup_ThemHK(UIcontroller &control);
+//-
 bool Popup_ThemCB(UIcontroller &control);
 bool Popup_HieuChinhCB(UIcontroller &control);
 bool Popup_HuyCB(UIcontroller &control);
@@ -127,6 +128,9 @@ bool Popup_chonVe(UIcontroller &control);
 bool Popup_showListHK(UIcontroller &control);
 void Popup_getMB(UIcontroller &control, Date gioBay);
 bool Popup_datVe(UIcontroller &control);
+//-
+bool Popup_QLVe(UIcontroller &control);
+bool Popup_HieuChinhHK(UIcontroller &control);
 
 void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();

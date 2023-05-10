@@ -44,6 +44,7 @@ public:
   NodeHK *getLeft();
   NodeHK *getRight();
 
+  void setHK(HanhKhach HanhKhach);
   void setLeft(NodeHK *left);
   void setRight(NodeHK *right);
 };

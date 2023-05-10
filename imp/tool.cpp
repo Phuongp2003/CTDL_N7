@@ -245,22 +245,28 @@ const char *strToChar(string str)
 void Selection_Sort(int A[], int n)
 {
   int min, vitrimin;
-  int i,j;
-  for (i=0; i< n-1; i++)
+  int i, j;
+  for (i = 0; i < n - 1; i++)
   {
-    min = A[i];    vitrimin=i;
-    for (j=i+1; j<n; j++)
+    min = A[i];
+    vitrimin = i;
+    for (j = i + 1; j < n; j++)
       if (A[j] < min)
-      { min = A[j];	vitrimin=j;
+      {
+        min = A[j];
+        vitrimin = j;
       }
     // Doi cho 2 phan tu A[i] va A[vitrimin]
-    min = A[vitrimin] ;    A[vitrimin] = A[i];    A[i] = min;
+    min = A[vitrimin];
+    A[vitrimin] = A[i];
+    A[i] = min;
   }
 }
-void swap(int &a,int &b){
-  int c=a;
-  a=b;
-  b=c;
+void swap(int &a, int &b)
+{
+  int c = a;
+  a = b;
+  b = c;
 }
 string intToString(int x)
 {
@@ -273,4 +279,15 @@ string intToString(int x)
     x = x / 10;
   }
   return p;
+}
+
+void trim(string &str)
+{
+  const char *WhiteSpace = " \t\v\r\n";
+  size_t start = str.find_first_not_of(WhiteSpace);
+  size_t end = str.find_last_not_of(WhiteSpace);
+  if (start == end)
+    str = string();
+  else
+    str = str.substr(start, end - start + 1);
 }
