@@ -234,6 +234,20 @@ void DsMayBay::writetoFileWhenAdd()
   file.close();
 }
 
+bool DsMayBay::planeMatch(const char* soHieuMB,const char* other)
+{
+  for (int i = 0; i < this->size; i++)
+  {
+    if (strcmp(this->data[i]->getSoHieuMB(), soHieuMB) == 0 || 
+    ((findMB(soHieuMB)->getSoDay()==findMB(other)->getSoDay() ) && 
+    (findMB(soHieuMB)->getSoDong()==findMB(other)->getSoDong())))
+      return true;
+    
+    
+  }
+  return false;
+}
+
 DsMayBay::~DsMayBay()
 {
   // for(int i = 0; i<size; i++){
