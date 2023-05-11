@@ -828,6 +828,7 @@ void CreatePage_QLMB(UIcontroller &control)
       button[1].isActive = true;
       button[2].isActive = true;
     }
+    // if(control.dataTabMB.data)
 
     // mini function
     button[0].tittle = "Thêm máy bay";
@@ -1627,6 +1628,20 @@ void CreatePage_QLCB(UIcontroller &control)
     button[1].tittle = "Hiệu chỉnh CB";
     if (CreateButton(button[1]))
     {
+      // Pre-run
+      strcpy(control.dataTabCB.MaMB.name, control.dataTabCB.data->getNode().getMaMayBay());
+      control.dataTabCB.MaMB.letterCount = getCharSize(control.dataTabCB.data->getNode().getMaMayBay());
+      strcpy(control.dataTabCB.Ngay.name, intToChar(control.dataTabCB.data->getNode().getNgayGio().getNgay(), 2));
+      control.dataTabCB.Ngay.letterCount = 2;
+      strcpy(control.dataTabCB.Thang.name, intToChar(control.dataTabCB.data->getNode().getNgayGio().getThang(), 2));
+      control.dataTabCB.Thang.letterCount = 2;
+      strcpy(control.dataTabCB.Nam.name, intToChar(control.dataTabCB.data->getNode().getNgayGio().getNam(), 4));
+      control.dataTabCB.Nam.letterCount = 4;
+      strcpy(control.dataTabCB.Gio.name, intToChar(control.dataTabCB.data->getNode().getNgayGio().getGio(), 2));
+      control.dataTabCB.Gio.letterCount = 2;
+      strcpy(control.dataTabCB.Phut.name, intToChar(control.dataTabCB.data->getNode().getNgayGio().getPhut(), 2));
+      control.dataTabCB.Phut.letterCount = 2;
+
       control.dataTabCB.current_popup = 2;
     }
     button[2].tittle = "Huỷ chuyến bay";
@@ -1651,6 +1666,7 @@ void CreatePage_QLCB(UIcontroller &control)
     }
 
     control.dataTabCB.data = XuLy_QLCB(control);
+    cout << control.dataTabCB.MaMB.tittle << endl;
   }
   else if (control.dataTabCB.current_popup == 1)
   {
@@ -1768,13 +1784,21 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
     maCB_t = "";
   else
     maCB_t = control.dataTabCB.data->getNode().getMaCB();
+  // if(!control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(),control.dataTabMB.data->getSoHieuMB()))
+  // {
+  //   check_mb = true;
+  //   control.dataTabCB.popup_errorMess = "Máy bay không phù hợp!(Máy bay phải có số dãy và số dòng bằng máy bay ban đầu)";
+  //   control.dataTabCB.time_showError = 98;
+  // }
+  // else
+  // {
   if (control.dataTabMB.data != NULL && !control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
   {
     check_mb = true;
     control.dataTabCB.popup_errorMess = "Máy bay đang bận!";
     control.dataTabCB.time_showError = 98;
-    // return;
   }
+  // }
 
   if (CreateButton(OK))
   {
@@ -1788,8 +1812,11 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
     control.dataTabCB.inChooseMB = false;
     strcpy(control.dataTabCB.MaMB.name, control.dataTabMB.data->getSoHieuMB());
     control.dataTabCB.MaMB.letterCount = getCharSize(control.dataTabMB.data->getSoHieuMB());
-    if (control.dataTabCB.MaCB.editMode)
+    if (control.dataTabCB.MaMB.editMode)
+    {
       control.dataTabCB.MaMB.tittle = control.dataTabMB.data->getSoHieuMB();
+      cout<<control.dataTabCB.MaMB.tittle <<"     "<<control.dataTabMB.data->getSoHieuMB()<<endl;
+    }
     resetData_QLMB(control.dataTabMB);
   }
   if (CreateButton(Cancel))
@@ -2038,19 +2065,6 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   Box_noiDen.text = control.dataTabCB.data->getNode().getNoiDen().data();
   CreateTextBox(Box_noiDen);
 
-  control.dataTabCB.MaMB.editMode = true;
-  control.dataTabCB.MaMB.tittle = control.dataTabCB.data->getNode().getMaMayBay();
-  control.dataTabCB.Ngay.editMode = true;
-  control.dataTabCB.Ngay.tittle = intToChar(control.dataTabCB.data->getNode().getNgayGio().getNgay(), 2);
-  control.dataTabCB.Thang.editMode = true;
-  control.dataTabCB.Thang.tittle = intToChar(control.dataTabCB.data->getNode().getNgayGio().getThang(), 2);
-  control.dataTabCB.Nam.editMode = true;
-  control.dataTabCB.Nam.tittle = intToChar(control.dataTabCB.data->getNode().getNgayGio().getNam(), 4);
-  control.dataTabCB.Gio.editMode = true;
-  control.dataTabCB.Gio.tittle = intToChar(control.dataTabCB.data->getNode().getNgayGio().getGio(), 2);
-  control.dataTabCB.Phut.editMode = true;
-  control.dataTabCB.Phut.tittle = intToChar(control.dataTabCB.data->getNode().getNgayGio().getPhut(), 2);
-
   const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y -
                          MeasureTextEx(FontArial, "A", 25, 0).y;
 
@@ -2223,6 +2237,7 @@ bool Popup_HieuChinhCB(UIcontroller &control)
       }
       ChuyenBay result = control.dataTabCB.data->getNode();
       result.setNgayGio(newNgayBay);
+      result.setidMayBay(newMaMB);
       control.dataTabCB.data->setCb(result);
       control.listCB.writetToFile();
       control.listCB.setSize();
