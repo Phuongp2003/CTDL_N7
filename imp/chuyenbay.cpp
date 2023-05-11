@@ -435,7 +435,7 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
     if(tmp->getNode().getMaMayBay()==cb.getMaMayBay())
     {
       tmp = tmp->getNext();
-      continue;
+      continue;//
     }
 
     if ((tmp->getNode().getTrangThai() == ConVe ||

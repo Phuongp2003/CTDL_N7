@@ -17,7 +17,7 @@ int V_MOUSE_CURSOR_IBEAM = 0;
 int V_MOUSE_CURSOR_POINTING_HAND = 0;
 
 Vector2 StartPos{per1000(10) * SCREEN_WIDTH, per1000(40) * SCREEN_HEIGHT};
-
+//
 Font FontArial;
 Texture2D PNG_logo; // Load ảnh vào biến (ram)
 
