@@ -69,9 +69,7 @@ void MayBay::showMB()
        << getSoDong() << endl;
 }
 
-bool MayBay::kiemTraSoCho() { return (soDay*soDong) >= 20; }
-
-
+bool MayBay::kiemTraSoCho() { return (soDay * soDong) >= 20; }
 
 void MayBay::tangSoLuotThucHienCB() { this->soLuotThucHienCB++; }
 
@@ -144,7 +142,7 @@ void DsMayBay::deleteDsMB()
   this->size = 0;
 }
 
-MayBay* DsMayBay::getMB(int index) {return data[index];}
+MayBay *DsMayBay::getMB(int index) { return data[index]; }
 
 void DsMayBay::readFromFile()
 {
@@ -199,7 +197,7 @@ int *DsMayBay::sapXepThongKe()
 
 void DsMayBay::writetoFile()
 {
-  ofstream file("../data/dataMB.txt", ios::out | ios::trunc); 
+  ofstream file("../data/dataMB.txt", ios::out | ios::trunc);
   if (file.is_open())
   {
     for (int i = 0; i < size; i++)
@@ -219,13 +217,13 @@ void DsMayBay::writetoFile()
 
 void DsMayBay::writetoFileWhenAdd()
 {
-  ofstream file("../data/dataMB.txt", ios::out | ios::app); 
+  ofstream file("../data/dataMB.txt", ios::out | ios::app);
   if (file.is_open())
   {
-      file << data[size-1]->getSoHieuMB() << "|" << data[size-1]->getLoaiMB() << "|"
-           << data[size-1]->getSoDay() << "|" << data[size-1]->getSoDong() << "|"
-           << data[size-1]->getSoLuotBay() << "|"
-           << "\n";
+    file << data[size - 1]->getSoHieuMB() << "|" << data[size - 1]->getLoaiMB() << "|"
+         << data[size - 1]->getSoDay() << "|" << data[size - 1]->getSoDong() << "|"
+         << data[size - 1]->getSoLuotBay() << "|"
+         << "\n";
   }
   else
   {
@@ -234,17 +232,15 @@ void DsMayBay::writetoFileWhenAdd()
   file.close();
 }
 
-bool DsMayBay::planeMatch(const char* soHieuMB,const char* other)
+bool DsMayBay::planeMatch(const char *soHieuMB, const char *other)
 {
-  for (int i = 0; i < this->size; i++)
-  {
-    if (strcmp(this->data[i]->getSoHieuMB(), soHieuMB) == 0 || 
-    ((findMB(soHieuMB)->getSoDay()==findMB(other)->getSoDay() ) && 
-    (findMB(soHieuMB)->getSoDong()==findMB(other)->getSoDong())))
-      return true;
-    
-    
-  }
+  if (other == NULL)
+    return false;
+
+  if ((findMB(soHieuMB)->getSoDay() == findMB(other)->getSoDay()) &&
+      (findMB(soHieuMB)->getSoDong() == findMB(other)->getSoDong()))
+    return true;
+
   return false;
 }
 

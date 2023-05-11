@@ -1784,21 +1784,22 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
     maCB_t = "";
   else
     maCB_t = control.dataTabCB.data->getNode().getMaCB();
-  // if(!control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(),control.dataTabMB.data->getSoHieuMB()))
-  // {
-  //   check_mb = true;
-  //   control.dataTabCB.popup_errorMess = "Máy bay không phù hợp!(Máy bay phải có số dãy và số dòng bằng máy bay ban đầu)";
-  //   control.dataTabCB.time_showError = 98;
-  // }
-  // else
-  // {
-  if (control.dataTabMB.data != NULL && !control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
+
+  if (control.dataTabMB.data != NULL)
   {
-    check_mb = true;
-    control.dataTabCB.popup_errorMess = "Máy bay đang bận!";
-    control.dataTabCB.time_showError = 98;
+    if (!control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(), control.dataTabMB.data->getSoHieuMB()))
+    {
+      check_mb = true;
+      control.dataTabCB.popup_errorMess = "Máy bay phải có số dãy và số dòng bằng máy bay ban đầu!";
+      control.dataTabCB.time_showError = 98;
+    }
+    else if (!control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
+    {
+      check_mb = true;
+      control.dataTabCB.popup_errorMess = "Máy bay đang bận!";
+      control.dataTabCB.time_showError = 98;
+    }
   }
-  // }
 
   if (CreateButton(OK))
   {
@@ -1815,7 +1816,7 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
     if (control.dataTabCB.MaMB.editMode)
     {
       control.dataTabCB.MaMB.tittle = control.dataTabMB.data->getSoHieuMB();
-      cout<<control.dataTabCB.MaMB.tittle <<"     "<<control.dataTabMB.data->getSoHieuMB()<<endl;
+      cout << control.dataTabCB.MaMB.tittle << "     " << control.dataTabMB.data->getSoHieuMB() << endl;
     }
     resetData_QLMB(control.dataTabMB);
   }
@@ -3418,6 +3419,7 @@ bool Popup_QLVe(UIcontroller &control)
     button[i].font = FontArial;
     button[i].BoMau = ArrowKey;
   }
+  return true;
 }
 
 bool Popup_HieuChinhHK(UIcontroller &control)
