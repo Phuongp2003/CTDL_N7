@@ -135,19 +135,24 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
   }
   case 6:
   {
-    if (((key >= '0') && (key <= '9')))
+    if ((key >= '0') && (key <= '9'))
     {
-      if (pos == 0 && (key < '0' || key > '3'))
+      if ((pos == 0 || pos == 1) && str[0] == '0' && key == '0')
+      {
         return 0;
-      if (pos == 0 && str[0] >= '2' && key == '3')
+      }
+      if (pos == 0 && str[0] >= '2' && key >= '3')
+      {
         return 0;
-      if (pos == 0 && str[0] == '0' && key == '0')
-        return 0;
-
-      if (pos == 1 && str[0] == '0' && key == '0')
-        return 0;
+      }
       if (pos == 1 && str[0] == '3' && !(key == '0' || key == '1'))
+      {
         return 0;
+      }
+      if (pos == 1 && str[0] > '3')
+      {
+        return 0;
+      }
       return key;
     }
     break;
