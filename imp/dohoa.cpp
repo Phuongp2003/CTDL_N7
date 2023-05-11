@@ -258,7 +258,7 @@ struct QLCB_data
   bool inShowFightAvail = false;
   bool inGetTicket = false;
   bool inSetTicket = false;
-  bool gotNewTicket = false;
+  bool gotChangeTicket = false;
 
   PageSwitcher Sw_table_page;
 
@@ -326,7 +326,7 @@ struct QLCB_data
     fbDay = Date(1, 1, 0, 0, 0);
     inShowFightAvail = false;
     inGetTicket = false;
-    gotNewTicket = false;
+    gotChangeTicket = false;
 
     Sw_table_page = PageSwitcher();
   }
@@ -459,7 +459,7 @@ void resetData_QLCB(QLCB_data &data)
   data.fbDay = Date(1, 1, 0, 0, 0);
   data.inShowFightAvail = false;
   data.inGetTicket = false;
-  data.gotNewTicket = false;
+  data.gotChangeTicket = false;
 
   data.Sw_table_page.reset();
 }
@@ -1614,9 +1614,19 @@ void CreatePage_QLCB(UIcontroller &control)
     }
     else
     {
-      button[1].isActive = true;
-      button[2].isActive = true;
-      button[3].isActive = true;
+      if (control.dataTabCB.data->getNode().getTrangThai() == 0 || control.dataTabCB.data->getNode().getTrangThai() == 3)
+      {
+        button[1].isActive = false;
+        button[2].isActive = false;
+        if (control.dataTabCB.data->getNode().getTrangThai() == 0)
+          button[3].isActive = false;
+      }
+      else
+      {
+        button[1].isActive = true;
+        button[2].isActive = true;
+        button[3].isActive = true;
+      }
     }
 
     button[0].tittle = "Thêm chuyến bay";
@@ -1666,7 +1676,6 @@ void CreatePage_QLCB(UIcontroller &control)
     }
 
     control.dataTabCB.data = XuLy_QLCB(control);
-    cout << control.dataTabCB.MaMB.tittle << endl;
   }
   else if (control.dataTabCB.current_popup == 1)
   {
@@ -1713,11 +1722,11 @@ void CreatePage_QLCB(UIcontroller &control)
     }
   }
 
-  if (control.listCB.update() || control.dataTabCB.gotNewTicket)
+  if (control.listCB.update() || control.dataTabCB.gotChangeTicket)
   {
     setDataToFile(control.listCB, control.listMB, control.listHK);
     getDataFromFile(control.listCB, control.listMB, control.listHK);
-    control.dataTabCB.gotNewTicket = false;
+    control.dataTabCB.gotChangeTicket = false;
   }
 }
 
@@ -2412,7 +2421,19 @@ bool Popup_showListHK(UIcontroller &control)
     else if (tmp_c == 1)
     {
       control.dataTabCB.dataDSVe.inDelete = false;
-      control.dataTabCB.data->getNode().getDSVe().deleteVe(control.dataTabCB.dataDSVe.position);
+
+      ChuyenBay cb_t = control.dataTabCB.data->getNode();
+      DsVeMayBay dsv_t = cb_t.getDSVe();
+      dsv_t.deleteVe(control.dataTabCB.dataDSVe.position);
+      cb_t.setDSVe(dsv_t);
+      control.dataTabCB.data->setCb(cb_t);
+
+      control.dataTabCB.gotChangeTicket = true;
+    }
+    else if (tmp_c == -1)
+    {
+      control.dataTabCB.dataDSVe.inDelete = false;
+      return false;
     }
   }
 
@@ -2464,6 +2485,8 @@ bool Popup_showListHK(UIcontroller &control)
   button[0].tittle = "Quay lại";
 
   button[1].tittle = "Huỷ vé";
+  if (control.dataTabCB.data->getNode().getTrangThai() == HoanTat)
+    button[1].isActive = false;
 
   ChuyenBay currCB = control.dataTabCB.data->getNode();
   int n_page = 1 + (currCB.getDSVe().getSoVeDaDat() - 1) / 10;
@@ -2627,7 +2650,7 @@ bool Popup_chonVe(UIcontroller &control)
     if (Popup_datVe(control))
     {
       control.dataTabCB.inSetTicket = false;
-      if (control.dataTabCB.gotNewTicket)
+      if (control.dataTabCB.gotChangeTicket)
       {
         control.dataTabCB.inGetTicket = false;
         control.dataTabCB.inSetTicket = false;
@@ -2932,7 +2955,7 @@ bool Popup_datVe(UIcontroller &control)
 
     resetData_QLHK(control.dataTabHK);
 
-    control.dataTabCB.gotNewTicket = true;
+    control.dataTabCB.gotChangeTicket = true;
     return true;
   }
   if (CreateButton(Cancel))
