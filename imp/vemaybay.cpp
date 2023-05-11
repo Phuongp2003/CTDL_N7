@@ -67,6 +67,7 @@ void DsVeMayBay::setDSVe(MayBay *mayBay)
 void DsVeMayBay::setVe(VeMayBay veMB, int pos) { dsVeMB[pos] = veMB; }
 
 VeMayBay DsVeMayBay::getVe(int index) { return dsVeMB[index]; }
+
 void DsVeMayBay::deleteVe(int index)
 {
   dsVeMB[index].setHanhKhach("");
