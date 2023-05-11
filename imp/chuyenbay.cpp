@@ -425,13 +425,18 @@ bool DsChuyenBay::isUsed(const char *maMB)
 bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
-  // for (int i = 0; i < cb.getDSVe().getSoVeToiDa(); i++)
-  // {
-  //   if (cb.getDSVe().getVe(i).getHanhKhach() == cmnd)
-  //     return false;
-  // }
+  for (int i = 0; i < cb.getDSVe().getSoVeToiDa(); i++)
+  {
+    if (cb.getDSVe().getVe(i).getHanhKhach() == cmnd)
+      return false;
+  }
   while (tmp != NULL)
   {
+    if(tmp->getNode().getMaMayBay()==cb.getMaMayBay())
+    {
+      tmp = tmp->getNext();
+      continue;
+    }
 
     if ((tmp->getNode().getTrangThai() == ConVe ||
          tmp->getNode().getTrangThai() == HetVe) &&
@@ -439,8 +444,8 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
     {
       for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
       {
-        if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
-          continue;
+        // if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
+        //   continue;
         if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
           return false;
       }

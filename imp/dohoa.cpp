@@ -1816,7 +1816,7 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
     if (control.dataTabCB.MaMB.editMode)
     {
       control.dataTabCB.MaMB.tittle = control.dataTabMB.data->getSoHieuMB();
-      cout << control.dataTabCB.MaMB.tittle << "     " << control.dataTabMB.data->getSoHieuMB() << endl;
+      // cout << control.dataTabCB.MaMB.tittle << "     " << control.dataTabMB.data->getSoHieuMB() << endl;
     }
     resetData_QLMB(control.dataTabMB);
   }
@@ -2687,6 +2687,10 @@ bool Popup_chonVe(UIcontroller &control)
           strToChar(currCB.getDSVe().getVe(a * sDong + m).getIDVe());
       button.font = FontArial;
       button.BoMau = ArrowKey;
+      if (currCB.getDSVe().getVe(a * sDong + m).getHanhKhach() != "")
+        button.isActive = false;
+      else
+        button.isActive = true;
       if (CreateButton(button))
       {
         control.dataTabCB.dataDSVe.position = a * (sDong) + m;
@@ -2904,7 +2908,23 @@ bool Popup_datVe(UIcontroller &control)
   Cancel.tittle = (char *)"Huỷ";
   Cancel.font = FontArial;
   Cancel.BoMau = ArrowKey;
-
+  // Hiện lỗi trong 5s
+  if (control.dataTabCB.time_showError <= 100)
+  {
+    DrawTextEx(
+        FontArial, control.dataTabCB.popup_errorMess.data(),
+        {CenterDataSetter(1100, StartPos.x + 200,
+                          MeasureTextEx(FontArial, control.dataTabCB.popup_errorMess.data(), 40, 0).x),
+         CenterDataSetter(50, StartPos.y + 130,
+                          MeasureTextEx(FontArial, "A", 40, 0).y)},
+        40, 0, RED);
+    control.dataTabCB.time_showError++;
+  }
+  else
+  {
+    control.dataTabCB.popup_errorMess = "";
+    control.dataTabCB.time_showError = 0;
+  }
   if (CreateButton(OK))
   {
     if (!HKexist)
@@ -2915,6 +2935,12 @@ bool Popup_datVe(UIcontroller &control)
       control.listHK.insert(hk);
     }
 
+    if(!control.listCB.duocDatKhong(o_CMND,control.dataTabCB.data->getNode()))
+    {
+      control.dataTabCB.popup_errorMess = "Bạn không được đặt vé trên chuyến bay này!";
+      resetData_QLHK(control.dataTabHK);
+      return false;
+    }
     ChuyenBay m_cb = control.dataTabCB.data->getNode();
     DsVeMayBay m_dsVe = m_cb.getDSVe();
     VeMayBay m_ve = m_dsVe.getVe(control.dataTabCB.dataDSVe.position);
