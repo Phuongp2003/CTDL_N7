@@ -828,6 +828,7 @@ void CreatePage_QLMB(UIcontroller &control)
       button[1].isActive = true;
       button[2].isActive = true;
     }
+    // if(control.dataTabMB.data)
 
     // mini function
     button[0].tittle = "Thêm máy bay";
@@ -1768,13 +1769,21 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
     maCB_t = "";
   else
     maCB_t = control.dataTabCB.data->getNode().getMaCB();
+  // if(!control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(),control.dataTabMB.data->getSoHieuMB()))
+  // {
+  //   check_mb = true;
+  //   control.dataTabCB.popup_errorMess = "Máy bay không phù hợp!(Máy bay phải có số dãy và số dòng bằng máy bay ban đầu)";
+  //   control.dataTabCB.time_showError = 98;
+  // }
+  // else
+  // {
   if (control.dataTabMB.data != NULL && !control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
   {
     check_mb = true;
     control.dataTabCB.popup_errorMess = "Máy bay đang bận!";
     control.dataTabCB.time_showError = 98;
-    // return;
   }
+  // }
 
   if (CreateButton(OK))
   {
@@ -1788,8 +1797,11 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
     control.dataTabCB.inChooseMB = false;
     strcpy(control.dataTabCB.MaMB.name, control.dataTabMB.data->getSoHieuMB());
     control.dataTabCB.MaMB.letterCount = getCharSize(control.dataTabMB.data->getSoHieuMB());
-    if (control.dataTabCB.MaCB.editMode)
+    if (control.dataTabCB.MaMB.editMode)
+    {
       control.dataTabCB.MaMB.tittle = control.dataTabMB.data->getSoHieuMB();
+      cout<<control.dataTabCB.MaMB.tittle <<"     "<<control.dataTabMB.data->getSoHieuMB()<<endl;
+    }
     resetData_QLMB(control.dataTabMB);
   }
   if (CreateButton(Cancel))
@@ -2223,6 +2235,8 @@ bool Popup_HieuChinhCB(UIcontroller &control)
       }
       ChuyenBay result = control.dataTabCB.data->getNode();
       result.setNgayGio(newNgayBay);
+      result.setidMayBay(newMaMB);
+      cout<<result.getMaMayBay()<<endl;
       control.dataTabCB.data->setCb(result);
       control.listCB.writetToFile();
       control.listCB.setSize();
@@ -3403,6 +3417,7 @@ bool Popup_QLVe(UIcontroller &control)
     button[i].font = FontArial;
     button[i].BoMau = ArrowKey;
   }
+  return true;
 }
 
 bool Popup_HieuChinhHK(UIcontroller &control)
