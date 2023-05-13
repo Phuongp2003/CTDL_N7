@@ -123,11 +123,11 @@ NodeHK *DsHanhKhach::search(string cmnd)
 
     while (current != NULL)
     {
-        if (stoi(cmnd) == stoi(current->getHK().getCmnd()))
+        if (cmnd == current->getHK().getCmnd())
         {
             return current;
         }
-        else if (stoi(cmnd) < stoi(current->getHK().getCmnd()))
+        else if (cmnd < current->getHK().getCmnd())
         {
             current = current->getLeft();
         }

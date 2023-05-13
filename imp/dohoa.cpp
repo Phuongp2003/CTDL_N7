@@ -198,7 +198,7 @@ struct QLHK_data
     i_CMND.mode = 5;
     i_CMND.tittle = (char *)"Nhập số CMND/CCCD";
     i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-    i_CMND.size = 15;
+    i_CMND.size = 12;
 
     i_Ho.mode = 1;
     i_Ho.tittle = (char *)"Nhập họ và tên đệm";
@@ -2438,6 +2438,14 @@ bool Popup_showListHK(UIcontroller &control)
   if (control.dataTabCB.dataDSVe.inDelete)
   {
     CreatePopupBackground();
+    string tittle = "Huỷ vé " + control.dataTabCB.data->getNode().getDSVe().getVe(control.dataTabCB.dataDSVe.position).getIDVe();
+    DrawTextEx(
+        FontArial, strToChar(tittle),
+        {CenterDataSetter(700, StartPos.x + 400,
+                          MeasureTextEx(FontArial, "Huy ve A00", 50, 0).x),
+         CenterDataSetter(60, StartPos.y + 60 + 10,
+                          MeasureTextEx(FontArial, "A", 50, 0).y)},
+        50, 0, BLACK);
     int tmp_c = Warning_Confirm();
     if (tmp_c == 0)
       return false;
@@ -2452,6 +2460,7 @@ bool Popup_showListHK(UIcontroller &control)
       control.dataTabCB.data->setCb(cb_t);
 
       control.dataTabCB.gotChangeTicket = true;
+      resetData_QLVe(control.dataTabCB.dataDSVe);
     }
     else if (tmp_c == -1)
     {
@@ -2492,12 +2501,15 @@ bool Popup_showListHK(UIcontroller &control)
     {
       if (control.dataTabCB.dataDSVe.pickdata_index != i)
       {
-
         control.dataTabCB.dataDSVe.pickdata_index = i;
       }
       else
+      {
         control.dataTabCB.dataDSVe.pickdata_index = -1;
+        control.dataTabCB.dataDSVe.position = -1;
+      }
     }
+
     if (control.dataTabCB.dataDSVe.pickdata_index == i)
       DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y,
                                  data_picker[i].w, data_picker[i].h},
@@ -2530,15 +2542,11 @@ bool Popup_showListHK(UIcontroller &control)
   else if (currCB.getDSVe().getSoVeDaDat() >= 100)
     n_char = 3;
 
-  if (currCB.getDSVe().getSoVeDaDat() == 0)
-  {
-  }
-  else
+  if (currCB.getDSVe().getSoVeDaDat() != 0)
   {
     int iVe = 0;
     for (int i = 0; i < currCB.getDSVe().getSoVeToiDa(); i++)
     {
-
       VeMayBay tmp = currCB.getDSVe().getVe(i);
       if (tmp.getHanhKhach() == "")
         continue;
@@ -2549,8 +2557,13 @@ bool Popup_showListHK(UIcontroller &control)
       showText[3] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getHo() + " " + control.listHK.search(tmp.getHanhKhach())->getHK().getTen());
       showText[4] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getPhai());
 
+        if (control.dataTabCB.dataDSVe.pickdata_index == iVe % 10)
+        {
+          control.dataTabCB.dataDSVe.position = i;
+        }
+
       TextBox show[5];
-      for (int j = 4; j >= 0; j--)
+      for (int j = 0; j < 5; j++)
       {
         if (control.dataTabCB.dataDSVe.pickdata_index == j)
           control.dataTabCB.dataDSVe.position = i;
@@ -2562,6 +2575,11 @@ bool Popup_showListHK(UIcontroller &control)
       }
       iVe++;
     }
+    if (control.dataTabCB.dataDSVe.pickdata_index + (control.dataTabCB.dataDSVe.current_page - 1) * 10 >= iVe)
+    {
+      control.dataTabCB.dataDSVe.pickdata_index = -1;
+      control.dataTabCB.dataDSVe.position = -1;
+    }
   }
 
   int swp =
@@ -2570,11 +2588,17 @@ bool Popup_showListHK(UIcontroller &control)
   if (control.dataTabCB.dataDSVe.current_page != swp)
   {
     control.dataTabCB.dataDSVe.position = -1;
+    control.dataTabCB.dataDSVe.pickdata_index = -1;
     control.dataTabCB.dataDSVe.current_page = swp;
   }
 
   if (control.dataTabCB.dataDSVe.current_page > n_page)
     control.dataTabCB.dataDSVe.current_page = 1;
+
+  if (control.dataTabCB.dataDSVe.position < 0)
+    button[1].isActive = false;
+  else
+    button[1].isActive = true;
   if (CreateButton(button[0]))
   {
     control.dataTabCB.dataDSVe.current_page = 1;
@@ -2799,7 +2823,7 @@ bool Popup_datVe(UIcontroller &control)
                          MeasureTextEx(FontArial, "A", 25, 0).y;
   DrawTextEx(FontArial, "CMND / CCCD",
              {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
-  DrawTextEx(FontArial, "(Gồm CHỈ số, nếu đã có sẽ tự điền thêm thông tin)",
+  DrawTextEx(FontArial, "(Gồm CHỈ số, phải đủ 12 số, nếu đã có sẽ tự điền thêm thông tin)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25},
              25, 0, RED);
 
@@ -2973,6 +2997,12 @@ bool Popup_datVe(UIcontroller &control)
   }
   if (CreateButton(OK))
   {
+    if (o_CMND.length() < 12)
+    {
+      control.dataTabCB.popup_errorMess = "CMND/ CCCD phải đủ 12 số!";
+      return false;
+    }
+
     if (!HKexist)
     {
       trim(o_Ho);
@@ -3948,7 +3978,7 @@ bool Warning_NoData()
 
 int Warning_Confirm()
 {
-  // CreatePopupBackground();
+  CreatePopupBackground();
   DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330,
                 {246, 250, 170, 255});
   DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70,
