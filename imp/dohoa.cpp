@@ -2674,6 +2674,7 @@ bool Popup_chonChuyen(UIcontroller &control)
   if (CreateButton(Cancel))
   {
     control.dataTabCB.inShowFightAvail = false;
+    resetData_QLVe(control.dataTabCB.dataDSVe);
     return true;
   }
   return false;
