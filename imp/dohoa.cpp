@@ -198,7 +198,7 @@ struct QLHK_data
     i_CMND.mode = 5;
     i_CMND.tittle = (char *)"Nhập số CMND/CCCD";
     i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-    i_CMND.size = 15;
+    i_CMND.size = 12;
 
     i_Ho.mode = 1;
     i_Ho.tittle = (char *)"Nhập họ và tên đệm";
@@ -2776,7 +2776,7 @@ bool Popup_datVe(UIcontroller &control)
                          MeasureTextEx(FontArial, "A", 25, 0).y;
   DrawTextEx(FontArial, "CMND / CCCD",
              {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
-  DrawTextEx(FontArial, "(Gồm CHỈ số, nếu đã có sẽ tự điền thêm thông tin)",
+  DrawTextEx(FontArial, "(Gồm CHỈ số, phải đủ 12 số, nếu đã có sẽ tự điền thêm thông tin)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25},
              25, 0, RED);
 
@@ -2950,6 +2950,11 @@ bool Popup_datVe(UIcontroller &control)
   }
   if (CreateButton(OK))
   {
+    if (o_CMND.length() < 12) {
+      control.dataTabCB.popup_errorMess = "CMND/ CCCD phải đủ 12 số!";
+      return false;
+    }
+
     if (!HKexist)
     {
       trim(o_Ho);
