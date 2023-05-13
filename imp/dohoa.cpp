@@ -2415,6 +2415,14 @@ bool Popup_showListHK(UIcontroller &control)
   if (control.dataTabCB.dataDSVe.inDelete)
   {
     CreatePopupBackground();
+    string tittle = "Huỷ vé " + control.dataTabCB.data->getNode().getDSVe().getVe(control.dataTabCB.dataDSVe.position).getIDVe();
+    DrawTextEx(
+        FontArial, strToChar(tittle),
+        {CenterDataSetter(700, StartPos.x + 400,
+                          MeasureTextEx(FontArial, "Huy ve A00", 50, 0).x),
+         CenterDataSetter(60, StartPos.y + 60 + 10,
+                          MeasureTextEx(FontArial, "A", 50, 0).y)},
+        50, 0, BLACK);
     int tmp_c = Warning_Confirm();
     if (tmp_c == 0)
       return false;
@@ -2469,12 +2477,15 @@ bool Popup_showListHK(UIcontroller &control)
     {
       if (control.dataTabCB.dataDSVe.pickdata_index != i)
       {
-
         control.dataTabCB.dataDSVe.pickdata_index = i;
       }
       else
+      {
         control.dataTabCB.dataDSVe.pickdata_index = -1;
+        control.dataTabCB.dataDSVe.position = -1;
+      }
     }
+
     if (control.dataTabCB.dataDSVe.pickdata_index == i)
       DrawRectangleRoundedLines({data_picker[i].x, data_picker[i].y,
                                  data_picker[i].w, data_picker[i].h},
@@ -2507,37 +2518,44 @@ bool Popup_showListHK(UIcontroller &control)
   else if (currCB.getDSVe().getSoVeDaDat() >= 100)
     n_char = 3;
 
-  if (currCB.getDSVe().getSoVeDaDat() == 0)
-  {
-  }
-  else
+  if (currCB.getDSVe().getSoVeDaDat() != 0)
   {
     int iVe = 0;
     for (int i = 0; i < currCB.getDSVe().getSoVeToiDa(); i++)
     {
-
       VeMayBay tmp = currCB.getDSVe().getVe(i);
       if (tmp.getHanhKhach() == "")
         continue;
-      const char *showText[5];
-      showText[0] = intToChar(iVe % 10 + 1, n_char);
-      showText[1] = strToChar(tmp.getIDVe());
-      showText[2] = strToChar(tmp.getHanhKhach());
-      showText[3] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getHo() + " " + control.listHK.search(tmp.getHanhKhach())->getHK().getTen());
-      showText[4] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getPhai());
+      if (iVe >= (control.dataTabCB.dataDSVe.current_page - 1) * 10 && iVe < control.dataTabCB.dataDSVe.current_page * 10)
+      {
+        const char *showText[5];
+        showText[0] = intToChar(iVe % 10 + 1, n_char);
+        showText[1] = strToChar(tmp.getIDVe());
+        showText[2] = strToChar(tmp.getHanhKhach());
+        showText[3] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getHo() + " " + control.listHK.search(tmp.getHanhKhach())->getHK().getTen());
+        showText[4] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getPhai());
 
-      TextBox show[5];
-      for (int j = 0; j < 5; j++)
-      {
-        if (control.dataTabCB.dataDSVe.pickdata_index == j)
+        if (control.dataTabCB.dataDSVe.pickdata_index == iVe % 10)
+        {
           control.dataTabCB.dataDSVe.position = i;
-        show[j] = GetCellTextBox(start_pos, 5, cellW, j + 1, (iVe % 10) + 1, showText[j], 30);
-      }
-      for (int j = 4; j >= 0; j--)
-      {
-        CreateTextBox(show[j]);
+        }
+
+        TextBox show[5];
+        for (int j = 0; j < 5; j++)
+        {
+          show[j] = GetCellTextBox(start_pos, 5, cellW, j + 1, (iVe % 10) + 1, showText[j], 30);
+        }
+        for (int j = 4; j >= 0; j--)
+        {
+          CreateTextBox(show[j]);
+        }
       }
       iVe++;
+    }
+    if (control.dataTabCB.dataDSVe.pickdata_index + (control.dataTabCB.dataDSVe.current_page - 1) * 10 >= iVe)
+    {
+      control.dataTabCB.dataDSVe.pickdata_index = -1;
+      control.dataTabCB.dataDSVe.position = -1;
     }
   }
 
@@ -2547,11 +2565,17 @@ bool Popup_showListHK(UIcontroller &control)
   if (control.dataTabCB.dataDSVe.current_page != swp)
   {
     control.dataTabCB.dataDSVe.position = -1;
+    control.dataTabCB.dataDSVe.pickdata_index = -1;
     control.dataTabCB.dataDSVe.current_page = swp;
   }
 
   if (control.dataTabCB.dataDSVe.current_page > n_page)
     control.dataTabCB.dataDSVe.current_page = 1;
+
+  if (control.dataTabCB.dataDSVe.position < 0)
+    button[1].isActive = false;
+  else
+    button[1].isActive = true;
   if (CreateButton(button[0]))
   {
     control.dataTabCB.dataDSVe.current_page = 1;
@@ -2958,7 +2982,7 @@ bool Popup_datVe(UIcontroller &control)
       control.listHK.insert(hk);
     }
 
-    if(!control.listCB.duocDatKhong(o_CMND,control.dataTabCB.data->getNode()))
+    if (!control.listCB.duocDatKhong(o_CMND, control.dataTabCB.data->getNode()))
     {
       control.dataTabCB.popup_errorMess = "Bạn không được đặt vé trên chuyến bay này!";
       resetData_QLHK(control.dataTabHK);
@@ -3925,7 +3949,6 @@ bool Warning_NoData()
 
 int Warning_Confirm()
 {
-  CreatePopupBackground();
   DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330,
                 {246, 250, 170, 255});
   DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70,
