@@ -30,7 +30,7 @@ public:
   ChuyenBay();
   ChuyenBay(const char *maCB, string noiDen, Date ngayGio,
             const char *maMayBay);
-  
+
   char *getMaCB();
   string getNoiDen();
   Date getNgayGio();
@@ -42,7 +42,7 @@ public:
    */
   void setTrangThai(int trangThai);
   int getTrangThai();
-  void setidMayBay(const char* idMayBay);
+  void setidMayBay(const char *idMayBay);
   const char *getMaMayBay();
 
   bool checkNoiDen(const char *noiDen);
@@ -109,7 +109,7 @@ public:
   NodeCB *timCB(string maCB);
   bool duocDatKhong(string cmnd, ChuyenBay cb);
 
-  void readFromFile(DsMayBay listMB);
+  void readFromFile(DsMayBay &listMB);
   void writetToFile();
 
   bool update(DsMayBay DsMB);

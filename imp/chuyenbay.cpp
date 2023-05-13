@@ -71,8 +71,8 @@ DsVeMayBay ChuyenBay::getDSVe() { return this->dsVe; }
  */
 void ChuyenBay::ThucHienCB(DsMayBay DsMB)
 {
-  
-  MayBay *tmp=DsMB.findMB(this->idMayBay);
+
+  MayBay *tmp = DsMB.findMB(this->idMayBay);
   tmp->tangSoLuotThucHienCB();
 }
 
@@ -463,8 +463,9 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
   return true;
 }
 
-void DsChuyenBay::readFromFile(DsMayBay listMB)
+void DsChuyenBay::readFromFile(DsMayBay &listMB)
 {
+  bool gotBug = false;
   ifstream file("../data/dataCB.txt", ios::in);
   if (file.is_open())
   {
@@ -500,9 +501,17 @@ void DsChuyenBay::readFromFile(DsMayBay listMB)
       dsVe.setSoVeDaDat(stoi(soVeMax) - stoi(soVeAval));
       MayBay *mbData = listMB.findMB(cb.getMaMayBay());
       if (mbData == NULL)
+      {
         isGood = false;
+      }
       else
         dsVe.setDSVe(mbData);
+
+      if (!mbData->inUsed())
+      {
+        mbData->setUsed();
+        gotBug = true;
+      }
 
       for (int i = 0; i < dsVe.getSoVeDaDat(); i++)
       {
@@ -531,6 +540,11 @@ void DsChuyenBay::readFromFile(DsMayBay listMB)
     }
     setSize();
     file.close();
+
+    if (gotBug)
+    {
+      listMB.writetoFile();
+    }
   }
   else
     cout << "Error" << endl;

@@ -2201,6 +2201,9 @@ bool Popup_ThemCB(UIcontroller &control)
         control.listCB.writetToFile();
         control.listCB.setSize();
 
+        setDataToFile(control.listCB, control.listMB, control.listHK);
+        getDataFromFile(control.listCB, control.listMB, control.listHK);
+
         control.dataTabCB.status = 1;
         resetInputTextBox(control.dataTabCB.MaCB);
         resetInputTextBox(control.dataTabCB.MaMB);
