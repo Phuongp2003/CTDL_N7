@@ -2437,6 +2437,7 @@ bool Popup_showListHK(UIcontroller &control)
       control.dataTabCB.data->setCb(cb_t);
 
       control.dataTabCB.gotChangeTicket = true;
+      resetData_QLVe(control.dataTabCB.dataDSVe);
     }
     else if (tmp_c == -1)
     {
@@ -2974,7 +2975,8 @@ bool Popup_datVe(UIcontroller &control)
   }
   if (CreateButton(OK))
   {
-    if (o_CMND.length() < 12) {
+    if (o_CMND.length() < 12)
+    {
       control.dataTabCB.popup_errorMess = "CMND/ CCCD phải đủ 12 số!";
       return false;
     }
