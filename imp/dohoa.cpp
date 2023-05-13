@@ -1273,6 +1273,13 @@ bool Popup_XoaMB(UIcontroller &control)
 bool Popup_Thongkesoluotbay(UIcontroller &control)
 {
   CreatePageBackground(1);
+  DrawTextEx(
+      FontArial, "Thống kê số lượt bay",
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, "Thống kê số lượt bay", 50, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10,
+                        MeasureTextEx(FontArial, "A", 50, 0).y)},
+      50, 0, BLACK);
   Button button;
   button.x = StartPos.x + 1201 + 29;
   button.y = StartPos.y + 60 + 20 + 70 + 15;
@@ -1311,14 +1318,6 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
   {
     cout << "Tim kiem" << endl;
   }
-
-  DrawTextEx(
-      FontArial, "Thống kê số lượt bay",
-      {CenterDataSetter(1200, StartPos.x,
-                        MeasureTextEx(FontArial, "Thống kê số lượt bay", 60, 0).x),
-       CenterDataSetter(60, StartPos.y + 60 + 10 + 40,
-                        MeasureTextEx(FontArial, "A", 60, 0).y)},
-      60, 0, BLACK);
   const char *cell_tittle[3] = {"STT", "Mã MB", "Số lượt bay"};
 
   float cellW[3] = {180, 450, 450};
@@ -1730,6 +1729,11 @@ void CreatePage_QLCB(UIcontroller &control)
   }
 }
 
+void Popup_TimCB(UIcontroller &control)
+{
+  
+}
+
 void Popup_getMB(UIcontroller &control, Date gioBay)
 {
   MayBay *result;
@@ -1796,7 +1800,7 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
 
   if (control.dataTabMB.data != NULL)
   {
-    if (!control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(), control.dataTabMB.data->getSoHieuMB()))
+    if (control.dataTabCB.data != NULL && !control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(), control.dataTabMB.data->getSoHieuMB()))
     {
       check_mb = true;
       control.dataTabCB.popup_errorMess = "Máy bay phải có số dãy và số dòng bằng máy bay ban đầu!";
@@ -2497,8 +2501,10 @@ bool Popup_showListHK(UIcontroller &control)
   button[0].tittle = "Quay lại";
 
   button[1].tittle = "Huỷ vé";
-  if (control.dataTabCB.data->getNode().getTrangThai() == HoanTat)
+  if (control.dataTabCB.data->getNode().getTrangThai() == HoanTat || control.dataTabCB.dataDSVe.position < 0)
     button[1].isActive = false;
+  else
+    button[1].isActive = true;
 
   ChuyenBay currCB = control.dataTabCB.data->getNode();
   int n_page = 1 + (currCB.getDSVe().getSoVeDaDat() - 1) / 10;
@@ -2572,15 +2578,11 @@ bool Popup_showListHK(UIcontroller &control)
 
   if (control.dataTabCB.dataDSVe.current_page > n_page)
     control.dataTabCB.dataDSVe.current_page = 1;
-
-  if (control.dataTabCB.dataDSVe.position < 0)
-    button[1].isActive = false;
-  else
-    button[1].isActive = true;
   if (CreateButton(button[0]))
   {
     control.dataTabCB.dataDSVe.current_page = 1;
     control.dataTabCB.current_popup = 0;
+    resetData_QLVe(control.dataTabCB.dataDSVe);
     return true;
   }
   // if (control.dataTabMB.data != NULL)
@@ -3396,7 +3398,7 @@ void CreateTable_QLVe()
 
 void CreatePage_QLHK(UIcontroller &control)
 {
-  CreatePageBackground(2);
+  CreatePageBackground(1);
   if (control.dataTabHK.data == NULL && control.dataTabHK.current_popup != 0)
   {
     CreatePopupBackground();
@@ -3443,28 +3445,23 @@ void CreatePage_QLHK(UIcontroller &control)
       button[0].isActive = true;
     }
 
-    button[0].tittle = "Quản lý vé";
+    button[0].tittle = "Sửa thông tin";
     if (CreateButton(button[0]))
     {
       control.dataTabHK.current_popup = 1;
+      strcpy(control.dataTabHK.i_Ho.name, strToChar(control.dataTabHK.data->getHK().getHo()));
+      control.dataTabHK.i_Ho.letterCount = control.dataTabHK.data->getHK().getHo().length();
+      strcpy(control.dataTabHK.i_Ten.name, strToChar(control.dataTabHK.data->getHK().getTen()));
+      control.dataTabHK.i_Ten.letterCount = control.dataTabHK.data->getHK().getTen().length();
+      control.dataTabHK.i_Phai = control.dataTabHK.data->getHK().getPhai() == "Nu";
     }
-    button[1].tittle = "Huỷ vé";
-    if (CreateButton(button[1]))
-    {
-      control.dataTabHK.current_popup = 2;
-    }
+    control.dataTabHK.data = XuLy_QLHK(control);
   }
   else if (control.dataTabHK.current_popup == 1)
-  {
-    if (Popup_QLVe(control))
-      control.dataTabHK.current_popup = 0;
-  }
-  else if (control.dataTabHK.current_popup == 2)
   {
     if (Popup_HieuChinhHK(control))
       control.dataTabHK.current_popup = 0;
   }
-  control.dataTabHK.data = XuLy_QLHK(control);
 }
 
 void CreateTable_QLHK()
@@ -3505,17 +3502,99 @@ bool Popup_QLVe(UIcontroller &control)
 bool Popup_HieuChinhHK(UIcontroller &control)
 {
   CreatePopupBackground();
+  DrawTextEx(
+      FontArial, "Sửa thông tin hành khách",
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, "Sửa thông tin hành khách", 50, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10,
+                        MeasureTextEx(FontArial, "A", 50, 0).y)},
+      50, 0, BLACK);
   HanhKhach tmp = control.dataTabHK.data->getHK();
 
   string o_Ho, o_Ten;
+
+  const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y -
+                         MeasureTextEx(FontArial, "A", 25, 0).y;
+  DrawTextEx(FontArial, "CMND / CCCD",
+             {StartPos.x + 300, StartPos.y + 60 + 230 + 10}, 40, 0, BROWN);
+  DrawTextEx(FontArial, "(Không được chỉnh sửa!)",
+             {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25},
+             25, 0, RED);
+  DrawTextEx(FontArial, "Họ và tên",
+             {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
+  DrawTextEx(FontArial, "(Gồm chữ cái và kí tự)",
+             {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
+             25, 0, RED);
+
+  DrawTextEx(FontArial, "Phái",
+             {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
+  DrawTextEx(FontArial, "(Nhấn vào để chọn)",
+             {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
+             25, 0, RED);
+
   TextBox s_CMND;
-  s_CMND.box = control.dataTabHK.i_Ten.textBox;
+  s_CMND.box = control.dataTabHK.i_CMND.textBox;
   s_CMND.showBox = true;
   s_CMND.text = strToChar(tmp.getCmnd());
   CreateTextBox(s_CMND);
 
   o_Ho = CreateTextInputBox(control.dataTabHK.i_Ho);
   o_Ten = CreateTextInputBox(control.dataTabHK.i_Ten);
+
+  TextBox tb_Phai;
+  tb_Phai.box = {StartPos.x + 300, StartPos.y + 60 + 480, 150, 50};
+  tb_Phai.showBox = true;
+  tb_Phai.isCenter = true;
+  tb_Phai.mode = 2;
+  tb_Phai.text = (char *)"Chưa chọn";
+
+  if (control.dataTabHK.i_Phai == 0)
+    tb_Phai.text = (char *)"Nam";
+  else if (control.dataTabHK.i_Phai == 1)
+    tb_Phai.text = (char *)"Nữ";
+  CreateTextBox(tb_Phai);
+
+  Button s_Nam;
+  s_Nam.x = tb_Phai.box.x + tb_Phai.box.width + 20;
+  s_Nam.y = tb_Phai.box.y;
+  s_Nam.w = 100;
+  s_Nam.h = 50;
+  s_Nam.gotNothing = false;
+  s_Nam.gotText = true;
+  s_Nam.tittle = (char *)"Nam";
+  s_Nam.font = FontArial;
+  s_Nam.BoMau = ArrowKey;
+
+  Button s_Nu;
+  s_Nu.x = s_Nam.x + s_Nam.w + 10;
+  s_Nu.y = s_Nam.y;
+  s_Nu.w = 100;
+  s_Nu.h = 50;
+  s_Nu.gotNothing = false;
+  s_Nu.gotText = true;
+  s_Nu.tittle = (char *)"Nữ";
+  s_Nu.font = FontArial;
+  s_Nu.BoMau = ArrowKey;
+
+  if (control.dataTabHK.i_Phai == 0)
+  {
+    s_Nam.isActive = false;
+    s_Nu.isActive = true;
+  }
+  else if (control.dataTabHK.i_Phai == 1)
+  {
+    s_Nu.isActive = false;
+    s_Nam.isActive = true;
+  }
+
+  if (CreateButton(s_Nam))
+  {
+    control.dataTabHK.i_Phai = 0;
+  }
+  if (CreateButton(s_Nu))
+  {
+    control.dataTabHK.i_Phai = 1;
+  }
 
   Button OK;
   OK.x = StartPos.x + 225 + 750;
@@ -3550,6 +3629,7 @@ bool Popup_HieuChinhHK(UIcontroller &control)
     resetInputTextBox(control.dataTabHK.i_Ho);
     resetInputTextBox(control.dataTabHK.i_Ten);
     control.dataTabHK.i_Phai = -1;
+    control.listHK.writeToFileAllHK();
     return true;
   }
 

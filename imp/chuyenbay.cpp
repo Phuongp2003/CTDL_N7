@@ -29,7 +29,7 @@ Date ChuyenBay::getNgayGio() { return this->ngayGio; }
 
 void ChuyenBay::setTrangThai(int trangThai) { this->trangThai = trangThai; }
 
-void ChuyenBay::setidMayBay(const char* idMayBay)
+void ChuyenBay::setidMayBay(const char *idMayBay)
 {
   strcpy(this->idMayBay, idMayBay);
 }
@@ -369,7 +369,8 @@ bool DsChuyenBay::isAval(const char *soHieuMB, Date timeCB, const char *_maCB)
 {
   NodeCB *tmp = this->head;
   while (tmp != NULL)
-  { if( strcmp(tmp->getNode().getMaCB(), _maCB)==0)
+  {
+    if (strcmp(tmp->getNode().getMaCB(), _maCB) == 0)
     {
       tmp = tmp->getNext();
       continue;
@@ -382,7 +383,7 @@ bool DsChuyenBay::isAval(const char *soHieuMB, Date timeCB, const char *_maCB)
     }
     if (!tmp->getNode().cach(3, timeCB))
     {
-      if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0 )
+      if (strcmp(tmp->getNode().getMaMayBay(), soHieuMB) == 0)
         return false;
     }
 
@@ -432,10 +433,10 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
   }
   while (tmp != NULL)
   {
-    if(tmp->getNode().getMaMayBay()==cb.getMaMayBay())
+    if (tmp->getNode().getMaMayBay() == cb.getMaMayBay())
     {
       tmp = tmp->getNext();
-      continue;//
+      continue;
     }
 
     if ((tmp->getNode().getTrangThai() == ConVe ||
