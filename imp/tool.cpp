@@ -286,11 +286,17 @@ string intToString(int x)
   return p;
 }
 
-void trim(string &str)
+string charToString(const char *ch)
 {
-  const char *WhiteSpace = " \t\v\r\n";
+  string str(ch);
+  return str;
+}
+
+string trim(string str)
+{
+  const char *WhiteSpace = " \t\f\v\r\n";
   size_t start = str.find_first_not_of(WhiteSpace);
   size_t end = str.find_last_not_of(WhiteSpace);
-  if (start != end)
-    str = str.substr(start, end - start + 1);
+  str = str.substr(start, end - start + 1);
+  return str;
 }

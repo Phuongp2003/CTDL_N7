@@ -147,7 +147,7 @@ struct QLMB_data
     MaMB.tittle = (char *)"Nhập số hiệu máy bay";
     MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
     MaMB.size = 15;
-    LoaiMB.mode = 2;
+    LoaiMB.mode = 1;
     LoaiMB.tittle = (char *)"Nhập loại máy bay";
     LoaiMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
     LoaiMB.size = 40;
@@ -1006,6 +1006,7 @@ bool Popup_ThemMB(UIcontroller &control)
           control.dataTabMB.popup_errorMess = "So cho phai lon hon hoac bang 20!";
           return false;
         }
+        newLoaiMayBay = trim(charToString(newLoaiMayBay)).c_str();
         MayBay *result =
             new MayBay(newMaMB, newLoaiMayBay, atoi(newSoDay), atoi(newSoDong));
         control.listMB.insertMB(result);
@@ -1158,6 +1159,7 @@ bool Popup_HieuChinhMB(UIcontroller &control)
         return false;
       }
       // control.dataTabMB.data->setSoHieuMB(newMaMB);
+      newLoaiMB = trim(charToString(newLoaiMB)).c_str();
       control.dataTabMB.data->setLoaiMB(newLoaiMB);
       control.dataTabMB.data->setSoDong(atoi(newSoDong));
       control.dataTabMB.data->setSoDay(atoi(newSoDay));
@@ -2157,7 +2159,7 @@ bool Popup_ThemCB(UIcontroller &control)
           newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
           newGio[0] >= 32 && newPhut[0] >= 32)
       {
-        ChuyenBay result = ChuyenBay(newMaCB, newNoiDen, newNgayBay, newMaMB);
+        ChuyenBay result = ChuyenBay(newMaCB, trim(charToString(newNoiDen)), newNgayBay, newMaMB);
         DsVeMayBay newDSVe;
         newDSVe.setDSVe(control.listMB.findMB(newMaMB));
         result.setDSVe(newDSVe);
@@ -3131,9 +3133,7 @@ bool Popup_datVe(UIcontroller &control)
 
     if (!HKexist)
     {
-      trim(o_Ho);
-      trim(o_Ten);
-      HanhKhach hk = HanhKhach(o_CMND, o_Ho, o_Ten, control.dataTabHK.i_Phai);
+      HanhKhach hk = HanhKhach(o_CMND, trim(o_Ho), trim(o_Ten), control.dataTabHK.i_Phai);
       control.listHK.insert(hk);
     }
 
