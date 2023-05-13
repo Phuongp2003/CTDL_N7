@@ -17,11 +17,12 @@ private:
   int soDay;
   int soDong;
   int soLuotThucHienCB;
+  bool isUsed;
 
 public: //
   MayBay();
   MayBay(const char *soHieuMB, const char *loaiMB, int soDay, int soDong);
-  MayBay(const char *soHieuMB, const char *loaiMB, int soDay, int soDong, int soLuotThucHienCB);
+  MayBay(const char *soHieuMB, const char *loaiMB, int soDay, int soDong, int soLuotThucHienCB,bool isUsed);
   void setSoHieuMB(const char *soHieuMB);
   char *getSoHieuMB();
   void setLoaiMB(const char *loaiMB);
@@ -35,7 +36,8 @@ public: //
   bool kiemTraSoCho();
   void tangSoLuotThucHienCB();
   int getSoLuotBay();
-
+  void setUsed();
+  bool inUsed();
   MayBay *getMB();
   ~MayBay();
 };
@@ -64,6 +66,7 @@ public:
   void readFromFile();
   void writetoFile();
   void writetoFileWhenAdd();
-  bool planeMatch(const char* soHieuMB,const char* other);
+  bool planeMatch(const char *soHieuMB, const char *other);
+
   ~DsMayBay(); //
 };

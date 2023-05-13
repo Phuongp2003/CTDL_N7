@@ -9,6 +9,7 @@ MayBay::MayBay()
   soDay = 0;
   soDong = 0;
   soLuotThucHienCB = 0;
+  isUsed=false;
 }
 
 MayBay::MayBay(const char *soHieuMB, const char *loaiMB, int soDay,
@@ -20,16 +21,18 @@ MayBay::MayBay(const char *soHieuMB, const char *loaiMB, int soDay,
   this->soDay = soDay;
   this->soDong = soDong;
   soLuotThucHienCB = 0;
+  isUsed=false;
 }
 
 MayBay::MayBay(const char *soHieuMB, const char *loaiMB, int soDay,
-               int soDong, int soLuotThucHienCB)
+               int soDong, int soLuotThucHienCB,bool isUsed)
 {
   strcpy(this->soHieuMB, soHieuMB);
   strcpy(this->loaiMB, loaiMB);
   this->soDay = soDay;
   this->soDong = soDong;
   this->soLuotThucHienCB = soLuotThucHienCB;
+  this->isUsed=isUsed;
 }
 
 void MayBay::setSoHieuMB(const char *soHieuMB)
@@ -74,6 +77,13 @@ bool MayBay::kiemTraSoCho() { return (soDay * soDong) >= 20; }
 void MayBay::tangSoLuotThucHienCB() { this->soLuotThucHienCB++; }
 
 int MayBay::getSoLuotBay() { return this->soLuotThucHienCB; }
+
+void MayBay::setUsed()
+{
+  this->isUsed = true;
+}
+
+bool MayBay::inUsed() { return isUsed; }
 
 MayBay::~MayBay() {}
 
@@ -150,8 +160,9 @@ void DsMayBay::readFromFile()
   if (file.is_open())
   {
     deleteDsMB();
-    std::string soHieuMB, loaiMB, soDay, soDong, soLuotThucHienCB;
+    std::string soHieuMB, loaiMB, soDay, soDong, soLuotThucHienCB,isUsed;
     std::string line = "";
+    bool used;
     while (std::getline(file, line))
     {
       std::stringstream s(line);
@@ -160,8 +171,10 @@ void DsMayBay::readFromFile()
       getline(s, soDay, '|');
       getline(s, soDong, '|');
       getline(s, soLuotThucHienCB, '|');
+      getline(s, isUsed, '|');
+      used = (isUsed == "1") ? true : false;
       insertMB(new MayBay(soHieuMB.c_str(), loaiMB.c_str(), stoi(soDay),
-                          stoi(soDong), stoi(soLuotThucHienCB)));
+                          stoi(soDong), stoi(soLuotThucHienCB),used));
     }
     file.close();
   }
@@ -204,7 +217,7 @@ void DsMayBay::writetoFile()
     {
       file << data[i]->getSoHieuMB() << "|" << data[i]->getLoaiMB() << "|"
            << data[i]->getSoDay() << "|" << data[i]->getSoDong() << "|"
-           << data[i]->getSoLuotBay() << "|"
+           << data[i]->getSoLuotBay() << "|"<<data[i]->inUsed() << "|"
            << "\n";
     }
   }
@@ -222,7 +235,7 @@ void DsMayBay::writetoFileWhenAdd()
   {
     file << data[size - 1]->getSoHieuMB() << "|" << data[size - 1]->getLoaiMB() << "|"
          << data[size - 1]->getSoDay() << "|" << data[size - 1]->getSoDong() << "|"
-         << data[size - 1]->getSoLuotBay() << "|"
+         << data[size - 1]->getSoLuotBay() << "|" << data[size - 1]->inUsed()<<"|"
          << "\n";
   }
   else
