@@ -828,7 +828,6 @@ void CreatePage_QLMB(UIcontroller &control)
       button[1].isActive = true;
       button[2].isActive = true;
     }
-    // if(control.dataTabMB.data)
 
     // mini function
     button[0].tittle = "Thêm máy bay";
@@ -839,8 +838,23 @@ void CreatePage_QLMB(UIcontroller &control)
     button[1].tittle = "Hiệu chỉnh máy bay";
     if (CreateButton(button[1]))
     {
-
-      control.dataTabMB.current_popup = 2;
+      if (control.listCB.isUsing(control.dataTabMB.data->getSoHieuMB()))
+        control.dataTabMB.popup_errorMess = "Không hiệu chỉnh khi máy bay đang sử dụng!";
+      if (control.dataTabMB.popup_errorMess != "")
+      {
+        DrawTextEx(
+            FontArial, strToChar(control.dataTabMB.popup_errorMess),
+            {CenterDataSetter(1100, StartPos.x + 200,
+                              MeasureTextEx(FontArial, strToChar(control.dataTabMB.popup_errorMess), 40, 0).x),
+             CenterDataSetter(50, StartPos.y + 130,
+                              MeasureTextEx(FontArial, "A", 40, 0).y)},
+            40, 0, RED);
+        control.dataTabMB.time_showError--;
+        control.dataTabMB.popup_errorMess = "";
+        control.dataTabMB.current_popup = 0;
+      }
+      else
+        control.dataTabMB.current_popup = 2;
     }
     button[2].tittle = "Xoá máy bay";
     if (CreateButton(button[2]))
@@ -1796,13 +1810,17 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
 
   if (control.dataTabMB.data != NULL)
   {
-    if (!control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(), control.dataTabMB.data->getSoHieuMB()))
-    {
-      check_mb = true;
-      control.dataTabCB.popup_errorMess = "Máy bay phải có số dãy và số dòng bằng máy bay ban đầu!";
-      control.dataTabCB.time_showError = 98;
-    }
-    else if (!control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
+    // if (control.dataTabCB.current_popup == 1)
+    // {
+      if (!control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(), control.dataTabMB.data->getSoHieuMB()))
+      {
+        check_mb = true;
+        control.dataTabCB.popup_errorMess = "Máy bay phải có số dãy và số dòng bằng máy bay ban đầu!";
+        control.dataTabCB.time_showError = 98;
+      }
+    // }
+
+    if (!control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
     {
       check_mb = true;
       control.dataTabCB.popup_errorMess = "Máy bay đang bận!";
@@ -2017,6 +2035,7 @@ bool Popup_ThemCB(UIcontroller &control)
         control.listCB.insertOrder(new NodeCB(result));
         control.listCB.writetToFile();
         control.listCB.setSize();
+        control.listMB.findMB(newMaMB)->setUsed();
 
         control.dataTabCB.status = 1;
         resetInputTextBox(control.dataTabCB.MaCB);
@@ -2282,6 +2301,10 @@ bool Popup_HieuChinhCB(UIcontroller &control)
     resetInputTextBox(control.dataTabCB.MaMB);
     resetInputTextBox(control.dataTabCB.NoiDen);
     resetInputTextBox(control.dataTabCB.Ngay);
+    resetInputTextBox(control.dataTabCB.Thang);
+    resetInputTextBox(control.dataTabCB.Nam);
+    resetInputTextBox(control.dataTabCB.Gio);
+    resetInputTextBox(control.dataTabCB.Phut);
     control.dataTabCB.popup_errorMess = "";
     return true;
   }
@@ -2485,10 +2508,10 @@ bool Popup_showListHK(UIcontroller &control)
   button[0].tittle = "Quay lại";
 
   button[1].tittle = "Huỷ vé";
+  ChuyenBay currCB = control.dataTabCB.data->getNode();
   if (control.dataTabCB.data->getNode().getTrangThai() == HoanTat)
     button[1].isActive = false;
 
-  ChuyenBay currCB = control.dataTabCB.data->getNode();
   int n_page = 1 + (currCB.getDSVe().getSoVeDaDat() - 1) / 10;
 
   float cellW[6] = {100, 180, 300, 400, 100};
@@ -2527,7 +2550,7 @@ bool Popup_showListHK(UIcontroller &control)
       showText[4] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getPhai());
 
       TextBox show[5];
-      for (int j = 0; j < 5; j++)
+      for (int j = 4; j >= 0; j--)
       {
         if (control.dataTabCB.dataDSVe.pickdata_index == j)
           control.dataTabCB.dataDSVe.position = i;
@@ -2958,7 +2981,7 @@ bool Popup_datVe(UIcontroller &control)
       control.listHK.insert(hk);
     }
 
-    if(!control.listCB.duocDatKhong(o_CMND,control.dataTabCB.data->getNode()))
+    if (!control.listCB.duocDatKhong(o_CMND, control.dataTabCB.data->getNode()))
     {
       control.dataTabCB.popup_errorMess = "Bạn không được đặt vé trên chuyến bay này!";
       resetData_QLHK(control.dataTabHK);
@@ -3925,7 +3948,7 @@ bool Warning_NoData()
 
 int Warning_Confirm()
 {
-  CreatePopupBackground();
+  // CreatePopupBackground();
   DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330,
                 {246, 250, 170, 255});
   DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70,

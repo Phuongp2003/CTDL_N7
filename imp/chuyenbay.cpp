@@ -407,14 +407,20 @@ bool DsChuyenBay::isExist(const char *maCB)
   return false;
 }
 
-bool DsChuyenBay::isUsed(const char *maMB)
+bool DsChuyenBay::isUsing(const char *maMB)
 {
   NodeCB *tmp = this->head;
+  Date now;
+  
   while (tmp != NULL)
   {
-
-    if (strcmp(tmp->getNode().getMaMayBay(), maMB) == 0)
-      return true;
+    now.setToNow();
+    if((tmp->getNode().getTrangThai()==ConVe || tmp->getNode().getTrangThai()== HetVe)&&(tmp->getNode().ngayHoanThanh()< now))
+    {
+      if (strcmp(tmp->getNode().getMaMayBay(), maMB) == 0)
+        return true;
+    }
+    
 
     tmp = tmp->getNext();
   }
