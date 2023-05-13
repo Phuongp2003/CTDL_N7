@@ -412,16 +412,15 @@ bool DsChuyenBay::isUsing(const char *maMB)
 {
   NodeCB *tmp = this->head;
   Date now;
-  
+
   while (tmp != NULL)
   {
     now.setToNow();
-    if((tmp->getNode().getTrangThai()==ConVe || tmp->getNode().getTrangThai()== HetVe)&&(tmp->getNode().ngayHoanThanh()< now))
+    if ((tmp->getNode().getTrangThai() == ConVe || tmp->getNode().getTrangThai() == HetVe) && (tmp->getNode().ngayHoanThanh() < now))
     {
       if (strcmp(tmp->getNode().getMaMayBay(), maMB) == 0)
         return true;
     }
-    
 
     tmp = tmp->getNext();
   }
@@ -437,9 +436,10 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
     if (cb.getDSVe().getVe(i).getHanhKhach() == cmnd)
       return false;
   }
+
   while (tmp != NULL)
   {
-    if (tmp->getNode().getMaMayBay() == cb.getMaMayBay())
+    if (tmp->getNode().getMaCB() == cb.getMaCB())
     {
       tmp = tmp->getNext();
       continue;
@@ -447,7 +447,7 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 
     if ((tmp->getNode().getTrangThai() == ConVe ||
          tmp->getNode().getTrangThai() == HetVe) &&
-        tmp->getNode().cach(6, cb.getNgayGio()) == true)
+        !tmp->getNode().cach(6, cb.getNgayGio()))
     {
       for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
       {

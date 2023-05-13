@@ -66,6 +66,7 @@ struct Button
 struct InputTextBox
 {
   bool isActive = true;
+  bool isGotData = false;
 
   Rectangle textBox;
   const char *tittle = "";
@@ -88,6 +89,33 @@ struct InputTextBox
   int framesCounter = 0;
   int indexPoint = 0;
 };
+
+void SetDataInputTextBox(InputTextBox &box, const char *text, int length = -1)
+{
+  if (!box.isGotData)
+  {
+    strcpy(box.name, text);
+    if (length != -1)
+    {
+      box.letterCount = length;
+    }
+    else
+    {
+      box.letterCount = getCharSize(text);
+    }
+    box.isGotData = true;
+  }
+}
+
+void ResetDataInputTextBox(InputTextBox &box)
+{
+  if (box.isGotData)
+  {
+    strcpy(box.name, "\0");
+    box.letterCount = 0;
+    box.isGotData = false;
+  }
+}
 
 struct TextBox
 {
@@ -223,6 +251,7 @@ struct QLVe_data
   int pickdata_index = -1;
   VeMayBay data = VeMayBay();
 
+  bool showNotEmpty = false;
   bool inDelete = false;
 
   PageSwitcher Sw_table_page;
@@ -258,6 +287,7 @@ struct QLCB_data
   bool inFill = false;
   Date fbDay = Date(1, 1, 0, 0, 0);
   string fbNoiDen = "";
+  bool fbAvail = false;
   bool inGetTicket = false;
   bool inSetTicket = false;
   bool gotChangeTicket = false;
@@ -2763,6 +2793,7 @@ bool Popup_chonChuyen(UIcontroller &control)
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              50, 0, BLUE);
 
+  control.dataTabCB.fbAvail = true;
   control.dataTabCB.data = XuLy_QLCB(control);
 
   Button OK;
@@ -2798,15 +2829,18 @@ bool Popup_chonChuyen(UIcontroller &control)
   Cancel.tittle = "Quay lại";
   Cancel.font = FontArial;
   Cancel.BoMau = ArrowKey;
-  if (CreateButton(OK))
+  if (!control.dataTabCB.inSearching)
   {
-    control.dataTabCB.inGetTicket = true;
-  }
-  if (CreateButton(Cancel))
-  {
-    control.dataTabCB.inSearching = false;
-    resetData_QLVe(control.dataTabCB.dataDSVe);
-    return true;
+    if (CreateButton(OK))
+    {
+      control.dataTabCB.inGetTicket = true;
+    }
+    if (CreateButton(Cancel))
+    {
+      control.dataTabCB.fbAvail = false;
+      resetData_QLVe(control.dataTabCB.dataDSVe);
+      return true;
+    }
   }
   return false;
 }
@@ -2833,6 +2867,56 @@ bool Popup_chonVe(UIcontroller &control)
       }
     }
     return false;
+  }
+
+  Button s_ON;
+  s_ON.x = StartPos.x + 900;
+  s_ON.y = StartPos.y + 60 + 20;
+  s_ON.w = 100;
+  s_ON.h = 50;
+  s_ON.gotNothing = false;
+  s_ON.gotText = true;
+  s_ON.tittle = (char *)"ON";
+  s_ON.font = FontArial;
+  s_ON.BoMau = ArrowKey;
+
+  Button s_OFF;
+  s_OFF.x = s_ON.x + s_ON.w + 10;
+  s_OFF.y = s_ON.y;
+  s_OFF.w = 100;
+  s_OFF.h = 50;
+  s_OFF.gotNothing = false;
+  s_OFF.gotText = true;
+  s_OFF.tittle = (char *)"OFF";
+  s_OFF.font = FontArial;
+  s_OFF.BoMau = ArrowKey;
+
+  TextBox showVeAdv;
+  showVeAdv.box = {s_ON.x - 100, s_ON.y + 60, 410, 40};
+  showVeAdv.isCenter = true;
+  showVeAdv.mode = 2;
+  showVeAdv.text = "Hiện vé đã đặt";
+
+  CreateTextBox(showVeAdv);
+
+  if (control.dataTabCB.dataDSVe.showNotEmpty == true)
+  {
+    s_ON.isActive = false;
+    s_OFF.isActive = true;
+  }
+  else if (control.dataTabCB.dataDSVe.showNotEmpty == false)
+  {
+    s_OFF.isActive = false;
+    s_ON.isActive = true;
+  }
+
+  if (CreateButton(s_ON))
+  {
+    control.dataTabCB.dataDSVe.showNotEmpty = true;
+  }
+  if (CreateButton(s_OFF))
+  {
+    control.dataTabCB.dataDSVe.showNotEmpty = false;
   }
 
   ChuyenBay currCB = control.dataTabCB.data->getNode();
@@ -2875,6 +2959,8 @@ bool Popup_chonVe(UIcontroller &control)
   {
     for (int m = (control.dataTabCB.dataDSVe.current_page - 1) * 10; m < IndexSoDongMax; m++)
     {
+      if (!control.dataTabCB.dataDSVe.showNotEmpty && currCB.getDSVe().getVe(a * sDong + m).getHanhKhach() != "")
+        continue;
       button.x = r.x + (m % 10) * 100 + 15;
       button.y = r.y + a * 40;
       button.w = r.width;
@@ -2987,54 +3073,35 @@ bool Popup_datVe(UIcontroller &control)
   }
   else
   {
+    DrawTextEx(FontArial, "(Gồm chữ cái và kí tự)",
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
+               25, 0, RED);
+    DrawTextEx(FontArial, "(Nhấn vào để chọn)",
+               {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
+               25, 0, RED);
     if (control.listHK.search(o_CMND) != NULL)
     {
       HKexist = true;
-      DrawTextEx(FontArial, "(Đẫ tự động điền, không thể chỉnh sửa!)",
-                 {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
-                 25, 0, RED);
-      DrawTextEx(FontArial, "(Đẫ tự động điền, không thể chỉnh sửa!)",
-                 {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
-                 25, 0, RED);
 
+      control.dataTabHK.i_Ho.isActive = true;
+      control.dataTabHK.i_Ten.isActive = true;
       HanhKhach t_hk = control.listHK.search(o_CMND)->getHK();
 
-      control.dataTabHK.i_Ho.isActive = false;
-      control.dataTabHK.i_Ten.isActive = false;
-      control.dataTabHK.i_Phai = -1;
-
-      TextBox tb_Ho;
-      tb_Ho.box = control.dataTabHK.i_Ho.textBox;
-      tb_Ho.showBox = true;
-      tb_Ho.text = strToChar(t_hk.getHo());
-
-      TextBox tb_Ten;
-      tb_Ten.box = control.dataTabHK.i_Ten.textBox;
-      tb_Ten.showBox = true;
-      tb_Ten.text = strToChar(t_hk.getTen());
-
-      CreateTextBox(tb_Ho);
-      CreateTextBox(tb_Ten);
-
-      if (t_hk.getPhai() == "Nam")
-        tb_Phai.text = (char *)"Nam";
-      else if (t_hk.getPhai() == "Nu")
-        tb_Phai.text = (char *)"Nữ";
+      if (!control.dataTabHK.i_Ho.isGotData)
+        control.dataTabHK.i_Phai = t_hk.getPhai() == "Nu";
+      SetDataInputTextBox(control.dataTabHK.i_Ho, strToChar(t_hk.getHo()));
+      SetDataInputTextBox(control.dataTabHK.i_Ten, strToChar(t_hk.getTen()));
     }
     else
     {
-      control.dataTabHK.i_Ho.isActive = true;
-      control.dataTabHK.i_Ten.isActive = true;
-      DrawTextEx(FontArial, "(Gồm chữ cái và kí tự)",
-                 {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
-                 25, 0, RED);
-      DrawTextEx(FontArial, "(Nhấn vào để chọn)",
-                 {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
-                 25, 0, RED);
+      if (control.dataTabHK.i_Ho.isGotData)
+        control.dataTabHK.i_Phai = -1;
+      ResetDataInputTextBox(control.dataTabHK.i_Ho);
+      ResetDataInputTextBox(control.dataTabHK.i_Ten);
     }
   }
 
-  if (!HKexist && o_CMND != "")
+  if (o_CMND != "")
   {
     if (control.dataTabHK.i_Phai == 0)
       tb_Phai.text = (char *)"Nam";
@@ -3131,18 +3198,22 @@ bool Popup_datVe(UIcontroller &control)
       return false;
     }
 
-    if (!HKexist)
-    {
-      HanhKhach hk = HanhKhach(o_CMND, trim(o_Ho), trim(o_Ten), control.dataTabHK.i_Phai);
-      control.listHK.insert(hk);
-    }
-
     if (!control.listCB.duocDatKhong(o_CMND, control.dataTabCB.data->getNode()))
     {
       control.dataTabCB.popup_errorMess = "Bạn không được đặt vé trên chuyến bay này!";
-      resetData_QLHK(control.dataTabHK);
       return false;
     }
+
+    HanhKhach hk = HanhKhach(o_CMND, trim(o_Ho), trim(o_Ten), control.dataTabHK.i_Phai);
+    if (!HKexist)
+    {
+      control.listHK.insert(hk);
+    }
+    else
+    {
+      control.listHK.search(o_CMND)->setHK(hk);
+    }
+
     ChuyenBay m_cb = control.dataTabCB.data->getNode();
     DsVeMayBay m_dsVe = m_cb.getDSVe();
     VeMayBay m_ve = m_dsVe.getVe(control.dataTabCB.dataDSVe.position);
@@ -3273,6 +3344,10 @@ void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inF
                   tmp->getNode().checkTime(control.dataTabCB.fbDay) &&
                   tmp->getNode().getTrangThai() == ConVe &&
                   tmp->getNode().getNoiDen() == control.dataTabCB.fbNoiDen;
+    }
+    else if (control.dataTabCB.fbAvail)
+    {
+      DKTimKiem = DKTimKiem && tmp->getNode().getTrangThai() == ConVe;
     }
 
     if (DKTimKiem)
@@ -3919,7 +3994,7 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
     if (j >= i && j <= i + 9)
     {
       if (j % 10 == control.dataTabHK.pickdata_index)
-        control.dataTabHK.data = root;
+        control.dataTabHK.data = currNode;
 
       ShowListHK(currNode->getHK(), n_char, start_pos, cellW, j, order);
     }
