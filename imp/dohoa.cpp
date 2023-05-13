@@ -828,7 +828,6 @@ void CreatePage_QLMB(UIcontroller &control)
       button[1].isActive = true;
       button[2].isActive = true;
     }
-
     // mini function
     button[0].tittle = "Thêm máy bay";
     if (CreateButton(button[0]))
@@ -1745,7 +1744,6 @@ void CreatePage_QLCB(UIcontroller &control)
 
 void Popup_TimCB(UIcontroller &control)
 {
-  
 }
 
 void Popup_getMB(UIcontroller &control, Date gioBay)
@@ -2035,7 +2033,6 @@ bool Popup_ThemCB(UIcontroller &control)
         control.listCB.insertOrder(new NodeCB(result));
         control.listCB.writetToFile();
         control.listCB.setSize();
-        control.listMB.findMB(newMaMB)->setUsed();
 
         control.dataTabCB.status = 1;
         resetInputTextBox(control.dataTabCB.MaCB);
@@ -2525,6 +2522,7 @@ bool Popup_showListHK(UIcontroller &control)
   else
     button[1].isActive = true;
 
+  ChuyenBay currCB = control.dataTabCB.data->getNode();
   int n_page = 1 + (currCB.getDSVe().getSoVeDaDat() - 1) / 10;
 
   float cellW[6] = {100, 180, 300, 400, 100};
@@ -2551,28 +2549,29 @@ bool Popup_showListHK(UIcontroller &control)
       VeMayBay tmp = currCB.getDSVe().getVe(i);
       if (tmp.getHanhKhach() == "")
         continue;
-      const char *showText[5];
-      showText[0] = intToChar(iVe % 10 + 1, n_char);
-      showText[1] = strToChar(tmp.getIDVe());
-      showText[2] = strToChar(tmp.getHanhKhach());
-      showText[3] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getHo() + " " + control.listHK.search(tmp.getHanhKhach())->getHK().getTen());
-      showText[4] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getPhai());
+      if (iVe >= (control.dataTabCB.dataDSVe.current_page - 1) * 10 && iVe < control.dataTabCB.dataDSVe.current_page * 10)
+      {
+        const char *showText[5];
+        showText[0] = intToChar(iVe % 10 + 1, n_char);
+        showText[1] = strToChar(tmp.getIDVe());
+        showText[2] = strToChar(tmp.getHanhKhach());
+        showText[3] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getHo() + " " + control.listHK.search(tmp.getHanhKhach())->getHK().getTen());
+        showText[4] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getPhai());
 
         if (control.dataTabCB.dataDSVe.pickdata_index == iVe % 10)
         {
           control.dataTabCB.dataDSVe.position = i;
         }
 
-      TextBox show[5];
-      for (int j = 0; j < 5; j++)
-      {
-        if (control.dataTabCB.dataDSVe.pickdata_index == j)
-          control.dataTabCB.dataDSVe.position = i;
-        show[j] = GetCellTextBox(start_pos, 5, cellW, j + 1, (iVe % 10) + 1, showText[j], 30);
-      }
-      for (int j = 4; j >= 0; j--)
-      {
-        CreateTextBox(show[j]);
+        TextBox show[5];
+        for (int j = 0; j < 5; j++)
+        {
+          show[j] = GetCellTextBox(start_pos, 5, cellW, j + 1, (iVe % 10) + 1, showText[j], 30);
+        }
+        for (int j = 4; j >= 0; j--)
+        {
+          CreateTextBox(show[j]);
+        }
       }
       iVe++;
     }
@@ -4053,7 +4052,6 @@ bool Warning_NoData()
 
 int Warning_Confirm()
 {
-  CreatePopupBackground();
   DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330,
                 {246, 250, 170, 255});
   DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70,
