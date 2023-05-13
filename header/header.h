@@ -98,4 +98,5 @@ const char *strToChar(string str);
 void Selection_Sort(int A[], int n);
 void swap(int &a, int &b);
 string intToString(int x);
-void trim(string &str);
+string charToString(const char *ch);
+string trim(string str);
