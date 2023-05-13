@@ -818,7 +818,7 @@ void CreatePage_QLMB(UIcontroller &control)
     }
 
     // disable button if no data
-    if (control.dataTabMB.data == NULL)
+    if (control.dataTabMB.data == NULL || control.dataTabMB.data->inUsed())
     {
       button[1].isActive = false;
       button[2].isActive = false;
@@ -837,24 +837,24 @@ void CreatePage_QLMB(UIcontroller &control)
     button[1].tittle = "Hiệu chỉnh máy bay";
     if (CreateButton(button[1]))
     {
-      if (control.listCB.isUsing(control.dataTabMB.data->getSoHieuMB()))
-        control.dataTabMB.popup_errorMess = "Không hiệu chỉnh khi máy bay đang sử dụng!";
-      if (control.dataTabMB.popup_errorMess != "")
-      {
-        DrawTextEx(
-            FontArial, strToChar(control.dataTabMB.popup_errorMess),
-            {CenterDataSetter(1100, StartPos.x + 200,
-                              MeasureTextEx(FontArial, strToChar(control.dataTabMB.popup_errorMess), 40, 0).x),
-             CenterDataSetter(50, StartPos.y + 130,
-                              MeasureTextEx(FontArial, "A", 40, 0).y)},
-            40, 0, RED);
-        control.dataTabMB.time_showError--;
-        control.dataTabMB.popup_errorMess = "";
-        control.dataTabMB.current_popup = 0;
-      }
-      else
-        control.dataTabMB.current_popup = 2;
+      // if (control.dataTabMB.data->inUsed() == true)
+      // {
+      //   control.dataTabMB.popup_errorMess = "Không hiệu chỉnh khi máy bay đang sử dụng!";
+
+      //   DrawTextEx(
+      //       FontArial, strToChar(control.dataTabMB.popup_errorMess),
+      //       {CenterDataSetter(1100, StartPos.x + 200,
+      //                         MeasureTextEx(FontArial, strToChar(control.dataTabMB.popup_errorMess), 40, 0).x),
+      //        CenterDataSetter(50, StartPos.y + 130,
+      //                         MeasureTextEx(FontArial, "A", 40, 0).y)},
+      //       40, 0, RED);
+      //   control.dataTabMB.time_showError = 0;
+      //   control.dataTabMB.popup_errorMess = "";
+      // }
+      // else
+      control.dataTabMB.current_popup = 2;
     }
+
     button[2].tittle = "Xoá máy bay";
     if (CreateButton(button[2]))
     {
@@ -1734,7 +1734,7 @@ void CreatePage_QLCB(UIcontroller &control)
     }
   }
 
-  if (control.listCB.update() || control.dataTabCB.gotChangeTicket)
+  if (control.listCB.update(control.listMB) || control.dataTabCB.gotChangeTicket)
   {
     setDataToFile(control.listCB, control.listMB, control.listHK);
     getDataFromFile(control.listCB, control.listMB, control.listHK);
@@ -1746,7 +1746,7 @@ void Popup_TimCB(UIcontroller &control)
 {
 }
 
-void Popup_getMB(UIcontroller &control, Date gioBay)
+void Popup_getMB(UIcontroller &control, Date gioBay, bool inEdit)
 {
   MayBay *result;
 
@@ -1812,11 +1812,11 @@ void Popup_getMB(UIcontroller &control, Date gioBay)
 
   if (control.dataTabMB.data != NULL)
   {
-    if (control.dataTabCB.data != NULL && !control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(), control.dataTabMB.data->getSoHieuMB()))
+    if (inEdit == true && control.dataTabCB.data != NULL && !control.listMB.planeMatch(control.dataTabCB.data->getNode().getMaMayBay(), control.dataTabMB.data->getSoHieuMB()))
     {
       check_mb = true;
       control.dataTabCB.popup_errorMess = "Máy bay phải có số dãy và số dòng bằng máy bay ban đầu!";
-      control.dataTabCB.time_showError = 98;
+      control.dataTabCB.time_showError = 99;
     }
     else if (!control.listCB.isAval(control.dataTabMB.data->getSoHieuMB(), gioBay, maCB_t))
     {
@@ -1927,9 +1927,10 @@ bool Popup_ThemCB(UIcontroller &control)
   }
   else
   {
+
     if (control.dataTabCB.inChooseMB)
     {
-      Popup_getMB(control, newNgayBay);
+      Popup_getMB(control, newNgayBay, false);
       return false;
     }
   }
@@ -1947,12 +1948,14 @@ bool Popup_ThemCB(UIcontroller &control)
 
   if ((newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
        newGio[0] >= 32 && newPhut[0] >= 32))
+  {
+
     if (CreateButton(getMB))
     {
       control.dataTabCB.inChooseMB = true;
       return false;
     }
-
+  }
   DrawTextEx(FontArial, "Nơi đến",
              {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
   DrawTextEx(FontArial, "(Gồm chữ cái, kí tự và số)",
@@ -2001,36 +2004,37 @@ bool Popup_ThemCB(UIcontroller &control)
   }
   if (CreateButton(OK))
   {
-    if (!newNgayBay.checkNgay())
-      control.dataTabCB.popup_errorMess = "Ngày, tháng hoặc năm không hợp lệ!";
-    else if (!(newNgayBay.checkNgayNhapVoiNgayHT()))
+    if (newMaCB[0] >= 32 && newMaMB[0] >= 32 && newNoiDen[0] >= 32 &&
+        newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
+        newGio[0] >= 32 && newPhut[0] >= 32)
     {
-      cout << "ngay" << newNgayBay.checkNgayNhapVoiNgayHT() << endl;
-      control.dataTabCB.popup_errorMess = "Chuyến bay phải được lập cách 1 ngày!";
-    }
-    // else if (newNgayBay.checkNgayNhapVoiNgayHT() && !(newNgayBay.checkGioNhapVoiGioHT()))
-    // {
-    //   control.dataTabCB.popup_errorMess = "Chuyến bay phải được lập cách 1 ngày!";
-    //   cout<<"gio"<<newNgayBay.checkGioNhapVoiGioHT()<<endl;
-    // }
-    else if (control.listMB.findPosMB(newMaMB) < 0)
-    {
-      control.dataTabCB.popup_errorMess = "Mã máy bay không tồn tại!";
-      cout << "vitri" << control.listMB.findPosMB(newMaMB) << endl;
-    }
-    else if (!control.listCB.isAval(newMaMB, newNgayBay, newMaCB))
-      control.dataTabCB.popup_errorMess = "Máy bay đang được chuyển bay khác sử dụng!";
-    else if (!control.listCB.isExist(newMaCB) || (control.dataTabCB.data != NULL && strcmp(newMaCB, control.dataTabCB.data->getNode().getMaCB()) == 0))
-    {
-      if (newMaCB[0] >= 32 && newMaMB[0] >= 32 && newNoiDen[0] >= 32 &&
-          newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
-          newGio[0] >= 32 && newPhut[0] >= 32)
+      if (!newNgayBay.checkNgay())
+        control.dataTabCB.popup_errorMess = "Ngày, tháng hoặc năm không hợp lệ!";
+      else if (!(newNgayBay.checkNgayNhapVoiNgayHT()))
+      {
+        cout << "ngay" << newNgayBay.checkNgayNhapVoiNgayHT() << endl;
+        control.dataTabCB.popup_errorMess = "Chuyến bay phải được lập cách 1 ngày!";
+      }
+      // else if (newNgayBay.checkNgayNhapVoiNgayHT() && !(newNgayBay.checkGioNhapVoiGioHT()))
+      // {
+      //   control.dataTabCB.popup_errorMess = "Chuyến bay phải được lập cách 1 ngày!";
+      //   cout<<"gio"<<newNgayBay.checkGioNhapVoiGioHT()<<endl;
+      // }
+      else if (control.listMB.findPosMB(newMaMB) < 0)
+      {
+        control.dataTabCB.popup_errorMess = "Số hiệu máy bay không tồn tại!";
+        cout << "vitri" << control.listMB.findPosMB(newMaMB) << endl;
+      }
+      else if (!control.listCB.isAval(newMaMB, newNgayBay, newMaCB))
+        control.dataTabCB.popup_errorMess = "Máy bay đang được chuyển bay khác sử dụng!";
+      else if (!control.listCB.isExist(newMaCB) || (control.dataTabCB.data != NULL && strcmp(newMaCB, control.dataTabCB.data->getNode().getMaCB()) == 0))
       {
         ChuyenBay result = ChuyenBay(newMaCB, newNoiDen, newNgayBay, newMaMB);
         DsVeMayBay newDSVe;
         newDSVe.setDSVe(control.listMB.findMB(newMaMB));
         result.setDSVe(newDSVe);
         control.listCB.insertOrder(new NodeCB(result));
+        control.listMB.findMB(newMaMB)->setUsed();
         control.listCB.writetToFile();
         control.listCB.setSize();
 
@@ -2047,14 +2051,14 @@ bool Popup_ThemCB(UIcontroller &control)
         cout << "dax xong0" << endl;
         return true;
       }
-      else
+      else if (control.listCB.isExist(newMaCB))
       {
-        control.dataTabCB.popup_errorMess = "Nhập chưa đầy đủ thông tin!";
+        control.dataTabCB.popup_errorMess = "Mã chuyến bay đã được sử dụng!";
       }
     }
     else
     {
-      control.dataTabCB.popup_errorMess = "Mã chuyến bay đã được sử dụng!";
+      control.dataTabCB.popup_errorMess = "Nhập chưa đầy đủ thông tin!";
     }
     return false;
   }
@@ -2157,7 +2161,7 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   {
     if (control.dataTabCB.inChooseMB)
     {
-      Popup_getMB(control, newNgayBay);
+      Popup_getMB(control, newNgayBay, true);
       return false;
     }
   }

@@ -69,12 +69,11 @@ DsVeMayBay ChuyenBay::getDSVe() { return this->dsVe; }
  * @brief Đây là hàm thử nghiệm
  *
  */
-void ChuyenBay::ThucHienCB(DsMayBay *dsMayBay)
+void ChuyenBay::ThucHienCB(DsMayBay DsMB)
 {
-  //     this->trangThai = HoanTat;
-  //     MayBay *tmp;
-  //     tmp = dsMayBay->getMB(dsMayBay->Find_MB(this->maCb));
-  //     tmp->TangSLTHCB();
+  
+  MayBay *tmp=DsMB.findMB(this->idMayBay);
+  tmp->tangSoLuotThucHienCB();
 }
 
 Date ChuyenBay::ngayHoanThanh()
@@ -573,7 +572,7 @@ void DsChuyenBay::writetToFile()
   file.close();
 }
 
-bool DsChuyenBay::update()
+bool DsChuyenBay::update(DsMayBay DsMB)
 {
   Date now;
   now.setToNow();
@@ -591,6 +590,7 @@ bool DsChuyenBay::update()
       {
         ChuyenBay cb_t = tmp->getNode();
         cb_t.setTrangThai(HoanTat);
+        cb_t.ThucHienCB(DsMB);
         tmp->setCb(cb_t);
         // tmp->getNode().ThucHienCB();
         changed = true;

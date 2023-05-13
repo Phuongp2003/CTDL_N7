@@ -126,7 +126,7 @@ bool Popup_HuyCB(UIcontroller &control);
 bool Popup_chonChuyen(UIcontroller &control);
 bool Popup_chonVe(UIcontroller &control);
 bool Popup_showListHK(UIcontroller &control);
-void Popup_getMB(UIcontroller &control, Date gioBay);
+void Popup_getMB(UIcontroller &control, Date gioBay,bool inEdit);
 bool Popup_datVe(UIcontroller &control);
 //-
 bool Popup_QLVe(UIcontroller &control);

@@ -52,7 +52,7 @@ public:
   void setDSVe(DsVeMayBay dsVe);
   DsVeMayBay getDSVe();
 
-  void ThucHienCB(DsMayBay *dsChuyenBay);
+  void ThucHienCB(DsMayBay DsMB);
   Date ngayHoanThanh();
   // int soSanhNgay(Date another);
   bool cach(int hour, Date another);
@@ -112,7 +112,7 @@ public:
   void readFromFile(DsMayBay listMB);
   void writetToFile();
 
-  bool update();
+  bool update(DsMayBay DsMB);
   bool isAval(const char *soHieuMB, Date timeCb, const char *_maCB);
   bool isExist(const char *maCB);
   bool isUsing(const char *maMB);
