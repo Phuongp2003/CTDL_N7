@@ -136,6 +136,8 @@ bool Popup_HieuChinhHK(UIcontroller &control);
 void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();
 int Warning_Confirm(); //
+bool Warning_Full();
+bool Warning_Empty();
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[],
                    float cellH);
