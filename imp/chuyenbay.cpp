@@ -161,15 +161,7 @@ bool ChuyenBay::cach(int hour, Date another)
   {
     return true;
   }
-  return 0; //
-  // if ((ngayGio.getGio() * 60 +
-  //          getNode().getNgayGio().getPhut() <=
-  //      another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
-  //     (getNode().getNgayGio().getGio() * 60 +
-  //          getNode().getNgayGio().getPhut() >=
-  //      another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60))
-  //   return true;
-  // return false; //
+  return 0;
 }
 
 bool ChuyenBay::operator<(const ChuyenBay &other)
