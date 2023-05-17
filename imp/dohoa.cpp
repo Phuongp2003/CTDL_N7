@@ -5086,15 +5086,10 @@ void mainGraphics()
     }
     case 3:
     {
-      CreatePage_QLVe();
-      break;
-    }
-    case 4:
-    {
       CreatePage_QLHK(main);
       break;
     }
-    case 5:
+    case 4:
     {
       CreatePage_GioiThieu();
       break;
