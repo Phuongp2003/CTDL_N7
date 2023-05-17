@@ -657,8 +657,8 @@ void SetSizeWindow()
   int W, H;
   if (MONITOR_WIDTH < 1000 || MONITOR_HEIGHT <= 720)
   {
-    W = 700;
-    H = 400;
+    W = 800;
+    H = 580;
   }
   if (MONITOR_WIDTH <= 1280 || MONITOR_HEIGHT <= 800)
   {
@@ -1888,25 +1888,26 @@ bool Popup_TimCB(UIcontroller &control)
   }
   if (CreateButton(OK))
   {
-    if (!newNgayBay.checkNgay())
-      control.dataTabCB.popup_errorMess = "Ngày, tháng hoặc năm không hợp lệ!";
-    else
+    if (!(newNoiDen[0] >= 32 &&
+          newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32))
     {
-      if (newNoiDen[0] >= 32 &&
-          newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32)
-      {
-        control.dataTabCB.fbDay = newNgayBay;
-        control.dataTabCB.fbNoiDen = newNoiDen;
-        control.dataTabCB.popup_errorMess = "";
-        control.dataTabCB.inFill = true;
-
-        return true;
-      }
-      else
-      {
-        control.dataTabCB.popup_errorMess = "Nhập chưa đầy đủ thông tin!";
-      }
+      control.dataTabCB.popup_errorMess = "Nhập chưa đầy đủ thông tin!";
+      return false;
     }
+
+    if (!newNgayBay.checkNgay())
+    {
+      control.dataTabCB.popup_errorMess = "Ngày, tháng hoặc năm không hợp lệ!";
+      return false;
+    }
+
+    control.dataTabCB.fbDay = newNgayBay;
+    control.dataTabCB.fbNoiDen = newNoiDen;
+    control.dataTabCB.popup_errorMess = "";
+    control.dataTabCB.inFill = true;
+
+    return true;
+
     return false;
   }
   if (CreateButton(Cancel))
@@ -5048,21 +5049,22 @@ void mainGraphics()
   getDataFromFile(main.listCB, main.listMB, main.listHK);
 
   // Settup for before run graphics
-
-  SetWindowState(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
+  SetWindowState(FLAG_WINDOW_RESIZABLE);
   SetWindowMinSize(700, 400);
-  LoadResources();
-  SetConfigFlags(FLAG_MSAA_4X_HINT);
-  SetTargetFPS(20); // max framerate per second set to 20
   SetSizeWindow();
-  RenderTexture2D renderTexture = LoadRenderTexture(
-      WINDOW_WIDTH, WINDOW_HEIGHT); // Load nội dung màn hình như một ảnh
-  GenTextureMipmaps(&renderTexture.texture);
-  SetTextureFilter(renderTexture.texture, TEXTURE_FILTER_TRILINEAR);
+
+  LoadResources();
+
+  SetTargetFPS(20); // max framerate per second set to 20
+
+  RenderTexture2D renderTexture = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT); // Load nội dung màn hình như một ảnh
 
   // Graphics in running
   while (!WindowShouldClose())
   {
+    GenTextureMipmaps(&renderTexture.texture);
+    SetTextureFilter(renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+
     BeginTextureMode(renderTexture);
     // Các thao tác trên đồ hoạ
     if (main.current_tab != 0)
