@@ -723,12 +723,11 @@ void CreateHomePage(UIcontroller &control)
   // Tiêu dề
   const char *home_tittle = "ĐỒ ÁN QUẢN LÝ MÁY BAY - NHÓM 7 - KHOÁ D21",
              *button_tille = "CÁC CHỨC NĂNG";
-  char *button_tittle[5];
+  char *button_tittle[4];
   button_tittle[0] = (char *)"QUẢN LÝ MÁY BAY";
   button_tittle[1] = (char *)"QUẢN LÝ CHUYẾN BAY";
-  button_tittle[2] = (char *)"QUẢN LÝ VÉ";
-  button_tittle[3] = (char *)"QUẢN LÝ HÀNH KHÁCH";
-  button_tittle[4] = (char *)"GIỚI THIỆU VỀ SẢN PHẨM";
+  button_tittle[2] = (char *)"QUẢN LÝ HÀNH KHÁCH";
+  button_tittle[3] = (char *)"GIỚI THIỆU VỀ SẢN PHẨM";
 
   // Vị trí tiêu đề
   Vector2 tittleHomePos = {
@@ -758,32 +757,31 @@ void CreateHomePage(UIcontroller &control)
   };
 
   // tạo màn hình theo chỉ số tĩnh
+
+  CreateHomeBackground();
+  DrawTexture(PNG_logo, pngScreen.x, pngScreen.y, RED);
+  DrawRectangleRec(splitScreen, GRAY);
+  DrawTextEx(FontArial, home_tittle, tittleHomePos, 50, 0, RED);
+  DrawTextEx(FontArial, button_tille, tittleButtonPos, 40, 0, BLUE);
+
+  DrawTextureEx(PNG_logo, pngPos, 0, 1, WHITE);
+
+  Button button[4];
+  for (int i = 0; i < 4; i++)
   {
-    CreateHomeBackground();
-    DrawTexture(PNG_logo, pngScreen.x, pngScreen.y, RED);
-    DrawRectangleRec(splitScreen, GRAY);
-    DrawTextEx(FontArial, home_tittle, tittleHomePos, 50, 0, RED);
-    DrawTextEx(FontArial, button_tille, tittleButtonPos, 40, 0, BLUE);
-
-    DrawTextureEx(PNG_logo, pngPos, 0, 1, WHITE);
-
-    Button button[5];
-    for (int i = 0; i < 5; i++)
+    button[i].x = buttonPos[i].x;
+    button[i].y = buttonPos[i].y;
+    button[i].w = button_width;
+    button[i].h = button_height;
+    button[i].BoTron = true;
+    button[i].gotNothing = false;
+    button[i].gotText = true;
+    button[i].tittle = button_tittle[i];
+    button[i].font = FontArial;
+    button[i].BoMau = HomeButtonColor;
+    if (CreateButton(button[i]))
     {
-      button[i].x = buttonPos[i].x;
-      button[i].y = buttonPos[i].y;
-      button[i].w = button_width;
-      button[i].h = button_height;
-      button[i].BoTron = true;
-      button[i].gotNothing = false;
-      button[i].gotText = true;
-      button[i].tittle = button_tittle[i];
-      button[i].font = FontArial;
-      button[i].BoMau = HomeButtonColor;
-      if (CreateButton(button[i]))
-      {
-        UI_switchTab(control, i + 1);
-      }
+      UI_switchTab(control, i + 1);
     }
   }
 }
@@ -4203,21 +4201,19 @@ Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[],
 
 void ThanhQuanLy(UIcontroller &control)
 {
-  const int button_width = 360;
+  const int button_width = 480;
   const int button_height = 50;
 
-  char *button_tittle[4];
+  char *button_tittle[3];
   button_tittle[0] = (char *)"QUẢN LÝ MÁY BAY",
   button_tittle[1] = (char *)"QUẢN LÝ CHUYẾN BAY",
-  button_tittle[2] = (char *)"ĐẶT VÉ",
-  button_tittle[3] = (char *)"QUẢN LÝ HÀNH KHÁCH";
+  button_tittle[2] = (char *)"QUẢN LÝ HÀNH KHÁCH";
 
-  Vector2 buttonPos[5] = {{StartPos.x, StartPos.y},
+  Vector2 buttonPos[4] = {{StartPos.x, StartPos.y},
                           {buttonPos[0].x + 60, StartPos.y},
                           {buttonPos[1].x + button_width, StartPos.y},
-                          {buttonPos[2].x + button_width, StartPos.y},
-                          {buttonPos[3].x + button_width, StartPos.y}};
-  Button button[5];
+                          {buttonPos[2].x + button_width, StartPos.y}};
+  Button button[4];
   button[0].x = buttonPos[0].x;
   button[0].y = buttonPos[0].y;
   button[0].w = 60;
@@ -4227,7 +4223,7 @@ void ThanhQuanLy(UIcontroller &control)
   button[0].gotPic = true;
   button[0].picture = PNG_home;
   button[0].BoMau = MauThanhQuanLy;
-  for (int i = 1; i < 5; i++)
+  for (int i = 1; i < 4; i++)
   {
     button[i].x = buttonPos[i].x;
     button[i].y = buttonPos[i].y;
@@ -4242,7 +4238,7 @@ void ThanhQuanLy(UIcontroller &control)
   }
   if (CreateButton(button[0]))
     UI_switchTab(control, 0);
-  for (int i = 1; i < 5; i++)
+  for (int i = 1; i < 4; i++)
   {
     if (control.current_tab != i)
     {
