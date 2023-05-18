@@ -419,13 +419,13 @@ bool DsChuyenBay::isUsing(const char *maMB)
   return false;
 }
 
-bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
+int DsChuyenBay:: duocDatKhong(string cmnd, ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
   for (int i = 0; i < cb.getDSVe().getSoVeToiDa(); i++)
   {
     if (cb.getDSVe().getVe(i).getHanhKhach() == cmnd)
-      return false;
+      return 1;
   }
 
   while (tmp != NULL)
@@ -445,14 +445,14 @@ bool DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
         // if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
         //   continue;
         if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
-          return false;
+          return 2;
       }
     }
 
     tmp = tmp->getNext();
   }
 
-  return true;
+  return 3;
 }
 
 void DsChuyenBay::readFromFile(DsMayBay &listMB)
