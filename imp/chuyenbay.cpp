@@ -452,7 +452,7 @@ int DsChuyenBay:: duocDatKhong(string cmnd, ChuyenBay cb)
     tmp = tmp->getNext();
   }
 
-  return 3;
+  return 0;
 }
 
 void DsChuyenBay::readFromFile(DsMayBay &listMB)

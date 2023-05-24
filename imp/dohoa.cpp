@@ -779,6 +779,7 @@ void CreateHomePage(UIcontroller &control)
     button[i].tittle = button_tittle[i];
     button[i].font = FontArial;
     button[i].BoMau = HomeButtonColor;
+    
     if (CreateButton(button[i]))
     {
       UI_switchTab(control, i + 1);
@@ -836,6 +837,16 @@ void CreatePage_QLMB(UIcontroller &control)
       control.dataTabMB.current_popup = 0;
     return;
   }
+  // if(control.dataTabMB.current_popup!=0)
+  //   {
+      
+  //   }
+  //   else
+  //   {
+  //     button[0].isActive=false;
+  //     button[2].isActive=false;
+  //     button[3].isActive=false;
+  //   }
 
   // tittle
   DrawTextEx(FontArial, "DANH SÁCH MÁY BAY",
@@ -924,12 +935,11 @@ void CreatePage_QLMB(UIcontroller &control)
       {
         control.dataTabMB.current_popup = 0;
       }
+      return;
     }
-    else
-    {
-      if (Popup_ThemMB(control))
-        control.dataTabMB.current_popup = 0;
-    }
+
+    if (Popup_ThemMB(control))
+      control.dataTabMB.current_popup = 0;
   }
   else if (control.dataTabMB.current_popup == 2)
   {
@@ -963,15 +973,6 @@ void CreatePopupBackground()
 bool Popup_ThemMB(UIcontroller &control)
 {
   CreatePopupBackground();
-  // if (control.listMB.getSize() == MAXMB)
-  // {
-  //   if (Warning_Full())
-  //   {
-  //     // control.dataTabMB.current_popup = 0;
-  //     return true;
-  //   }
-  //   return false;
-  // }
   DrawTextEx(
       FontArial, "Thêm máy bay",
       {CenterDataSetter(700, StartPos.x + 400,
@@ -1754,14 +1755,12 @@ void CreatePage_QLCB(UIcontroller &control)
       {
         control.dataTabCB.current_popup = 0;
       }
+      return;
     }
-    else
-    {
 
-      if (Popup_ThemCB(control))
-      {
-        control.dataTabCB.current_popup = 0;
-      }
+    if (Popup_ThemCB(control))
+    {
+      control.dataTabCB.current_popup = 0;
     }
   }
   else if (control.dataTabCB.current_popup == 2)
@@ -4497,6 +4496,58 @@ bool Warning_Empty()
     return true;
   }
   return false;
+}
+
+int Warning_SwitchTab()
+{
+  DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330,
+                {246, 250, 170, 255});
+  DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70,
+                {255, 43, 43, 255});
+  DrawTextEx(
+      FontArial, "OK!",
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, "OK!", 55, 0).x),
+       CenterDataSetter(70, StartPos.y + 300,
+                        MeasureTextEx(FontArial, "A", 55, 0).y)},
+      55, 0, WHITE);
+  DrawTextEx(FontArial, "Bạn có muốn chuyến tab hay không?",
+             {StartPos.x + 200, StartPos.y + 375}, 55, 0, BLACK);
+  // DrawTextEx(FontArial, "-> Hãy click vào 1 dòng trong bảng để lấy dữ liệu!",
+  //            {StartPos.x + 200, StartPos.y + 445}, 55, 0, BLACK);
+
+  Button OK;
+  OK.x = StartPos.x + 225 + 750;
+  OK.y = StartPos.y + 60 + 625;
+  OK.w = 100;
+  OK.h = 50;
+  OK.gotNothing = false;
+  OK.gotText = true;
+  OK.tittle = (char *)"OK";
+  OK.font = FontArial;
+  OK.BoMau = ArrowKey;
+
+  Button CANCEL;
+  CANCEL.x = StartPos.x + 225;
+  CANCEL.y = StartPos.y + 60 + 625;
+  CANCEL.w = 100;
+  CANCEL.h = 50;
+  CANCEL.gotNothing = false;
+  CANCEL.gotText = true;
+  CANCEL.tittle = (char *)"CANCEL";
+  CANCEL.font = FontArial;
+  CANCEL.BoMau = ArrowKey;
+
+  if (CreateButton(OK))
+  {
+    return 1;
+  }
+
+  if (CreateButton(CANCEL))
+  {
+    return -1;
+  }
+  return 0;
 }
 
 // int Warning_Confirm()
