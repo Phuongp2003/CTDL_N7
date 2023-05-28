@@ -368,6 +368,7 @@ struct QLCB_data
 struct UIcontroller
 {
   int current_tab = 0;
+  int next_tab = 0;
   QLMB_data dataTabMB;
   QLCB_data dataTabCB;
   QLHK_data dataTabHK;
@@ -375,9 +376,33 @@ struct UIcontroller
   DsMayBay listMB;
   DsChuyenBay listCB;
   DsHanhKhach listHK;
+
+  bool req_swTab = false;
 };
 
-void UI_switchTab(UIcontroller &control, int idTab)
+bool UI_reqSwitchTab(UIcontroller &control)
+{
+  if (control.dataTabCB.current_popup != 0 || control.dataTabMB.current_popup != 0 || control.dataTabHK.current_popup != 0)
+  {
+    int check = Warning_SwitchTab();
+    if (check == -1)
+      return true;
+    else if (check == 1)
+    {
+      UI_switchTab(control);
+      return true;
+    }
+  }
+  else
+  {
+    UI_switchTab(control);
+    return true;
+  }
+
+  return false;
+}
+
+void UI_switchTab(UIcontroller &control)
 {
   InitUIData(control);
 
@@ -391,8 +416,9 @@ void UI_switchTab(UIcontroller &control, int idTab)
     resetData_QLHK(control.dataTabHK);
   }
 
-  control.current_tab = idTab;
+  control.current_tab = control.next_tab;
 }
+
 void InitUIData(UIcontroller &control)
 {
   control.current_tab = 0;
@@ -779,10 +805,11 @@ void CreateHomePage(UIcontroller &control)
     button[i].tittle = button_tittle[i];
     button[i].font = FontArial;
     button[i].BoMau = HomeButtonColor;
-    
+
     if (CreateButton(button[i]))
     {
-      UI_switchTab(control, i + 1);
+      control.next_tab = i + 1;
+      UI_switchTab(control);
     }
   }
 }
@@ -839,7 +866,7 @@ void CreatePage_QLMB(UIcontroller &control)
   }
   // if(control.dataTabMB.current_popup!=0)
   //   {
-      
+
   //   }
   //   else
   //   {
@@ -2051,15 +2078,6 @@ void Popup_getMB(UIcontroller &control, Date gioBay, bool inEdit)
 bool Popup_ThemCB(UIcontroller &control)
 {
   CreatePopupBackground();
-  // if (control.listMB.getSize() == 0)
-  // {
-  //   if (Warning_Empty())
-  //   {
-  //     control.dataTabCB.current_popup = 0;
-  //     return true;
-  //   }
-  //   return false;
-  // }
 
   DrawTextEx(
       FontArial, "Thêm chuyến bay",
@@ -2105,12 +2123,7 @@ bool Popup_ThemCB(UIcontroller &control)
   const char *newGio = CreateTextInputBox(control.dataTabCB.Gio);
   const char *newPhut = CreateTextInputBox(control.dataTabCB.Phut);
 
-  // Date newNgayBay = Date(stoi(newNgay[0] == 0 ? "0" : newNgay),
-  //                        stoi(newThang[0] == 0 ? "0" : newThang),
-  //                        stoi(newNam[0] == 0 ? "0" : newNam),
-  //                        stoi(newGio[0] == 0 ? "25" : newGio),
-  //                        stoi(newPhut[0] == 0 ? "25" : newPhut));
-  Date newNgayBay = Date(stoi(newNgay),
+  Date newNgayBay = Date(stoi(newNgay[0] == 0 ? "0" : newNgay),
                          stoi(newThang[0] == 0 ? "0" : newThang),
                          stoi(newNam[0] == 0 ? "0" : newNam),
                          stoi(newGio[0] == 0 ? "25" : newGio),
@@ -2146,6 +2159,21 @@ bool Popup_ThemCB(UIcontroller &control)
     }
   }
 
+  if (control.dataTabCB.MaMB.mouseClickOnText)
+  {
+    if (!(newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 && newGio[0] >= 32 && newPhut[0] >= 32))
+    {
+      control.dataTabCB.MaMB.mouseClickOnText = false;
+      control.dataTabCB.popup_errorMess = "Hãy nhập ngày khởi hành trước!";
+    }
+
+    if (!newNgayBay.checkNgay())
+    {
+      control.dataTabCB.MaMB.mouseClickOnText = false;
+      control.dataTabCB.popup_errorMess = "Ngày tháng cần hợp lệ để chọn số hiệu máy bay!";
+    }
+  }
+
   Button getMB;
   getMB.x = StartPos.x + 300 + 900;
   getMB.y = StartPos.y + 60 + 380 + 2;
@@ -2158,9 +2186,9 @@ bool Popup_ThemCB(UIcontroller &control)
   getMB.BoMau = ArrowKey;
 
   if ((newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
-       newGio[0] >= 32 && newPhut[0] >= 32))
+       newGio[0] >= 32 && newPhut[0] >= 32) &&
+      newNgayBay.checkNgay())
   {
-
     if (CreateButton(getMB))
     {
       control.dataTabCB.inChooseMB = true;
@@ -2327,22 +2355,22 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   check = Date(stoi(newNgay[0] == 0 ? "1" : newNgay),
                stoi(newThang[0] == 0 ? "1" : newThang),
                stoi(newNam[0] == 0 ? "2000" : newNam), 00, 00);
-  if (strcmp(newThang, "00") == 0 || !check.checkNgay())
-  {
-    int tmp = stoi(newNam[0] == 0 ? "2000" : newNam);
-    if (Date(29, 2, tmp, 0, 0).checkNgay())
-    {
-      control.dataTabCB.popup_errorMess = "Tháng không hợp lệ!";
-      resetInputTextBox(control.dataTabCB.Thang);
-      newThang = "";
-    }
-    else
-    {
-      control.dataTabCB.popup_errorMess = "Năm không hợp lệ!";
-      resetInputTextBox(control.dataTabCB.Nam);
-      newNam = "";
-    }
-  }
+  // if (strcmp(newThang, "00") == 0 || !check.checkNgay())
+  // {
+  //   int tmp = stoi(newNam[0] == 0 ? "2000" : newNam);
+  //   if (Date(29, 2, tmp, 0, 0).checkNgay())
+  //   {
+  //     control.dataTabCB.popup_errorMess = "Tháng không hợp lệ!";
+  //     resetInputTextBox(control.dataTabCB.Thang);
+  //     newThang = "";
+  //   }
+  //   else
+  //   {
+  //     control.dataTabCB.popup_errorMess = "Năm không hợp lệ!";
+  //     resetInputTextBox(control.dataTabCB.Nam);
+  //     newNam = "";
+  //   }
+  // }
   const char *newGio = CreateTextInputBox(control.dataTabCB.Gio);
   const char *newPhut = CreateTextInputBox(control.dataTabCB.Phut);
 
@@ -2364,6 +2392,7 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   DrawTextEx(FontArial, "(Gồm chữ cái IN HOA và số)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
              25, 0, RED);
+
   const char *newMaMB = CreateTextInputBox(control.dataTabCB.MaMB);
   if (!(newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
         newGio[0] >= 32 && newPhut[0] >= 32) &&
@@ -2379,6 +2408,20 @@ bool Popup_HieuChinhCB(UIcontroller &control)
     {
       Popup_getMB(control, newNgayBay, true);
       return false;
+    }
+  }
+  if (control.dataTabCB.MaMB.mouseClickOnText)
+  {
+    if (!(newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 && newGio[0] >= 32 && newPhut[0] >= 32))
+    {
+      control.dataTabCB.MaMB.mouseClickOnText = false;
+      control.dataTabCB.popup_errorMess = "Hãy nhập ngày khởi hành trước!";
+    }
+
+    if (!newNgayBay.checkNgay())
+    {
+      control.dataTabCB.MaMB.mouseClickOnText = false;
+      control.dataTabCB.popup_errorMess = "Ngày tháng cần hợp lệ để chọn số hiệu máy bay!";
     }
   }
   ///////////////////////////////////////////////////////
@@ -2456,7 +2499,8 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   getMB.BoMau = ArrowKey;
 
   if ((newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
-       newGio[0] >= 32 && newPhut[0] >= 32))
+       newGio[0] >= 32 && newPhut[0] >= 32) &&
+      newNgayBay.checkNgay())
     if (CreateButton(getMB))
     {
       control.dataTabCB.inChooseMB = true;
@@ -2714,7 +2758,7 @@ bool Popup_showListHK(UIcontroller &control)
          CenterDataSetter(60, StartPos.y + 60 + 10,
                           MeasureTextEx(FontArial, "A", 50, 0).y)},
         50, 0, BLACK);
-    int tmp_c = Warning_Confirm();
+    int tmp_c = Warning_Confirm_HuyVe();
     if (tmp_c == 0)
       return false;
     else if (tmp_c == 1)
@@ -4279,6 +4323,15 @@ Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[],
 
 void ThanhQuanLy(UIcontroller &control)
 {
+  if (control.req_swTab)
+  {
+    if (UI_reqSwitchTab(control))
+    {
+      control.req_swTab = false;
+    }
+    else
+      return;
+  }
   const int button_width = 480;
   const int button_height = 50;
 
@@ -4315,13 +4368,19 @@ void ThanhQuanLy(UIcontroller &control)
     button[i].BoMau = MauThanhQuanLy;
   }
   if (CreateButton(button[0]))
-    UI_switchTab(control, 0);
+  {
+    control.next_tab = 0;
+    control.req_swTab = true;
+  }
   for (int i = 1; i < 4; i++)
   {
     if (control.current_tab != i)
     {
       if (CreateButton(button[i]))
-        UI_switchTab(control, i);
+      {
+        control.next_tab = i;
+        control.req_swTab = true;
+      }
     }
     else
     {
@@ -4376,7 +4435,7 @@ bool Warning_NoData()
   return false;
 }
 
-int Warning_Confirm()
+int Warning_Confirm_HuyVe()
 {
   DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330,
                 {246, 250, 170, 255});
@@ -4504,6 +4563,8 @@ bool Warning_Empty()
 
 int Warning_SwitchTab()
 {
+  CreatePopupBackground();
+
   DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330,
                 {246, 250, 170, 255});
   DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70,
@@ -4523,31 +4584,31 @@ int Warning_SwitchTab()
   Button OK;
   OK.x = StartPos.x + 225 + 750;
   OK.y = StartPos.y + 60 + 625;
-  OK.w = 100;
+  OK.w = 300;
   OK.h = 50;
   OK.gotNothing = false;
   OK.gotText = true;
-  OK.tittle = (char *)"OK";
+  OK.tittle = (char *)"Đống ý";
   OK.font = FontArial;
   OK.BoMau = ArrowKey;
 
-  Button CANCEL;
-  CANCEL.x = StartPos.x + 225;
-  CANCEL.y = StartPos.y + 60 + 625;
-  CANCEL.w = 100;
-  CANCEL.h = 50;
-  CANCEL.gotNothing = false;
-  CANCEL.gotText = true;
-  CANCEL.tittle = (char *)"CANCEL";
-  CANCEL.font = FontArial;
-  CANCEL.BoMau = ArrowKey;
+  Button Cancel;
+  Cancel.x = StartPos.x + 225;
+  Cancel.y = StartPos.y + 60 + 625;
+  Cancel.w = 300;
+  Cancel.h = 50;
+  Cancel.gotNothing = false;
+  Cancel.gotText = true;
+  Cancel.tittle = (char *)"Huỷ";
+  Cancel.font = FontArial;
+  Cancel.BoMau = ArrowKey;
 
   if (CreateButton(OK))
   {
     return 1;
   }
 
-  if (CreateButton(CANCEL))
+  if (CreateButton(Cancel))
   {
     return -1;
   }
@@ -4606,8 +4667,7 @@ int Warning_SwitchTab()
 //   return 0;
 // }
 
-// ---Các hàm hỗ trợ ngoài
-// vìa------------------------------------------------------------------------------------------------------
+// ---Các hàm hỗ trợ ngoài vìa------------------------------------------------------------------------------------------------------
 
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua,
                        float obj_width)
@@ -5105,8 +5165,7 @@ void CreateTextBox(TextBox box)
     DrawRectangleRoundedLines(box.box, 0, 0, 2, BLACK);
   }
 
-  if (MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 <
-      box.box.width)
+  if (MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 < box.box.width)
   {
     text_w = MeasureTextEx(FontArial, box.text, box.fontSize, 0).x;
     strcpy(showtext, box.text);
@@ -5223,40 +5282,43 @@ void mainGraphics()
 
     BeginTextureMode(renderTexture);
     // Các thao tác trên đồ hoạ
+
+    if (!main.req_swTab)
+      switch (main.current_tab)
+      {
+      case 0:
+      {
+        CreateHomePage(main);
+        break;
+      }
+      case 1:
+      {
+        CreatePage_QLMB(main);
+        break;
+      }
+      case 2:
+      {
+        CreatePage_QLCB(main);
+        break;
+      }
+      case 3:
+      {
+        CreatePage_QLHK(main);
+        break;
+      }
+      case 4:
+      {
+        CreatePage_GioiThieu();
+        break;
+      }
+      default:
+      {
+        main.current_tab = 0;
+      }
+      }
+
     if (main.current_tab != 0)
       ThanhQuanLy(main);
-    switch (main.current_tab)
-    {
-    case 0:
-    {
-      CreateHomePage(main);
-      break;
-    }
-    case 1:
-    {
-      CreatePage_QLMB(main);
-      break;
-    }
-    case 2:
-    {
-      CreatePage_QLCB(main);
-      break;
-    }
-    case 3:
-    {
-      CreatePage_QLHK(main);
-      break;
-    }
-    case 4:
-    {
-      CreatePage_GioiThieu();
-      break;
-    }
-    default:
-    {
-      main.current_tab = 0;
-    }
-    }
 
     // Windows variable status
     // -Mouse cursor
@@ -5276,8 +5338,8 @@ void mainGraphics()
       V_MOUSE_CURSOR_POINTING_HAND = 0;
       SetMouseCursor(MOUSE_CURSOR_DEFAULT);
     }
-
     EndTextureMode();
+
     BeginDrawing();
     // xuất màn hình tĩnh theo chỉ sô động6
     DrawTexturePro(renderTexture.texture,

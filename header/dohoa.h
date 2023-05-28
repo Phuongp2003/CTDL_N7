@@ -78,6 +78,7 @@ struct QLHK_data;
 struct QLVe_data;
 struct PageSwitcher;
 
+bool UI_reqSwitchTab(UIcontroller &control, int idTab);
 void UI_switchTab(UIcontroller &control);
 void InitUIData(UIcontroller &control);
 
@@ -127,7 +128,7 @@ bool Popup_HuyCB(UIcontroller &control);
 bool Popup_chonChuyen(UIcontroller &control);
 bool Popup_chonVe(UIcontroller &control);
 bool Popup_showListHK(UIcontroller &control);
-void Popup_getMB(UIcontroller &control, Date gioBay,bool inEdit);
+void Popup_getMB(UIcontroller &control, Date gioBay, bool inEdit);
 bool Popup_datVe(UIcontroller &control);
 //-
 bool Popup_QLVe(UIcontroller &control);
@@ -135,7 +136,7 @@ bool Popup_HieuChinhHK(UIcontroller &control);
 
 void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();
-int Warning_Confirm(); //
+int Warning_Confirm_HuyVe(); //
 bool Warning_Full();
 bool Warning_Empty();
 int Warning_SwitchTab();
