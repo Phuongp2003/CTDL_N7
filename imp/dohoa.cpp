@@ -1741,7 +1741,7 @@ void CreatePage_QLCB(UIcontroller &control)
     {
       control.dataTabCB.pickdata_index = -1;
       control.dataTabCB.Sw_table_page.reset();
-      control.dataTabCB.data == nullptr;
+      control.dataTabCB.data = nullptr;
       control.dataTabCB.current_popup = 5;
     }
 
@@ -1795,7 +1795,7 @@ void CreatePage_QLCB(UIcontroller &control)
     {
       control.dataTabCB.Sw_table_page.reset();
       control.dataTabCB.pickdata_index = -1;
-      control.dataTabCB.data == nullptr;
+      control.dataTabCB.data = nullptr;
       control.dataTabCB.current_popup = 0;
     }
   }
@@ -3653,9 +3653,13 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   }
   if (CreateButton(advSearch))
     if (!control.dataTabCB.inFill)
+    {
       control.dataTabCB.inSearching = true;
+    }
     else
+    {
       control.dataTabCB.inFill = false;
+    }
 
   // Pick data
   for (int i = 0; i < 10; i++)
@@ -4747,7 +4751,7 @@ bool CreateButton(Button data)
 
   if (!data.isActive)
   {
-    DrawRectangleRounded(Button, 0.5f, 0.5f, data.BoMau.isPressed);
+    DrawRectangleRounded(Button, 0.5f, 0, data.BoMau.isPressed);
     DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0,
                data.BoMau.text2);
 
@@ -4768,7 +4772,7 @@ bool CreateButton(Button data)
   if (data.BoTron)
   {
     if (!data.gotNothing)
-      DrawRectangleRounded(Button, 0.5f, 0.5f, data.BoMau.isnotHovered);
+      DrawRectangleRounded(Button, 0.5f, 0, data.BoMau.isnotHovered);
     if (data.gotText)
       DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0,
                  data.BoMau.text1);
@@ -4776,7 +4780,7 @@ bool CreateButton(Button data)
       DrawTextureEx(data.picture, {data.x, data.y}, 0, 1,
                     data.BoMau.isnotHovered);
     if (data.firstRounder)
-      DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2, data.BoMau.Rounder);
+      DrawRectangleRoundedLines(Button, 0.5f, 0, 2, data.BoMau.Rounder);
     MousePos = GetVMousePosition();
 
     if (CheckCollisionPointRec(MousePos, Button))
@@ -4784,27 +4788,27 @@ bool CreateButton(Button data)
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
       {
         if (!data.gotNothing)
-          DrawRectangleRounded(Button, 0.5f, 0.5f, data.BoMau.isPressed);
+          DrawRectangleRounded(Button, 0.5f, 0, data.BoMau.isPressed);
         if (data.gotText)
           DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0,
                      data.BoMau.text2);
         else if (data.gotPic)
           DrawTextureEx(data.picture, {data.x, data.y}, 0, 1,
                         data.BoMau.isnotHovered);
-        DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2,
+        DrawRectangleRoundedLines(Button, 0.5f, 0, 2,
                                   data.BoMau.RounderPressed);
       }
       else
       {
         if (!data.gotNothing)
-          DrawRectangleRounded(Button, 0.5f, 0.5f, data.BoMau.isHovered);
+          DrawRectangleRounded(Button, 0.5f, 0, data.BoMau.isHovered);
         if (data.gotText)
           DrawTextEx(data.font, data.tittle, TextPos, data.h / 2.0f, 0,
                      data.BoMau.text1);
         else if (data.gotPic)
           DrawTextureEx(data.picture, {data.x, data.y}, 0, 1,
                         data.BoMau.isnotHovered);
-        DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2,
+        DrawRectangleRoundedLines(Button, 0.5f, 0, 2,
                                   data.BoMau.RounderHovered);
       }
 
@@ -4840,7 +4844,7 @@ bool CreateButton(Button data)
         else if (data.gotPic)
           DrawTextureEx(data.picture, {data.x, data.y}, 0, 1,
                         data.BoMau.isnotHovered);
-        DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2,
+        DrawRectangleRoundedLines(Button, 0.5f, 0, 2,
                                   data.BoMau.RounderPressed);
       }
       else
@@ -4853,7 +4857,7 @@ bool CreateButton(Button data)
         else if (data.gotPic)
           DrawTextureEx(data.picture, {data.x, data.y}, 0, 1,
                         data.BoMau.isnotHovered);
-        DrawRectangleRoundedLines(Button, 0.5f, 0.5f, 2,
+        DrawRectangleRoundedLines(Button, 0.5f, 0, 2,
                                   data.BoMau.RounderHovered);
       }
 
@@ -5213,6 +5217,7 @@ void mainGraphics()
   // Graphics in running
   while (!WindowShouldClose())
   {
+    // Make all texture smooth
     GenTextureMipmaps(&renderTexture.texture);
     SetTextureFilter(renderTexture.texture, TEXTURE_FILTER_BILINEAR);
 
@@ -5271,6 +5276,7 @@ void mainGraphics()
       V_MOUSE_CURSOR_POINTING_HAND = 0;
       SetMouseCursor(MOUSE_CURSOR_DEFAULT);
     }
+
     EndTextureMode();
     BeginDrawing();
     // xuất màn hình tĩnh theo chỉ sô động6
