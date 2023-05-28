@@ -93,10 +93,16 @@ float per1000(int number);            // done
 bool isGotStr(string _string, string _keyword);
 int getCharSize(const char *_char);
 int chuanHoaKey(int key, const char *str, int index_pos, int mode);
-int strcmp(const char *str1, const char *str2);
 const char *strToChar(string str);
 void Selection_Sort(int A[], int n);
 void swap(int &a, int &b);
-string intToString(int x);
+string intToString(int num, int size);
 string charToString(const char *ch);
 string trim(string str);
+
+
+/// @brief Xóa toàn bộ khoảng trắng và chuyển thành chữ thường
+/// @param str Chuỗi cần chuẩn hóa
+void formatStr(string &str);
+
+bool laNamNhuan(int nInput);

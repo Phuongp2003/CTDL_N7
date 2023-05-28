@@ -20,27 +20,19 @@ public:
   int getNgay();
   void setThang(int);
   int getThang();
-  void setNam(int);//
+  void setNam(int);
   int getNam();
-  void showTG();
   bool checkNgay();
   bool checkGio();
   bool checkNgayNhapVoiNgayHT();
-  bool checkGioNhapVoiGioHT();
   bool checkDateHour();
   string printDateHour();
-  const char *printDateHour_c();
   string printDate();
   string printHour();
-  Date ngayHoanThanh();
   long long soVoi1_1_1900_0_0();
   
   
 
-  bool operator<(Date another);
-  bool operator==(Date another);
+  bool operator<(const Date &another);
+  bool operator==(const Date &another);
 };
-// dd/mm/yyyy hh:mm
-// function
-string intToString(int num, int size);
-bool laNamNhuan(int nInput); //
