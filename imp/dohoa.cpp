@@ -2744,6 +2744,7 @@ bool Popup_HuyCB(UIcontroller &control)
 
 bool Popup_showListHK(UIcontroller &control)
 {
+
   if (control.dataTabCB.dataDSVe.inDelete)
   {
     CreatePopupBackground();
@@ -2779,6 +2780,38 @@ bool Popup_showListHK(UIcontroller &control)
   }
 
   CreatePageBackground(2);
+  DrawTextEx(FontArial, "DANH SÁCH HÀNH KHÁCH THUỘC CHUYẾN BAY ",
+             {StartPos.x + 60,
+              CenterDataSetter(100, StartPos.y + 50 + 10,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             40, 0, BLUE);
+  DrawTextEx(FontArial, control.dataTabCB.data->getNode().getMaCB(),
+             {StartPos.x + 60 + 840,
+              CenterDataSetter(100, StartPos.y + 50 + 10,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             40, 0, BLUE);
+
+  DrawTextEx(FontArial, "Ngày giờ khởi hành: ",
+             {StartPos.x + 60,
+              CenterDataSetter(100, StartPos.y + 50 + 10 + 60,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             30, 0, BLACK);
+  DrawTextEx(FontArial, strToChar(control.dataTabCB.data->getNode().getNgayGio().printDateHour()),
+             {StartPos.x + 60 + 250,
+              CenterDataSetter(100, StartPos.y + 50 + 10 + 60,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             30, 0, BLACK);
+
+  DrawTextEx(FontArial, "Nơi đến: ",
+             {StartPos.x + 60 + 500,
+              CenterDataSetter(100, StartPos.y + 50 + 10 + 60,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             30, 0, BLACK);
+  DrawTextEx(FontArial, strToChar(control.dataTabCB.data->getNode().getNoiDen()),
+             {StartPos.x + 60 + 500 + 120,
+              CenterDataSetter(100, StartPos.y + 50 + 10 + 60,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             30, 0, BLACK);
   Button button[2];
   for (int i = 0; i < 2; i++)
   {
@@ -3170,9 +3203,42 @@ bool Popup_chonVe(UIcontroller &control)
 
 bool Popup_datVe(UIcontroller &control)
 {
+
   bool HKexist = false;
 
   CreatePopupBackground();
+  DrawTextEx(FontArial, "Mã chuyến bay: ",
+             {StartPos.x + 300,
+              CenterDataSetter(100, StartPos.y + 60 + 100,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             35, 0, BLACK);
+  DrawTextEx(FontArial, control.dataTabCB.data->getNode().getMaCB(),
+             {StartPos.x + 300 + 230,
+              CenterDataSetter(100, StartPos.y + 60 + 100,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             35, 0, BLACK);
+
+  DrawTextEx(FontArial, "Ngày giờ khởi hành: ",
+             {StartPos.x + 300,
+              CenterDataSetter(100, StartPos.y + 60 + 150 + 15,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             35, 0, BLACK);
+  DrawTextEx(FontArial, strToChar(control.dataTabCB.data->getNode().getNgayGio().printDateHour()),
+             {StartPos.x + 300 + 280,
+              CenterDataSetter(100, StartPos.y + 60 + 150 + 15,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             35, 0, BLACK);
+
+  DrawTextEx(FontArial, "Nơi đến: ",
+             {StartPos.x + 300 + 565,
+              CenterDataSetter(100, StartPos.y + 60 + 150 + 15,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             35, 0, BLACK);
+  DrawTextEx(FontArial, strToChar(control.dataTabCB.data->getNode().getNoiDen()),
+             {StartPos.x + 300 + 560 + 150,
+              CenterDataSetter(100, StartPos.y + 60 + 150 + 15,
+                               MeasureTextEx(FontArial, "A", 50, 0).y)},
+             35, 0, BLACK);
   string tittle = "Đặt vé " + control.dataTabCB.data->getNode().getDSVe().getVe(control.dataTabCB.dataDSVe.position).getIDVe();
   DrawTextEx(
       FontArial, strToChar(tittle),
