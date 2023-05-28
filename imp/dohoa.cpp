@@ -1522,19 +1522,19 @@ MayBay *XuLy_QLMB(UIcontroller &control)
   CreateTable_QLMB();
 
   // data
-  int n_page = 1; // 1 + (spt/10)
-  // if (status == 1)
-  // {
-  //     current_page = 1 + (control.listMB.getsize() - 1) / 10;
-  //     index = (control.listMB.getsize() - 1) % 10;
-  //     status = 0;
-  // }
-  // else if (status == -1)
-  // {
-  //     current_page = 1;
-  //     index = -1;
-  //     status = 0;
-  // }
+  int n_page = 1;
+  if (control.dataTabMB.status == 1)
+  {
+    control.dataTabMB.current_showPage = 1 + (control.listMB.getSize() - 1) / 10;
+    control.dataTabMB.pickdata_index = (control.listMB.getSize() - 1) % 10;
+    control.dataTabMB.status = 0;
+  }
+  else if (control.dataTabMB.status == -1)
+  {
+    control.dataTabMB.current_showPage = 1;
+    control.dataTabMB.pickdata_index = -1;
+    control.dataTabMB.status = 0;
+  }
 
   // Pick data
   Button data_picker[10];
@@ -1564,12 +1564,6 @@ MayBay *XuLy_QLMB(UIcontroller &control)
                                  data_picker[i].w, data_picker[i].h},
                                 0, 1, 2, GREEN);
   }
-  // if (control.dataTabMB.pickdata_index >= 0)
-  // {
-  //     result = control.listMB.getMB(control.dataTabMB.pickdata_index);
-  // }
-  // else
-  //     result = new MayBay();
 
   int size = control.listMB.getSize();
   int n_char;
@@ -2097,26 +2091,6 @@ bool Popup_ThemCB(UIcontroller &control)
   const char *newNgay = CreateTextInputBox(control.dataTabCB.Ngay);
   const char *newThang = CreateTextInputBox(control.dataTabCB.Thang);
   const char *newNam = CreateTextInputBox(control.dataTabCB.Nam);
-
-  // check = Date(stoi(newNgay[0] == 0 ? "1" : newNgay),
-  //              stoi(newThang[0] == 0 ? "1" : newThang),
-  //              stoi(newNam[0] == 0 ? "2000" : newNam), 00, 00);
-  // if (strcmp(newThang, "00") == 0 || !check.checkNgay())
-  // {
-  //   int tmp = stoi(newNam[0] == 0 ? "2000" : newNam);
-  //   if (Date(29, 2, tmp, 0, 0).checkNgay())
-  //   {
-  //     control.dataTabCB.popup_errorMess = "Tháng không hợp lệ!";
-  //     resetInputTextBox(control.dataTabCB.Thang);
-  //     newThang = "";
-  //   }
-  //   else
-  //   {
-  //     control.dataTabCB.popup_errorMess = "Năm không hợp lệ!";
-  //     resetInputTextBox(control.dataTabCB.Nam);
-  //     newNam = "";
-  //   }
-  // }
   const char *newGio = CreateTextInputBox(control.dataTabCB.Gio);
   const char *newPhut = CreateTextInputBox(control.dataTabCB.Phut);
 
@@ -2271,6 +2245,28 @@ bool Popup_ThemCB(UIcontroller &control)
         control.listCB.writetToFile();
         control.listCB.setSize();
 
+        NodeCB *tmp = control.listCB.getHead();
+        int index = 0, page = 1;
+        while (tmp->hasNext())
+        {
+          if (strcmp(tmp->getNode().getMaCB(), newMaCB) == 0)
+          {
+            control.dataTabCB.pickdata_index = index;
+            control.dataTabCB.current_showPage = page;
+            break;
+          }
+          else
+          {
+            index++;
+            if (index == 10)
+            {
+              index = 0;
+              page++;
+            }
+          }
+          tmp = tmp->getNext();
+        }
+
         setDataToFile(control.listCB, control.listMB, control.listHK);
         getDataFromFile(control.listCB, control.listMB, control.listHK);
 
@@ -2284,7 +2280,6 @@ bool Popup_ThemCB(UIcontroller &control)
         resetInputTextBox(control.dataTabCB.Gio);
         resetInputTextBox(control.dataTabCB.Phut);
         control.dataTabCB.popup_errorMess = "";
-        cout << "dax xong0" << endl;
         return true;
       }
       else if (control.listCB.isExist(newMaCB))
@@ -2711,13 +2706,11 @@ bool Popup_HuyCB(UIcontroller &control)
     control.dataTabCB.data->getNode().setTrangThai(HuyChuyen);
     cout << control.dataTabCB.data->getNode().getTrangThai() << endl;
     control.listCB.writetToFile();
-    // control.listCB.setSize();
     ChuyenBay result = control.dataTabCB.data->getNode();
     result.setTrangThai(HuyChuyen);
     control.dataTabCB.data->setCb(result);
     control.listCB.writetToFile();
     control.listCB.setSize();
-    control.dataTabCB.status = 1;
     resetInputTextBox(control.dataTabCB.MaCB);
     resetInputTextBox(control.dataTabCB.MaMB);
     resetInputTextBox(control.dataTabCB.NoiDen);
@@ -3680,16 +3673,6 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   Button data_picker[10];
   Vector2 start_pos = {StartPos.x + 35, StartPos.y + 60 + 70 + 110};
 
-  // if (first_run)
-  // {
-  //   strcpy(searchNgay.name, intToChar(numNgay, 2));
-  //   searchNgay.letterCount = 2;
-  //   strcpy(searchThang.name, intToChar(numThang, 2));
-  //   searchThang.letterCount = 2;
-  //   strcpy(searchNam.name, intToChar(numNam, 4));
-  //   searchNam.letterCount = 4;
-  // }
-
   // search
   DrawRectangleRoundedLines({search.x - 5, search.y - 5, 1090, 105}, 0, 1, 3,
                             DARKBLUE);
@@ -3772,6 +3755,11 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
     }
 
   // Pick data
+  if (control.dataTabCB.status == 1)
+  {
+    control.dataTabMB.status = 0;
+  }
+
   for (int i = 0; i < 10; i++)
   {
     data_picker[i].x = StartPos.x + 35;
