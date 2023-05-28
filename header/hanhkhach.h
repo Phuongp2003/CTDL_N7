@@ -2,10 +2,6 @@
 #include "chuyenbay.h"
 #include "header.h"
 
-// #include "vemaybay.h"
-
-#include <fstream>
-
 class HanhKhach
 {
 private:
@@ -53,26 +49,15 @@ class DsHanhKhach
 {
 private:
   NodeHK *root;
-  int size = 0;
-
-  void writeToFileHelper(ofstream &file, NodeHK *node);
-  // void levelOrderTraversalHelper(NodeHK *node, int level, Queue &queue);
-  int getHeight(NodeHK *node);
+  int size;
 
 public:
   DsHanhKhach();
-  bool insert(HanhKhach hanhKhach);
+  void insert(HanhKhach hanhKhach);
   NodeHK *search(string cmnd);
-  void inOrderTraversal(NodeHK *node);
-  void printInOrder();
-  // Queue getDsHanhKhach(string maCB, DsChuyenBay dsChuyenBay);
   void writeToFileOneHK(NodeHK *node);
   void writeToFileAllHK();
   void readFromFile();
   NodeHK *getRoot();
   int getSize();
-  // void levelOrderTraversal(Queue &queue);
 };
-
-// function
-int max(int a, int b);
