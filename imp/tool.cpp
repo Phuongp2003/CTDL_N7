@@ -217,25 +217,6 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
   return 0;
 }
 
-int strcmp(const char *str1, const char *str2)
-{
-  int max = 0;
-  if (getCharSize(str1) <= getCharSize(str2))
-    max = getCharSize(str2);
-  else
-    max = getCharSize(str1);
-
-  for (int i = 0; i < max; i++)
-  {
-    if (str1[i] < str2[i])
-      return -1;
-    else if (str1[i] > str2[i])
-      return 1;
-  }
-
-  return 0;
-}
-
 const char *strToChar(string str)
 {
   char *result = new char[100];
@@ -273,17 +254,25 @@ void swap(int &a, int &b)
   a = b;
   b = c;
 }
-string intToString(int x)
-{
-  string p = "";
-  while (x > 0)
-  {
 
-    int res = x % 10;
-    p = char(res + 48) + p;
-    x = x / 10;
+string intToString(int num, int size)
+{
+  std::stringstream ss;
+  ss << num;
+
+  std::string str = ss.str();
+  if (str.length() < size)
+  {
+    int len = str.length();
+    for (int i = 0; i < size - len; i++)
+    {
+      str = "0" + str;
+    }
   }
-  return p;
+
+  str[size] = 0;
+
+  return str;
 }
 
 string charToString(const char *ch)
@@ -299,4 +288,34 @@ string trim(string str)
   size_t end = str.find_last_not_of(WhiteSpace);
   str = str.substr(start, end - start + 1);
   return str;
+}
+
+void formatStr(string &str)
+{
+  int pos = 0;
+  while (pos < str.length())
+  {
+    if (str[pos] == ' ')
+    {
+      for (int i = pos; i < str.length() - 1; i++)
+      {
+        str[i] = str[i + 1];
+      }
+      str.resize(str.length() - 1);
+    }
+    else
+    {
+      str[pos] = toupper(str[pos]);
+      pos++;
+    }
+  }
+}
+
+bool laNamNhuan(int nInput)
+{
+  if ((nInput % 4 == 0 && nInput % 100 != 0) || nInput % 400 == 0)
+  {
+    return true;
+  }
+  return false;
 }

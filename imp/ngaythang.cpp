@@ -2,9 +2,18 @@
 #include <sstream>
 #include <string>
 using std::string;
-Date::Date() {}
 
-Date::Date(int ngay, int thang, int nam, int gio, int phut) {
+Date::Date()
+{
+  this->ngay = 0;
+  this->thang = 0;
+  this->nam = 0;
+  this->gio = 0;
+  this->phut = 0;
+}
+
+Date::Date(int ngay, int thang, int nam, int gio, int phut)
+{
   this->gio = gio;
   this->phut = phut;
   this->ngay = ngay;
@@ -32,19 +41,10 @@ void Date::setNam(int nam) { this->nam = nam; }
 
 int Date::getNam() { return this->nam; }
 
-void Date::showTG() {
-  cout << gio << ":" << phut << " " << ngay << "/" << thang << "/" << nam;
-}
-
-bool laNamNhuan(int nInput) {
-  if ((nInput % 4 == 0 && nInput % 100 != 0) || nInput % 400 == 0) {
-    return true;
-  }
-  return false;
-}
-
-bool Date::checkNgay() {
-  switch (thang) {
+bool Date::checkNgay()
+{
+  switch (thang)
+  {
   // case 0:
   case 1:
   case 3:
@@ -66,7 +66,8 @@ bool Date::checkNgay() {
     else
       return false;
   case 2:
-    switch (laNamNhuan(nam)) {
+    switch (laNamNhuan(nam))
+    {
     case true:
       if (ngay >= 0 && ngay <= 29)
         return true;
@@ -83,19 +84,21 @@ bool Date::checkNgay() {
   return false;
 }
 
-bool Date::checkGio() {
+bool Date::checkGio()
+{
   if (gio >= 0 && gio <= 23 && phut >= 0 && phut <= 59)
     return true;
   else
     return false;
 }
 
-bool Date::checkNgayNhapVoiNgayHT() {//hàm check xem ngày khởi hành của chuyến bay khi nhập vào có hợp lí không
+bool Date::checkNgayNhapVoiNgayHT()
+{ // hàm check xem ngày khởi hành của chuyến bay khi nhập vào có hợp lí không
   time_t now = time(0);
-  tm *ltm = localtime(&now);
+  // tm *ltm = localtime(&now);
   Date _now;
   _now.setToNow();
-  if((Date(ngay,thang,nam, gio,phut).soVoi1_1_1900_0_0() - _now.soVoi1_1_1900_0_0())>=12*60)
+  if ((Date(ngay, thang, nam, gio, phut).soVoi1_1_1900_0_0() - _now.soVoi1_1_1900_0_0()) >= 12 * 60)
     return true;
   return false;
   // Date date(ngay,thang,nam, gio,phut);
@@ -119,7 +122,6 @@ bool Date::checkNgayNhapVoiNgayHT() {//hàm check xem ngày khởi hành của c
   // if (t_nam && t_thang && t_ngay)
   //   return true; // là thời gian nhập vào hợp lý
   // return false;
-  
 }
 
 // bool Date::checkGioNhapVoiGioHT() {//hàm check xem giờ khởi hành của chuyến bay khi nhập vào có hợp lí không
@@ -161,7 +163,7 @@ bool Date::checkDateHour() // để set trang thái hoàn thành của chuyến 
     t_ngay = true;
   else
     t_ngay = false;
-  if (gio == ltm->tm_hour) 
+  if (gio == ltm->tm_hour)
     t_gio = true;
   else
     t_gio = false;
@@ -176,9 +178,7 @@ bool Date::checkDateHour() // để set trang thái hoàn thành của chuyến 
 
 string Date::printDateHour() //
 {
-  return intToString(ngay, 2) + "/" + intToString(thang, 2) + "/" +
-         intToString(nam, 4) + " " + intToString(gio, 2) + ":" +
-         intToString(phut, 2);
+  return this->printDate() + " " + this->printHour();
 }
 
 // void Date::PrintDateHour_c(char *result) //
@@ -202,37 +202,42 @@ string Date::printDateHour() //
 //     result[23] = 0;
 // }
 
-string Date::printDate() {
+string Date::printDate()
+{
   return intToString(ngay, 2) + '/' + intToString(thang, 2) + '/' +
          intToString(nam, 4);
 }
-string Date::printHour() {
+string Date::printHour()
+{
   return intToString(gio, 2) + ":" + intToString(phut, 2);
 }
 
 long long Date::soVoi1_1_1900_0_0()
 {
-  long long dateOfYear=0, dateOfMonth=0,date=0;
-  for(int i=1900;i<nam;i++)
+  long long dateOfYear = 0, dateOfMonth = 0, date = 0;
+  for (int i = 1900; i < nam; i++)
   {
-    if(laNamNhuan(nam)) dateOfYear+=366;
-    else dateOfYear+=365;
+    if (laNamNhuan(nam))
+      dateOfYear += 366;
+    else
+      dateOfYear += 365;
   }
-  int a[]={31,28,31,30,31,30,31,31,30,31,30,31};
-  if(laNamNhuan(nam)) a[1]=29;
-  if(thang>1)
+  int a[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  if (laNamNhuan(nam))
+    a[1] = 29;
+  if (thang > 1)
   {
-    for(int i=1;i<thang;i++)
+    for (int i = 1; i < thang; i++)
     {
-      dateOfMonth+=a[i-1];
+      dateOfMonth += a[i - 1];
     }
-  }//
-  date=ngay-1;
-  return (dateOfYear+dateOfMonth+date)*24*60 + gio*60 + phut;
+  } //
+  date = ngay - 1;
+  return (dateOfYear + dateOfMonth + date) * 24 * 60 + gio * 60 + phut;
 }
 
-
-void Date::setToNow() {
+void Date::setToNow()
+{
   time_t now = time(0);
   tm *ltm = localtime(&now);
   ngay = ltm->tm_mday;
@@ -242,7 +247,8 @@ void Date::setToNow() {
   phut = ltm->tm_min;
 }
 
-bool Date::operator<(Date another) {
+bool Date::operator<(const Date &another)
+{
   if (nam < another.nam)
     return true;
   else if (nam > another.nam)
@@ -271,7 +277,8 @@ bool Date::operator<(Date another) {
   return false;
 }
 
-bool Date::operator==(Date another) {
+bool Date::operator==(const Date &another)
+{
   if (nam != another.nam)
     return false;
 
@@ -282,21 +289,4 @@ bool Date::operator==(Date another) {
     return false;
 
   return true;
-}
-
-string intToString(int num, int size) {
-  std::stringstream ss;
-  ss << num;
-
-  std::string str = ss.str();
-  if (str.length() < size) {
-    int len = str.length();
-    for (int i = 0; i < size - len; i++) {
-      str = "0" + str;
-    }
-  }
-
-  str[size] = 0;
-
-  return str;
 }
