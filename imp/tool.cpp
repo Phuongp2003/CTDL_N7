@@ -305,7 +305,7 @@ void formatStr(string &str)
     }
     else
     {
-      str[pos] = toupper(str[pos]);
+      str[pos] = tolower(str[pos]);
       pos++;
     }
   }

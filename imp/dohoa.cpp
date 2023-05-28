@@ -201,7 +201,6 @@ struct QLMB_data
 struct QLHK_data
 {
   NodeHK *data = nullptr;
-  int status = 0;
 
   int current_popup = 0;
   string popup_errorMess = "";
@@ -218,7 +217,6 @@ struct QLHK_data
   QLHK_data()
   {
     data = nullptr;
-    status = 0;
     current_popup = 0;
     pickdata_index = -1;
     current_page = 1;
@@ -282,7 +280,7 @@ struct QLCB_data
   int current_showPage = 1;
 
   bool inSearching = false;
-  bool inFill = false;
+  bool inAdvSearch = false;
   Date fbDay = Date(1, 1, 0, 0, 0);
   string fbNoiDen = "";
   bool fbAvail = false;
@@ -517,7 +515,7 @@ void resetData_QLCB(QLCB_data &data)
   data.current_showPage = 1;
 
   data.fbDay = Date(1, 1, 0, 0, 0);
-  data.inFill = false;
+  data.inAdvSearch = false;
   data.fbNoiDen = "";
   data.fbAvail = false;
   data.inSearching = false;
@@ -530,7 +528,7 @@ void resetData_QLCB(QLCB_data &data)
 void resetData_searchQLCB(QLCB_data &data)
 {
   data.fbDay = Date(1, 1, 0, 0, 0);
-  data.inFill = false;
+  data.inAdvSearch = false;
   data.fbNoiDen = "";
   data.fbAvail = false;
 }
@@ -538,7 +536,6 @@ void resetData_searchQLCB(QLCB_data &data)
 void resetData_QLHK(QLHK_data &data)
 {
   data.data = nullptr;
-  data.status = 0;
 
   data.current_popup = 0;
   data.popup_errorMess = "";
@@ -1950,7 +1947,7 @@ bool Popup_TimCB(UIcontroller &control)
     control.dataTabCB.fbDay = newNgayBay;
     control.dataTabCB.fbNoiDen = newNoiDen;
     control.dataTabCB.popup_errorMess = "";
-    control.dataTabCB.inFill = true;
+    control.dataTabCB.inAdvSearch = true;
 
     return true;
 
@@ -3481,7 +3478,7 @@ void StatusHelp_QLCB()
   }
 }
 
-void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inFill)
+void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inAdvSearch)
 {
   float cellW[7] = {90, 230, 230, 200, 230, 100, 50};
   Vector2 start_pos = {StartPos.x + 35, StartPos.y + 60 + 70 + 110};
@@ -3503,12 +3500,15 @@ void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inF
   {
     bool DKTimKiem = tmp->getNode().checkMaCB(textMaCB);
 
-    if (control.dataTabCB.inFill)
+    if (control.dataTabCB.inAdvSearch)
     {
+      string c_NoiDen = tmp->getNode().getNoiDen(), k_NoiDen = control.dataTabCB.fbNoiDen;
+      formatStr(c_NoiDen);
+      formatStr(k_NoiDen);
       DKTimKiem = DKTimKiem &&
                   tmp->getNode().checkTime(control.dataTabCB.fbDay) &&
                   tmp->getNode().getTrangThai() == ConVe &&
-                  tmp->getNode().getNoiDen() == control.dataTabCB.fbNoiDen;
+                  isGotStr(c_NoiDen, k_NoiDen);
     }
     else if (control.dataTabCB.fbAvail)
     {
@@ -3628,7 +3628,7 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   DrawRectangleRoundedLines({search.x - 5, search.y - 5, 1090, 105}, 0, 1, 3,
                             DARKBLUE);
 
-  if (!control.dataTabCB.inFill)
+  if (!control.dataTabCB.inAdvSearch)
   {
     advSearch.x = search.x + 5;
     advSearch.y = search.y + 55;
@@ -3669,7 +3669,7 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
        CenterDataSetter(50, search.y, MeasureTextEx(FontArial, "a", 35, 0).y)},
       35, 0, RED);
   const char *textMaCB = CreateTextInputBox(control.dataTabCB.searchMaCB);
-  if (control.dataTabCB.inFill)
+  if (control.dataTabCB.inAdvSearch)
   {
     DrawTextEx(FontArial, "Nơi đến:",
                {search.x + 50,
@@ -3696,13 +3696,13 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
     CreateTextBox(tbNgayBay);
   }
   if (CreateButton(advSearch))
-    if (!control.dataTabCB.inFill)
+    if (!control.dataTabCB.inAdvSearch)
     {
       control.dataTabCB.inSearching = true;
     }
     else
     {
-      control.dataTabCB.inFill = false;
+      control.dataTabCB.inAdvSearch = false;
     }
 
   // Pick data
@@ -3734,7 +3734,7 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   control.dataTabCB.data = NULL;
 
   int i = (control.dataTabCB.current_showPage - 1) * 10;
-  ShowListCB(control, i, textMaCB, control.dataTabCB.inFill);
+  ShowListCB(control, i, textMaCB, control.dataTabCB.inAdvSearch);
   StatusHelp_QLCB();
 
   n_page = 1 + ((control.listCB.getSize() - 1) / 10);
@@ -4064,12 +4064,6 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
 
   // data
   int n_page = 1;
-  if (control.dataTabHK.status == 1)
-  {
-    // current_page = 1 + (listHK.getSize() - 1) / 10;
-    // index = (listHK.getSize() - 1) % 10;
-    control.dataTabHK.status = 0;
-  }
 
   // Pick data
   Button data_picker[10];
@@ -4532,6 +4526,13 @@ bool Warning_Empty()
   DrawRectangle(StartPos.x + 400 - 150, StartPos.y + 300, 1000, 70,
                 {255, 43, 43, 255});
   DrawTextEx(
+      FontArial, "CẢNH BÁO!",
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, "CANH BAO!", 50, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10,
+                        MeasureTextEx(FontArial, "A", 50, 0).y)},
+      50, 0, BLACK);
+  DrawTextEx(
       FontArial, "BẠN KHÔNG THỂ THÊM CHUYẾN BAY!",
       {CenterDataSetter(700, StartPos.x + 400,
                         MeasureTextEx(FontArial, "BẠN KHÔNG THỂ THÊM CHUYẾN BAY!", 55, 0).x),
@@ -4570,16 +4571,21 @@ int Warning_SwitchTab()
   DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70,
                 {255, 43, 43, 255});
   DrawTextEx(
-      FontArial, "OK!",
+      FontArial, "CẢNH BÁO!",
       {CenterDataSetter(700, StartPos.x + 400,
-                        MeasureTextEx(FontArial, "OK!", 55, 0).x),
+                        MeasureTextEx(FontArial, "CANH BAO!", 50, 0).x),
+       CenterDataSetter(60, StartPos.y + 60 + 10,
+                        MeasureTextEx(FontArial, "A", 50, 0).y)},
+      50, 0, BLACK);
+  DrawTextEx(
+      FontArial, "CHUYỂN TAB?",
+      {CenterDataSetter(700, StartPos.x + 400,
+                        MeasureTextEx(FontArial, "CHUYEN TAB?", 55, 0).x),
        CenterDataSetter(70, StartPos.y + 300,
                         MeasureTextEx(FontArial, "A", 55, 0).y)},
       55, 0, WHITE);
-  DrawTextEx(FontArial, "Bạn có muốn chuyến tab hay không?",
+  DrawTextEx(FontArial, "Toàn bộ thao tác chỉnh sửa của bạn sẽ bị huỷ!",
              {StartPos.x + 200, StartPos.y + 375}, 55, 0, BLACK);
-  // DrawTextEx(FontArial, "-> Hãy click vào 1 dòng trong bảng để lấy dữ liệu!",
-  //            {StartPos.x + 200, StartPos.y + 445}, 55, 0, BLACK);
 
   Button OK;
   OK.x = StartPos.x + 225 + 750;
@@ -4588,7 +4594,7 @@ int Warning_SwitchTab()
   OK.h = 50;
   OK.gotNothing = false;
   OK.gotText = true;
-  OK.tittle = (char *)"Đống ý";
+  OK.tittle = (char *)"Vẫn chuyển tab";
   OK.font = FontArial;
   OK.BoMau = ArrowKey;
 
@@ -4599,7 +4605,7 @@ int Warning_SwitchTab()
   Cancel.h = 50;
   Cancel.gotNothing = false;
   Cancel.gotText = true;
-  Cancel.tittle = (char *)"Huỷ";
+  Cancel.tittle = (char *)"Quay lại";
   Cancel.font = FontArial;
   Cancel.BoMau = ArrowKey;
 
