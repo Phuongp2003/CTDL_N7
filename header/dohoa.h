@@ -138,6 +138,7 @@ bool Warning_NoData();
 int Warning_Confirm(); //
 bool Warning_Full();
 bool Warning_Empty();
+int Warning_SwitchTab();
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
 void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[],
                    float cellH);
