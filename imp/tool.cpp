@@ -1,7 +1,25 @@
 #include "../header/header.h"
 
+void deleteZeroNumberChar(char *&str)
+{
+  while (str[0] == '0' && str[1] != 0 && str != NULL)
+  {
+    int size = getCharSize(str);
+    for (int i = 0; i < size; i++)
+    {
+      str[i] = str[i + 1];
+    }
+  }
+}
+
 char *intToChar(int value, int size)
 {
+  bool fill = true;
+  if (size == 0)
+  {
+    size = 10;
+    fill = false;
+  }
   char *ans = new char[size];
   for (int i = 0; i < size; i++)
   {
@@ -17,6 +35,8 @@ char *intToChar(int value, int size)
     value = value % _10;
   }
   ans[size] = '\0';
+  if (!fill)
+    deleteZeroNumberChar(ans);
   return ans;
 }
 
