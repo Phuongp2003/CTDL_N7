@@ -2996,35 +2996,35 @@ bool Popup_chonVe(UIcontroller &control)
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLUE);
   DrawTextEx(FontArial, "Mã CB: ",
-             {StartPos.x + 50+350,
+             {StartPos.x + 50 + 350,
               CenterDataSetter(100, StartPos.y + 50,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
   DrawTextEx(FontArial, control.dataTabCB.data->getNode().getMaCB(),
              {StartPos.x + 50 + 450,
-              CenterDataSetter(100, StartPos.y + 50 ,
+              CenterDataSetter(100, StartPos.y + 50,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
 
   DrawTextEx(FontArial, "Ngày giờ khởi hành: ",
              {StartPos.x + 50,
-              CenterDataSetter(100, StartPos.y + 50 +20+ 15,
+              CenterDataSetter(100, StartPos.y + 50 + 20 + 15,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
   DrawTextEx(FontArial, strToChar(control.dataTabCB.data->getNode().getNgayGio().printDateHour()),
              {StartPos.x + 50 + 280,
-              CenterDataSetter(100, StartPos.y + 50 +20+ 15,
+              CenterDataSetter(100, StartPos.y + 50 + 20 + 15,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
 
   DrawTextEx(FontArial, "Nơi đến: ",
              {StartPos.x + 50,
-              CenterDataSetter(100, StartPos.y + 50 +20 + 45,
+              CenterDataSetter(100, StartPos.y + 50 + 20 + 45,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
   DrawTextEx(FontArial, strToChar(control.dataTabCB.data->getNode().getNoiDen()),
-             {StartPos.x + 50 +120,
-              CenterDataSetter(100, StartPos.y + 50 +20 + 45,
+             {StartPos.x + 50 + 120,
+              CenterDataSetter(100, StartPos.y + 50 + 20 + 45,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
   if (control.dataTabCB.inSetTicket)
@@ -4440,8 +4440,6 @@ int Warning_Confirm_HuyVe()
       55, 0, WHITE);
   DrawTextEx(FontArial, "Bạn có muốn huỷ vé không!",
              {StartPos.x + 200, StartPos.y + 375}, 55, 0, BLACK);
-  // DrawTextEx(FontArial, "-> Hãy click vào 1 dòng trong bảng để lấy dữ liệu!",
-  //            {StartPos.x + 200, StartPos.y + 445}, 55, 0, BLACK);
 
   Button OK;
   OK.x = StartPos.x + 225 + 750;
@@ -5220,6 +5218,7 @@ void mainGraphics()
   getDataFromFile(main.listCB, main.listMB, main.listHK);
 
   // Settup for before run graphics
+  SetExitKey(0); // Disable exit key
   SetWindowState(FLAG_WINDOW_RESIZABLE);
   SetWindowMinSize(700, 400);
   SetSizeWindow();
@@ -5236,18 +5235,45 @@ void mainGraphics()
   // Graphics in running
   while (!WindowShouldClose())
   {
-    // Make all texture smooth
-    if (ScreenW != GetScreenWidth() || ScreenH != GetScreenHeight())
+
+    // Full screen
+    if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
     {
-      GenTextureMipmaps(&main.renderTexture.texture);
-      SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
-      ScreenW = GetScreenWidth();
-      ScreenH = GetScreenHeight();
+      int display = GetCurrentMonitor();
+
+      if (IsWindowFullscreen())
+      {
+        SetWindowSize(ScreenW, ScreenH);
+      }
+      else
+      {
+        SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
+        GenTextureMipmaps(&main.renderTexture.texture);
+        SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+      }
+
+      ToggleFullscreen();
+    }
+    if (IsWindowFullscreen() && IsKeyPressed(KEY_ESCAPE))
+    {
+      ToggleFullscreen();
+      SetWindowSize(ScreenW, ScreenH);
     }
 
+    // Make all texture smooth
+    if (!IsWindowFullscreen())
+    {
+      if (ScreenW != GetScreenWidth() || ScreenH != GetScreenHeight())
+      {
+        GenTextureMipmaps(&main.renderTexture.texture);
+        SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+        ScreenW = GetScreenWidth();
+        ScreenH = GetScreenHeight();
+      }
+    }
     BeginTextureMode(main.renderTexture);
-    // Các thao tác trên đồ hoạ
 
+    // Các thao tác trên đồ hoạ
     if (!main.req_swTab)
       switch (main.current_tab)
       {
