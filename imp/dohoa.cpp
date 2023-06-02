@@ -1,25 +1,13 @@
 #include "../header/dohoa.h"
 
-//==================================================================================================================================
-// Setup
-/**
- * @brief vị trí con trỏ trỏ đến trang hiển thị
- * @note 0. Trang chủ\n
- * @note 1. Máy bay
- * @note 2. Chuyến bay
- * @note 3. Vé
- * @note 4. Hành khách
- * @note 5. Giới thiệu
- */
-
 // Global status variable
-int V_MOUSE_CURSOR_IBEAM = 0;
-int V_MOUSE_CURSOR_POINTING_HAND = 0;
+int V_MOUSE_CURSOR_IBEAM = 0;         // Trỏ văn bản
+int V_MOUSE_CURSOR_POINTING_HAND = 0; // Trỏ chọn
 
-const Vector2 StartPos{per1000(10) * SCREEN_WIDTH, per1000(40) * SCREEN_HEIGHT};
+const Vector2 StartPos{per1000(10) * SCREEN_WIDTH, per1000(40) * SCREEN_HEIGHT}; // Vector khởi đầu
 
 Font FontArial;
-Texture2D PNG_logo; // Load ảnh vào biến (ram)
+Texture2D PNG_logo;
 
 Texture2D PNG_home;
 
@@ -31,65 +19,65 @@ Texture2D PNG_circleGreen;
 Texture2D PNG_circleYellow;
 Texture2D PNG_circleGray;
 //==================================================================================================================================
-// Define
 struct BoMauNut
 {
-  Color isnotHovered;
-  Color isHovered;
-  Color isPressed;
-  Color text1;
-  Color text2;
-  Color Rounder;
-  Color RounderHovered;
-  Color RounderPressed;
+  Color isnotHovered;   // Trạng thái bth
+  Color isHovered;      // Được trỏ vào
+  Color isPressed;      // Được nhấn vào
+  Color text1;          // Màu chữ 1 (màu bth)
+  Color text2;          // Màu chữ 2 (có thao tác tác động lên)
+  Color Rounder;        // Màu viền
+  Color RounderHovered; // Màu viền khi được trỏ vào
+  Color RounderPressed; // Màu viền khi nhấn vào
 };
 struct Button
 {
-  bool isActive = true;
+  bool isActive = true; // Chỉ in ra nếu bị disable
 
   float x;
   float y;
   float w;
   float h;
-  bool BoTron = false;
-  bool gotNothing = true;
-  bool gotText = false;
-  const char *tittle = "";
-  Font font;
-  bool gotPic = false;
-  Texture2D picture;
-  bool RounderChangeColor = false;
-  bool firstRounder = true;
+  bool BoTron = false;             // Vễ bo tròn
+  bool gotNothing = true;          // Nút trống (chỉ có viền và màu)
+  bool gotText = false;            // Chứa chữ, y/c gotNothing = false
+  const char *tittle = "";         // Tiều đề nút
+  Font font;                       // Font chữ cho nút
+  bool gotPic = false;             // Chứa hình, y/c gotNothing = false
+  Texture2D picture;               // Hình trong nút
+  bool RounderChangeColor = false; // Màu viền thay đổi khi được thao tác
+  bool firstRounder = true;        // In viền
   BoMauNut BoMau;
 };
 
 struct InputTextBox
 {
-  bool isActive = true;
-  bool isGotData = false;
+  bool isActive = true;   // Chỉ in nội dung nếu bị disable
+  bool isGotData = false; // Đang chứa dữ liệu được truyền trực tiếp (tiền xử lý)
 
   Rectangle textBox;
-  const char *tittle = "";
-  int size = 27;
-  bool showNKeyRemain = true;
-  bool editMode = false;
-  bool showPreResult = true;
-  bool returnIfDone = false;
+  const char *tittle = "";    // Tiêu đề ô nhập
+  int size = 27;              // Số kí tự được nhập tối đa
+  bool showNKeyRemain = true; // Hiện số kí tự được nhập còn lại
+  bool editMode = false;      // Nhận tiêu đề để chỉnh sửa
+  bool showPreResult = true;  // Hiện kết quả đã nhập trước đó
+  bool returnIfDone = false;  // Chỉ nhận giá trị khi nhấn enter
   Color MauNen = WHITE;
   Color MauVien = BLACK;
   Color MauChu = BLACK;
-  int mode = 1;
+  int mode = 1; // Chi tiết xem hàm chuanHoaKey (tool.cpp)
 
   // xử lý
-  char name[120] = "\0";
-  int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0;
-  bool done = true;
-  bool mouseClickOnText = false;
-  int letterCount = 0;
-  int framesCounter = 0;
-  int indexPoint = 0;
+  char name[120] = "\0";                             // xâu được xử lý
+  int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0; // Thời gian giữ nút (đơn vị là 1/20 giây, với max FPS = 20)
+  bool done = true;                                  // Đã nhận nút enter
+  bool mouseClickOnText = false;                     // Đang được thao tác
+  int letterCount = 0;                               // số kí tự đã nhập
+  int framesCounter = 0;                             // số frames đã được in ra (chi tiết tìm hiểu về FPS)
+  int indexPoint = 0;                                // vị trí con trỏ so với kí tự cuối cùng
 };
 
+// Nhận text làm giá trị ban đầu (truyền trực tiếp vào dữ liệu ô nhập)
 void SetDataInputTextBox(InputTextBox &box, const char *text, int length = -1)
 {
   if (!box.isGotData)
@@ -107,6 +95,7 @@ void SetDataInputTextBox(InputTextBox &box, const char *text, int length = -1)
   }
 }
 
+// Reset data của ô nhập nếu nếu trực tiếp từ nguồn ngoài
 void ResetDataInputTextBox(InputTextBox &box)
 {
   if (box.isGotData)
@@ -119,18 +108,19 @@ void ResetDataInputTextBox(InputTextBox &box)
 
 struct TextBox
 {
-  const char *text;
-  Rectangle box;
-  bool showBox = false;
-  int mode = 1;
-  bool isCenter = false;
-  int fontSize = 0;
+  const char *text;      // Xâu xuất
+  Rectangle box;         // Giá trị ô xuát
+  bool showBox = false;  // Hiện ô xuất
+  int mode = 1;          // Hiện thêm ô (1) / Thu nhỏ chữ (2)
+  bool isCenter = false; // Căn giữa
+  int fontSize = 0;      // Cỡ chữ
 };
 
 struct PageSwitcher
 {
-  bool editmode = false;
-  InputTextBox fast_switcher;
+  bool editmode = false;      // Trạng thái chế độ ô nhập
+  InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
+
   PageSwitcher()
   {
     fast_switcher.editMode = true;
@@ -149,20 +139,20 @@ struct PageSwitcher
 
 struct QLMB_data
 {
-  MayBay *data = NULL;
-  int status = 0;
+  MayBay *data = nullptr; // Giá trị của MB được chọn (qua index)
+  int status = 0;         // Trạng thái index (1 - sau khi thêm, -1 - sau khi xoá)
 
-  int current_popup = 0;
-  string popup_errorMess = "";
-  int time_showError = 0;
-  InputTextBox MaMB, LoaiMB, SoDong, SoDay;
+  int current_popup = 0;                    // popup được mở
+  string popup_errorMess = "";              // lỗi ở các popup đang chờ được xâu
+  int time_showError = 0;                   // thời gian đã hiện lỗi (tối đa đến 99)
+  InputTextBox MaMB, LoaiMB, SoDong, SoDay; // các ô nhập ở các popup
 
-  int pickdata_index = -1;
-  const char *keyword;
-  InputTextBox searchKeyword;
-  int current_showPage = 1;
+  int pickdata_index = -1;    // Vị trí của index
+  const char *keyword;        // Từ khoá (tìm kiếm)
+  InputTextBox searchKeyword; // Ô nhập của tìm kiếm
+  int current_showPage = 1;   // Trang hiến tại (ds máy bay)
 
-  PageSwitcher Sw_table_page;
+  PageSwitcher Sw_table_page; // Chuyển trang
 
   QLMB_data()
   {
@@ -200,19 +190,19 @@ struct QLMB_data
 
 struct QLHK_data
 {
-  NodeHK *data = nullptr;
+  NodeHK *data = nullptr; // Địa chỉ của node hành khách được trở vào
 
-  int current_popup = 0;
-  string popup_errorMess = "";
-  int time_showError = 0;
+  int current_popup = 0;       // Popup được mở
+  string popup_errorMess = ""; // Lỗi ở các popup
+  int time_showError = 0;      // Thời gian hiện lỗi (tối đa 99)
 
-  int pickdata_index = -1;
-  int current_page = 1;
+  int pickdata_index = -1; // Vị trí của index
+  int current_page = 1;    // Trang hiện tại (ds hành khách)
 
-  InputTextBox i_CMND, i_Ho, i_Ten;
-  int i_Phai = -1;
+  InputTextBox i_CMND, i_Ho, i_Ten; // Ô nhập thông tin
+  int i_Phai = -1;                  // Thông tin phái
 
-  PageSwitcher Sw_table_page;
+  PageSwitcher Sw_table_page; // Chuyển trang
 
   QLHK_data()
   {
@@ -243,15 +233,15 @@ struct QLHK_data
 };
 struct QLVe_data
 {
-  int current_page = 1;
-  int position = -1;
-  int pickdata_index = -1;
-  VeMayBay data = VeMayBay();
+  int current_page = 1;       // Trang hiện tại
+  int position = -1;          // Vị trí vé đã chọn trong ds vé
+  int pickdata_index = -1;    // Vị trí vé (DSve đã đặt của cbay)
+  VeMayBay data = VeMayBay(); // Vé được pick
 
-  bool showNotEmpty = false;
-  bool inDelete = false;
+  bool showNotEmpty = false; // Hiện vé đã đặt
+  bool inDelete = false;     // Có thao tác huỷ vé được kích hoạt
 
-  PageSwitcher Sw_table_page;
+  PageSwitcher Sw_table_page; // Chuyển trang
 
   QLVe_data()
   {
@@ -265,30 +255,30 @@ struct QLVe_data
 };
 struct QLCB_data
 {
-  NodeCB *data = nullptr;
-  int status = 0;
+  NodeCB *data = nullptr; // Địa chỉ của node chuyến bay được chọn
+  int status = 0;         // Trạng thái index (1 - sau khi thêm)
 
-  int current_popup = 0;
-  string popup_errorMess = "";
-  int time_showError = 0;
-  InputTextBox MaCB, MaMB, NoiDen, Ngay, Thang, Nam, Gio, Phut;
-  bool inChooseMB = false;
-  QLVe_data dataDSVe;
+  int current_popup = 0;                                        // Popup đang mở
+  string popup_errorMess = "";                                  // Lỗi ở các Popup
+  int time_showError = 0;                                       // Thời gian hiên lỗi (tối đa 99)
+  InputTextBox MaCB, MaMB, NoiDen, Ngay, Thang, Nam, Gio, Phut; // Ô nhập dữ liệu
+  bool inChooseMB = false;                                      // Bảng chọn máy bay trong thêm/hiệu chỉnh CBay được kích hoạt
+  QLVe_data dataDSVe;                                           // Dữ liệu của các thao tác trên vé
 
-  InputTextBox searchMaCB, searchNoiDen;
-  int pickdata_index = -1;
-  int current_showPage = 1;
+  InputTextBox searchMaCB, searchNoiDen; // Ô nhập dữ liệu tìm kiếm
+  int pickdata_index = -1;               // Vị trí index
+  int current_showPage = 1;              // Trang hiện tại
 
-  bool inSearching = false;
-  bool inAdvSearch = false;
-  Date fbDay = Date(1, 1, 0, 0, 0);
-  string fbNoiDen = "";
-  bool fbAvail = false;
-  bool inGetTicket = false;
-  bool inSetTicket = false;
-  bool gotChangeTicket = false;
+  bool inSearching = false;         // Popup nhập dữ liệu tìm kiếm
+  bool inAdvSearch = false;         // Dữ liệu được lọc theo giá trị tìm kiếm
+  Date fbDay = Date(1, 1, 0, 0, 0); // Tìm theo ngày
+  string fbNoiDen = "";             // Tìm theo nơi đến
+  bool fbAvail = false;             // Lọc chuyến bay không khả dụng
+  bool inGetTicket = false;         // Popup chọn vé
+  bool inSetTicket = false;         // Popup đặt vé
+  bool gotChangeTicket = false;     // Có thao tác trên vé
 
-  PageSwitcher Sw_table_page;
+  PageSwitcher Sw_table_page; // Chuyển trang
 
   QLCB_data()
   {
@@ -365,21 +355,22 @@ struct QLCB_data
 };
 struct UIcontroller
 {
-  RenderTexture2D renderTexture;
+  RenderTexture2D renderTexture; // Dữ liệu của cảnh được in
 
-  int current_tab = 0;
-  int next_tab = 0;
-  QLMB_data dataTabMB;
+  int current_tab = 0; // Tab hiện tại (Home / MayBay / ChuyenBay / HanhKhach)
+  int next_tab = 0;    // Tab sắp chuyển dến
+  QLMB_data dataTabMB; // Dữ liệu tab Máy bay và các dữ liệu được thao tác trên MB
   QLCB_data dataTabCB;
   QLHK_data dataTabHK;
 
-  DsMayBay listMB;
+  DsMayBay listMB; // Danh sách máy bay
   DsChuyenBay listCB;
   DsHanhKhach listHK;
 
-  bool req_swTab = false;
+  bool req_swTab = false; // Có yêu cầu chuyển tab
 };
 
+// Xử lí yêu cầu chuyển tab
 bool UI_reqSwitchTab(UIcontroller &control)
 {
   if (control.dataTabCB.current_popup != 0 || control.dataTabMB.current_popup != 0 || control.dataTabHK.current_popup != 0)
@@ -402,6 +393,7 @@ bool UI_reqSwitchTab(UIcontroller &control)
   return false;
 }
 
+// Thực hiện chuyển tab
 void UI_switchTab(UIcontroller &control)
 {
   InitUIData(control);
@@ -418,6 +410,7 @@ void UI_switchTab(UIcontroller &control)
   control.current_tab = control.next_tab;
 }
 
+// Khởi tạo dữ liệu người dùng ban đầu
 void InitUIData(UIcontroller &control)
 {
   control.current_tab = 0;
@@ -600,6 +593,7 @@ Vector2 operator+(const Vector2 first, const Vector2 second)
   return {first.x + second.x, first.y + second.y};
 }
 
+// Load dữ liệu từ các file ngoài
 void LoadResources()
 {
   Image LogoPTIT;
@@ -647,6 +641,7 @@ void LoadResources()
   ImageResize(&Status_Yellow, 34, 34);
   PNG_circleYellow = LoadTextureFromImage(Status_Yellow);
 
+  // Làm trống bộ nhớ
   UnloadImage(LogoPTIT);
   UnloadImage(HomeIcon);
   UnloadImage(ArrowLeft);
@@ -656,6 +651,7 @@ void LoadResources()
   UnloadImage(Status_Gray);
 }
 
+// Làm trống bộ nhớ
 void UnloadResources()
 {
   UnloadFont(FontArial);
@@ -670,6 +666,7 @@ void UnloadResources()
   UnloadTexture(PNG_circleGray);
 }
 
+// Hiệu chỉnh kích thước cửa sổ phù hợp với máy tính
 void SetSizeWindow()
 {
   int display = GetCurrentMonitor();
@@ -709,8 +706,7 @@ void SetSizeWindow()
 //==================================================================================================================================
 // Graphics
 
-//---Home
-// page----------------------------------------------------------------------------------------------------------------------
+//---Homepage-------------------------------------------------------------------------------------------------------------
 void CreateHomeBackground()
 {
   ClearBackground(DARKBLUE);
@@ -812,8 +808,7 @@ void CreateHomePage(UIcontroller &control)
   }
 }
 
-// ---Các trang thành
-// phần----------------------------------------------------------------------------------------------------------
+// ---Các trang thành phần----------------------------------------------------------------------------
 void CreatePageBackground(int SoHang)
 {
   ClearBackground(DARKBLUE);
@@ -862,18 +857,7 @@ void CreatePage_QLMB(UIcontroller &control)
       control.dataTabMB.current_popup = 0;
     return;
   }
-  // if(control.dataTabMB.current_popup!=0)
-  //   {
 
-  //   }
-  //   else
-  //   {
-  //     button[0].isActive=false;
-  //     button[2].isActive=false;
-  //     button[3].isActive=false;
-  //   }
-
-  // tittle
   DrawTextEx(FontArial, "DANH SÁCH MÁY BAY",
              {StartPos.x + 60,
               CenterDataSetter(100, StartPos.y + 50,
@@ -4216,13 +4200,6 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
 
 void CreatePage_GioiThieu() { CreatePageBackground(0); }
 
-/**
- * @brief Create a Table object
- *
- * @param cellW tổng các phần tử phải bằng 1080
- *
- * @note Số hàng luôn bằng 10, chiều cao ô luôn là 40, ô tiêu đề là 50
- */
 void CreateTable(Vector2 vitriBang, int soCot, float cellW[],
                  float total_cellW)
 {
@@ -4640,60 +4617,9 @@ int Warning_SwitchTab()
   return 0;
 }
 
-// int Warning_Confirm()
-// {
-//   DrawRectangle(StartPos.x + 150, StartPos.y + 280, 1200, 330,
-//                 {246, 250, 170, 255});
-//   DrawRectangle(StartPos.x + 400, StartPos.y + 300, 700, 70,
-//                 {255, 43, 43, 255});
-//   DrawTextEx(
-//       FontArial, "XÁC NHẬN!",
-//       {CenterDataSetter(700, StartPos.x + 400,
-//                         MeasureTextEx(FontArial, "XÁC NHẬN!", 55, 0).x),
-//        CenterDataSetter(70, StartPos.y + 300,
-//                         MeasureTextEx(FontArial, "A", 55, 0).y)},
-//       55, 0, WHITE);
-//   DrawTextEx(FontArial, "Bạn có muốn huỷ vé không!",
-//              {StartPos.x + 200, StartPos.y + 375}, 55, 0, BLACK);
-//   // DrawTextEx(FontArial, "-> Hãy click vào 1 dòng trong bảng để lấy dữ liệu!",
-//   //            {StartPos.x + 200, StartPos.y + 445}, 55, 0, BLACK);
-
-//   Button OK;
-//   OK.x = StartPos.x + 225 + 750;
-//   OK.y = StartPos.y + 60 + 625;
-//   OK.w = 100;
-//   OK.h = 50;
-//   OK.gotNothing = false;
-//   OK.gotText = true;
-//   OK.tittle = (char *)"OK";
-//   OK.font = FontArial;
-//   OK.BoMau = ArrowKey;
-
-//   Button CANCEL;
-//   CANCEL.x = StartPos.x + 225;
-//   CANCEL.y = StartPos.y + 60 + 625;
-//   CANCEL.w = 100;
-//   CANCEL.h = 50;
-//   CANCEL.gotNothing = false;
-//   CANCEL.gotText = true;
-//   CANCEL.tittle = (char *)"CANCEL";
-//   CANCEL.font = FontArial;
-//   CANCEL.BoMau = ArrowKey;
-
-//   if (CreateButton(OK))
-//   {
-//     return 1;
-//   }
-
-//   if (CreateButton(CANCEL))
-//   {
-//     return -1;
-//   }
-//   return 0;
-// }
-
 // ---Các hàm hỗ trợ ngoài vìa------------------------------------------------------------------------------------------------------
 
+// Trả về vị trí bắt đầu của obj trên 1 khung (hình 1 chiều)
 float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua,
                        float obj_width)
 {
@@ -4824,6 +4750,7 @@ int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos)
   else
     return current_page;
 }
+
 bool CreateButton(Button data)
 {
   Rectangle Button = {data.x, data.y, data.w, data.h};
@@ -5161,6 +5088,7 @@ const char *CreateTextInputBox(InputTextBox &data)
   };
   return "\0";
 }
+
 void resetInputTextBox(InputTextBox &box)
 {
   box.name[0] = 0;
