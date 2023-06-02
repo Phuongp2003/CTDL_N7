@@ -365,6 +365,8 @@ struct QLCB_data
 };
 struct UIcontroller
 {
+  RenderTexture2D renderTexture;
+
   int current_tab = 0;
   int next_tab = 0;
   QLMB_data dataTabMB;
@@ -413,7 +415,6 @@ void UI_switchTab(UIcontroller &control)
     resetData_QLMB(control.dataTabMB);
     resetData_QLHK(control.dataTabHK);
   }
-
   control.current_tab = control.next_tab;
 }
 
@@ -1022,13 +1023,13 @@ bool Popup_ThemMB(UIcontroller &control)
   const char *newLoaiMayBay = CreateTextInputBox(control.dataTabMB.LoaiMB);
   DrawTextEx(FontArial, "Số dòng",
              {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
-  DrawTextEx(FontArial, "(Gồm CHỈ số, nho hon hoac bang 25)",
+  DrawTextEx(FontArial, "(Gồm CHỈ số, nhỏ hơn hoặc bằng 25)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
              25, 0, RED);
   const char *newSoDong = CreateTextInputBox(control.dataTabMB.SoDong);
   DrawTextEx(FontArial, "Số dãy",
              {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
-  DrawTextEx(FontArial, "(Gồm CHỈ số, nho hon hoac bang 12)",
+  DrawTextEx(FontArial, "(Gồm CHỈ số, nhỏ hơn hoặc bằng 12)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
              25, 0, RED);
   const char *newSoDay = CreateTextInputBox(control.dataTabMB.SoDay);
@@ -1148,9 +1149,9 @@ bool Popup_HieuChinhMB(UIcontroller &control)
   control.dataTabMB.LoaiMB.editMode = true;
   control.dataTabMB.LoaiMB.tittle = control.dataTabMB.data->getLoaiMB();
   control.dataTabMB.SoDong.editMode = true;
-  control.dataTabMB.SoDong.tittle = intToChar(control.dataTabMB.data->getSoDong(), 3);
+  control.dataTabMB.SoDong.tittle = intToChar(control.dataTabMB.data->getSoDong(), 0);
   control.dataTabMB.SoDay.editMode = true;
-  control.dataTabMB.SoDay.tittle = intToChar(control.dataTabMB.data->getSoDay(), 3);
+  control.dataTabMB.SoDay.tittle = intToChar(control.dataTabMB.data->getSoDay(), 0);
 
   const int hFont40_25 = MeasureTextEx(FontArial, "A", 40, 0).y -
                          MeasureTextEx(FontArial, "A", 25, 0).y;
@@ -1313,7 +1314,7 @@ bool Popup_XoaMB(UIcontroller &control)
   TextBox Box_soDong;
   Box_soDong.box = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
   Box_soDong.showBox = true;
-  Box_soDong.text = intToChar(control.dataTabMB.data->getSoDong(), 2);
+  Box_soDong.text = intToChar(control.dataTabMB.data->getSoDong(), 0);
   CreateTextBox(Box_soDong);
 
   DrawTextEx(FontArial, "Số dãy",
@@ -1321,7 +1322,7 @@ bool Popup_XoaMB(UIcontroller &control)
   TextBox Box_soDay;
   Box_soDay.box = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
   Box_soDay.showBox = true;
-  Box_soDay.text = intToChar(control.dataTabMB.data->getSoDay(), 2);
+  Box_soDay.text = intToChar(control.dataTabMB.data->getSoDay(), 0);
   CreateTextBox(Box_soDay);
 
   Button OK;
@@ -1426,13 +1427,6 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
   // control.dataTabMB.current_showPage = 1;
   int n_page = 1; // 1 + (spt/10)
   int size = control.listMB.getSize();
-  int n_char;
-  if (size <= 99)
-    n_char = 2;
-  else if (size >= 100 && size <= 999)
-    n_char = 3;
-  else
-    n_char = 4;
   int i = (control.dataTabMB.current_showPage - 1) * 10;
   int j = 0;
   Vector2 start_pos = {StartPos.x + 60, StartPos.y + 110 + 70 + 60};
@@ -1446,9 +1440,9 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
 
         TextBox show[3];
         const char *showText[3] = {
-            intToChar(j + 1, n_char),
+            intToChar(j + 1, 0),
             control.listMB.getMB(A[id])->getSoHieuMB(), // control.listMB.getMB()[control.listMB.sapXepThongKe()[id]]->getSoHieuMB()
-            intToChar(control.listMB.getMB(A[id])->getSoLuotBay(), 3)};
+            intToChar(control.listMB.getMB(A[id])->getSoLuotBay(), 0)};
         for (int show_i = 2; show_i >= 0; show_i--)
         {
           show[show_i] = GetCellTextBox(start_pos, 3, cellW, show_i + 1,
@@ -1566,13 +1560,6 @@ MayBay *XuLy_QLMB(UIcontroller &control)
   }
 
   int size = control.listMB.getSize();
-  int n_char;
-  if (size <= 99)
-    n_char = 2;
-  else if (size >= 100 && size <= 999)
-    n_char = 3;
-  else
-    n_char = 4;
   int i = (control.dataTabMB.current_showPage - 1) * 10;
   int j = 0;
   // if (current_page * 10 < size)
@@ -1594,10 +1581,10 @@ MayBay *XuLy_QLMB(UIcontroller &control)
         TextBox show[5];
         const char *showText[5] = {
 
-            intToChar(j + 1, n_char), control.listMB.getMB(id)->getSoHieuMB(),
+            intToChar(j + 1, 0), control.listMB.getMB(id)->getSoHieuMB(),
             control.listMB.getMB(id)->getLoaiMB(),
-            intToChar(control.listMB.getMB(id)->getSoDay(), 3),
-            intToChar(control.listMB.getMB(id)->getSoDong(), 3)};
+            intToChar(control.listMB.getMB(id)->getSoDay(), 0),
+            intToChar(control.listMB.getMB(id)->getSoDong(), 0)};
         for (int show_i = 4; show_i >= 0; show_i--)
         {
           show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
@@ -1818,7 +1805,7 @@ void CreatePage_QLCB(UIcontroller &control)
     }
   }
 
-  if (control.listCB.update(control.listMB) || control.dataTabCB.gotChangeTicket)
+  if (control.dataTabCB.gotChangeTicket)
   {
     setDataToFile(control.listCB, control.listMB, control.listHK);
     getDataFromFile(control.listCB, control.listMB, control.listHK);
@@ -2873,12 +2860,6 @@ bool Popup_showListHK(UIcontroller &control)
     DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
   }
 
-  int n_char;
-  if (currCB.getDSVe().getSoVeDaDat() <= 99)
-    n_char = 2;
-  else if (currCB.getDSVe().getSoVeDaDat() >= 100)
-    n_char = 3;
-
   if (currCB.getDSVe().getSoVeDaDat() != 0)
   {
     int iVe = 0;
@@ -2890,7 +2871,7 @@ bool Popup_showListHK(UIcontroller &control)
       if (iVe >= (control.dataTabCB.dataDSVe.current_page - 1) * 10 && iVe < control.dataTabCB.dataDSVe.current_page * 10)
       {
         const char *showText[5];
-        showText[0] = intToChar(iVe % 10 + 1, n_char);
+        showText[0] = intToChar(iVe % 10 + 1, 0);
         showText[1] = strToChar(tmp.getIDVe());
         showText[2] = strToChar(tmp.getHanhKhach());
         showText[3] = strToChar(control.listHK.search(tmp.getHanhKhach())->getHK().getHo() + " " + control.listHK.search(tmp.getHanhKhach())->getHK().getTen());
@@ -3077,54 +3058,59 @@ bool Popup_chonVe(UIcontroller &control)
     return false;
   }
 
-  Button s_ON;
-  s_ON.x = StartPos.x + 900;
-  s_ON.y = StartPos.y + 60 + 20;
-  s_ON.w = 100;
-  s_ON.h = 50;
-  s_ON.gotNothing = false;
-  s_ON.gotText = true;
-  s_ON.tittle = (char *)"ON";
-  s_ON.font = FontArial;
-  s_ON.BoMau = ArrowKey;
-
-  Button s_OFF;
-  s_OFF.x = s_ON.x + s_ON.w + 10;
-  s_OFF.y = s_ON.y;
-  s_OFF.w = 100;
-  s_OFF.h = 50;
-  s_OFF.gotNothing = false;
-  s_OFF.gotText = true;
-  s_OFF.tittle = (char *)"OFF";
-  s_OFF.font = FontArial;
-  s_OFF.BoMau = ArrowKey;
-
-  TextBox showVeAdv;
-  showVeAdv.box = {s_ON.x - 100, s_ON.y + 60, 410, 40};
-  showVeAdv.isCenter = true;
-  showVeAdv.mode = 2;
-  showVeAdv.text = "Hiện vé đã đặt";
-
-  CreateTextBox(showVeAdv);
-
-  if (control.dataTabCB.dataDSVe.showNotEmpty == true)
+  if (control.dataTabCB.data->getNode().getDSVe().getSoVeDaDat() != 0)
   {
-    s_ON.isActive = false;
-    s_OFF.isActive = true;
-  }
-  else if (control.dataTabCB.dataDSVe.showNotEmpty == false)
-  {
-    s_OFF.isActive = false;
-    s_ON.isActive = true;
-  }
+    DrawRectangleRoundedLines({StartPos.x + 890, StartPos.y + 60 + 20, 230, 100}, 0, 0, 3, BLUE);
+    DrawRectangleRoundedLines({StartPos.x + 930, StartPos.y + 60 + 80, 150, 40}, 0, 0, 3, RED);
+    Button s_ON;
+    s_ON.x = StartPos.x + 900;
+    s_ON.y = StartPos.y + 60 + 20;
+    s_ON.w = 100;
+    s_ON.h = 50;
+    s_ON.gotNothing = false;
+    s_ON.gotText = true;
+    s_ON.tittle = (char *)"ON";
+    s_ON.font = FontArial;
+    s_ON.BoMau = ArrowKey;
 
-  if (CreateButton(s_ON))
-  {
-    control.dataTabCB.dataDSVe.showNotEmpty = true;
-  }
-  if (CreateButton(s_OFF))
-  {
-    control.dataTabCB.dataDSVe.showNotEmpty = false;
+    Button s_OFF;
+    s_OFF.x = s_ON.x + s_ON.w + 10;
+    s_OFF.y = s_ON.y;
+    s_OFF.w = 100;
+    s_OFF.h = 50;
+    s_OFF.gotNothing = false;
+    s_OFF.gotText = true;
+    s_OFF.tittle = (char *)"OFF";
+    s_OFF.font = FontArial;
+    s_OFF.BoMau = ArrowKey;
+
+    TextBox showVeAdv;
+    showVeAdv.box = {s_ON.x - 100, s_ON.y + 60, 410, 40};
+    showVeAdv.isCenter = true;
+    showVeAdv.mode = 2;
+    showVeAdv.text = "Hiện vé đã đặt";
+
+    CreateTextBox(showVeAdv);
+
+    if (control.dataTabCB.dataDSVe.showNotEmpty == true)
+    {
+      s_ON.isActive = false;
+      s_OFF.isActive = true;
+    }
+    else if (control.dataTabCB.dataDSVe.showNotEmpty == false)
+    {
+      s_OFF.isActive = false;
+      s_ON.isActive = true;
+    }
+
+    if (CreateButton(s_ON))
+    {
+      control.dataTabCB.dataDSVe.showNotEmpty = true;
+    }
+    if (CreateButton(s_OFF))
+    {
+      control.dataTabCB.dataDSVe.showNotEmpty = false;
+    }
   }
 
   ChuyenBay currCB = control.dataTabCB.data->getNode();
@@ -3575,14 +3561,6 @@ void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inA
 
   int size = control.listCB.getSize();
 
-  int n_char;
-  if (size <= 99)
-    n_char = 2;
-  else if (size >= 100 && size <= 999)
-    n_char = 3;
-  else
-    n_char = 4;
-
   NodeCB *tmp = control.listCB.getHead();
   int i = (control.dataTabCB.current_showPage - 1) * 10;
   int j = 0;
@@ -3612,12 +3590,12 @@ void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inA
         if (j % 10 == control.dataTabCB.pickdata_index)
           control.dataTabCB.data = tmp;
 
-        string dsVe = "";
-        dsVe = intToString(tmp->getNode().getDSVe().getSoVeConLai(), 3) + '/' +
-               intToString(tmp->getNode().getDSVe().getSoVeToiDa(), 3);
+        string dsVe = intToString(tmp->getNode().getDSVe().getSoVeToiDa(), 0);
+        dsVe = intToString(tmp->getNode().getDSVe().getSoVeConLai(), dsVe.length()) + '/' +
+               intToString(tmp->getNode().getDSVe().getSoVeToiDa(), dsVe.length());
         TextBox show[6];
         const char *showText[6];
-        showText[0] = intToChar(j + 1, n_char);
+        showText[0] = intToChar(j + 1, 0);
         showText[1] = tmp->getNode().getMaCB();
         showText[2] = tmp->getNode().getMaMayBay();
         showText[3] = strToChar(tmp->getNode().getNgayGio().printDateHour());
@@ -4118,11 +4096,11 @@ bool Popup_HieuChinhHK(UIcontroller &control)
   return false;
 }
 
-void ShowListHK(HanhKhach hanhKhach, int n_char, Vector2 start_pos, float *cellW, int &j, int order)
+void ShowListHK(HanhKhach hanhKhach, Vector2 start_pos, float *cellW, int &j, int order)
 {
   TextBox show[5];
   const char *showText[5] = {0};
-  showText[0] = intToChar(order + 1, n_char);
+  showText[0] = intToChar(order + 1, 0);
   showText[1] = strToChar(hanhKhach.getCmnd());
   showText[2] = strToChar(hanhKhach.getHo());
   showText[3] = strToChar(hanhKhach.getTen());
@@ -4184,55 +4162,11 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
   Vector2 start_pos = {StartPos.x + 60, StartPos.y + 60 + 70 + 110};
   int size = control.listHK.getSize();
 
-  int n_char;
-  if (size <= 99)
-    n_char = 2;
-  else if (size >= 100 && size <= 999)
-    n_char = 3;
-  else
-    n_char = 4;
-
   int i = (control.dataTabHK.current_page - 1) * 10;
 
   int j = 0;
 
   NodeHK *root = control.listHK.getRoot();
-  // Queue queue = Queue(size);
-  // listHK.levelOrderTraversal(queue);
-  // NodeHK *tmp;
-  // int k = 0;
-
-  // while (!queue.isEmpty())
-  // {
-  //   if (j >= i && j <= i + 9)
-  //   {
-  //     if (j % 10 == control.dataTabHK.pickdata_index)
-  //       result = root;
-
-  //     TextBox show[5];
-  //     tmp = queue.getFront();
-  //     const char *showText[5] = {0};
-  //     showText[0] = intToChar(k + 1, n_char);
-  //     showText[1] = strToChar(tmp->getHK().getCmnd());
-  //     showText[2] = strToChar(tmp->getHK().getHo());
-  //     showText[3] = strToChar(tmp->getHK().getTen());
-  //     showText[4] = strToChar(tmp->getHK().getPhai());
-  //     for (int show_i = 4; show_i >= 0; show_i--)
-  //     {
-  //       show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
-  //                                     (j % 10) + 1, showText[show_i], 30);
-  //       show[show_i].isCenter = false;
-  //     }
-  //     for (int show_i = 4; show_i >= 0; show_i--)
-  //     {
-  //       CreateTextBox(show[show_i]);
-  //     }
-  //   }
-  //   j++;
-  //   k++;
-  //   // }
-  //   queue.pop();
-  // }
 
   Queue queue = Queue();
   NodeHK *currNode;
@@ -4251,7 +4185,7 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
       if (j % 10 == control.dataTabHK.pickdata_index)
         control.dataTabHK.data = currNode;
 
-      ShowListHK(currNode->getHK(), n_char, start_pos, cellW, j, order);
+      ShowListHK(currNode->getHK(), start_pos, cellW, j, order);
     }
 
     if (currNode->getLeft() != NULL)
@@ -5064,7 +4998,11 @@ const char *CreateTextInputBox(InputTextBox &data)
     }
   }
   else
-    DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, BROWN);
+  {
+    Vector2 tPos = textBoxPos;
+    tPos.x -= 5;
+    DrawTextEx(FontArial, data.tittle, tPos, font_size, 0, BROWN);
+  }
 
   // disable
   if (!data.isActive)
@@ -5362,16 +5300,24 @@ void mainGraphics()
 
   SetTargetFPS(20); // max framerate per second set to 20
 
-  RenderTexture2D renderTexture = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT); // Load nội dung màn hình như một ảnh
+  main.renderTexture = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT); // Load nội dung màn hình như một ảnh
+  GenTextureMipmaps(&main.renderTexture.texture);
+  SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+  int ScreenW = GetScreenWidth(), ScreenH = GetScreenHeight();
 
   // Graphics in running
   while (!WindowShouldClose())
   {
     // Make all texture smooth
-    GenTextureMipmaps(&renderTexture.texture);
-    SetTextureFilter(renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+    if (ScreenW != GetScreenWidth() || ScreenH != GetScreenHeight())
+    {
+      GenTextureMipmaps(&main.renderTexture.texture);
+      SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+      ScreenW = GetScreenWidth();
+      ScreenH = GetScreenHeight();
+    }
 
-    BeginTextureMode(renderTexture);
+    BeginTextureMode(main.renderTexture);
     // Các thao tác trên đồ hoạ
 
     if (!main.req_swTab)
@@ -5433,17 +5379,23 @@ void mainGraphics()
 
     BeginDrawing();
     // xuất màn hình tĩnh theo chỉ sô động6
-    DrawTexturePro(renderTexture.texture,
+    DrawTexturePro(main.renderTexture.texture,
                    Rectangle{0, 0,
-                             static_cast<float>(renderTexture.texture.width),
-                             static_cast<float>(-renderTexture.texture.height)},
+                             static_cast<float>(main.renderTexture.texture.width),
+                             static_cast<float>(-main.renderTexture.texture.height)},
                    Rectangle{0, 0, static_cast<float>(GetScreenWidth()),
                              static_cast<float>(GetScreenHeight())},
                    Vector2{0, 0}, 0, WHITE);
     EndDrawing();
+
+    if (main.listCB.update(main.listMB))
+    {
+      setDataToFile(main.listCB, main.listMB, main.listHK);
+      getDataFromFile(main.listCB, main.listMB, main.listHK);
+    }
   }
 
   // Clear all data after run graphics
-  UnloadRenderTexture(renderTexture);
+  UnloadRenderTexture(main.renderTexture);
   UnloadResources();
 }

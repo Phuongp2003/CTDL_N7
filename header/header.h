@@ -100,7 +100,6 @@ string intToString(int num, int size);
 string charToString(const char *ch);
 string trim(string str);
 
-
 /// @brief Xóa toàn bộ khoảng trắng và chuyển thành chữ thường
 /// @param str Chuỗi cần chuẩn hóa
 void formatStr(string &str);
