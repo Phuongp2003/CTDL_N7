@@ -7,7 +7,6 @@
 using std::ifstream;
 using std::ios;
 using std::ofstream;
-// DsMayBay *DanhSach;
 
 class MayBay
 {
@@ -32,8 +31,6 @@ public: //
   void setSoDong(int soDong);
   int getSoDong();
   int getSoCho();
-  void showMB();
-  bool kiemTraSoCho();
   void tangSoLuotThucHienCB();
   int getSoLuotBay();
   void setUsed();
@@ -68,5 +65,5 @@ public:
   void writetoFileWhenAdd();
   bool planeMatch(const char *soHieuMB, const char *other);
 
-  ~DsMayBay(); //
+  ~DsMayBay(); 
 };
