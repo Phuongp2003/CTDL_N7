@@ -415,8 +415,6 @@ void UI_switchTab(UIcontroller &control)
     resetData_QLMB(control.dataTabMB);
     resetData_QLHK(control.dataTabHK);
   }
-  GenTextureMipmaps(&control.renderTexture.texture);
-  SetTextureFilter(control.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
   control.current_tab = control.next_tab;
 }
 
@@ -4133,42 +4131,6 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
   int j = 0;
 
   NodeHK *root = control.listHK.getRoot();
-  // Queue queue = Queue(size);
-  // listHK.levelOrderTraversal(queue);
-  // NodeHK *tmp;
-  // int k = 0;
-
-  // while (!queue.isEmpty())
-  // {
-  //   if (j >= i && j <= i + 9)
-  //   {
-  //     if (j % 10 == control.dataTabHK.pickdata_index)
-  //       result = root;
-
-  //     TextBox show[5];
-  //     tmp = queue.getFront();
-  //     const char *showText[5] = {0};
-  //     showText[0] = intToChar(k + 1, n_char);
-  //     showText[1] = strToChar(tmp->getHK().getCmnd());
-  //     showText[2] = strToChar(tmp->getHK().getHo());
-  //     showText[3] = strToChar(tmp->getHK().getTen());
-  //     showText[4] = strToChar(tmp->getHK().getPhai());
-  //     for (int show_i = 4; show_i >= 0; show_i--)
-  //     {
-  //       show[show_i] = GetCellTextBox(start_pos, 5, cellW, show_i + 1,
-  //                                     (j % 10) + 1, showText[show_i], 30);
-  //       show[show_i].isCenter = false;
-  //     }
-  //     for (int show_i = 4; show_i >= 0; show_i--)
-  //     {
-  //       CreateTextBox(show[show_i]);
-  //     }
-  //   }
-  //   j++;
-  //   k++;
-  //   // }
-  //   queue.pop();
-  // }
 
   Queue queue = Queue();
   NodeHK *currNode;
@@ -5301,11 +5263,19 @@ void mainGraphics()
   main.renderTexture = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT); // Load nội dung màn hình như một ảnh
   GenTextureMipmaps(&main.renderTexture.texture);
   SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+  int ScreenW = GetScreenWidth(), ScreenH = GetScreenHeight();
 
   // Graphics in running
   while (!WindowShouldClose())
   {
     // Make all texture smooth
+    if (ScreenW != GetScreenWidth() || ScreenH != GetScreenHeight())
+    {
+      GenTextureMipmaps(&main.renderTexture.texture);
+      SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+      ScreenW = GetScreenWidth();
+      ScreenH = GetScreenHeight();
+    }
 
     BeginTextureMode(main.renderTexture);
     // Các thao tác trên đồ hoạ
