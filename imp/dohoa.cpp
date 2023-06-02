@@ -1023,13 +1023,13 @@ bool Popup_ThemMB(UIcontroller &control)
   const char *newLoaiMayBay = CreateTextInputBox(control.dataTabMB.LoaiMB);
   DrawTextEx(FontArial, "Số dòng",
              {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
-  DrawTextEx(FontArial, "(Gồm CHỈ số, nho hon hoac bang 25)",
+  DrawTextEx(FontArial, "(Gồm CHỈ số, nhỏ hơn hoặc bằng 25)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 330 + 10 + hFont40_25},
              25, 0, RED);
   const char *newSoDong = CreateTextInputBox(control.dataTabMB.SoDong);
   DrawTextEx(FontArial, "Số dãy",
              {StartPos.x + 300, StartPos.y + 60 + 430 + 10}, 40, 0, BROWN);
-  DrawTextEx(FontArial, "(Gồm CHỈ số, nho hon hoac bang 12)",
+  DrawTextEx(FontArial, "(Gồm CHỈ số, nhỏ hơn hoặc bằng 12)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
              25, 0, RED);
   const char *newSoDay = CreateTextInputBox(control.dataTabMB.SoDay);
@@ -3027,54 +3027,59 @@ bool Popup_chonVe(UIcontroller &control)
     return false;
   }
 
-  Button s_ON;
-  s_ON.x = StartPos.x + 900;
-  s_ON.y = StartPos.y + 60 + 20;
-  s_ON.w = 100;
-  s_ON.h = 50;
-  s_ON.gotNothing = false;
-  s_ON.gotText = true;
-  s_ON.tittle = (char *)"ON";
-  s_ON.font = FontArial;
-  s_ON.BoMau = ArrowKey;
-
-  Button s_OFF;
-  s_OFF.x = s_ON.x + s_ON.w + 10;
-  s_OFF.y = s_ON.y;
-  s_OFF.w = 100;
-  s_OFF.h = 50;
-  s_OFF.gotNothing = false;
-  s_OFF.gotText = true;
-  s_OFF.tittle = (char *)"OFF";
-  s_OFF.font = FontArial;
-  s_OFF.BoMau = ArrowKey;
-
-  TextBox showVeAdv;
-  showVeAdv.box = {s_ON.x - 100, s_ON.y + 60, 410, 40};
-  showVeAdv.isCenter = true;
-  showVeAdv.mode = 2;
-  showVeAdv.text = "Hiện vé đã đặt";
-
-  CreateTextBox(showVeAdv);
-
-  if (control.dataTabCB.dataDSVe.showNotEmpty == true)
+  if (control.dataTabCB.data->getNode().getDSVe().getSoVeDaDat() != 0)
   {
-    s_ON.isActive = false;
-    s_OFF.isActive = true;
-  }
-  else if (control.dataTabCB.dataDSVe.showNotEmpty == false)
-  {
-    s_OFF.isActive = false;
-    s_ON.isActive = true;
-  }
+    DrawRectangleRoundedLines({StartPos.x + 890, StartPos.y + 60 + 20, 230, 100}, 0, 0, 3, BLUE);
+    DrawRectangleRoundedLines({StartPos.x + 930, StartPos.y + 60 + 80, 150, 40}, 0, 0, 3, RED);
+    Button s_ON;
+    s_ON.x = StartPos.x + 900;
+    s_ON.y = StartPos.y + 60 + 20;
+    s_ON.w = 100;
+    s_ON.h = 50;
+    s_ON.gotNothing = false;
+    s_ON.gotText = true;
+    s_ON.tittle = (char *)"ON";
+    s_ON.font = FontArial;
+    s_ON.BoMau = ArrowKey;
 
-  if (CreateButton(s_ON))
-  {
-    control.dataTabCB.dataDSVe.showNotEmpty = true;
-  }
-  if (CreateButton(s_OFF))
-  {
-    control.dataTabCB.dataDSVe.showNotEmpty = false;
+    Button s_OFF;
+    s_OFF.x = s_ON.x + s_ON.w + 10;
+    s_OFF.y = s_ON.y;
+    s_OFF.w = 100;
+    s_OFF.h = 50;
+    s_OFF.gotNothing = false;
+    s_OFF.gotText = true;
+    s_OFF.tittle = (char *)"OFF";
+    s_OFF.font = FontArial;
+    s_OFF.BoMau = ArrowKey;
+
+    TextBox showVeAdv;
+    showVeAdv.box = {s_ON.x - 100, s_ON.y + 60, 410, 40};
+    showVeAdv.isCenter = true;
+    showVeAdv.mode = 2;
+    showVeAdv.text = "Hiện vé đã đặt";
+
+    CreateTextBox(showVeAdv);
+
+    if (control.dataTabCB.dataDSVe.showNotEmpty == true)
+    {
+      s_ON.isActive = false;
+      s_OFF.isActive = true;
+    }
+    else if (control.dataTabCB.dataDSVe.showNotEmpty == false)
+    {
+      s_OFF.isActive = false;
+      s_ON.isActive = true;
+    }
+
+    if (CreateButton(s_ON))
+    {
+      control.dataTabCB.dataDSVe.showNotEmpty = true;
+    }
+    if (CreateButton(s_OFF))
+    {
+      control.dataTabCB.dataDSVe.showNotEmpty = false;
+    }
   }
 
   ChuyenBay currCB = control.dataTabCB.data->getNode();
@@ -4962,7 +4967,11 @@ const char *CreateTextInputBox(InputTextBox &data)
     }
   }
   else
-    DrawTextEx(FontArial, data.tittle, textBoxPos, font_size, 0, BROWN);
+  {
+    Vector2 tPos = textBoxPos;
+    tPos.x -= 5;
+    DrawTextEx(FontArial, data.tittle, tPos, font_size, 0, BROWN);
+  }
 
   // disable
   if (!data.isActive)
