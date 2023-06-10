@@ -2134,7 +2134,6 @@ bool Popup_HieuChinhCB(UIcontroller &control)
                stoi(newThang[0] == 0 ? "1" : newThang),
                stoi(newNam[0] == 0 ? "2000" : newNam), 00, 00);
 
-
   const char *newGio = CreateTextInputBox(control.dataTabCB.Gio);
   const char *newPhut = CreateTextInputBox(control.dataTabCB.Phut);
 
@@ -4661,7 +4660,8 @@ const char *CreateTextInputBox(InputTextBox &data) // #Didn't clean memory: resu
   Vector2 textBoxDot = {
       data.textBox.x + 10 + MeasureTextEx(FontArial, name_cpy, font_size, 0).x,
       CenterDataSetter(data.textBox.height, data.textBox.y,
-                       MeasureTextEx(FontArial, name_cpy, font_size, 0).y)};
+                       MeasureTextEx(FontArial, name_cpy, font_size, 0).y) -
+          per1000(50) * font_size};
 
   // edit from pre-work
   if (data.editMode && data.done)

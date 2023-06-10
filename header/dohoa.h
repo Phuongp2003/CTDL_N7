@@ -131,11 +131,16 @@ struct TextBox
     const char *text;      // Xâu xuất
     Rectangle box;         // Giá trị ô xuát
     bool showBox = false;  // Hiện ô xuất
-    int mode = ASCII2;          // Hiện thêm ô (1) / Thu nhỏ chữ (2)
+    int mode = ASCII2;     // Hiện thêm ô (1) / Thu nhỏ chữ (2)
     bool isCenter = false; // Căn giữa
     int fontSize = 0;      // Cỡ chữ
 };
 
+struct PageSwitcher
+{
+    bool editmode = false;      // Trạng thái chế độ ô nhập
+    InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
+};
 struct QLMB_data
 {
     MayBay *data = nullptr; // Giá trị của MB được chọn (qua index)
@@ -182,12 +187,6 @@ struct QLVe_data
     bool inDelete = false;     // Có thao tác huỷ vé được kích hoạt
 
     PageSwitcher Sw_table_page; // Chuyển trang
-};
-
-struct PageSwitcher
-{
-    bool editmode = false;      // Trạng thái chế độ ô nhập
-    InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
 };
 
 struct QLCB_data

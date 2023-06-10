@@ -36,8 +36,7 @@ enum ChuyenBayStatus
 };
 enum InputTextboxMode
 {
-    Undefined,
-    ASCII2,
+    ASCII2 = 1,
     Alphanumeric,
     UpperAlphanumeric,
     Alphalete,
@@ -51,8 +50,7 @@ enum InputTextboxMode
 
 enum TextboxMode
 {
-    Undefined,
-    AntiLeak,
+    AntiLeak = 1,
     Auto
 };
 
