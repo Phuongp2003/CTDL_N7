@@ -118,6 +118,7 @@ void initPageSwitcher(PageSwitcher &thisdata)
   thisdata.fast_switcher.returnIfDone = true;
   thisdata.fast_switcher.showNKeyRemain = false;
 }
+
 void resetPageSwitcher(PageSwitcher &thisdata)
 {
   thisdata.editmode = false;
@@ -1708,16 +1709,22 @@ bool Popup_TimCB(UIcontroller &control)
     control.dataTabCB.fbNoiDen = newNoiDen;
     control.dataTabCB.popup_errorMess = "";
     control.dataTabCB.inAdvSearch = true;
+    resetInputTextBox(control.dataTabCB.NoiDen);
+    control.dataTabCB.NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
+    resetInputTextBox(control.dataTabCB.Ngay);
+    resetInputTextBox(control.dataTabCB.Thang);
+    resetInputTextBox(control.dataTabCB.Nam);
+    control.dataTabCB.popup_errorMess = "";
 
     return true;
-
-    // return false;
   }
   if (CreateButton(Cancel))
   {
-    // resetInputTextBox(control.dataTabCB.NoiDen);
-    // control.dataTabCB.NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};#notuse
-    // resetInputTextBox(control.dataTabCB.Ngay);
+    resetInputTextBox(control.dataTabCB.NoiDen);
+    control.dataTabCB.NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
+    resetInputTextBox(control.dataTabCB.Ngay);
+    resetInputTextBox(control.dataTabCB.Thang);
+    resetInputTextBox(control.dataTabCB.Nam);
     control.dataTabCB.popup_errorMess = "";
     return true;
   }
@@ -4907,6 +4914,7 @@ void mainGraphics()
   getDataFromFile(main.listCB, main.listMB, main.listHK);
 
   // Settup for before run graphics
+  SetExitKey(0); // Disable exit key
   SetWindowState(FLAG_WINDOW_RESIZABLE);
   SetWindowMinSize(700, 400);
   SetSizeWindow();
@@ -4929,18 +4937,45 @@ void mainGraphics()
   // Graphics in running
   while (!WindowShouldClose())
   {
-    // Make all texture smooth
-    if (ScreenW != GetScreenWidth() || ScreenH != GetScreenHeight())
+
+    // Full screen
+    if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
     {
-      GenTextureMipmaps(&main.renderTexture.texture);
-      SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
-      ScreenW = GetScreenWidth();
-      ScreenH = GetScreenHeight();
+      int display = GetCurrentMonitor();
+
+      if (IsWindowFullscreen())
+      {
+        SetWindowSize(ScreenW, ScreenH);
+      }
+      else
+      {
+        SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
+        GenTextureMipmaps(&main.renderTexture.texture);
+        SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+      }
+
+      ToggleFullscreen();
+    }
+    if (IsWindowFullscreen() && IsKeyPressed(KEY_ESCAPE))
+    {
+      ToggleFullscreen();
+      SetWindowSize(ScreenW, ScreenH);
     }
 
+    // Make all texture smooth
+    if (!IsWindowFullscreen())
+    {
+      if (ScreenW != GetScreenWidth() || ScreenH != GetScreenHeight())
+      {
+        GenTextureMipmaps(&main.renderTexture.texture);
+        SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+        ScreenW = GetScreenWidth();
+        ScreenH = GetScreenHeight();
+      }
+    }
     BeginTextureMode(main.renderTexture);
-    // Các thao tác trên đồ hoạ
 
+    // Các thao tác trên đồ hoạ
     if (!main.req_swTab)
       switch (main.current_tab)
       {
