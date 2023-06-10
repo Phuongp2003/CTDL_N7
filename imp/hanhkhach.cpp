@@ -1,6 +1,5 @@
 #include "../header/hanhkhach.h"
 #include "../header/queue.h"
-#include <sstream>
 
 HanhKhach::HanhKhach() : cmnd(""), ho(""), ten(""), phai(-1) {}
 

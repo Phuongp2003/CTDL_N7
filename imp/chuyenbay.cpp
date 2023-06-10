@@ -135,23 +135,6 @@ Date ChuyenBay::ngayHoanThanh()
   return date;
 }
 
-// int ChuyenBay::soSanhNgay(Date another)//1: CB >another,0: CB=another,-1:CB<another
-// {
-//   if(ngayGio.getNam()>another.getNam()) return 1;
-//   else if(ngayGio.getNam()<another.getNam()) return -1;
-//   else
-//   {
-//       if(ngayGio.getThang()>another.getThang()) return 1;
-//       else if(ngayGio.getThang()<another.getThang()) return -1;
-//       else
-//       {
-//         if(ngayGio.getNgay()>another.getNgay()) return 1;
-//         else if(ngayGio.getNgay()<another.getNgay()) return -1;
-//         else return 0;
-//       }
-//   }
-// }
-
 // @return true nếu thời gian của CBay hiện tại cách xa <Date another> <hour> tiếng trở lên
 bool ChuyenBay::cach(int hour, Date another)
 {
@@ -215,11 +198,6 @@ bool NodeCB::Cach6tiengchua(Date another)
        another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60))
     return true;
   return false; //
-}
-
-NodeCB::~NodeCB()
-{
-  // delete next;
 }
 
 // Hàm của DsChuyenBay
@@ -419,7 +397,7 @@ bool DsChuyenBay::isUsing(const char *maMB)
   return false;
 }
 
-int DsChuyenBay:: duocDatKhong(string cmnd, ChuyenBay cb)
+int DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
   for (int i = 0; i < cb.getDSVe().getSoVeToiDa(); i++)
@@ -442,8 +420,7 @@ int DsChuyenBay:: duocDatKhong(string cmnd, ChuyenBay cb)
     {
       for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
       {
-        // if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
-        //   continue;
+
         if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
           return 2;
       }
@@ -537,6 +514,7 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
     {
       listMB.writetoFile();
     }
+    cout << "Nhập file chuyến bay" << endl;
   }
   else
     cout << "Error" << endl;
@@ -570,6 +548,7 @@ void DsChuyenBay::writetToFile()
 
       tmp = tmp->getNext();
     }
+    cout << "Xuất file chuyến bay" << endl;
   }
   else
   {
@@ -630,6 +609,8 @@ void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
   listMB.readFromFile();
   listCB.readFromFile(listMB);
   listHK.readFromFile();
+
+  cout << "Nhận lại toàn bộ dữ liệu từ file!" << endl;
 }
 
 void setDataToFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
@@ -637,4 +618,6 @@ void setDataToFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
   listMB.writetoFile();
   listHK.writeToFileAllHK();
   listCB.writetToFile();
+
+  cout << "Xuất toàn bộ dữ liệu vào file!" << endl;
 }

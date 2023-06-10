@@ -2,11 +2,6 @@
 // #include "chuyenbay.h"
 #include "header.h"
 #include <fstream>
-#define MAXMB 300
-
-using std::ifstream;
-using std::ios;
-using std::ofstream;
 
 class MayBay
 {
@@ -21,7 +16,7 @@ private:
 public: //
   MayBay();
   MayBay(const char *soHieuMB, const char *loaiMB, int soDay, int soDong);
-  MayBay(const char *soHieuMB, const char *loaiMB, int soDay, int soDong, int soLuotThucHienCB,bool isUsed);
+  MayBay(const char *soHieuMB, const char *loaiMB, int soDay, int soDong, int soLuotThucHienCB, bool isUsed);
   void setSoHieuMB(const char *soHieuMB);
   char *getSoHieuMB();
   void setLoaiMB(const char *loaiMB);
@@ -35,8 +30,8 @@ public: //
   int getSoLuotBay();
   void setUsed();
   bool inUsed();
+  bool kiemTraSoCho();
   MayBay *getMB();
-  ~MayBay();
 };
 
 // Danh sách con trỏ của máy bay
@@ -65,5 +60,5 @@ public:
   void writetoFileWhenAdd();
   bool planeMatch(const char *soHieuMB, const char *other);
 
-  ~DsMayBay(); 
+  ~DsMayBay();
 };

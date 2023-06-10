@@ -1,12 +1,9 @@
 #include "../header/vemaybay.h"
-// hàm của dsVe
-//
+
 VeMayBay::VeMayBay()
 {
   idVe = "A00";
   cmnd = "\0";
-  // TrangThai = true; // true là chưa đặt
-  //                   // false là đặt vé
 }
 
 VeMayBay::VeMayBay(string cmnd) { this->cmnd = cmnd; }

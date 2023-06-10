@@ -101,7 +101,7 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
 
   switch (mode)
   {
-  case 1:
+  case ASCII2:
   {
     if ((key >= 32) && (key <= 125))
     {
@@ -109,7 +109,7 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
     }
     break;
   };
-  case 2:
+  case Alphanumeric:
   {
     if ((((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
          ((key >= 'A') && (key <= 'Z'))))
@@ -118,7 +118,7 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
     }
     break;
   }
-  case 3:
+  case UpperAlphanumeric:
   {
     if ((((key >= '0') && (key <= '9')) || ((key >= 'a') && (key <= 'z')) ||
          ((key >= 'A') && (key <= 'Z'))))
@@ -132,7 +132,7 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
     break;
   }
 
-  case 4:
+  case Alphalete:
   {
     if ((((key >= 'a') && (key <= 'z')) || ((key >= 'A') && (key <= 'Z'))))
     {
@@ -144,8 +144,8 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
     }
     break;
   }
-  case 5:
-  case 8:
+  case Numeric:
+  case Year:
   {
     if (((key >= '0') && (key <= '9')))
     {
@@ -153,7 +153,7 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
     }
     break;
   }
-  case 6:
+  case Day:
   {
     if ((key >= '0') && (key <= '9'))
     {
@@ -177,7 +177,7 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
     }
     break;
   }
-  case 7:
+  case Month:
   {
     if (((key >= '0') && (key <= '9')))
     {
@@ -202,7 +202,7 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
     }
     break;
   }
-  case 9:
+  case Hour:
   {
     if (((key >= '0') && (key <= '9')))
     {
@@ -218,7 +218,7 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
     }
     break;
   }
-  case 10:
+  case Minute:
   {
     if (((key >= '0') && (key <= '9')))
     {
