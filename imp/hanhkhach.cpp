@@ -20,12 +20,7 @@ string HanhKhach::getTen() { return this->ten; }
 
 string HanhKhach::getPhai()
 {
-	if (phai == 0)
-	{
-		return "Nam";
-	}
-	else
-		return "Nu";
+	return phai == 0 ? "Nam" : "Nu";
 }
 
 void HanhKhach::setCmnd(string cmnd) { this->cmnd = cmnd; }
@@ -93,7 +88,7 @@ void DsHanhKhach::insert(HanhKhach hanhKhach)
 			}
 		}
 		else if (stoi(hanhKhach.getCmnd()) >
-						 stoi(current->getHK().getCmnd()))
+				 stoi(current->getHK().getCmnd()))
 		{
 			if (current->getRight() == NULL)
 			{
@@ -114,6 +109,30 @@ void DsHanhKhach::insert(HanhKhach hanhKhach)
 	}
 }
 
+NodeHK *DsHanhKhach::search(NodeHK *&prevNode, string cmnd)
+{
+	NodeHK *current = root;
+
+	while (current != NULL)
+	{
+		if (stoi(cmnd) == stoi(current->getHK().getCmnd()))
+		{
+			return current;
+		}
+		else if (stoi(cmnd) < stoi(current->getHK().getCmnd()))
+		{
+			prevNode = current;
+			current = current->getLeft();
+		}
+		else
+		{
+			prevNode = current;
+			current = current->getRight();
+		}
+	}
+	return NULL;
+}
+
 NodeHK *DsHanhKhach::search(string cmnd)
 {
 	if (root == NULL)
@@ -121,26 +140,8 @@ NodeHK *DsHanhKhach::search(string cmnd)
 		return NULL;
 	}
 
-	NodeHK *current = root;
-	HanhKhach hanhKhach = current->getHK();
-
-	while (current != NULL)
-	{
-		if (cmnd == current->getHK().getCmnd())
-		{
-			return current;
-		}
-		else if (cmnd < current->getHK().getCmnd())
-		{
-			current = current->getLeft();
-		}
-		else
-		{
-			current = current->getRight();
-		}
-	}
-
-	return NULL;
+	NodeHK *prevNode = NULL;
+	return search(prevNode, cmnd);
 }
 
 void DsHanhKhach::writeToFileOneHK(NodeHK *node)
@@ -155,7 +156,7 @@ void DsHanhKhach::writeToFileOneHK(NodeHK *node)
 	HanhKhach hanhKhach = node->getHK();
 	string phai = (hanhKhach.getPhai() == "Nam") ? "0" : "1";
 	file << hanhKhach.getCmnd() << '|' << hanhKhach.getHo() << '|'
-			 << hanhKhach.getTen() << '|' << phai << "|\n";
+		 << hanhKhach.getTen() << '|' << phai << "|\n";
 	file.close();
 }
 
@@ -180,7 +181,7 @@ void DsHanhKhach::writeToFileAllHK()
 		queue.pop();
 		phai = (currNode->getHK().getPhai() == "Nam") ? "0" : "1";
 		file << currNode->getHK().getCmnd() << '|' << currNode->getHK().getHo() << '|'
-				 << currNode->getHK().getTen() << '|' << phai << "|\n";
+			 << currNode->getHK().getTen() << '|' << phai << "|\n";
 
 		if (currNode->getLeft() != NULL)
 		{
@@ -221,3 +222,86 @@ void DsHanhKhach::readFromFile()
 int DsHanhKhach::getSize() { return this->size; }
 
 NodeHK *DsHanhKhach::getRoot() { return this->root; }
+
+NodeHK *DsHanhKhach::minLeftNode(NodeHK *node)
+{
+	while (node->getLeft() != NULL)
+	{
+		node = node->getLeft();
+	}
+	return node;
+}
+
+void DsHanhKhach::remove(NodeHK *node)
+{
+	NodeHK *prevNode = NULL;
+
+	// Lấy node cha của node cần xóa
+	search(prevNode, node->getHK().getCmnd());
+
+	if (node == NULL)
+	{
+		return;
+	}
+
+	// Trường hợp 1: node cần xóa là nút lá
+	if (node->getLeft() == NULL && node->getRight() == NULL)
+	{
+		if (node != root)
+		{
+			if (prevNode->getLeft() == node)
+			{
+				prevNode->setLeft(NULL);
+			}
+			else
+			{
+				prevNode->setRight(NULL);
+			}
+		}
+		else
+			root = NULL;
+
+		delete node;
+	}
+
+	// Trường hợp 2: node cần xóa có 2 con
+	else if (node->getLeft() != NULL && node->getRight() != NULL)
+	{
+		// Node thay thế cho node cần xóa
+		NodeHK *minNode = minLeftNode(node->getRight());
+
+		// Lưu dữ liệu của node thay thế
+		HanhKhach minHK = minNode->getHK();
+
+		remove(minNode);
+
+		// Ghì đè dữ liệu của node thay thế lên node cần xóa
+		node->setHK(minHK);
+	}
+
+	// Trường hợp 3: node cần xóa có 1 con
+	else
+	{
+		NodeHK *child = (node->getLeft() != NULL)
+							? node->getLeft()
+							: node->getRight();
+
+		if (node != root)
+		{
+			if (node == prevNode->getLeft())
+			{
+				prevNode->setLeft(child);
+			}
+			else
+			{
+				prevNode->setRight(child);
+			}
+		}
+		else
+		{
+			root = child;
+		}
+
+		delete node;
+	}
+}

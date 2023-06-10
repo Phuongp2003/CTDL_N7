@@ -51,6 +51,9 @@ private:
   NodeHK *root;
   int size;
 
+  NodeHK *minLeftNode(NodeHK *node);
+  NodeHK *search(NodeHK *&prevNode, string cmnd);
+
 public:
   DsHanhKhach();
   void insert(HanhKhach hanhKhach);
@@ -60,4 +63,5 @@ public:
   void readFromFile();
   NodeHK *getRoot();
   int getSize();
+  void remove(NodeHK *node);
 };
