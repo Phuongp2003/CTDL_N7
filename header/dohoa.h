@@ -141,6 +141,8 @@ bool Warning_Full();
 bool Warning_Empty();
 int Warning_SwitchTab();
 void CreateTable(Vector2 viriBang, int soCot, float cellW[], float total_cellW);
+void DrawLineTable(float pos_x, float pos_y, int soCot, float cellW[],
+                   float cellH);
 Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[],
                       const char *cell_tittle[]);
 TextBox GetCellTextBox(Vector2 vitriBang, int soCot, float cellW[],

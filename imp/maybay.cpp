@@ -66,13 +66,6 @@ int MayBay::getSoCho()
   return this->soDay * this->soDong;
 }
 
-void MayBay::showMB()
-{
-  cout << getSoHieuMB() << " " << getLoaiMB() << " " << getSoDay() << " "
-       << getSoDong() << endl;
-}
-
-bool MayBay::kiemTraSoCho() { return (soDay * soDong) >= 20; }
 
 void MayBay::tangSoLuotThucHienCB() { this->soLuotThucHienCB++; }
 
