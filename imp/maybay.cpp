@@ -66,7 +66,6 @@ int MayBay::getSoCho()
   return this->soDay * this->soDong;
 }
 
-
 void MayBay::tangSoLuotThucHienCB() { this->soLuotThucHienCB++; }
 
 int MayBay::getSoLuotBay() { return this->soLuotThucHienCB; }
@@ -87,13 +86,6 @@ int DsMayBay::getSize() { return this->size; }
 bool DsMayBay::isEmpty() { return size == 0; }
 
 bool DsMayBay::isFull() { return size == MAXMB; }
-
-// MayBay *DsMayBay::New_MB(MayBay *maybay)
-// {
-//     MayBay *p = new MayBay;
-//     p = maybay;
-//     return p;
-// }
 
 void DsMayBay::insertMB(MayBay *maybay)
 {

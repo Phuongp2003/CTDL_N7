@@ -135,23 +135,6 @@ Date ChuyenBay::ngayHoanThanh()
   return date;
 }
 
-// int ChuyenBay::soSanhNgay(Date another)//1: CB >another,0: CB=another,-1:CB<another
-// {
-//   if(ngayGio.getNam()>another.getNam()) return 1;
-//   else if(ngayGio.getNam()<another.getNam()) return -1;
-//   else
-//   {
-//       if(ngayGio.getThang()>another.getThang()) return 1;
-//       else if(ngayGio.getThang()<another.getThang()) return -1;
-//       else
-//       {
-//         if(ngayGio.getNgay()>another.getNgay()) return 1;
-//         else if(ngayGio.getNgay()<another.getNgay()) return -1;
-//         else return 0;
-//       }
-//   }
-// }
-
 // @return true nếu thời gian của CBay hiện tại cách xa <Date another> <hour> tiếng trở lên
 bool ChuyenBay::cach(int hour, Date another)
 {
@@ -419,7 +402,7 @@ bool DsChuyenBay::isUsing(const char *maMB)
   return false;
 }
 
-int DsChuyenBay:: duocDatKhong(string cmnd, ChuyenBay cb)
+int DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
   for (int i = 0; i < cb.getDSVe().getSoVeToiDa(); i++)
@@ -442,8 +425,7 @@ int DsChuyenBay:: duocDatKhong(string cmnd, ChuyenBay cb)
     {
       for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
       {
-        // if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
-        //   continue;
+
         if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
           return 2;
       }

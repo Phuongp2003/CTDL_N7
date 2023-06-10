@@ -84,95 +84,14 @@ bool Date::checkNgay()
   return false;
 }
 
-bool Date::checkGio()
-{
-  if (gio >= 0 && gio <= 23 && phut >= 0 && phut <= 59)
-    return true;
-  else
-    return false;
-}
-
 bool Date::checkNgayNhapVoiNgayHT()
 { // hàm check xem ngày khởi hành của chuyến bay khi nhập vào có hợp lí không
   time_t now = time(0);
-  // tm *ltm = localtime(&now);
+
   Date _now;
   _now.setToNow();
   if ((Date(ngay, thang, nam, gio, phut).soVoi1_1_1900_0_0() - _now.soVoi1_1_1900_0_0()) >= 12 * 60)
     return true;
-  return false;
-  // Date date(ngay,thang,nam, gio,phut);
-
-  // bool t_nam = 0;
-  // bool t_thang = 0;
-  // bool t_ngay = 0;
-
-  // if (nam >= 1900 + ltm->tm_year)
-  //   t_nam = true;
-  // else
-  //   t_nam = false;
-  // if (thang >= 1 + ltm->tm_mon)
-  //   t_thang = true;
-  // else
-  //   t_thang = false;
-  // if (ngay >= (ltm->tm_mday) + 1)
-  //   t_ngay = true;
-  // else
-  //   t_ngay = false;
-  // if (t_nam && t_thang && t_ngay)
-  //   return true; // là thời gian nhập vào hợp lý
-  // return false;
-}
-
-// bool Date::checkGioNhapVoiGioHT() {//hàm check xem giờ khởi hành của chuyến bay khi nhập vào có hợp lí không
-//   time_t now = time(0);
-//   tm *ltm = localtime(&now);
-//   bool t_gio = 0;
-//   bool t_phut = 0;
-//   if (gio >= ltm->tm_hour)
-//     t_gio = true;
-//   else
-//     t_gio = false;
-//   if (phut >= (ltm->tm_min) + 1)
-//     t_phut = true;
-//   else
-//     t_phut = false;
-//   if (t_gio && t_phut)
-//     return true; // là thời gian nhập vào hợp lý
-//   return false;
-// }
-
-bool Date::checkDateHour() // để set trang thái hoàn thành của chuyến bay
-{
-  time_t now = time(0);
-  tm *ltm = localtime(&now);
-  bool t_nam = 0;
-  bool t_thang = 0;
-  bool t_ngay = 0;
-  bool t_gio = 0;
-  bool t_phut = 0;
-  if (nam == 1900 + ltm->tm_year)
-    t_nam = false;
-  else
-    t_nam = true;
-  if (thang == 1 + ltm->tm_mon)
-    t_thang = true;
-  else
-    t_thang = false;
-  if (ngay == (ltm->tm_mday))
-    t_ngay = true;
-  else
-    t_ngay = false;
-  if (gio == ltm->tm_hour)
-    t_gio = true;
-  else
-    t_gio = false;
-  if (phut == (ltm->tm_min))
-    t_phut = true;
-  else
-    t_phut = false;
-  if (t_nam && t_thang && t_ngay && t_gio && t_phut)
-    return true; // là thời gian nhập vào hợp lý
   return false;
 }
 
@@ -180,27 +99,6 @@ string Date::printDateHour() //
 {
   return this->printDate() + " " + this->printHour();
 }
-
-// void Date::PrintDateHour_c(char *result) //
-// {
-//     result[0] = 0;
-//     char *dd = intTochar(Ngay, 2),
-//          *mm = intTochar(thang, 2),
-//          *yyyy = intTochar(Nam, 4),
-//          *hh = intTochar(Gio, 2),
-//          *pp = intTochar(phut, 2);
-
-//     strcat(result, dd);
-//     strcat(result, " / ");
-//     strcat(result, mm);
-//     strcat(result, " / ");
-//     strcat(result, yyyy);
-//     strcat(result, "  ");
-//     strcat(result, hh);
-//     strcat(result, " : ");
-//     strcat(result, pp);
-//     result[23] = 0;
-// }
 
 string Date::printDate()
 {
