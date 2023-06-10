@@ -47,6 +47,8 @@ public:
 
   // node
   bool operator<(const ChuyenBay &other);
+
+  ~ChuyenBay();
 };
 
 class NodeCB
