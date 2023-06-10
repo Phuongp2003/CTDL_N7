@@ -75,8 +75,6 @@ void MayBay::setUsed()
 
 bool MayBay::inUsed() { return isUsed; }
 
-MayBay::~MayBay() {}
-
 DsMayBay::DsMayBay() { size = 0; }
 
 int DsMayBay::getSize() { return this->size; }
@@ -203,7 +201,7 @@ void DsMayBay::writetoFile()
            << data[i]->getSoLuotBay() << "|" << data[i]->inUsed() << "|"
            << "\n";
     }
-    cout << "Xuất file thành công!" << endl;
+    cout << "Xuất file MB thành công!" << endl;
   }
   else
   {

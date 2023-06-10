@@ -26,10 +26,43 @@ using std::stringstream;
 
 #define MAXMB 300
 #define MAXVe 100
-#define HuyChuyen 0
-#define ConVe 1
-#define HetVe 2
-#define HoanTat 3
+
+enum ChuyenBayStatus
+{
+    HuyChuyen,
+    ConVe,
+    HetVe,
+    HoanTat
+};
+enum InputTextboxMode
+{
+    Undefined,
+    ASCII2,
+    Alphanumeric,
+    UpperAlphanumeric,
+    Alphalete,
+    Numeric,
+    Day,
+    Month,
+    Year,
+    Hour,
+    Minute
+};
+
+enum TextboxMode
+{
+    Undefined,
+    AntiLeak,
+    Auto
+};
+
+// Kích thước cửa sổ mặc định
+#define WINDOW_WIDTH 1530
+#define WINDOW_HEIGHT 820
+
+// kích thước màn hình làm việc mặc định
+#define SCREEN_WIDTH 1500
+#define SCREEN_HEIGHT 750
 
 const char idChu[26] = {
     'A',

@@ -1,10 +1,6 @@
 #pragma once
 
-// #include "chuyenbay.h"
-// #include "hanhkhach.h"
 #include "maybay.h"
-// #include "ngaythang.h"
-
 #include "header.h"
 
 class VeMayBay
@@ -12,17 +8,14 @@ class VeMayBay
 private:
   string idVe;
   string cmnd;
-  // bool trangThai; // false là đã đặt
 
-public: //
+public:
   VeMayBay();
   VeMayBay(string cmnd);
   void setIDVe(string id);
   string getIDVe();
   void setHanhKhach(string cmnd);
   string getHanhKhach();
-  // void setTrangThai(bool trangThai);
-  // bool getTrangThai();
 };
 
 class DsVeMayBay

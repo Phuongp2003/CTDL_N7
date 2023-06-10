@@ -2,11 +2,6 @@
 // #include "chuyenbay.h"
 #include "header.h"
 #include <fstream>
-#define MAXMB 300
-
-using std::ifstream;
-using std::ios;
-using std::ofstream;
 
 class MayBay
 {
@@ -37,7 +32,6 @@ public: //
   bool inUsed();
   bool kiemTraSoCho();
   MayBay *getMB();
-  ~MayBay();
 };
 
 // Danh sách con trỏ của máy bay

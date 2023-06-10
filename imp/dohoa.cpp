@@ -20,6 +20,16 @@ Texture2D PNG_circleYellow;
 Texture2D PNG_circleGray;
 //==================================================================================================================================
 
+void setDataToFile(UIcontroller &control)
+{
+  setDataToFile(control.listCB, control.listMB, control.listHK);
+}
+
+void getDataFromFile(UIcontroller &control)
+{
+  setDataToFile(control.listCB, control.listMB, control.listHK);
+}
+
 // Nhận text làm giá trị ban đầu (truyền trực tiếp vào dữ liệu ô nhập)
 void SetDataInputTextBox(InputTextBox &box, const char *text, int length = -1)
 {
@@ -56,26 +66,26 @@ void initQLMBdata(QLMB_data &thisdata)
   thisdata.popup_errorMess = "";
   thisdata.time_showError = 0;
 
-  thisdata.MaMB.mode = 3;
+  thisdata.MaMB.mode = UpperAlphanumeric;
   thisdata.MaMB.tittle = (char *)"Nhập số hiệu máy bay";
   thisdata.MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
   thisdata.MaMB.size = 15;
-  thisdata.LoaiMB.mode = 2;
+  thisdata.LoaiMB.mode = Alphanumeric;
   thisdata.LoaiMB.tittle = (char *)"Nhập loại máy bay";
   thisdata.LoaiMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
   thisdata.LoaiMB.size = 40;
-  thisdata.SoDong.mode = 5;
+  thisdata.SoDong.mode = Numeric;
   thisdata.SoDong.tittle = (char *)"Nhập số dòng của máy bay";
   thisdata.SoDong.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
   thisdata.SoDong.size = 3;
-  thisdata.SoDay.mode = 5;
+  thisdata.SoDay.mode = Numeric;
   thisdata.SoDay.tittle = (char *)"Nhập số dãy của máy bay";
   thisdata.SoDay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
   thisdata.SoDay.size = 3;
 
   thisdata.pickdata_index = -1;
   thisdata.keyword = "";
-  thisdata.searchKeyword.mode = 3;
+  thisdata.searchKeyword.mode = UpperAlphanumeric;
   thisdata.searchKeyword.tittle = "Nhập nội dung tìm kiếm";
   thisdata.current_showPage = 1;
 
@@ -89,17 +99,17 @@ void initQLHKdata(QLHK_data &thisdata)
   thisdata.pickdata_index = -1;
   thisdata.current_page = 1;
 
-  thisdata.i_CMND.mode = 5;
+  thisdata.i_CMND.mode = Numeric;
   thisdata.i_CMND.tittle = (char *)"Nhập số CMND/CCCD";
   thisdata.i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
   thisdata.i_CMND.size = 12;
 
-  thisdata.i_Ho.mode = 1;
+  thisdata.i_Ho.mode = ASCII2;
   thisdata.i_Ho.tittle = (char *)"Nhập họ và tên đệm";
   thisdata.i_Ho.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 580, 50};
   thisdata.i_Ho.size = 26;
 
-  thisdata.i_Ten.mode = 1;
+  thisdata.i_Ten.mode = ASCII2;
   thisdata.i_Ten.tittle = (char *)"Nhập tên";
   thisdata.i_Ten.textBox = {StartPos.x + 300 + 600, StartPos.y + 60 + 380, 300, 50};
   thisdata.i_Ten.size = 10;
@@ -114,7 +124,7 @@ void initPageSwitcher(PageSwitcher &thisdata)
   thisdata.fast_switcher.editMode = true;
   thisdata.fast_switcher.size = 2;
   thisdata.fast_switcher.MauVien = BROWN;
-  thisdata.fast_switcher.mode = 5;
+  thisdata.fast_switcher.mode = Numeric;
   thisdata.fast_switcher.returnIfDone = true;
   thisdata.fast_switcher.showNKeyRemain = false;
 }
@@ -157,41 +167,41 @@ void initQLCBdata(QLCB_data &thisdata)
   resetPageSwitcher(thisdata.Sw_table_page);
 
   // Input Textbox
-  thisdata.MaCB.mode = 3;
+  thisdata.MaCB.mode = UpperAlphanumeric;
   thisdata.MaCB.tittle = (char *)"Nhập mã chuyến bay";
   thisdata.MaCB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
   thisdata.MaCB.size = 15;
-  thisdata.MaMB.mode = 3;
+  thisdata.MaMB.mode = UpperAlphanumeric;
   thisdata.MaMB.tittle = (char *)"Nhập số hiệu máy bay";
   thisdata.MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 900, 50};
   thisdata.MaMB.size = 40;
-  thisdata.NoiDen.mode = 1;
+  thisdata.NoiDen.mode = ASCII2;
   thisdata.NoiDen.tittle = (char *)"Nhập nơi đến";
   thisdata.NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
   thisdata.NoiDen.size = 40;
-  thisdata.Ngay.mode = 6;
+  thisdata.Ngay.mode = Day;
   thisdata.Ngay.tittle = (char *)"DD";
   thisdata.Ngay.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 60, 50};
   thisdata.Ngay.size = 2;
   thisdata.Ngay.showNKeyRemain = false;
-  thisdata.Thang.mode = 7;
+  thisdata.Thang.mode = Month;
   thisdata.Thang.tittle = (char *)"MM";
   thisdata.Thang.textBox = {StartPos.x + 300 + 70, StartPos.y + 60 + 180, 60, 50};
   thisdata.Thang.size = 2;
   thisdata.Thang.showNKeyRemain = false;
-  thisdata.Nam.mode = 8;
+  thisdata.Nam.mode = Year;
   thisdata.Nam.tittle = (char *)"YYYY";
   thisdata.Nam.textBox = {StartPos.x + 300 + 70 + 70, StartPos.y + 60 + 180, 120,
                           50};
   thisdata.Nam.size = 4;
   thisdata.Nam.showNKeyRemain = false;
-  thisdata.Gio.mode = 9;
+  thisdata.Gio.mode = Hour;
   thisdata.Gio.tittle = (char *)"HH";
   thisdata.Gio.textBox = {StartPos.x + 300 + 70 + 70 + 150, StartPos.y + 60 + 180,
                           60, 50};
   thisdata.Gio.size = 2;
   thisdata.Gio.showNKeyRemain = false;
-  thisdata.Phut.mode = 10;
+  thisdata.Phut.mode = Minute;
   thisdata.Phut.tittle = (char *)"MM";
   thisdata.Phut.textBox = {StartPos.x + 300 + 70 + 70 + 150 + 70,
                            StartPos.y + 60 + 180, 60, 50};
@@ -201,12 +211,12 @@ void initQLCBdata(QLCB_data &thisdata)
   thisdata.searchMaCB.tittle = "Mã chuyến bay";
   thisdata.searchMaCB.textBox = {StartPos.x + 60 + 300 + 250 + 165, StartPos.y + 60 + 70, 350, 45};
   thisdata.searchMaCB.size = 15;
-  thisdata.searchMaCB.mode = 3;
+  thisdata.searchMaCB.mode = UpperAlphanumeric;
 
   thisdata.searchNoiDen.tittle = "Nơi đến";
   thisdata.searchNoiDen.textBox = {StartPos.x + 60 + 150 + 30, StartPos.y + 60 + 70 + 55, 300, 45};
   thisdata.searchNoiDen.size = 20;
-  thisdata.searchNoiDen.mode = 1;
+  thisdata.searchNoiDen.mode = ASCII2;
 }
 
 // Xử lí yêu cầu chuyển tab
@@ -232,13 +242,18 @@ bool UI_reqSwitchTab(UIcontroller &control)
   return false;
 }
 
+void ReloadData(UIcontroller &control)
+{
+  setDataToFile(control.listCB, control.listMB, control.listHK);
+  getDataFromFile(control.listCB, control.listMB, control.listHK);
+}
+
 // Thực hiện chuyển tab
 void UI_switchTab(UIcontroller &control)
 {
   InitUIData(control);
 
-  setDataToFile(control.listCB, control.listMB, control.listHK);
-  getDataFromFile(control.listCB, control.listMB, control.listHK);
+  CreateLoadingScreen();
 
   if (control.current_tab != 0)
   {
@@ -526,6 +541,18 @@ void SetSizeWindow()
 
 //==================================================================================================================================
 // Graphics
+
+void CreateLoadingScreen()
+{
+  TextBox Loading;
+  Loading.box = {StartPos.x, StartPos.y + 60, SCREEN_WIDTH, SCREEN_HEIGHT};
+  Loading.text = (char *)"LOADING";
+  Loading.isCenter = true;
+  Loading.fontSize = 60;
+
+  DrawRectangleRec(Loading.box, DARKBLUE);
+  CreateTextBox(Loading);
+}
 
 //---Homepage-------------------------------------------------------------------------------------------------------------
 void CreateHomeBackground()
@@ -908,6 +935,7 @@ bool Popup_ThemMB(UIcontroller &control)
         new MayBay(newMaMB, newLoaiMayBay, atoi(newSoDay), atoi(newSoDong));
     control.listMB.insertMB(result);
     control.listMB.writetoFileWhenAdd();
+    getDataFromFile(control);
 
     control.dataTabMB.status = 1;
     resetInputTextBox(control.dataTabMB.MaMB);
@@ -949,8 +977,6 @@ bool Popup_HieuChinhMB(UIcontroller &control)
   Box_maMB.text = control.dataTabMB.data->getSoHieuMB();
   CreateTextBox(Box_maMB);
 
-  // control.dataTabMB.MaMB.editMode = true;
-  // control.dataTabMB.MaMB.tittle = control.dataTabMB.data->getSoHieuMB();
   control.dataTabMB.LoaiMB.editMode = true;
   control.dataTabMB.LoaiMB.tittle = control.dataTabMB.data->getLoaiMB();
   control.dataTabMB.SoDong.editMode = true;
@@ -1022,12 +1048,6 @@ bool Popup_HieuChinhMB(UIcontroller &control)
 
   if (CreateButton(OK))
   {
-    // char CheckMB[16];
-    // strcpy(CheckMB, newMaMB);
-    // if (control.listMB.findPosMB(CheckMB) < 0 ||
-    //     control.listMB.findPosMB(CheckMB) ==
-    //         control.listMB.findPosMB(control.dataTabMB.data->getSoHieuMB()))
-    // {
     if (!(newLoaiMB[0] >= 32 && newSoDay[0] >= 32 &&
           newSoDong[0] >= 32))
     {
@@ -1037,17 +1057,17 @@ bool Popup_HieuChinhMB(UIcontroller &control)
 
     if (atoi(newSoDong) < 1 || atoi(newSoDong) > 25)
     {
-      control.dataTabMB.popup_errorMess = "So dong khong hop le!";
+      control.dataTabMB.popup_errorMess = "Số dòng không hợp lệ!(1 - 25)";
       return false;
     }
     if (atoi(newSoDay) < 1 || atoi(newSoDay) > 12)
     {
-      control.dataTabMB.popup_errorMess = "So day khong hop le!";
+      control.dataTabMB.popup_errorMess = "Số dãy không hợp lệ!(1 - 12)";
       return false;
     }
     if (atoi(newSoDong) * atoi(newSoDay) < 20)
     {
-      control.dataTabMB.popup_errorMess = "So cho phai lon hon hoac bang 20!";
+      control.dataTabMB.popup_errorMess = "Số chỗ phải lớn hơn hoặc bằng 20!";
       return false;
     }
 
@@ -1055,8 +1075,7 @@ bool Popup_HieuChinhMB(UIcontroller &control)
     control.dataTabMB.data->setLoaiMB(newLoaiMB);
     control.dataTabMB.data->setSoDong(atoi(newSoDong));
     control.dataTabMB.data->setSoDay(atoi(newSoDay));
-
-    control.listMB.writetoFile();
+    ReloadData(control);
 
     resetInputTextBox(control.dataTabMB.LoaiMB);
     resetInputTextBox(control.dataTabMB.SoDong);
@@ -1157,8 +1176,7 @@ bool Popup_XoaMB(UIcontroller &control)
     char CheckMB[16];
     strcpy(CheckMB, control.dataTabMB.data->getSoHieuMB());
     control.listMB.deleteMB(control.listMB.findPosMB(CheckMB));
-
-    control.listMB.writetoFile();
+    ReloadData(control);
 
     control.dataTabMB.status = -1;
 
@@ -1607,8 +1625,7 @@ void CreatePage_QLCB(UIcontroller &control)
 
   if (control.dataTabCB.gotChangeTicket)
   {
-    setDataToFile(control.listCB, control.listMB, control.listHK);
-    getDataFromFile(control.listCB, control.listMB, control.listHK);
+    ReloadData(control);
     control.dataTabCB.gotChangeTicket = false;
   }
 }
@@ -1733,6 +1750,7 @@ bool Popup_TimCB(UIcontroller &control)
     control.dataTabCB.NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
     resetInputTextBox(control.dataTabCB.Ngay);
     control.dataTabCB.popup_errorMess = "";
+    control.dataTabCB.status = 2;
 
     return true;
   }
@@ -2031,7 +2049,7 @@ bool Popup_ThemCB(UIcontroller &control)
         result.setDSVe(newDSVe);
         control.listCB.insertOrder(new NodeCB(result));
         control.listMB.findMB(newMaMB)->setUsed();
-        control.listCB.writetToFile();
+        ReloadData(control);
         control.listCB.setSize();
 
         NodeCB *tmp = control.listCB.getHead();
@@ -2136,26 +2154,10 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   check = Date(stoi(newNgay[0] == 0 ? "1" : newNgay),
                stoi(newThang[0] == 0 ? "1" : newThang),
                stoi(newNam[0] == 0 ? "2000" : newNam), 00, 00);
-  // if (strcmp(newThang, "00") == 0 || !check.checkNgay())
-  // {
-  //   int tmp = stoi(newNam[0] == 0 ? "2000" : newNam);
-  //   if (Date(29, 2, tmp, 0, 0).checkNgay())
-  //   {
-  //     control.dataTabCB.popup_errorMess = "Tháng không hợp lệ!";
-  //     resetInputTextBox(control.dataTabCB.Thang);
-  //     newThang = "";
-  //   }
-  //   else
-  //   {
-  //     control.dataTabCB.popup_errorMess = "Năm không hợp lệ!";
-  //     resetInputTextBox(control.dataTabCB.Nam);
-  //     newNam = "";
-  //   }
-  // }
+
   const char *newGio = CreateTextInputBox(control.dataTabCB.Gio);
   const char *newPhut = CreateTextInputBox(control.dataTabCB.Phut);
 
-  // Date newNgayBay = Date(stoi(newNgay), stoi(newThang), stoi(newNam), stoi(newGio), stoi(newPhut));
   Date newNgayBay = Date(stoi(newNgay[0] == 0 ? "0" : newNgay),
                          stoi(newThang[0] == 0 ? "0" : newThang),
                          stoi(newNam[0] == 0 ? "0" : newNam),
@@ -2166,7 +2168,6 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   DrawTextEx(FontArial, "(Không được hiệu chỉnh!)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 230 + 10 + hFont40_25},
              25, 0, RED);
-  // const char *newMaCB = CreateTextInputBox(control.dataTabCB.MaCB);
 
   DrawTextEx(FontArial, "Số hiệu máy bay",
              {StartPos.x + 300, StartPos.y + 60 + 330 + 10}, 40, 0, BROWN);
@@ -2179,7 +2180,6 @@ bool Popup_HieuChinhCB(UIcontroller &control)
         newGio[0] >= 32 && newPhut[0] >= 32) &&
       control.dataTabCB.MaMB.mouseClickOnText)
   {
-    // if()
     control.dataTabCB.MaMB.mouseClickOnText = false;
     control.dataTabCB.popup_errorMess = "Hãy nhập ngày khởi hành trước!";
   }
@@ -2205,68 +2205,6 @@ bool Popup_HieuChinhCB(UIcontroller &control)
       control.dataTabCB.popup_errorMess = "Ngày tháng cần hợp lệ để chọn số hiệu máy bay!";
     }
   }
-  ///////////////////////////////////////////////////////
-  // if (!(newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
-  //       newGio[0] >= 32 && newPhut[0] >= 32) &&
-  //     control.dataTabCB.MaMB.mouseClickOnText)
-  // {
-  //   control.dataTabCB.MaMB.mouseClickOnText = false;
-  //   control.dataTabCB.popup_errorMess = "Hãy nhập ngày khởi hành trước!";
-  // }
-  // else if ((newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
-  //           newGio[0] >= 32 && newPhut[0] >= 32))
-  // {
-  //   if (!newNgayBay.checkNgay())
-  //   {
-  //     if (control.dataTabCB.MaMB.mouseClickOnText)
-  //     {
-  //       control.dataTabCB.MaMB.mouseClickOnText = false;
-  //       control.dataTabCB.popup_errorMess = "Ngày tháng cần hợp lệ để chọn số hiệu máy bay!";
-  //     }
-  //     else
-  //     {
-  //       control.dataTabCB.popup_errorMess = "Ngày tháng năm không hợp lệ!";
-  //     }
-  //   }
-
-  //   // else if(!newNgayBay.checkNgay())
-  //   // {
-  //   //   control.dataTabCB.popup_errorMess = "Ngày tháng năm không hợp lệ!";
-  //   // }
-  // }
-  // else if (control.dataTabCB.popup_errorMess == "")
-  // {
-  //   if (control.dataTabCB.inChooseMB)
-  //   {
-  //     Popup_getMB(control, newNgayBay, true);
-  //     return false;
-  //   }
-  // }
-  //////////////////////////////////////////////////////////////////
-  // if (!(newNgay[0] >= 32 && newThang[0] >= 32 && newNam[0] >= 32 &&
-  //       newGio[0] >= 32 && newPhut[0] >= 32))
-  // {
-  //   if (control.dataTabCB.MaMB.mouseClickOnText)
-  //   {
-  //     control.dataTabCB.MaMB.mouseClickOnText = false;
-  //     control.dataTabCB.popup_errorMess = "Hãy nhập ngày khởi hành trước!";
-  //   }
-  // }
-  // else
-  // {
-  //   if (!newNgayBay.checkNgay())
-  //   {
-  //     control.dataTabCB.popup_errorMess = "Ngày, tháng hoặc năm không hợp lệ!";
-  //   }
-  //   else
-  //   {
-  //     if (control.dataTabCB.inChooseMB)
-  //     {
-  //       Popup_getMB(control, newNgayBay, true);
-  //       return false;
-  //     }
-  //   }
-  // }
 
   Button getMB;
   getMB.x = StartPos.x + 300 + 900;
@@ -2293,7 +2231,6 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   DrawTextEx(FontArial, "(Không được hiệu chỉnh!)",
              {StartPos.x + 300 + 300, StartPos.y + 60 + 430 + 10 + hFont40_25},
              25, 0, RED);
-  // const char *newNoiDen = CreateTextInputBox(control.dataTabCB.NoiDen);
 
   Button OK;
   OK.x = StartPos.x + 225 + 750;
@@ -2336,8 +2273,6 @@ bool Popup_HieuChinhCB(UIcontroller &control)
   }
   if (CreateButton(OK))
   {
-    // else //if (!control.listCB.isExist(newMaCB) || (control.dataTabCB.data != NULL && strcmp(newMaCB, control.dataTabCB.data->getNode().getMaCB()) == 0))
-    // {
     if (!(newMaMB[0] >= 32 && newNgay[0] >= 32 &&
           newThang[0] >= 32 && newNam[0] >= 32 &&
           newGio[0] >= 32 && newPhut[0] >= 32))
@@ -2373,7 +2308,7 @@ bool Popup_HieuChinhCB(UIcontroller &control)
     result.setNgayGio(newNgayBay);
     result.setidMayBay(newMaMB);
     control.dataTabCB.data->setCb(result);
-    control.listCB.writetToFile();
+    ReloadData(control);
     control.listCB.setSize();
 
     control.dataTabCB.status = 1;
@@ -2498,7 +2433,8 @@ bool Popup_HuyCB(UIcontroller &control)
     ChuyenBay result = control.dataTabCB.data->getNode();
     result.setTrangThai(HuyChuyen);
     control.dataTabCB.data->setCb(result);
-    control.listCB.writetToFile();
+    ReloadData(control);
+
     control.listCB.setSize();
     resetInputTextBox(control.dataTabCB.MaCB);
     resetInputTextBox(control.dataTabCB.MaMB);
@@ -2842,7 +2778,6 @@ bool Popup_chonVe(UIcontroller &control)
       control.dataTabCB.inSetTicket = false;
       if (control.dataTabCB.gotChangeTicket)
       {
-        control.dataTabCB.inGetTicket = false;
         control.dataTabCB.inSetTicket = false;
         return true;
       }
@@ -2879,7 +2814,7 @@ bool Popup_chonVe(UIcontroller &control)
     TextBox showVeAdv;
     showVeAdv.box = {s_ON.x - 100, s_ON.y + 60, 410, 40};
     showVeAdv.isCenter = true;
-    showVeAdv.mode = 2;
+    showVeAdv.mode = Auto;
     showVeAdv.text = "Hiện vé đã đặt";
 
     CreateTextBox(showVeAdv);
@@ -3074,7 +3009,7 @@ bool Popup_datVe(UIcontroller &control)
   tb_Phai.box = {StartPos.x + 300, StartPos.y + 60 + 480, 150, 50};
   tb_Phai.showBox = true;
   tb_Phai.isCenter = true;
-  tb_Phai.mode = 2;
+  tb_Phai.mode = Auto;
   tb_Phai.text = (char *)"Chưa chọn";
 
   if (o_CMND == "")
@@ -3346,7 +3281,7 @@ void StatusHelp_QLCB()
   }
 }
 
-void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inAdvSearch)
+int ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inAdvSearch)
 {
   float cellW[7] = {90, 230, 230, 200, 230, 100, 50};
   Vector2 start_pos = {StartPos.x + 35, StartPos.y + 60 + 70 + 110};
@@ -3398,8 +3333,8 @@ void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inA
           show[show_i] = GetCellTextBox(start_pos, 7, cellW, show_i + 1,
                                         (j % 10) + 1, showText[show_i], 30);
         }
-        show[3].mode = 2;
-        show[5].mode = 2;
+        show[3].mode = Auto;
+        show[5].mode = Auto;
         switch (tmp->getNode().getTrangThai())
         {
         case 0:
@@ -3447,6 +3382,7 @@ void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inA
     }
     tmp = tmp->getNext();
   }
+  return ((j - 1) / 10) + 1;
 }
 
 NodeCB *XuLy_QLCB(UIcontroller &control)
@@ -3518,7 +3454,13 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
       {search.x + 10 + 300 + 175,
        CenterDataSetter(50, search.y, MeasureTextEx(FontArial, "a", 35, 0).y)},
       35, 0, RED);
+  int pre_nTextMaCB = control.dataTabCB.searchMaCB.letterCount;
+
   const char *textMaCB = CreateTextInputBox(control.dataTabCB.searchMaCB);
+  if (pre_nTextMaCB != control.dataTabCB.searchMaCB.letterCount)
+  {
+    control.dataTabCB.status = 2;
+  }
   if (control.dataTabCB.inAdvSearch)
   {
     DrawTextEx(FontArial, "Nơi đến:",
@@ -3558,7 +3500,14 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   // Pick data
   if (control.dataTabCB.status == 1)
   {
-    control.dataTabMB.status = 0;
+    control.dataTabCB.status = 0;
+  }
+  if (control.dataTabCB.status == 2)
+  {
+    control.dataTabCB.current_showPage = 1;
+    control.dataTabCB.pickdata_index = -1;
+    control.dataTabCB.data = nullptr;
+    control.dataTabCB.status = 0;
   }
 
   for (int i = 0; i < 10; i++)
@@ -3589,12 +3538,8 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   control.dataTabCB.data = NULL;
 
   int i = (control.dataTabCB.current_showPage - 1) * 10;
-  ShowListCB(control, i, textMaCB, control.dataTabCB.inAdvSearch);
+  n_page = ShowListCB(control, i, textMaCB, control.dataTabCB.inAdvSearch);
   StatusHelp_QLCB();
-
-  n_page = 1 + ((control.listCB.getSize() - 1) / 10);
-
-  
 
   // page and switch page
   int swp =
@@ -3610,15 +3555,6 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
     control.dataTabCB.current_showPage = 1;
 
   return control.dataTabCB.data;
-}
-
-void CreatePage_QLVe()
-{
-  CreatePageBackground(3);
-  // CreateTable_QLVe();
-
-  ChuyenBay *cb = new ChuyenBay("CB01", "Da Lat", {25, 4, 2023, 10, 0}, "MB1");
-  // XuLy_QLVe(*cb);
 }
 
 void CreateTable_QLVe()
@@ -3783,7 +3719,7 @@ bool Popup_HieuChinhHK(UIcontroller &control)
   tb_Phai.box = {StartPos.x + 300, StartPos.y + 60 + 480, 150, 50};
   tb_Phai.showBox = true;
   tb_Phai.isCenter = true;
-  tb_Phai.mode = 2;
+  tb_Phai.mode = Auto;
   tb_Phai.text = (char *)"Chưa chọn";
 
   if (control.dataTabHK.i_Phai == 0)
@@ -3875,6 +3811,7 @@ bool Popup_HieuChinhHK(UIcontroller &control)
     resetInputTextBox(control.dataTabHK.i_Ten);
     control.dataTabHK.i_Phai = -1;
     control.listHK.writeToFileAllHK();
+    getDataFromFile(control);
     return true;
   }
 
@@ -4097,7 +4034,7 @@ Vector2 GetCellPos(Vector2 vitriBang, int soCot, float cellW[], int vi_tri_x,
 }
 
 Vector2 *GetTittlePos(Vector2 vitriBang, int soCot, float cellW[],
-                      const char *cell_tittle[])
+                      const char *cell_tittle[]) // #Didn't clean memory
 {
   Vector2 *ans = new Vector2[soCot];
   float cellPosX[soCot];
@@ -4444,7 +4381,6 @@ int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos)
   int status = 0;
   int page_n = current_page;
 
-  // char *n1 = new char[2], *n2 = new char[2];
   char n1[3], n2[3];
   strcpy(n1, intToChar(current_page, 2));
   n1[2] = '\0';
@@ -4530,7 +4466,7 @@ int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos)
   data.fast_switcher.tittle = intToChar(current_page, 2);
   data.fast_switcher.size = 2;
   data.fast_switcher.MauVien = BROWN;
-  data.fast_switcher.mode = 5;
+  data.fast_switcher.mode = Numeric;
   data.fast_switcher.returnIfDone = true;
   data.fast_switcher.showNKeyRemain = false;
   if (data.editmode)
@@ -4692,7 +4628,7 @@ bool CreateButton(Button data)
   return false;
 }
 
-const char *CreateTextInputBox(InputTextBox &data)
+const char *CreateTextInputBox(InputTextBox &data) // #Didn't clean memory: resuilt
 {
   // Xu ly
   Rectangle showBox = data.textBox;
@@ -4854,14 +4790,14 @@ const char *CreateTextInputBox(InputTextBox &data)
     data.framesCounter = 0;
 
   // Lấy đủ 4 kí tự
-  if (data.mode == 8)
+  if (data.mode == Year)
   {
     if (data.letterCount == 4)
       data.returnIfDone = false;
     else
       data.returnIfDone = true;
   }
-  if (data.mode == 6 || data.mode == 7)
+  if (data.mode == Day || data.mode == Month)
   {
     if (data.letterCount == 1 && data.name[0] == '0')
     {
@@ -4917,7 +4853,8 @@ void resetInputTextBox(InputTextBox &box)
 void CreateTextBox(TextBox box)
 {
   float text_w = 0.0f;
-  box.fontSize = (box.box.height * 2) / 3;
+  if (box.fontSize <= 0)
+    box.fontSize = (box.box.height * 2) / 3;
 
   Vector2 textpos = {
       box.box.x + 10,
@@ -4937,7 +4874,7 @@ void CreateTextBox(TextBox box)
     text_w = MeasureTextEx(FontArial, box.text, box.fontSize, 0).x;
     strcpy(showtext, box.text);
   }
-  else if (box.mode == 1)
+  else if (box.mode == AntiLeak)
   {
     int i = 0;
     float charW = 0;
@@ -4958,7 +4895,7 @@ void CreateTextBox(TextBox box)
     }
     text_w = MeasureTextEx(FontArial, showtext, box.fontSize, 0).x;
   }
-  else if (box.mode == 2)
+  else if (box.mode == Auto)
   {
     while (MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 >=
            box.box.width)
@@ -4982,7 +4919,7 @@ void CreateTextBox(TextBox box)
   }
 
   DrawTextEx(FontArial, showtext, textpos, box.fontSize, 0, BLACK);
-  if (box.mode == 1 && CheckCollisionPointRec(GetVMousePosition(), box.box) &&
+  if (box.mode == AntiLeak && CheckCollisionPointRec(GetVMousePosition(), box.box) &&
       MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 >=
           box.box.width)
   {
@@ -5168,8 +5105,7 @@ void mainGraphics()
     {
       if (main.listCB.update(main.listMB))
       {
-        setDataToFile(main.listCB, main.listMB, main.listHK);
-        getDataFromFile(main.listCB, main.listMB, main.listHK);
+        ReloadData(main);
       }
       CurrTime.setToNow();
       showCurrTime.text = strToChar(CurrTime.printDateHour());

@@ -153,8 +153,6 @@ bool ChuyenBay::operator<(const ChuyenBay &other)
   return (compare < 0) ? true : false;
 }
 
-ChuyenBay::~ChuyenBay() {}
-
 ChuyenBay NodeCB::getNode() { return this->chuyenBay; }
 
 NodeCB::NodeCB()
@@ -200,11 +198,6 @@ bool NodeCB::Cach6tiengchua(Date another)
        another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60))
     return true;
   return false; //
-}
-
-NodeCB::~NodeCB()
-{
-  // delete next;
 }
 
 // Hàm của DsChuyenBay

@@ -9,14 +9,6 @@
 #include "vemaybay.h"
 #include <list>
 
-// Kích thước cửa sổ mặc định
-#define WINDOW_WIDTH 1530
-#define WINDOW_HEIGHT 820
-
-// kích thước màn hình làm việc mặc định
-#define SCREEN_WIDTH 1500
-#define SCREEN_HEIGHT 750
-
 struct BoMauNut;
 /**
  * @brief chứa câu trúc nút
@@ -36,6 +28,7 @@ struct BoMauNut;
  *
  */
 struct Button;
+
 /**
  * @brief tạo ô nhập kí tự
  *
@@ -121,7 +114,7 @@ struct InputTextBox
     Color MauNen = WHITE;
     Color MauVien = BLACK;
     Color MauChu = BLACK;
-    int mode = 1; // Chi tiết xem hàm chuanHoaKey (tool.cpp)
+    int mode = ASCII2; // Chi tiết xem hàm chuanHoaKey (tool.cpp)
 
     // xử lý
     char name[120] = "\0";                             // xâu được xử lý
@@ -138,7 +131,7 @@ struct TextBox
     const char *text;      // Xâu xuất
     Rectangle box;         // Giá trị ô xuát
     bool showBox = false;  // Hiện ô xuất
-    int mode = 1;          // Hiện thêm ô (1) / Thu nhỏ chữ (2)
+    int mode = ASCII2;          // Hiện thêm ô (1) / Thu nhỏ chữ (2)
     bool isCenter = false; // Căn giữa
     int fontSize = 0;      // Cỡ chữ
 };
@@ -241,6 +234,10 @@ struct UIcontroller
 
     bool req_swTab = false; // Có yêu cầu chuyển tab
 };
+void setDataToFile(UIcontroller &control);
+void getDataFromFile(UIcontroller &control);
+
+void CreateLoadingScreen();
 
 void SetDataInputTextBox(InputTextBox &box, const char *text, int length);
 void ResetDataInputTextBox(InputTextBox &box);
@@ -271,7 +268,7 @@ void CreateTable_QLMB();
 
 void resetData_QLCB(QLCB_data &data);
 void CreatePage_QLCB(UIcontroller &control);
-void ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inFill);
+int ShowListCB(UIcontroller &control, int first, const char *textMaCB, bool inFill);
 NodeCB *XuLy_QLCB(UIcontroller &control);
 void CreateTable_QLCB();
 void StatusHelp_QLCB();

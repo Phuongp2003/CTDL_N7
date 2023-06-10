@@ -47,8 +47,6 @@ public:
 
   // node
   bool operator<(const ChuyenBay &other);
-
-  ~ChuyenBay();
 };
 
 class NodeCB
@@ -71,8 +69,6 @@ public:
   bool hasNext();
 
   bool Cach6tiengchua(Date another);
-
-  ~NodeCB();
 };
 
 class DsChuyenBay
