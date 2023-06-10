@@ -419,7 +419,7 @@ bool DsChuyenBay::isUsing(const char *maMB)
   return false;
 }
 
-int DsChuyenBay:: duocDatKhong(string cmnd, ChuyenBay cb)
+int DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 {
   NodeCB *tmp = this->head;
   for (int i = 0; i < cb.getDSVe().getSoVeToiDa(); i++)

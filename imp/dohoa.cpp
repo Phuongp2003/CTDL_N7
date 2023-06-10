@@ -19,63 +19,6 @@ Texture2D PNG_circleGreen;
 Texture2D PNG_circleYellow;
 Texture2D PNG_circleGray;
 //==================================================================================================================================
-struct BoMauNut
-{
-  Color isnotHovered;   // Trạng thái bth
-  Color isHovered;      // Được trỏ vào
-  Color isPressed;      // Được nhấn vào
-  Color text1;          // Màu chữ 1 (màu bth)
-  Color text2;          // Màu chữ 2 (có thao tác tác động lên)
-  Color Rounder;        // Màu viền
-  Color RounderHovered; // Màu viền khi được trỏ vào
-  Color RounderPressed; // Màu viền khi nhấn vào
-};
-struct Button
-{
-  bool isActive = true; // Chỉ in ra nếu bị disable
-
-  float x;
-  float y;
-  float w;
-  float h;
-  bool BoTron = false;             // Vễ bo tròn
-  bool gotNothing = true;          // Nút trống (chỉ có viền và màu)
-  bool gotText = false;            // Chứa chữ, y/c gotNothing = false
-  const char *tittle = "";         // Tiều đề nút
-  Font font;                       // Font chữ cho nút
-  bool gotPic = false;             // Chứa hình, y/c gotNothing = false
-  Texture2D picture;               // Hình trong nút
-  bool RounderChangeColor = false; // Màu viền thay đổi khi được thao tác
-  bool firstRounder = true;        // In viền
-  BoMauNut BoMau;
-};
-
-struct InputTextBox
-{
-  bool isActive = true;   // Chỉ in nội dung nếu bị disable
-  bool isGotData = false; // Đang chứa dữ liệu được truyền trực tiếp (tiền xử lý)
-
-  Rectangle textBox;
-  const char *tittle = "";    // Tiêu đề ô nhập
-  int size = 27;              // Số kí tự được nhập tối đa
-  bool showNKeyRemain = true; // Hiện số kí tự được nhập còn lại
-  bool editMode = false;      // Nhận tiêu đề để chỉnh sửa
-  bool showPreResult = true;  // Hiện kết quả đã nhập trước đó
-  bool returnIfDone = false;  // Chỉ nhận giá trị khi nhấn enter
-  Color MauNen = WHITE;
-  Color MauVien = BLACK;
-  Color MauChu = BLACK;
-  int mode = 1; // Chi tiết xem hàm chuanHoaKey (tool.cpp)
-
-  // xử lý
-  char name[120] = "\0";                             // xâu được xử lý
-  int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0; // Thời gian giữ nút (đơn vị là 1/20 giây, với max FPS = 20)
-  bool done = true;                                  // Đã nhận nút enter
-  bool mouseClickOnText = false;                     // Đang được thao tác
-  int letterCount = 0;                               // số kí tự đã nhập
-  int framesCounter = 0;                             // số frames đã được in ra (chi tiết tìm hiểu về FPS)
-  int indexPoint = 0;                                // vị trí con trỏ so với kí tự cuối cùng
-};
 
 // Nhận text làm giá trị ban đầu (truyền trực tiếp vào dữ liệu ô nhập)
 void SetDataInputTextBox(InputTextBox &box, const char *text, int length = -1)
@@ -106,269 +49,164 @@ void ResetDataInputTextBox(InputTextBox &box)
   }
 }
 
-struct TextBox
+void initQLMBdata(QLMB_data &thisdata)
 {
-  const char *text;      // Xâu xuất
-  Rectangle box;         // Giá trị ô xuát
-  bool showBox = false;  // Hiện ô xuất
-  int mode = 1;          // Hiện thêm ô (1) / Thu nhỏ chữ (2)
-  bool isCenter = false; // Căn giữa
-  int fontSize = 0;      // Cỡ chữ
-};
+  thisdata.data = NULL;
+  thisdata.current_popup = 0;
+  thisdata.popup_errorMess = "";
+  thisdata.time_showError = 0;
 
-struct PageSwitcher
+  thisdata.MaMB.mode = 3;
+  thisdata.MaMB.tittle = (char *)"Nhập số hiệu máy bay";
+  thisdata.MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
+  thisdata.MaMB.size = 15;
+  thisdata.LoaiMB.mode = 2;
+  thisdata.LoaiMB.tittle = (char *)"Nhập loại máy bay";
+  thisdata.LoaiMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+  thisdata.LoaiMB.size = 40;
+  thisdata.SoDong.mode = 5;
+  thisdata.SoDong.tittle = (char *)"Nhập số dòng của máy bay";
+  thisdata.SoDong.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
+  thisdata.SoDong.size = 3;
+  thisdata.SoDay.mode = 5;
+  thisdata.SoDay.tittle = (char *)"Nhập số dãy của máy bay";
+  thisdata.SoDay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
+  thisdata.SoDay.size = 3;
+
+  thisdata.pickdata_index = -1;
+  thisdata.keyword = "";
+  thisdata.searchKeyword.mode = 3;
+  thisdata.searchKeyword.tittle = "Nhập nội dung tìm kiếm";
+  thisdata.current_showPage = 1;
+
+  resetPageSwitcher(thisdata.Sw_table_page);
+}
+
+void initQLHKdata(QLHK_data &thisdata)
 {
-  bool editmode = false;      // Trạng thái chế độ ô nhập
-  InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
+  thisdata.data = nullptr;
+  thisdata.current_popup = 0;
+  thisdata.pickdata_index = -1;
+  thisdata.current_page = 1;
 
-  PageSwitcher()
-  {
-    fast_switcher.editMode = true;
-    fast_switcher.size = 2;
-    fast_switcher.MauVien = BROWN;
-    fast_switcher.mode = 5;
-    fast_switcher.returnIfDone = true;
-    fast_switcher.showNKeyRemain = false;
-  }
-  void reset()
-  {
-    editmode = false;
-    resetInputTextBox(fast_switcher);
-  }
-};
+  thisdata.i_CMND.mode = 5;
+  thisdata.i_CMND.tittle = (char *)"Nhập số CMND/CCCD";
+  thisdata.i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+  thisdata.i_CMND.size = 12;
 
-struct QLMB_data
+  thisdata.i_Ho.mode = 1;
+  thisdata.i_Ho.tittle = (char *)"Nhập họ và tên đệm";
+  thisdata.i_Ho.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 580, 50};
+  thisdata.i_Ho.size = 26;
+
+  thisdata.i_Ten.mode = 1;
+  thisdata.i_Ten.tittle = (char *)"Nhập tên";
+  thisdata.i_Ten.textBox = {StartPos.x + 300 + 600, StartPos.y + 60 + 380, 300, 50};
+  thisdata.i_Ten.size = 10;
+
+  thisdata.i_Phai = -1;
+
+  resetPageSwitcher(thisdata.Sw_table_page);
+}
+
+void initPageSwitcher(PageSwitcher &thisdata)
 {
-  MayBay *data = nullptr; // Giá trị của MB được chọn (qua index)
-  int status = 0;         // Trạng thái index (1 - sau khi thêm, -1 - sau khi xoá)
-
-  int current_popup = 0;                    // popup được mở
-  string popup_errorMess = "";              // lỗi ở các popup đang chờ được xâu
-  int time_showError = 0;                   // thời gian đã hiện lỗi (tối đa đến 99)
-  InputTextBox MaMB, LoaiMB, SoDong, SoDay; // các ô nhập ở các popup
-
-  int pickdata_index = -1;    // Vị trí của index
-  const char *keyword;        // Từ khoá (tìm kiếm)
-  InputTextBox searchKeyword; // Ô nhập của tìm kiếm
-  int current_showPage = 1;   // Trang hiến tại (ds máy bay)
-
-  PageSwitcher Sw_table_page; // Chuyển trang
-
-  QLMB_data()
-  {
-    data = NULL;
-    current_popup = 0;
-    popup_errorMess = "";
-    time_showError = 0;
-
-    MaMB.mode = 3;
-    MaMB.tittle = (char *)"Nhập số hiệu máy bay";
-    MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 900, 50};
-    MaMB.size = 15;
-    LoaiMB.mode = 2;
-    LoaiMB.tittle = (char *)"Nhập loại máy bay";
-    LoaiMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-    LoaiMB.size = 40;
-    SoDong.mode = 5;
-    SoDong.tittle = (char *)"Nhập số dòng của máy bay";
-    SoDong.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
-    SoDong.size = 3;
-    SoDay.mode = 5;
-    SoDay.tittle = (char *)"Nhập số dãy của máy bay";
-    SoDay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
-    SoDay.size = 3;
-
-    pickdata_index = -1;
-    keyword = "";
-    searchKeyword.mode = 3;
-    searchKeyword.tittle = "Nhập nội dung tìm kiếm";
-    current_showPage = 1;
-
-    Sw_table_page = PageSwitcher();
-  }
-};
-
-struct QLHK_data
+  thisdata.fast_switcher.editMode = true;
+  thisdata.fast_switcher.size = 2;
+  thisdata.fast_switcher.MauVien = BROWN;
+  thisdata.fast_switcher.mode = 5;
+  thisdata.fast_switcher.returnIfDone = true;
+  thisdata.fast_switcher.showNKeyRemain = false;
+}
+void resetPageSwitcher(PageSwitcher &thisdata)
 {
-  NodeHK *data = nullptr; // Địa chỉ của node hành khách được trở vào
+  thisdata.editmode = false;
+  resetInputTextBox(thisdata.fast_switcher);
+}
 
-  int current_popup = 0;       // Popup được mở
-  string popup_errorMess = ""; // Lỗi ở các popup
-  int time_showError = 0;      // Thời gian hiện lỗi (tối đa 99)
-
-  int pickdata_index = -1; // Vị trí của index
-  int current_page = 1;    // Trang hiện tại (ds hành khách)
-
-  InputTextBox i_CMND, i_Ho, i_Ten; // Ô nhập thông tin
-  int i_Phai = -1;                  // Thông tin phái
-
-  PageSwitcher Sw_table_page; // Chuyển trang
-
-  QLHK_data()
-  {
-    data = nullptr;
-    current_popup = 0;
-    pickdata_index = -1;
-    current_page = 1;
-
-    i_CMND.mode = 5;
-    i_CMND.tittle = (char *)"Nhập số CMND/CCCD";
-    i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-    i_CMND.size = 12;
-
-    i_Ho.mode = 1;
-    i_Ho.tittle = (char *)"Nhập họ và tên đệm";
-    i_Ho.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 580, 50};
-    i_Ho.size = 26;
-
-    i_Ten.mode = 1;
-    i_Ten.tittle = (char *)"Nhập tên";
-    i_Ten.textBox = {StartPos.x + 300 + 600, StartPos.y + 60 + 380, 300, 50};
-    i_Ten.size = 10;
-
-    i_Phai = -1;
-
-    Sw_table_page = PageSwitcher();
-  }
-};
-struct QLVe_data
+void initQLVedata(QLVe_data &thisdata)
 {
-  int current_page = 1;       // Trang hiện tại
-  int position = -1;          // Vị trí vé đã chọn trong ds vé
-  int pickdata_index = -1;    // Vị trí vé (DSve đã đặt của cbay)
-  VeMayBay data = VeMayBay(); // Vé được pick
+  thisdata.current_page = 1;
+  thisdata.position = -1;
+  thisdata.data = VeMayBay();
+  thisdata.inDelete = false;
 
-  bool showNotEmpty = false; // Hiện vé đã đặt
-  bool inDelete = false;     // Có thao tác huỷ vé được kích hoạt
+  resetPageSwitcher(thisdata.Sw_table_page);
+}
 
-  PageSwitcher Sw_table_page; // Chuyển trang
-
-  QLVe_data()
-  {
-    current_page = 1;
-    position = -1;
-    data = VeMayBay();
-    inDelete = false;
-
-    Sw_table_page = PageSwitcher();
-  }
-};
-struct QLCB_data
+void initQLCBdata(QLCB_data &thisdata)
 {
-  NodeCB *data = nullptr; // Địa chỉ của node chuyến bay được chọn
-  int status = 0;         // Trạng thái index (1 - sau khi thêm)
+  thisdata.data = nullptr;
+  thisdata.status = 0;
+  thisdata.current_popup = 0;
+  thisdata.popup_errorMess = "";
+  thisdata.time_showError = 0;
+  thisdata.inChooseMB = false;
+  initQLVedata(thisdata.dataDSVe);
 
-  int current_popup = 0;                                        // Popup đang mở
-  string popup_errorMess = "";                                  // Lỗi ở các Popup
-  int time_showError = 0;                                       // Thời gian hiên lỗi (tối đa 99)
-  InputTextBox MaCB, MaMB, NoiDen, Ngay, Thang, Nam, Gio, Phut; // Ô nhập dữ liệu
-  bool inChooseMB = false;                                      // Bảng chọn máy bay trong thêm/hiệu chỉnh CBay được kích hoạt
-  QLVe_data dataDSVe;                                           // Dữ liệu của các thao tác trên vé
+  thisdata.pickdata_index = -1;
+  thisdata.current_showPage = 1;
 
-  InputTextBox searchMaCB, searchNoiDen; // Ô nhập dữ liệu tìm kiếm
-  int pickdata_index = -1;               // Vị trí index
-  int current_showPage = 1;              // Trang hiện tại
+  thisdata.inSearching = false;
+  thisdata.fbDay = Date(1, 1, 0, 0, 0);
+  thisdata.fbNoiDen = "";
+  thisdata.inGetTicket = false;
+  thisdata.gotChangeTicket = false;
 
-  bool inSearching = false;         // Popup nhập dữ liệu tìm kiếm
-  bool inAdvSearch = false;         // Dữ liệu được lọc theo giá trị tìm kiếm
-  Date fbDay = Date(1, 1, 0, 0, 0); // Tìm theo ngày
-  string fbNoiDen = "";             // Tìm theo nơi đến
-  bool fbAvail = false;             // Lọc chuyến bay không khả dụng
-  bool inGetTicket = false;         // Popup chọn vé
-  bool inSetTicket = false;         // Popup đặt vé
-  bool gotChangeTicket = false;     // Có thao tác trên vé
+  resetPageSwitcher(thisdata.Sw_table_page);
 
-  PageSwitcher Sw_table_page; // Chuyển trang
+  // Input Textbox
+  thisdata.MaCB.mode = 3;
+  thisdata.MaCB.tittle = (char *)"Nhập mã chuyến bay";
+  thisdata.MaCB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
+  thisdata.MaCB.size = 15;
+  thisdata.MaMB.mode = 3;
+  thisdata.MaMB.tittle = (char *)"Nhập số hiệu máy bay";
+  thisdata.MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 900, 50};
+  thisdata.MaMB.size = 40;
+  thisdata.NoiDen.mode = 1;
+  thisdata.NoiDen.tittle = (char *)"Nhập nơi đến";
+  thisdata.NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
+  thisdata.NoiDen.size = 40;
+  thisdata.Ngay.mode = 6;
+  thisdata.Ngay.tittle = (char *)"DD";
+  thisdata.Ngay.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 60, 50};
+  thisdata.Ngay.size = 2;
+  thisdata.Ngay.showNKeyRemain = false;
+  thisdata.Thang.mode = 7;
+  thisdata.Thang.tittle = (char *)"MM";
+  thisdata.Thang.textBox = {StartPos.x + 300 + 70, StartPos.y + 60 + 180, 60, 50};
+  thisdata.Thang.size = 2;
+  thisdata.Thang.showNKeyRemain = false;
+  thisdata.Nam.mode = 8;
+  thisdata.Nam.tittle = (char *)"YYYY";
+  thisdata.Nam.textBox = {StartPos.x + 300 + 70 + 70, StartPos.y + 60 + 180, 120,
+                          50};
+  thisdata.Nam.size = 4;
+  thisdata.Nam.showNKeyRemain = false;
+  thisdata.Gio.mode = 9;
+  thisdata.Gio.tittle = (char *)"HH";
+  thisdata.Gio.textBox = {StartPos.x + 300 + 70 + 70 + 150, StartPos.y + 60 + 180,
+                          60, 50};
+  thisdata.Gio.size = 2;
+  thisdata.Gio.showNKeyRemain = false;
+  thisdata.Phut.mode = 10;
+  thisdata.Phut.tittle = (char *)"MM";
+  thisdata.Phut.textBox = {StartPos.x + 300 + 70 + 70 + 150 + 70,
+                           StartPos.y + 60 + 180, 60, 50};
+  thisdata.Phut.size = 2;
+  thisdata.Phut.showNKeyRemain = false;
 
-  QLCB_data()
-  {
-    data = nullptr;
-    status = 0;
-    current_popup = 0;
-    popup_errorMess = "";
-    time_showError = 0;
-    inChooseMB = false;
-    dataDSVe = QLVe_data();
+  thisdata.searchMaCB.tittle = "Mã chuyến bay";
+  thisdata.searchMaCB.textBox = {StartPos.x + 60 + 300 + 250 + 165, StartPos.y + 60 + 70, 350, 45};
+  thisdata.searchMaCB.size = 15;
+  thisdata.searchMaCB.mode = 3;
 
-    MaCB.mode = 3;
-    MaCB.tittle = (char *)"Nhập mã chuyến bay";
-    MaCB.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
-    MaCB.size = 15;
-    MaMB.mode = 3;
-    MaMB.tittle = (char *)"Nhập số hiệu máy bay";
-    MaMB.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 900, 50};
-    MaMB.size = 40;
-    NoiDen.mode = 1;
-    NoiDen.tittle = (char *)"Nhập nơi đến";
-    NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
-    NoiDen.size = 40;
-    Ngay.mode = 6;
-    Ngay.tittle = (char *)"DD";
-    Ngay.textBox = {StartPos.x + 300, StartPos.y + 60 + 180, 60, 50};
-    Ngay.size = 2;
-    Ngay.showNKeyRemain = false;
-    Thang.mode = 7;
-    Thang.tittle = (char *)"MM";
-    Thang.textBox = {StartPos.x + 300 + 70, StartPos.y + 60 + 180, 60, 50};
-    Thang.size = 2;
-    Thang.showNKeyRemain = false;
-    Nam.mode = 8;
-    Nam.tittle = (char *)"YYYY";
-    Nam.textBox = {StartPos.x + 300 + 70 + 70, StartPos.y + 60 + 180, 120,
-                   50};
-    Nam.size = 4;
-    Nam.showNKeyRemain = false;
-    Gio.mode = 9;
-    Gio.tittle = (char *)"HH";
-    Gio.textBox = {StartPos.x + 300 + 70 + 70 + 150, StartPos.y + 60 + 180,
-                   60, 50};
-    Gio.size = 2;
-    Gio.showNKeyRemain = false;
-    Phut.mode = 10;
-    Phut.tittle = (char *)"MM";
-    Phut.textBox = {StartPos.x + 300 + 70 + 70 + 150 + 70,
-                    StartPos.y + 60 + 180, 60, 50};
-    Phut.size = 2;
-    Phut.showNKeyRemain = false;
-
-    searchMaCB.tittle = "Mã chuyến bay";
-    searchMaCB.textBox = {StartPos.x + 60 + 300 + 250 + 165, StartPos.y + 60 + 70, 350, 45};
-    searchMaCB.size = 15;
-    searchMaCB.mode = 3;
-
-    searchNoiDen.tittle = "Nơi đến";
-    searchNoiDen.textBox = {StartPos.x + 60 + 150 + 30, StartPos.y + 60 + 70 + 55, 300, 45};
-    searchNoiDen.size = 20;
-    searchNoiDen.mode = 1;
-
-    pickdata_index = -1;
-    current_showPage = 1;
-
-    inSearching = false;
-    fbDay = Date(1, 1, 0, 0, 0);
-    fbNoiDen = "";
-    inGetTicket = false;
-    gotChangeTicket = false;
-
-    Sw_table_page = PageSwitcher();
-  }
-};
-struct UIcontroller
-{
-  RenderTexture2D renderTexture; // Dữ liệu của cảnh được in
-
-  int current_tab = 0; // Tab hiện tại (Home / MayBay / ChuyenBay / HanhKhach)
-  int next_tab = 0;    // Tab sắp chuyển dến
-  QLMB_data dataTabMB; // Dữ liệu tab Máy bay và các dữ liệu được thao tác trên MB
-  QLCB_data dataTabCB;
-  QLHK_data dataTabHK;
-
-  DsMayBay listMB; // Danh sách máy bay
-  DsChuyenBay listCB;
-  DsHanhKhach listHK;
-
-  bool req_swTab = false; // Có yêu cầu chuyển tab
-};
+  thisdata.searchNoiDen.tittle = "Nơi đến";
+  thisdata.searchNoiDen.textBox = {StartPos.x + 60 + 150 + 30, StartPos.y + 60 + 70 + 55, 300, 45};
+  thisdata.searchNoiDen.size = 20;
+  thisdata.searchNoiDen.mode = 1;
+}
 
 // Xử lí yêu cầu chuyển tab
 bool UI_reqSwitchTab(UIcontroller &control)
@@ -414,9 +252,9 @@ void UI_switchTab(UIcontroller &control)
 void InitUIData(UIcontroller &control)
 {
   control.current_tab = 0;
-  control.dataTabMB = QLMB_data();
-  control.dataTabCB = QLCB_data();
-  control.dataTabHK = QLHK_data();
+  initQLMBdata(control.dataTabMB);
+  initQLCBdata(control.dataTabCB);
+  initQLHKdata(control.dataTabHK);
 }
 
 void resetData_QLMB(QLMB_data &data)
@@ -442,7 +280,7 @@ void resetData_QLMB(QLMB_data &data)
   data.searchKeyword.tittle = "Nhập nội dung tìm kiếm";
   data.current_showPage = 1;
 
-  data.Sw_table_page.reset();
+  resetPageSwitcher(data.Sw_table_page);
 }
 
 void resetData_QLCB(QLCB_data &data)
@@ -477,24 +315,6 @@ void resetData_QLCB(QLCB_data &data)
   resetInputTextBox(data.searchMaCB);
   data.searchMaCB.tittle = "Mã chuyến bay";
 
-  // data.searchNgay.textBox = boxNgay;
-  // data.searchNgay.tittle = "DD";
-  // data.searchNgay.mode = 6;
-  // data.searchNgay.size = 2;
-  // data.searchNgay.showNKeyRemain = false;
-
-  // data.searchThang.textBox = boxThang;
-  // data.searchThang.tittle = "MM";
-  // data.searchThang.size = 2;
-  // data.searchThang.mode = 7;
-  // data.searchThang.showNKeyRemain = false;
-
-  // data.searchNam.textBox = boxNam;
-  // data.data.searchNam.tittle = "YYYY";
-  // data.searchNam.size = 4;
-  // data.searchNam.mode = 8;
-  // data.searchNam.showNKeyRemain = false;
-
   resetData_QLVe(data.dataDSVe);
 
   data.data = NULL;
@@ -516,7 +336,7 @@ void resetData_QLCB(QLCB_data &data)
   data.inGetTicket = false;
   data.gotChangeTicket = false;
 
-  data.Sw_table_page.reset();
+  resetPageSwitcher(data.Sw_table_page);
 }
 
 void resetData_searchQLCB(QLCB_data &data)
@@ -546,7 +366,7 @@ void resetData_QLHK(QLHK_data &data)
 
   data.i_Phai = -1;
 
-  data.Sw_table_page.reset();
+  resetPageSwitcher(data.Sw_table_page);
 }
 
 void resetData_QLVe(QLVe_data &data)
@@ -556,7 +376,7 @@ void resetData_QLVe(QLVe_data &data)
   data.data = VeMayBay();
   data.inDelete = false;
 
-  data.Sw_table_page.reset();
+  resetPageSwitcher(data.Sw_table_page);
 }
 
 BoMauNut HomeButtonColor{{153, 255, 153, 255},
@@ -1620,8 +1440,6 @@ void CreateTable_QLMB()
   }
 }
 
-// =-ChuyenBay
-
 void CreatePage_QLCB(UIcontroller &control)
 {
   CreatePageBackground(5);
@@ -1646,10 +1464,7 @@ void CreatePage_QLCB(UIcontroller &control)
   }
 
   if (control.dataTabCB.current_popup == 0)
-  { // tittle
-
-    // mini function
-
+  {
     Button button[5];
     for (int i = 0; i < 5; i++)
     {
@@ -1729,7 +1544,7 @@ void CreatePage_QLCB(UIcontroller &control)
     if (CreateButton(button[4]))
     {
       control.dataTabCB.pickdata_index = -1;
-      control.dataTabCB.Sw_table_page.reset();
+      resetPageSwitcher(control.dataTabCB.Sw_table_page);
       control.dataTabCB.data = nullptr;
       control.dataTabCB.current_popup = 5;
     }
@@ -1782,7 +1597,7 @@ void CreatePage_QLCB(UIcontroller &control)
   {
     if (Popup_chonChuyen(control))
     {
-      control.dataTabCB.Sw_table_page.reset();
+      resetPageSwitcher(control.dataTabCB.Sw_table_page);
       control.dataTabCB.pickdata_index = -1;
       control.dataTabCB.data = nullptr;
       control.dataTabCB.current_popup = 0;
@@ -5232,6 +5047,12 @@ void mainGraphics()
   SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
   int ScreenW = GetScreenWidth(), ScreenH = GetScreenHeight();
 
+  TextBox showCurrTime;
+  Date CurrTime;
+  showCurrTime.box = {15, 780, 200, 40};
+  CurrTime.setToNow();
+  showCurrTime.text = strToChar(CurrTime.printDateHour());
+
   // Graphics in running
   while (!WindowShouldClose())
   {
@@ -5329,6 +5150,7 @@ void mainGraphics()
       V_MOUSE_CURSOR_POINTING_HAND = 0;
       SetMouseCursor(MOUSE_CURSOR_DEFAULT);
     }
+    CreateTextBox(showCurrTime);
     EndTextureMode();
 
     BeginDrawing();
@@ -5342,10 +5164,18 @@ void mainGraphics()
                    Vector2{0, 0}, 0, WHITE);
     EndDrawing();
 
-    if (main.listCB.update(main.listMB))
+    // Update realtime
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    if (ltm->tm_sec < 2)
     {
-      setDataToFile(main.listCB, main.listMB, main.listHK);
-      getDataFromFile(main.listCB, main.listMB, main.listHK);
+      if (main.listCB.update(main.listMB))
+      {
+        setDataToFile(main.listCB, main.listMB, main.listHK);
+        getDataFromFile(main.listCB, main.listMB, main.listHK);
+      }
+      CurrTime.setToNow();
+      showCurrTime.text = strToChar(CurrTime.printDateHour());
     }
   }
 

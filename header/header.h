@@ -1,6 +1,5 @@
 #pragma once
 
-// #include "mylib.h"
 #include "raylib.h"
 #include "raymath.h"
 
@@ -27,7 +26,10 @@ using std::stringstream;
 
 #define MAXMB 300
 #define MAXVe 100
-#define ENTER 13
+#define HuyChuyen 0
+#define ConVe 1
+#define HetVe 2
+#define HoanTat 3
 
 const char idChu[26] = {
     'A',
