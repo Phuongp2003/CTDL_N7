@@ -18,7 +18,6 @@
 #define SCREEN_HEIGHT 750
 
 struct BoMauNut;
-
 /**
  * @brief chứa câu trúc nút
  *
@@ -37,7 +36,6 @@ struct BoMauNut;
  *
  */
 struct Button;
-
 /**
  * @brief tạo ô nhập kí tự
  *
@@ -58,7 +56,6 @@ struct Button;
  *
  */
 struct InputTextBox;
-
 /**
  * @brief tạo ô hiện kí tự, chống tràn chữ
  *
@@ -70,13 +67,180 @@ struct InputTextBox;
  * @param fontsize cỡ chữ (mặc định bằng 2/3 độ cao ô)
  */
 struct TextBox;
-
 struct UIcontroller;
 struct QLMB_data;
 struct QLCB_data;
 struct QLHK_data;
 struct QLVe_data;
 struct PageSwitcher;
+
+struct BoMauNut
+{
+    Color isnotHovered;   // Trạng thái bth
+    Color isHovered;      // Được trỏ vào
+    Color isPressed;      // Được nhấn vào
+    Color text1;          // Màu chữ 1 (màu bth)
+    Color text2;          // Màu chữ 2 (có thao tác tác động lên)
+    Color Rounder;        // Màu viền
+    Color RounderHovered; // Màu viền khi được trỏ vào
+    Color RounderPressed; // Màu viền khi nhấn vào
+};
+
+struct Button
+{
+    bool isActive = true; // Chỉ in ra nếu bị disable
+
+    float x;
+    float y;
+    float w;
+    float h;
+    bool BoTron = false;             // Vễ bo tròn
+    bool gotNothing = true;          // Nút trống (chỉ có viền và màu)
+    bool gotText = false;            // Chứa chữ, y/c gotNothing = false
+    const char *tittle = "";         // Tiều đề nút
+    Font font;                       // Font chữ cho nút
+    bool gotPic = false;             // Chứa hình, y/c gotNothing = false
+    Texture2D picture;               // Hình trong nút
+    bool RounderChangeColor = false; // Màu viền thay đổi khi được thao tác
+    bool firstRounder = true;        // In viền
+    BoMauNut BoMau;
+};
+
+struct InputTextBox
+{
+    bool isActive = true;   // Chỉ in nội dung nếu bị disable
+    bool isGotData = false; // Đang chứa dữ liệu được truyền trực tiếp (tiền xử lý)
+
+    Rectangle textBox;
+    const char *tittle = "";    // Tiêu đề ô nhập
+    int size = 27;              // Số kí tự được nhập tối đa
+    bool showNKeyRemain = true; // Hiện số kí tự được nhập còn lại
+    bool editMode = false;      // Nhận tiêu đề để chỉnh sửa
+    bool showPreResult = true;  // Hiện kết quả đã nhập trước đó
+    bool returnIfDone = false;  // Chỉ nhận giá trị khi nhấn enter
+    Color MauNen = WHITE;
+    Color MauVien = BLACK;
+    Color MauChu = BLACK;
+    int mode = 1; // Chi tiết xem hàm chuanHoaKey (tool.cpp)
+
+    // xử lý
+    char name[120] = "\0";                             // xâu được xử lý
+    int fHold_BS = 0, fHold_RIGHT = 0, fHold_LEFT = 0; // Thời gian giữ nút (đơn vị là 1/20 giây, với max FPS = 20)
+    bool done = true;                                  // Đã nhận nút enter
+    bool mouseClickOnText = false;                     // Đang được thao tác
+    int letterCount = 0;                               // số kí tự đã nhập
+    int framesCounter = 0;                             // số frames đã được in ra (chi tiết tìm hiểu về FPS)
+    int indexPoint = 0;                                // vị trí con trỏ so với kí tự cuối cùng
+};
+
+struct TextBox
+{
+    const char *text;      // Xâu xuất
+    Rectangle box;         // Giá trị ô xuát
+    bool showBox = false;  // Hiện ô xuất
+    int mode = 1;          // Hiện thêm ô (1) / Thu nhỏ chữ (2)
+    bool isCenter = false; // Căn giữa
+    int fontSize = 0;      // Cỡ chữ
+};
+
+struct QLMB_data
+{
+    MayBay *data = nullptr; // Giá trị của MB được chọn (qua index)
+    int status = 0;         // Trạng thái index (1 - sau khi thêm, -1 - sau khi xoá)
+
+    int current_popup = 0;                    // popup được mở
+    string popup_errorMess = "";              // lỗi ở các popup đang chờ được xâu
+    int time_showError = 0;                   // thời gian đã hiện lỗi (tối đa đến 99)
+    InputTextBox MaMB, LoaiMB, SoDong, SoDay; // các ô nhập ở các popup
+
+    int pickdata_index = -1;    // Vị trí của index
+    const char *keyword;        // Từ khoá (tìm kiếm)
+    InputTextBox searchKeyword; // Ô nhập của tìm kiếm
+    int current_showPage = 1;   // Trang hiến tại (ds máy bay)
+
+    PageSwitcher Sw_table_page; // Chuyển trang
+};
+
+struct QLHK_data
+{
+    NodeHK *data = nullptr; // Địa chỉ của node hành khách được trở vào
+
+    int current_popup = 0;       // Popup được mở
+    string popup_errorMess = ""; // Lỗi ở các popup
+    int time_showError = 0;      // Thời gian hiện lỗi (tối đa 99)
+
+    int pickdata_index = -1; // Vị trí của index
+    int current_page = 1;    // Trang hiện tại (ds hành khách)
+
+    InputTextBox i_CMND, i_Ho, i_Ten; // Ô nhập thông tin
+    int i_Phai = -1;                  // Thông tin phái
+
+    PageSwitcher Sw_table_page; // Chuyển trang
+};
+
+struct QLVe_data
+{
+    int current_page = 1;       // Trang hiện tại
+    int position = -1;          // Vị trí vé đã chọn trong ds vé
+    int pickdata_index = -1;    // Vị trí vé (DSve đã đặt của cbay)
+    VeMayBay data = VeMayBay(); // Vé được pick
+
+    bool showNotEmpty = false; // Hiện vé đã đặt
+    bool inDelete = false;     // Có thao tác huỷ vé được kích hoạt
+
+    PageSwitcher Sw_table_page; // Chuyển trang
+};
+
+struct PageSwitcher
+{
+    bool editmode = false;      // Trạng thái chế độ ô nhập
+    InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
+};
+
+struct QLCB_data
+{
+    NodeCB *data = nullptr; // Địa chỉ của node chuyến bay được chọn
+    int status = 0;         // Trạng thái index (1 - sau khi thêm)
+
+    int current_popup = 0;                                        // Popup đang mở
+    string popup_errorMess = "";                                  // Lỗi ở các Popup
+    int time_showError = 0;                                       // Thời gian hiên lỗi (tối đa 99)
+    InputTextBox MaCB, MaMB, NoiDen, Ngay, Thang, Nam, Gio, Phut; // Ô nhập dữ liệu
+    bool inChooseMB = false;                                      // Bảng chọn máy bay trong thêm/hiệu chỉnh CBay được kích hoạt
+    QLVe_data dataDSVe;                                           // Dữ liệu của các thao tác trên vé
+
+    InputTextBox searchMaCB, searchNoiDen; // Ô nhập dữ liệu tìm kiếm
+    int pickdata_index = -1;               // Vị trí index
+    int current_showPage = 1;              // Trang hiện tại
+
+    bool inSearching = false;         // Popup nhập dữ liệu tìm kiếm
+    bool inAdvSearch = false;         // Dữ liệu được lọc theo giá trị tìm kiếm
+    Date fbDay = Date(1, 1, 0, 0, 0); // Tìm theo ngày
+    string fbNoiDen = "";             // Tìm theo nơi đến
+    bool fbAvail = false;             // Lọc chuyến bay không khả dụng
+    bool inGetTicket = false;         // Popup chọn vé
+    bool inSetTicket = false;         // Popup đặt vé
+    bool gotChangeTicket = false;     // Có thao tác trên vé
+
+    PageSwitcher Sw_table_page; // Chuyển trang
+};
+
+struct UIcontroller
+{
+    RenderTexture2D renderTexture; // Dữ liệu của cảnh được in
+
+    int current_tab = 0; // Tab hiện tại (Home / MayBay / ChuyenBay / HanhKhach)
+    int next_tab = 0;    // Tab sắp chuyển dến
+    QLMB_data dataTabMB; // Dữ liệu tab Máy bay và các dữ liệu được thao tác trên MB
+    QLCB_data dataTabCB;
+    QLHK_data dataTabHK;
+
+    DsMayBay listMB; // Danh sách máy bay
+    DsChuyenBay listCB;
+    DsHanhKhach listHK;
+
+    bool req_swTab = false; // Có yêu cầu chuyển tab
+};
 
 bool UI_reqSwitchTab(UIcontroller &control, int idTab);
 void UI_switchTab(UIcontroller &control);

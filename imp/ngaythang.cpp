@@ -1,7 +1,6 @@
 #include "../header/ngaythang.h"
 #include <sstream>
 #include <string>
-using std::string;
 
 Date::Date()
 {
