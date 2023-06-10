@@ -1,6 +1,7 @@
 #pragma once
 #include "header.h"
-class Date {
+class Date
+{
 private:
   int phut;
   int gio;
@@ -23,15 +24,11 @@ public:
   void setNam(int);
   int getNam();
   bool checkNgay();
-  bool checkGio();
   bool checkNgayNhapVoiNgayHT();
-  bool checkDateHour();
   string printDateHour();
   string printDate();
   string printHour();
   long long soVoi1_1_1900_0_0();
-  
-  
 
   bool operator<(const Date &another);
   bool operator==(const Date &another);

@@ -136,12 +136,6 @@ struct TextBox
     int fontSize = 0;      // Cỡ chữ
 };
 
-struct PageSwitcher
-{
-    bool editmode = false;      // Trạng thái chế độ ô nhập
-    InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
-};
-
 struct QLMB_data
 {
     MayBay *data = nullptr; // Giá trị của MB được chọn (qua index)
@@ -188,6 +182,12 @@ struct QLVe_data
     bool inDelete = false;     // Có thao tác huỷ vé được kích hoạt
 
     PageSwitcher Sw_table_page; // Chuyển trang
+};
+
+struct PageSwitcher
+{
+    bool editmode = false;      // Trạng thái chế độ ô nhập
+    InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
 };
 
 struct QLCB_data

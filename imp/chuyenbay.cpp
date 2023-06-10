@@ -420,8 +420,7 @@ int DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
     {
       for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
       {
-        // if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == "")
-        //   continue;
+
         if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() == cmnd)
           return 2;
       }
