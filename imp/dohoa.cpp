@@ -118,6 +118,7 @@ void initPageSwitcher(PageSwitcher &thisdata)
   thisdata.fast_switcher.returnIfDone = true;
   thisdata.fast_switcher.showNKeyRemain = false;
 }
+
 void resetPageSwitcher(PageSwitcher &thisdata)
 {
   thisdata.editmode = false;
@@ -1728,10 +1729,12 @@ bool Popup_TimCB(UIcontroller &control)
     control.dataTabCB.fbNoiDen = newNoiDen;
     control.dataTabCB.popup_errorMess = "";
     control.dataTabCB.inAdvSearch = true;
+    resetInputTextBox(control.dataTabCB.NoiDen);
+    control.dataTabCB.NoiDen.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 900, 50};
+    resetInputTextBox(control.dataTabCB.Ngay);
+    control.dataTabCB.popup_errorMess = "";
 
     return true;
-
-    return false;
   }
   if (CreateButton(Cancel))
   {
@@ -2813,23 +2816,23 @@ bool Popup_chonVe(UIcontroller &control)
 
   DrawTextEx(FontArial, "Ngày giờ khởi hành: ",
              {StartPos.x + 50,
-              CenterDataSetter(100, StartPos.y + 50 +20+ 15,
+              CenterDataSetter(100, StartPos.y + 50 + 20 + 15,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
   DrawTextEx(FontArial, strToChar(control.dataTabCB.data->getNode().getNgayGio().printDateHour()),
              {StartPos.x + 50 + 280,
-              CenterDataSetter(100, StartPos.y + 50 +20+ 15,
+              CenterDataSetter(100, StartPos.y + 50 + 20 + 15,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
 
   DrawTextEx(FontArial, "Nơi đến: ",
              {StartPos.x + 50,
-              CenterDataSetter(100, StartPos.y + 50 +20 + 45,
+              CenterDataSetter(100, StartPos.y + 50 + 20 + 45,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
   DrawTextEx(FontArial, strToChar(control.dataTabCB.data->getNode().getNoiDen()),
-             {StartPos.x + 50 +120,
-              CenterDataSetter(100, StartPos.y + 50 +20 + 45,
+             {StartPos.x + 50 + 120,
+              CenterDataSetter(100, StartPos.y + 50 + 20 + 45,
                                MeasureTextEx(FontArial, "A", 50, 0).y)},
              30, 0, BLACK);
   if (control.dataTabCB.inSetTicket)
@@ -3590,6 +3593,8 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   StatusHelp_QLCB();
 
   n_page = 1 + ((control.listCB.getSize() - 1) / 10);
+
+  
 
   // page and switch page
   int swp =
@@ -5025,6 +5030,7 @@ void mainGraphics()
   getDataFromFile(main.listCB, main.listMB, main.listHK);
 
   // Settup for before run graphics
+  SetExitKey(0); // Disable exit key
   SetWindowState(FLAG_WINDOW_RESIZABLE);
   SetWindowMinSize(700, 400);
   SetSizeWindow();
@@ -5047,18 +5053,45 @@ void mainGraphics()
   // Graphics in running
   while (!WindowShouldClose())
   {
-    // Make all texture smooth
-    if (ScreenW != GetScreenWidth() || ScreenH != GetScreenHeight())
+
+    // Full screen
+    if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
     {
-      GenTextureMipmaps(&main.renderTexture.texture);
-      SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
-      ScreenW = GetScreenWidth();
-      ScreenH = GetScreenHeight();
+      int display = GetCurrentMonitor();
+
+      if (IsWindowFullscreen())
+      {
+        SetWindowSize(ScreenW, ScreenH);
+      }
+      else
+      {
+        SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
+        GenTextureMipmaps(&main.renderTexture.texture);
+        SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+      }
+
+      ToggleFullscreen();
+    }
+    if (IsWindowFullscreen() && IsKeyPressed(KEY_ESCAPE))
+    {
+      ToggleFullscreen();
+      SetWindowSize(ScreenW, ScreenH);
     }
 
+    // Make all texture smooth
+    if (!IsWindowFullscreen())
+    {
+      if (ScreenW != GetScreenWidth() || ScreenH != GetScreenHeight())
+      {
+        GenTextureMipmaps(&main.renderTexture.texture);
+        SetTextureFilter(main.renderTexture.texture, TEXTURE_FILTER_BILINEAR);
+        ScreenW = GetScreenWidth();
+        ScreenH = GetScreenHeight();
+      }
+    }
     BeginTextureMode(main.renderTexture);
-    // Các thao tác trên đồ hoạ
 
+    // Các thao tác trên đồ hoạ
     if (!main.req_swTab)
       switch (main.current_tab)
       {

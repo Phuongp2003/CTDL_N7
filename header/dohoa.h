@@ -143,6 +143,12 @@ struct TextBox
     int fontSize = 0;      // Cỡ chữ
 };
 
+struct PageSwitcher
+{
+    bool editmode = false;      // Trạng thái chế độ ô nhập
+    InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
+};
+
 struct QLMB_data
 {
     MayBay *data = nullptr; // Giá trị của MB được chọn (qua index)
@@ -191,12 +197,6 @@ struct QLVe_data
     PageSwitcher Sw_table_page; // Chuyển trang
 };
 
-struct PageSwitcher
-{
-    bool editmode = false;      // Trạng thái chế độ ô nhập
-    InputTextBox fast_switcher; // Ô nhập để chuyển trạng thái nhanh
-};
-
 struct QLCB_data
 {
     NodeCB *data = nullptr; // Địa chỉ của node chuyến bay được chọn
@@ -241,6 +241,15 @@ struct UIcontroller
 
     bool req_swTab = false; // Có yêu cầu chuyển tab
 };
+
+void SetDataInputTextBox(InputTextBox &box, const char *text, int length);
+void ResetDataInputTextBox(InputTextBox &box);
+void resetPageSwitcher(PageSwitcher &thisdata);
+void initPageSwitcher(PageSwitcher &thisdata);
+void initQLMBdata(QLMB_data &thisdata);
+void initQLHKdata(QLHK_data &thisdata);
+void initQLVedata(QLVe_data &thisdata);
+void initQLCBdata(QLCB_data &thisdata);
 
 bool UI_reqSwitchTab(UIcontroller &control, int idTab);
 void UI_switchTab(UIcontroller &control);

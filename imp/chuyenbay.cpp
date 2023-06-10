@@ -135,23 +135,6 @@ Date ChuyenBay::ngayHoanThanh()
   return date;
 }
 
-// int ChuyenBay::soSanhNgay(Date another)//1: CB >another,0: CB=another,-1:CB<another
-// {
-//   if(ngayGio.getNam()>another.getNam()) return 1;
-//   else if(ngayGio.getNam()<another.getNam()) return -1;
-//   else
-//   {
-//       if(ngayGio.getThang()>another.getThang()) return 1;
-//       else if(ngayGio.getThang()<another.getThang()) return -1;
-//       else
-//       {
-//         if(ngayGio.getNgay()>another.getNgay()) return 1;
-//         else if(ngayGio.getNgay()<another.getNgay()) return -1;
-//         else return 0;
-//       }
-//   }
-// }
-
 // @return true nếu thời gian của CBay hiện tại cách xa <Date another> <hour> tiếng trở lên
 bool ChuyenBay::cach(int hour, Date another)
 {
@@ -169,6 +152,8 @@ bool ChuyenBay::operator<(const ChuyenBay &other)
   int compare = strcmp(maCB, other.maCB);
   return (compare < 0) ? true : false;
 }
+
+ChuyenBay::~ChuyenBay() {}
 
 ChuyenBay NodeCB::getNode() { return this->chuyenBay; }
 
@@ -537,6 +522,7 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
     {
       listMB.writetoFile();
     }
+    cout << "Nhập file chuyến bay" << endl;
   }
   else
     cout << "Error" << endl;
@@ -570,6 +556,7 @@ void DsChuyenBay::writetToFile()
 
       tmp = tmp->getNext();
     }
+    cout << "Xuất file chuyến bay" << endl;
   }
   else
   {
@@ -630,6 +617,8 @@ void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
   listMB.readFromFile();
   listCB.readFromFile(listMB);
   listHK.readFromFile();
+
+  cout << "Nhận lại toàn bộ dữ liệu từ file!" << endl;
 }
 
 void setDataToFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
@@ -637,4 +626,6 @@ void setDataToFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
   listMB.writetoFile();
   listHK.writeToFileAllHK();
   listCB.writetToFile();
+
+  cout << "Xuất toàn bộ dữ liệu vào file!" << endl;
 }
