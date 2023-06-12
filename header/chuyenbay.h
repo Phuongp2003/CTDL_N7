@@ -68,7 +68,7 @@ public:
 
   bool hasNext();
 
-  bool Cach6tiengchua(Date another);
+  
 };
 
 class DsChuyenBay

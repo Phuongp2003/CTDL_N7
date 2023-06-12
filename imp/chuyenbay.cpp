@@ -188,17 +188,7 @@ NodeCB *NodeCB::getTail()
   return tmp;
 } //
 
-bool NodeCB::Cach6tiengchua(Date another)
-{
-  if ((getNode().getNgayGio().getGio() * 60 +
-           getNode().getNgayGio().getPhut() <=
-       another.getGio() * 60 + getNode().getNgayGio().getPhut() - 6 * 60) ||
-      (getNode().getNgayGio().getGio() * 60 +
-           getNode().getNgayGio().getPhut() >=
-       another.getGio() * 60 + getNode().getNgayGio().getPhut() + 6 * 60))
-    return true;
-  return false; //
-}
+
 
 // Hàm của DsChuyenBay
 
