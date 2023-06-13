@@ -70,4 +70,11 @@ void DsVeMayBay::deleteVe(int index)
   dsVeMB[index].setHanhKhach("");
   soVeDaDat--;
 }
-DsVeMayBay::~DsVeMayBay() {}
+
+void DsVeMayBay::deleteDS() {
+  delete[] dsVeMB;
+}
+
+DsVeMayBay::~DsVeMayBay() {
+  deleteDS();
+}
