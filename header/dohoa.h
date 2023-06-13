@@ -134,6 +134,9 @@ struct TextBox
     int mode = ASCII2;     // Hiện thêm ô (1) / Thu nhỏ chữ (2)
     bool isCenter = false; // Căn giữa
     int fontSize = 0;      // Cỡ chữ
+    Color MauVien = BLACK;
+    Color MauNen = {175, 175, 175, 225};
+    Color MauChu = BLACK;
 };
 
 struct PageSwitcher
