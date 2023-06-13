@@ -127,7 +127,7 @@ NodeHK *DsHanhKhach::search(NodeHK *&prevNode, string cmnd)
 
 	while (current != NULL)
 	{
-		if (stoi(cmnd) == stoi(current->getHK().getCmnd()))
+		if (cmnd.compare(current->getHK().getCmnd()) == 0)
 		{
 			return current;
 		}
