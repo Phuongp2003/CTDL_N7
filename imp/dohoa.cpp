@@ -1288,7 +1288,7 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
   // page and switch page
   int swp =
       SwitchPage(control.dataTabMB.Sw_table_page, control.dataTabMB.current_showPage, n_page,
-                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+                 {StartPos.x + 60 + 680 + 160, StartPos.y + 60 + 100 + 80 + 450 + 5});
 
   control.dataTabMB.current_showPage = swp;
   if (control.dataTabMB.current_showPage > n_page)
@@ -1428,7 +1428,7 @@ MayBay *XuLy_QLMB(UIcontroller &control)
   // page and switch page
   int swp =
       SwitchPage(control.dataTabMB.Sw_table_page, control.dataTabMB.current_showPage, n_page,
-                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+                 {StartPos.x + 60 + 680 + 160, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabMB.current_showPage != swp)
   {
     control.dataTabMB.pickdata_index = -1;
@@ -2620,7 +2620,7 @@ bool Popup_showListHK(UIcontroller &control)
 
   int swp =
       SwitchPage(control.dataTabCB.Sw_table_page, control.dataTabCB.dataDSVe.current_page, n_page,
-                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+                 {StartPos.x + 60 + 680 + 160, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabCB.dataDSVe.current_page != swp)
   {
     control.dataTabCB.dataDSVe.position = -1;
@@ -2883,7 +2883,7 @@ bool Popup_chonVe(UIcontroller &control)
 
   int swp =
       SwitchPage(control.dataTabCB.Sw_table_page, control.dataTabCB.dataDSVe.current_page, n_page,
-                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+                 {StartPos.x + 60 + 680 + 160, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabCB.dataDSVe.current_page != swp)
   {
     control.dataTabCB.dataDSVe.position = -1;
@@ -3521,7 +3521,7 @@ NodeCB *XuLy_QLCB(UIcontroller &control)
   // page and switch page
   int swp =
       SwitchPage(control.dataTabCB.Sw_table_page, control.dataTabCB.current_showPage, n_page,
-                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+                 {StartPos.x + 60 + 680 + 160, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabCB.current_showPage != swp)
   {
     control.dataTabCB.pickdata_index = -1;
@@ -3913,7 +3913,7 @@ NodeHK *XuLy_QLHK(UIcontroller &control)
   // page and switch page
   int swp =
       SwitchPage(control.dataTabCB.Sw_table_page, control.dataTabHK.current_page, n_page,
-                 {StartPos.x + 60 + 680, StartPos.y + 60 + 100 + 80 + 450 + 5});
+                 {StartPos.x + 60 + 680 + 160, StartPos.y + 60 + 100 + 80 + 450 + 5});
   if (control.dataTabHK.current_page != swp)
     control.dataTabHK.pickdata_index = -1;
   control.dataTabHK.current_page = swp;
@@ -4346,9 +4346,8 @@ float CenterDataSetter(float doDai_khung_chua, float vi_tri_khung_chua,
 
 int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos)
 {
-  Rectangle textBox = {pos.x + 50, pos.y, 160, 50};
-  Rectangle pg1 = {textBox.x + textBox.width + 2, textBox.y, 70 - 4, 50};
-  Rectangle pg2 = {textBox.x + textBox.width + 70 + 2, textBox.y, 70 - 4, 50};
+  Rectangle pg1 = {pos.x + 50 + 2, pos.y, 70 - 4, 50};
+  Rectangle pg2 = {pos.x + 50 + 70 + 2, pos.y, 70 - 4, 50};
   int status = 0;
   int page_n = current_page;
 
@@ -4370,7 +4369,7 @@ int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos)
   button[0].BoMau = ArrowKey;
   button[0].picture = PNG_arrowLeft;
 
-  button[1].x = pos.x + 50 + 300 + 10;
+  button[1].x = pos.x + 50 + 140 + 10;
   button[1].y = pos.y + 10;
   button[1].w = 30;
   button[1].h = 30;
@@ -4386,17 +4385,9 @@ int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos)
   }
   else
   {
-    DrawRectangle(pos.x + 10, pos.y + 10, 30, 30, ArrowKey.isPressed);
-    DrawTexture(PNG_arrowLeft, pos.x + 10, pos.y + 10, ArrowKey.isPressed);
+    DrawRectangle(pos.x + 12, pos.y + 10, 30, 30, ArrowKey.isPressed);
+    DrawTexture(PNG_arrowLeft, pos.x + 10 + 2, pos.y + 10, ArrowKey.isPressed);
   }
-
-  DrawRectangleRec(textBox, ArrowKey.isnotHovered);
-  DrawTextEx(
-      FontArial, text,
-      {CenterDataSetter(160, textBox.x,
-                        MeasureTextEx(FontArial, text, 30, 0).x),
-       CenterDataSetter(50, textBox.y, MeasureTextEx(FontArial, "A", 30, 0).y)},
-      30, 0, BLACK);
 
   DrawRectangleRec(pg1, WHITE);
   DrawRectangleRoundedLines(pg1, 0, 1, 2, BROWN);
@@ -4422,9 +4413,9 @@ int SwitchPage(PageSwitcher &data, int current_page, int n_page, Vector2 pos)
   }
   else
   {
-    DrawRectangle(pos.x + 50 + 300 + 10, pos.y + 10, 30, 30,
+    DrawRectangle(pos.x + 50 + 140 + 10, pos.y + 10, 30, 30,
                   ArrowKey.isPressed);
-    DrawTexture(PNG_arrowRight, pos.x + 50 + 300 + 10, pos.y + 10,
+    DrawTexture(PNG_arrowRight, pos.x + 50 + 140 + 10, pos.y + 10,
                 ArrowKey.isPressed);
   }
 
@@ -4837,8 +4828,8 @@ void CreateTextBox(TextBox box)
 
   if (box.showBox)
   {
-    DrawRectangleRec(box.box, WHITE);
-    DrawRectangleRoundedLines(box.box, 0, 0, 2, BLACK);
+    DrawRectangleRec(box.box, box.MauNen);
+    DrawRectangleRoundedLines(box.box, 0, 0, 2, box.MauVien);
   }
 
   if (MeasureTextEx(FontArial, box.text, box.fontSize, 0).x + 20 < box.box.width)
@@ -4900,13 +4891,13 @@ void CreateTextBox(TextBox box)
                              20,
                          box.box.height - 6};
 
-    DrawRectangleRec(fullBox, WHITE);
-    DrawRectangleRoundedLines(fullBox, 0, 0, 2, BLACK);
+    DrawRectangleRec(fullBox, box.MauNen);
+    DrawRectangleRoundedLines(fullBox, 0, 0, 2, box.MauVien);
 
     textpos.x =
         CenterDataSetter(fullBox.width, fullBox.x,
                          MeasureTextEx(FontArial, box.text, box.fontSize, 0).x);
-    DrawTextEx(FontArial, box.text, textpos, box.fontSize, 0, BLACK);
+    DrawTextEx(FontArial, box.text, textpos, box.fontSize, 0, box.MauChu);
   }
 }
 
