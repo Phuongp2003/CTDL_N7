@@ -77,16 +77,16 @@ void initQLMBdata(QLMB_data &thisdata)
   thisdata.SoDong.mode = Numeric;
   thisdata.SoDong.tittle = (char *)"Nhập số dòng của máy bay";
   thisdata.SoDong.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 500, 50};
-  thisdata.SoDong.size = 3;
+  thisdata.SoDong.size = 2;
   thisdata.SoDay.mode = Numeric;
   thisdata.SoDay.tittle = (char *)"Nhập số dãy của máy bay";
   thisdata.SoDay.textBox = {StartPos.x + 300, StartPos.y + 60 + 480, 500, 50};
-  thisdata.SoDay.size = 3;
+  thisdata.SoDay.size = 2;
 
   thisdata.pickdata_index = -1;
   thisdata.keyword = "";
   thisdata.searchKeyword.mode = UpperAlphanumeric;
-  thisdata.searchKeyword.tittle = "Nhập nội dung tìm kiếm";
+  thisdata.searchKeyword.tittle = "Nhập mã máy bay tìm kiếm";
   thisdata.current_showPage = 1;
 
   resetPageSwitcher(thisdata.Sw_table_page);
@@ -1220,28 +1220,21 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
 
   control.dataTabMB.keyword = CreateTextInputBox(control.dataTabMB.searchKeyword);
 
-  Button button1;
-
-  button1.x = searchText.x + searchText.width;
-  button1.y = searchText.y;
-  button1.w = 200;
-  button1.h = 50;
-  button1.gotNothing = false;
-  button1.gotText = true;
-  button1.tittle = "TÌM KIẾM";
-  button1.font = FontArial;
-  button1.BoMau = ArrowKey;
-
-  if (CreateButton(button1))
-  {
-    cout << "Tim kiem" << endl;
-  }
+  Rectangle timkiem = {searchText.x + searchText.width, searchText.y, 200, 50};
+  TextBox Timkiem;
+  Timkiem.box = timkiem;
+  Timkiem.text = "TÌM KIẾM";
+  Timkiem.fontSize = 30;
+  Timkiem.isCenter = true;
+  Timkiem.MauNen = {175, 175, 175, 225};
+  Timkiem.showBox = true;
+  CreateTextBox(Timkiem);
   const char *cell_tittle[3] = {"STT", "Mã MB", "Số lượt bay"};
 
   float cellW[3] = {180, 450, 450};
-  CreateTable({StartPos.x + 35, StartPos.y + 60 + 100 + 80}, 3, cellW, 1080);
+  CreateTable({StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 3, cellW, 1080);
   Vector2 *tittle_pos = GetTittlePos(
-      {StartPos.x + 35, StartPos.y + 60 + 100 + 80}, 3, cellW, cell_tittle);
+      {StartPos.x + 60, StartPos.y + 60 + 100 + 80}, 3, cellW, cell_tittle);
   for (int i = 0; i < 3; i++)
   {
     DrawTextEx(FontArial, cell_tittle[i], tittle_pos[i], 40, 0, RED);
@@ -1316,24 +1309,15 @@ MayBay *XuLy_QLMB(UIcontroller &control)
 
   control.dataTabMB.keyword = CreateTextInputBox(control.dataTabMB.searchKeyword);
 
-  Button button;
-
-  button.x = searchText.x + searchText.width;
-  button.y = searchText.y;
-  button.w = 200;
-  button.h = 50;
-  button.BoTron = false;
-  button.gotNothing = false;
-  button.gotText = true;
-  button.tittle = "TÌM KIẾM";
-  button.font = FontArial;
-  button.BoMau = ArrowKey;
-
-  if (CreateButton(button))
-  {
-    cout << "Tim kiem" << endl;
-  }
-
+  Rectangle timkiem = {searchText.x + searchText.width, searchText.y, 200, 50};
+  TextBox Timkiem;
+  Timkiem.box = timkiem;
+  Timkiem.text = "TÌM KIẾM";
+  Timkiem.fontSize = 30;
+  Timkiem.isCenter = true;
+  Timkiem.MauNen = {175, 175, 175, 225};
+  Timkiem.showBox = true;
+  CreateTextBox(Timkiem);
   // table
   float cellW[5] = {100, 300, 380, 150, 150};
   CreateTable_QLMB();
@@ -5081,6 +5065,8 @@ void mainGraphics()
 
   // Clear all data after run graphics
   main.listMB.deleteDsMB();
+  main.listHK.deleteDs();
+  main.listCB.deleteDs();
   UnloadRenderTexture(main.renderTexture);
   UnloadResources();
 }

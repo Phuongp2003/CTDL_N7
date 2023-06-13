@@ -40,6 +40,7 @@ void DsVeMayBay::setDSVe(MayBay *mayBay)
   soDay = mayBay->getSoDay();
   soDong = mayBay->getSoDong();
   soVeToiDa = soDay * soDong;
+  dsVeMB = new VeMayBay[soVeToiDa];
   for (int i = 0; i < soDay; i++)
   {
     for (int j = 0; j < soDong; j++)
@@ -63,4 +64,8 @@ void DsVeMayBay::deleteVe(int index)
 {
   dsVeMB[index].setHanhKhach("");
   soVeDaDat--;
+}
+void DsVeMayBay::deleteDsVe()
+{
+  delete[] dsVeMB;
 }

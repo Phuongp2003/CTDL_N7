@@ -21,7 +21,7 @@ public:
 class DsVeMayBay
 {
 private:
-  VeMayBay dsVeMB[300];
+  VeMayBay *dsVeMB;
   int soVeToiDa;
   int soVeDaDat;
 
@@ -39,4 +39,5 @@ public:
   void setVe(VeMayBay ve, int pos);
   VeMayBay getVe(int index);
   void deleteVe(int index);
+  void deleteDsVe();
 };
