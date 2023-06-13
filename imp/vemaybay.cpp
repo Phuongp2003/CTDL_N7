@@ -16,11 +16,6 @@ void VeMayBay::setHanhKhach(string cmnd) { this->cmnd = cmnd; }
 
 string VeMayBay::getHanhKhach() { return this->cmnd; }
 
-// void VeMayBay::setTrangThai(bool TrangThai) { this->TrangThai = TrangThai; }
-
-// bool VeMayBay::getTrangThai() { return this->TrangThai; }
-
-// ham DSvemaybay
 DsVeMayBay::DsVeMayBay()
 {
   this->soVeToiDa = 0;
@@ -45,7 +40,6 @@ void DsVeMayBay::setDSVe(MayBay *mayBay)
   soDay = mayBay->getSoDay();
   soDong = mayBay->getSoDong();
   soVeToiDa = soDay * soDong;
-  dsVeMB = new VeMayBay[soVeToiDa];
   for (int i = 0; i < soDay; i++)
   {
     for (int j = 0; j < soDong; j++)
@@ -69,12 +63,4 @@ void DsVeMayBay::deleteVe(int index)
 {
   dsVeMB[index].setHanhKhach("");
   soVeDaDat--;
-}
-
-void DsVeMayBay::deleteDS() {
-  delete[] dsVeMB;
-}
-
-DsVeMayBay::~DsVeMayBay() {
-  deleteDS();
 }

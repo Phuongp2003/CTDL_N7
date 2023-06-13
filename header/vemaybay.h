@@ -39,6 +39,4 @@ public:
   void setVe(VeMayBay ve, int pos);
   VeMayBay getVe(int index);
   void deleteVe(int index);
-  void deleteDS();
-  ~DsVeMayBay();
 };
