@@ -59,6 +59,4 @@ public:
   void writetoFile();
   void writetoFileWhenAdd();
   bool planeMatch(const char *soHieuMB, const char *other);
-
-  ~DsMayBay();
 };

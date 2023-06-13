@@ -21,7 +21,7 @@ public:
 class DsVeMayBay
 {
 private:
-  VeMayBay *dsVeMB;
+  VeMayBay dsVeMB[300];
   int soVeToiDa;
   int soVeDaDat;
 
