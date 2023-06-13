@@ -429,7 +429,7 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
   ifstream file("../data/dataCB.txt", ios::in);
   if (file.is_open())
   {
-    this->head = NULL;
+    this->head = nullptr;
     string maCB, noiDen, trangThai, idMayBay, ngay, thang, nam, gio, phut,
         soVeMax, soVeAval;
     string line = "";

@@ -123,9 +123,19 @@ MayBay *DsMayBay::findMB(const char *soHieuMB)
 
 void DsMayBay::deleteDsMB()
 {
-  for (int i = 0; i < this->size; i++)
+  for (int i = 0; i < MAXMB; i++)
   {
-    delete data[i];
+    if (i < size)
+    {
+      if (data[i] != NULL)
+        cout << "Delete " << data[i]->getSoHieuMB() << "|\n";
+      else
+        cout << "Delete "
+             << "NULL pointer"
+             << "|\n";
+      delete data[i];
+    }
+    data[i] = nullptr;
   }
   this->size = 0;
 }
@@ -137,7 +147,7 @@ void DsMayBay::readFromFile()
   ifstream file("../data/dataMB.txt", ios::in);
   if (file.is_open())
   {
-    deleteDsMB();
+    this->size = 0;
     string soHieuMB, loaiMB, soDay, soDong, soLuotThucHienCB, isUsed;
     string line = "";
     bool used;
@@ -237,8 +247,4 @@ bool DsMayBay::planeMatch(const char *soHieuMB, const char *other)
     return true;
 
   return false;
-}
-
-DsMayBay::~DsMayBay()
-{
 }

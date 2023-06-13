@@ -135,7 +135,7 @@ struct TextBox
     bool isCenter = false; // Căn giữa
     int fontSize = 0;      // Cỡ chữ
     Color MauVien = BLACK;
-    Color MauNen = {175, 175, 175, 225};
+    Color MauNen = WHITE;
     Color MauChu = BLACK;
 };
 

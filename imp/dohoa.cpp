@@ -4926,7 +4926,11 @@ void mainGraphics()
 {
   UIcontroller main;
   InitUIData(main);
+
   // Settup data
+  main.listCB = DsChuyenBay();
+  main.listMB = DsMayBay();
+  main.listHK = DsHanhKhach();
   getDataFromFile(main.listCB, main.listMB, main.listHK);
 
   // Settup for before run graphics
@@ -5076,6 +5080,7 @@ void mainGraphics()
   }
 
   // Clear all data after run graphics
+  main.listMB.deleteDsMB();
   UnloadRenderTexture(main.renderTexture);
   UnloadResources();
 }
