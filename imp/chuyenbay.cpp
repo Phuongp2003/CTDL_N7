@@ -595,6 +595,15 @@ bool DsChuyenBay::update(DsMayBay DsMB)
   return false;
 }
 
+void DsChuyenBay::deleteDs() {
+  NodeCB *tmp;
+  while (head != NULL) {
+    tmp = head;
+    head = head->getNext();
+    delete tmp;
+  }
+}
+
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
 {
   listMB.readFromFile();

@@ -110,6 +110,7 @@ public:
   bool isAval(const char *soHieuMB, Date timeCb, const char *_maCB);
   bool isExist(const char *maCB);
   bool isUsing(const char *maMB);
+  void deleteDs();
 };
 
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK); //

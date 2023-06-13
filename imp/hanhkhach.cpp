@@ -61,17 +61,20 @@ DsHanhKhach::DsHanhKhach()
 	this->size = 0;
 }
 
-DsHanhKhach::~DsHanhKhach() {
-	freeMemory(root);
-}
-
-void DsHanhKhach::freeMemory(NodeHK *node) {
-	if (node == NULL) {
+void DsHanhKhach::deleteDs(NodeHK *node)
+{
+	if (node == NULL)
+	{
 		return;
 	}
-	freeMemory(node->getLeft());
-	freeMemory(node->getRight());
+	deleteDs(node->getLeft());
+	deleteDs(node->getRight());
 	delete node;
+}
+
+void DsHanhKhach::deleteDs()
+{
+	deleteDs(root);
 }
 
 void DsHanhKhach::insert(HanhKhach hanhKhach)
