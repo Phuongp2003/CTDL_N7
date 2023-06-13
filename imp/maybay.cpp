@@ -63,7 +63,6 @@ int MayBay::getSoCho()
   return this->soDay * this->soDong;
 }
 
-
 void MayBay::tangSoLuotThucHienCB() { this->soLuotThucHienCB++; }
 
 int MayBay::getSoLuotBay() { return this->soLuotThucHienCB; }

@@ -280,12 +280,12 @@ void DsChuyenBay::pop(NodeCB *node)
 {
   if (node == this->head)
   {
-    this->popFirst();
+    popFirst();
     return;
   }
   else if (!node->hasNext())
   {
-    this->popBack();
+    popBack();
     return;
   }
 
@@ -295,6 +295,7 @@ void DsChuyenBay::pop(NodeCB *node)
     tmp = tmp->getNext();
   }
   tmp->setNext(node->getNext());
+  delete node; //Xoá vì không bị ghi đè
 }
 
 void DsChuyenBay::popFirst()
@@ -315,7 +316,7 @@ void DsChuyenBay::popBack()
   {
     tmp = tmp->getNext();
   }
-  tmp->setNext(NULL);
+  tmp->setNext(nullptr);
   size--;
 }
 
