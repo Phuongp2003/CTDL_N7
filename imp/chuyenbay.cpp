@@ -188,8 +188,6 @@ NodeCB *NodeCB::getTail()
   return tmp;
 } //
 
-
-
 // Hàm của DsChuyenBay
 
 DsChuyenBay::DsChuyenBay()
@@ -285,7 +283,8 @@ void DsChuyenBay::pop(NodeCB *node)
     tmp = tmp->getNext();
   }
   tmp->setNext(node->getNext());
-  delete node; //Xoá vì không bị ghi đè
+  delete node;
+  node = 0;
 }
 
 void DsChuyenBay::popFirst()
@@ -595,12 +594,15 @@ bool DsChuyenBay::update(DsMayBay DsMB)
   return false;
 }
 
-void DsChuyenBay::deleteDs() {
+void DsChuyenBay::deleteDs()
+{
   NodeCB *tmp;
-  while (head != NULL) {
+  while (head != NULL)
+  {
     tmp = head;
     head = head->getNext();
     delete tmp;
+    tmp = 0;
   }
 }
 

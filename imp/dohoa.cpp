@@ -442,7 +442,6 @@ void LoadResources()
 
   UnloadResources();
   FontArial = LoadFontEx("../src/font/arial.ttf", 72, 0, 9812);
-  // FontArial = LoadFontEx("c:/Windows/Fonts/arial.ttf", 96, 0, 9812);
   GenTextureMipmaps(&FontArial.texture);
   SetTextureFilter(FontArial.texture, TEXTURE_FILTER_TRILINEAR);
 
@@ -1283,6 +1282,7 @@ bool Popup_Thongkesoluotbay(UIcontroller &control)
   }
 
   delete[] A;
+  A = 0;
   n_page = 1 + ((j - 1) / 10);
 
   // page and switch page
@@ -1417,8 +1417,6 @@ MayBay *XuLy_QLMB(UIcontroller &control)
         {
           CreateTextBox(show[show_i]);
         }
-
-        // delete[] showText;
       }
       j++;
     }
@@ -4957,7 +4955,6 @@ void mainGraphics()
   // Graphics in running
   while (!WindowShouldClose())
   {
-
     // Full screen
     if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
     {
@@ -4976,6 +4973,7 @@ void mainGraphics()
 
       ToggleFullscreen();
     }
+
     if (IsWindowFullscreen() && IsKeyPressed(KEY_ESCAPE))
     {
       ToggleFullscreen();
@@ -5081,6 +5079,8 @@ void mainGraphics()
 
   // Clear all data after run graphics
   main.listMB.deleteDsMB();
+  main.listHK.deleteDs();
+  main.listCB.deleteDs();
   UnloadRenderTexture(main.renderTexture);
   UnloadResources();
 }

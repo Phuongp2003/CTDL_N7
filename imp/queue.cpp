@@ -77,6 +77,7 @@ void Queue::pop()
         this->rear = NULL;
     }
     delete tmp;
+    tmp = 0;
 }
 
 NodeHK *Queue::getFront()

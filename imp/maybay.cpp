@@ -94,6 +94,7 @@ void DsMayBay::deleteMB(int index)
   if (isEmpty() == true)
     return;
   delete data[index];
+  data[index] = 0;
   for (int i = index; i < this->size - 1; i++)
   {
     data[i] = data[i + 1];
@@ -123,19 +124,15 @@ MayBay *DsMayBay::findMB(const char *soHieuMB)
 
 void DsMayBay::deleteDsMB()
 {
-  for (int i = 0; i < MAXMB; i++)
+  for (int i = 0; i < size; i++)
   {
-    if (i < size)
-    {
-      if (data[i] != NULL)
-        cout << "Delete " << data[i]->getSoHieuMB() << "|\n";
-      else
-        cout << "Delete "
-             << "NULL pointer"
-             << "|\n";
-      delete data[i];
-    }
-    data[i] = nullptr;
+    if (data[i] != NULL)
+      cout << "Delete " << data[i]->getSoHieuMB() << "|\n";
+    else
+      cout << "Delete "
+           << "NULL pointer"
+           << "|\n";
+    delete data[i];
   }
   this->size = 0;
 }
