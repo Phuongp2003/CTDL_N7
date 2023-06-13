@@ -601,6 +601,7 @@ void DsChuyenBay::deleteDs()
   {
     tmp = head;
     head = head->getNext();
+    tmp->getNode().getDSVe().deleteDsVe();
     delete tmp;
     tmp = 0;
   }
