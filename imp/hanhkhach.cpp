@@ -61,6 +61,19 @@ DsHanhKhach::DsHanhKhach()
 	this->size = 0;
 }
 
+DsHanhKhach::~DsHanhKhach() {
+	freeMemory(root);
+}
+
+void DsHanhKhach::freeMemory(NodeHK *node) {
+	if (node == NULL) {
+		return;
+	}
+	freeMemory(node->getLeft());
+	freeMemory(node->getRight());
+	delete node;
+}
+
 void DsHanhKhach::insert(HanhKhach hanhKhach)
 {
 	if (root == NULL)
@@ -114,7 +127,7 @@ NodeHK *DsHanhKhach::search(NodeHK *&prevNode, string cmnd)
 
 	while (current != NULL)
 	{
-		if (stoi(cmnd) == stoi(current->getHK().getCmnd()))
+		if (cmnd.compare(current->getHK().getCmnd()) == 0)
 		{
 			return current;
 		}

@@ -53,9 +53,11 @@ private:
 
   NodeHK *minLeftNode(NodeHK *node);
   NodeHK *search(NodeHK *&prevNode, string cmnd);
+  void freeMemory(NodeHK *node);
 
 public:
   DsHanhKhach();
+  ~DsHanhKhach();
   void insert(HanhKhach hanhKhach);
   NodeHK *search(string cmnd);
   void writeToFileOneHK(NodeHK *node);
