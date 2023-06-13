@@ -147,6 +147,7 @@ void DsMayBay::readFromFile()
   ifstream file("../data/dataMB.txt", ios::in);
   if (file.is_open())
   {
+    deleteDsMB();
     this->size = 0;
     string soHieuMB, loaiMB, soDay, soDong, soLuotThucHienCB, isUsed;
     string line = "";
