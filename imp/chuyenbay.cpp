@@ -188,7 +188,6 @@ NodeCB *NodeCB::getTail()
   return tmp;
 }
 
-
 // Hàm của DsChuyenBay
 
 DsChuyenBay::DsChuyenBay()
@@ -310,19 +309,19 @@ void DsChuyenBay::popBack()
   size--;
 }
 
-NodeCB *DsChuyenBay::timCB(string maCB)
+NodeCB *DsChuyenBay::timCB(const char *maCB)
 {
   NodeCB *tmp = this->head;
   while (tmp != NULL)
   {
-    if (tmp->getNode().getMaCB() == maCB)
+    if (strcmp(tmp->getNode().getMaCB(), maCB) == 0)
     {
       return tmp;
     }
     tmp = tmp->getNext();
   }
 
-  return NULL;
+  return nullptr;
 }
 
 bool DsChuyenBay::isAval(const char *soHieuMB, Date timeCB, const char *_maCB)
@@ -459,6 +458,7 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
       DsVeMayBay dsVe = cb.getDSVe();
       dsVe.setSoVeToiDa(stoi(soVeMax));
       dsVe.setSoVeDaDat(stoi(soVeMax) - stoi(soVeAval));
+      cout << dsVe.getSoVeDaDat() << endl;
       MayBay *mbData = listMB.findMB(cb.getMaMayBay());
       if (mbData == NULL)
       {
@@ -486,6 +486,11 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
 
         dsVe.setVe(t_ve, stoi(pos));
       }
+      for (int i = 0; i < dsVe.getSoVeToiDa(); i++)
+      {
+        if (dsVe.getVe(i).getHanhKhach() != "")
+          cout << dsVe.getVe(i).getIDVe() << dsVe.getVe(i).getHanhKhach() << endl;
+      }
       cb.setDSVe(dsVe);
 
       NodeCB *node = new NodeCB();
@@ -512,7 +517,7 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
 }
 void DsChuyenBay::writetToFile()
 {
-  ofstream file("../data/dataCB.txt", ios::out);
+  ofstream file("../data/dataCB.txt", ios::out | ios::trunc);
   if (file.is_open())
   {
     NodeCB *tmp = this->head;
@@ -533,9 +538,11 @@ void DsChuyenBay::writetToFile()
       for (int i = 0; i < tmp->getNode().getDSVe().getSoVeToiDa(); i++)
       {
         if (tmp->getNode().getDSVe().getVe(i).getHanhKhach() != "")
+        {
           file << i << "|" << tmp->getNode().getDSVe().getVe(i).getHanhKhach() << "|";
+        }
       }
-      file << endl; //
+      file << endl;
 
       tmp = tmp->getNext();
     }

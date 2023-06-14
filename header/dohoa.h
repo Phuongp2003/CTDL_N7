@@ -212,10 +212,12 @@ struct QLCB_data
     bool inAdvSearch = false;         // Dữ liệu được lọc theo giá trị tìm kiếm
     Date fbDay = Date(1, 1, 0, 0, 0); // Tìm theo ngày
     string fbNoiDen = "";             // Tìm theo nơi đến
-    bool fbAvail = false;             // Lọc chuyến bay không khả dụng
-    bool inGetTicket = false;         // Popup chọn vé
-    bool inSetTicket = false;         // Popup đặt vé
-    bool gotChangeTicket = false;     // Có thao tác trên vé
+    const char *fbMaCB = "";
+    bool searchFail = false;
+    bool fbAvail = false;         // Lọc chuyến bay không khả dụng
+    bool inGetTicket = false;     // Popup chọn vé
+    bool inSetTicket = false;     // Popup đặt vé
+    bool gotChangeTicket = false; // Có thao tác trên vé
 
     PageSwitcher Sw_table_page; // Chuyển trang
 };
@@ -294,6 +296,7 @@ bool Popup_XoaMB(UIcontroller &control);
 bool Popup_Thongkesoluotbay(UIcontroller &control);
 //-
 bool Popup_TimCB(UIcontroller &control);
+bool Popup_OneFlightAction(UIcontroller &control);
 bool Popup_ThemCB(UIcontroller &control);
 bool Popup_HieuChinhCB(UIcontroller &control);
 bool Popup_HuyCB(UIcontroller &control);
@@ -308,6 +311,7 @@ bool Popup_HieuChinhHK(UIcontroller &control);
 
 void ThanhQuanLy(UIcontroller &control); // done
 bool Warning_NoData();
+bool Warning_searchFail();
 int Warning_Confirm_HuyVe(); //
 bool Warning_Full();
 bool Warning_Empty();
