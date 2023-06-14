@@ -104,12 +104,12 @@ void initQLHKdata(QLHK_data &thisdata)
   thisdata.i_CMND.textBox = {StartPos.x + 300, StartPos.y + 60 + 280, 900, 50};
   thisdata.i_CMND.size = 12;
 
-  thisdata.i_Ho.mode = ASCII2;
+  thisdata.i_Ho.mode = AlphaleteWithSpace;
   thisdata.i_Ho.tittle = (char *)"Nhập họ và tên đệm";
   thisdata.i_Ho.textBox = {StartPos.x + 300, StartPos.y + 60 + 380, 580, 50};
   thisdata.i_Ho.size = 26;
 
-  thisdata.i_Ten.mode = ASCII2;
+  thisdata.i_Ten.mode = Alphalete;
   thisdata.i_Ten.tittle = (char *)"Nhập tên";
   thisdata.i_Ten.textBox = {StartPos.x + 300 + 600, StartPos.y + 60 + 380, 300, 50};
   thisdata.i_Ten.size = 10;
