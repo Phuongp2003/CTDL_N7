@@ -67,8 +67,6 @@ public:
   void setNext(NodeCB *next);
 
   bool hasNext();
-
-  
 };
 
 class DsChuyenBay

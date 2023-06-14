@@ -70,7 +70,7 @@ void DsHanhKhach::deleteDs(NodeHK *node)
 	deleteDs(node->getLeft());
 	deleteDs(node->getRight());
 	delete node;
-	node = 0;
+	node = NULL;
 }
 
 void DsHanhKhach::deleteDs()
@@ -278,7 +278,7 @@ void DsHanhKhach::remove(NodeHK *node)
 			root = NULL;
 
 		delete node;
-		node = 0;
+		node = NULL;
 	}
 
 	// Trường hợp 2: node cần xóa có 2 con
@@ -320,6 +320,6 @@ void DsHanhKhach::remove(NodeHK *node)
 		}
 
 		delete node;
-		node = 0;
+		node = NULL;
 	}
 }

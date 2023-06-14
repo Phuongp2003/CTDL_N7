@@ -186,7 +186,8 @@ NodeCB *NodeCB::getTail()
   while (tmp->hasNext())
     tmp = tmp->getNext();
   return tmp;
-} //
+}
+
 
 // Hàm của DsChuyenBay
 
@@ -606,7 +607,6 @@ void DsChuyenBay::deleteDs()
     tmp = 0;
   }
 }
-
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK)
 {
   listMB.readFromFile();
