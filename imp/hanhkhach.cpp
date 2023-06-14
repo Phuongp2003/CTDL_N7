@@ -90,7 +90,7 @@ void DsHanhKhach::insert(HanhKhach hanhKhach)
 	NodeHK *current = root;
 	while (true)
 	{
-		if (stoi(hanhKhach.getCmnd()) < stoi(current->getHK().getCmnd()))
+		if (hanhKhach.getCmnd() < current->getHK().getCmnd())
 		{
 			if (current->getLeft() == NULL)
 			{
@@ -103,8 +103,7 @@ void DsHanhKhach::insert(HanhKhach hanhKhach)
 				current = current->getLeft();
 			}
 		}
-		else if (stoi(hanhKhach.getCmnd()) >
-				 stoi(current->getHK().getCmnd()))
+		else if (hanhKhach.getCmnd() > current->getHK().getCmnd())
 		{
 			if (current->getRight() == NULL)
 			{
@@ -131,11 +130,11 @@ NodeHK *DsHanhKhach::search(NodeHK *&prevNode, string cmnd)
 
 	while (current != NULL)
 	{
-		if (cmnd.compare(current->getHK().getCmnd()) == 0)
+		if (cmnd == current->getHK().getCmnd())
 		{
 			return current;
 		}
-		else if (stoi(cmnd) < stoi(current->getHK().getCmnd()))
+		else if (cmnd < current->getHK().getCmnd())
 		{
 			prevNode = current;
 			current = current->getLeft();

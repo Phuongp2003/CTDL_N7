@@ -40,6 +40,7 @@ enum InputTextboxMode
     Alphanumeric,
     UpperAlphanumeric,
     Alphalete,
+    AlphaleteWithSpace,
     Numeric,
     Day,
     Month,

@@ -134,12 +134,17 @@ int chuanHoaKey(int key, const char *str, int pos, int mode)
 
   case Alphalete:
   {
-    if ((((key >= 'a') && (key <= 'z')) || ((key >= 'A') && (key <= 'Z'))))
+    if (((key >= 'a') && (key <= 'z')) || ((key >= 'A') && (key <= 'Z')))
     {
-      if (key >= 'a' && key <= 'z')
-      {
-        key -= 32;
-      }
+      return key;
+    }
+    break;
+  }
+
+  case AlphaleteWithSpace:
+  {
+    if (((key >= 'a') && (key <= 'z')) || ((key >= 'A') && (key <= 'Z')) || key == ' ')
+    {
       return key;
     }
     break;
@@ -339,4 +344,3 @@ bool laNamNhuan(int nInput)
   }
   return false;
 }
-
