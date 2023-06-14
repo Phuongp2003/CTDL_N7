@@ -486,6 +486,7 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
 
         dsVe.setVe(t_ve, stoi(pos));
       }
+      cout << maCB << "===========" << endl;
       for (int i = 0; i < dsVe.getSoVeToiDa(); i++)
       {
         if (dsVe.getVe(i).getHanhKhach() != "")
@@ -504,16 +505,16 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
           insertOrder(node);
     }
     setSize();
-    file.close();
 
     if (gotBug)
     {
       listMB.writetoFile();
     }
-    cout << "Nhập file chuyến bay" << endl;
+    cout << "Nhập file chuyến bay===========================" << endl;
   }
   else
     cout << "Error" << endl;
+  file.close();
 }
 void DsChuyenBay::writetToFile()
 {
@@ -546,7 +547,7 @@ void DsChuyenBay::writetToFile()
 
       tmp = tmp->getNext();
     }
-    cout << "Xuất file chuyến bay" << endl;
+    cout << "Xuất file chuyến bay========================" << endl;
   }
   else
   {

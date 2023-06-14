@@ -245,8 +245,6 @@ bool UI_reqSwitchTab(UIcontroller &control)
 void ReloadData(UIcontroller &control)
 {
   setDataToFile(control.listCB, control.listMB, control.listHK);
-  WaitTime(0.3);
-  setDataToFile(control.listCB, control.listMB, control.listHK);
   getDataFromFile(control.listCB, control.listMB, control.listHK);
 }
 
@@ -1432,6 +1430,14 @@ void CreateTable_QLMB()
 
 void CreatePage_QLCB(UIcontroller &control)
 {
+  // Get new address of nodeCB
+  if (control.dataTabCB.data != nullptr)
+  {
+    if (control.dataTabCB.data != control.listCB.timCB(control.dataTabCB.data->getNode().getMaCB()))
+      control.dataTabCB.data = nullptr;
+    control.dataTabCB.data = control.listCB.timCB(control.dataTabCB.data->getNode().getMaCB());
+  }
+
   CreatePageBackground(5);
   DrawTextEx(FontArial, "DANH SÁCH CHUYẾN BAY",
              {StartPos.x + 60,
@@ -1555,7 +1561,6 @@ void CreatePage_QLCB(UIcontroller &control)
     if (Popup_ThemCB(control))
     {
       control.dataTabCB.current_popup = 0;
-      ReloadData(control);
     }
   }
   else if (control.dataTabCB.current_popup == 2)
@@ -1565,7 +1570,6 @@ void CreatePage_QLCB(UIcontroller &control)
     if (Popup_HieuChinhCB(control))
     {
       control.dataTabCB.current_popup = 0;
-      ReloadData(control);
     }
   }
   else if (control.dataTabCB.current_popup == 3)
@@ -1575,7 +1579,6 @@ void CreatePage_QLCB(UIcontroller &control)
     if (Popup_HuyCB(control))
     {
       control.dataTabCB.current_popup = 0;
-      ReloadData(control);
     }
   }
   else if (control.dataTabCB.current_popup == 4)
@@ -1593,7 +1596,6 @@ void CreatePage_QLCB(UIcontroller &control)
       control.dataTabCB.pickdata_index = -1;
       control.dataTabCB.data = nullptr;
       control.dataTabCB.current_popup = 0;
-      ReloadData(control);
     }
   }
 
@@ -2458,14 +2460,6 @@ bool Popup_showListHK(UIcontroller &control)
       control.dataTabCB.data->setCb(cb_t);
       ReloadData(control);
 
-      // ReWrite
-      cb_t = control.dataTabCB.data->getNode();
-      dsv_t = cb_t.getDSVe();
-      dsv_t.deleteVe(control.dataTabCB.dataDSVe.position);
-      cb_t.setDSVe(dsv_t);
-      control.dataTabCB.data->setCb(cb_t);
-      ReloadData(control);
-
       resetData_QLVe(control.dataTabCB.dataDSVe);
     }
     else if (tmp_c == -1)
@@ -2760,6 +2754,7 @@ bool Popup_chonVe(UIcontroller &control)
       control.dataTabCB.inSetTicket = false;
       if (control.dataTabCB.gotChangeTicket)
       {
+        ReloadData(control);
         control.dataTabCB.inSetTicket = false;
         return true;
       }
@@ -3168,16 +3163,6 @@ bool Popup_datVe(UIcontroller &control)
     control.dataTabCB.data->setCb(m_cb);
     ReloadData(control);
 
-    m_cb = control.dataTabCB.data->getNode();
-    m_dsVe = m_cb.getDSVe();
-    m_ve = m_dsVe.getVe(control.dataTabCB.dataDSVe.position);
-    m_ve.setHanhKhach(o_CMND);
-    m_dsVe.setVe(m_ve, control.dataTabCB.dataDSVe.position);
-    m_dsVe.setSoVeDaDat(m_dsVe.getSoVeDaDat() + 1);
-    m_cb.setDSVe(m_dsVe);
-    control.dataTabCB.data->setCb(m_cb);
-    ReloadData(control);
-
     resetInputTextBox(control.dataTabHK.i_CMND);
     resetInputTextBox(control.dataTabHK.i_Ho);
     resetInputTextBox(control.dataTabHK.i_Ten);
@@ -3185,6 +3170,7 @@ bool Popup_datVe(UIcontroller &control)
     control.dataTabCB.popup_errorMess = "";
 
     resetData_QLHK(control.dataTabHK);
+    resetData_QLVe(control.dataTabCB.dataDSVe);
 
     return true;
   }
@@ -3197,6 +3183,7 @@ bool Popup_datVe(UIcontroller &control)
     control.dataTabCB.popup_errorMess = "";
 
     resetData_QLHK(control.dataTabHK);
+    resetData_QLVe(control.dataTabCB.dataDSVe);
 
     return true;
   }
@@ -3323,8 +3310,6 @@ bool Popup_OneFlightAction(UIcontroller &control)
 
   if (CreateButton(Cancel))
   {
-
-    ReloadData(control);
     resetData_QLCB(control.dataTabCB);
     control.dataTabCB.pickdata_index = -1;
     control.dataTabCB.data = nullptr;

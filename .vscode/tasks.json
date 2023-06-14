@@ -1,5 +1,4 @@
 {
-    
     "version": "2.0.0",
     "tasks": [
         {
@@ -8,10 +7,9 @@
             "command": "g++",
             "args": [
                 "-g",
-                "${workspaceRoot}/app/main.cpp",
                 "${workspaceRoot}/imp/**.cpp",
                 "-o",
-                "${workspaceRoot}/app/main.exe",
+                "${workspaceRoot}/main.exe",
                 "-L",
                 "${workspaceRoot}/lib/",
                 "-lraylib",
@@ -35,7 +33,6 @@
     "command": "echo ${command:test-explorer.reload}",
     "problemMatcher": [],
     "runOptions": {
-      "runOn": "folderOpen" // This will cause the triggering. Have to run manually once!
+        "runOn": "folderOpen" // This will cause the triggering. Have to run manually once!
     }
-
 }

@@ -4,9 +4,8 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceRoot}\\app\\main.exe",
-      "args": 
-      [
+      "program": "${workspaceRoot}\\main.exe",
+      "args": [
         "&",
         "pause",
         "&",
@@ -19,8 +18,7 @@
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [],
-      "preLaunchTask": "build_project" //Mode chỉ f5 build + run
-  
+      // "preLaunchTask": "build_project" //Mode chỉ f5 build + run
     }
   ]
 }
