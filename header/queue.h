@@ -1,6 +1,6 @@
 #pragma once
-#include "header.h"
 #include "hanhkhach.h"
+#include "header.h"
 
 class NodeQueue
 {

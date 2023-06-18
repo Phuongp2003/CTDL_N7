@@ -9,106 +9,106 @@
 class ChuyenBay
 {
 private:
-  char maCB[15];
-  Date ngayGio;
-  string noiDen;
-  int trangThai;
-  char idMayBay[16];
-  DsVeMayBay dsVe;
+	char maCB[15];
+	Date ngayGio;
+	string noiDen;
+	int trangThai;
+	char idMayBay[16];
+	DsVeMayBay dsVe;
 
 public:
-  ChuyenBay();
-  ChuyenBay(const char *maCB, string noiDen, Date ngayGio,
-            const char *maMayBay);
+	ChuyenBay();
+	ChuyenBay(const char *maCB, string noiDen, Date ngayGio,
+			  const char *maMayBay);
 
-  DsVeMayBay getDSVe();
-  char *getMaCB();
-  Date getNgayGio();
-  string getNoiDen();
-  int getTrangThai();
+	DsVeMayBay getDSVe();
+	char *getMaCB();
+	Date getNgayGio();
+	string getNoiDen();
+	int getTrangThai();
 
-  void setDSVe(DsVeMayBay dsVe);
-  void setidMayBay(const char *idMayBay);
-  const char *getMaMayBay();
-  void setNgayGio(Date ngayGio);
-  /**
-   *
-   * @param _GiaTri 0-Huỷ chuyến, 1-Còn vé, 2-Hết vé, 3-Hoàn tất
-   */
-  void setTrangThai(int trangThai);
+	void setDSVe(DsVeMayBay dsVe);
+	void setidMayBay(const char *idMayBay);
+	const char *getMaMayBay();
+	void setNgayGio(Date ngayGio);
+	/**
+	 *
+	 * @param _GiaTri 0-Huỷ chuyến, 1-Còn vé, 2-Hết vé, 3-Hoàn tất
+	 */
+	void setTrangThai(int trangThai);
 
-  bool checkNoiDen(const char *noiDen);
-  bool checkMaCB(const char *maCB);
-  bool checkTime(Date time);
+	bool checkNoiDen(const char *noiDen);
+	bool checkMaCB(const char *maCB);
+	bool checkTime(Date time);
 
-  void ThucHienCB(DsMayBay DsMB);
-  Date ngayHoanThanh();
-  bool cach(int hour, Date another);
+	void ThucHienCB(DsMayBay DsMB);
+	Date ngayHoanThanh();
+	bool cach(int hour, Date another);
 
-  // node
-  bool operator<(const ChuyenBay &other);
+	// node
+	bool operator<(const ChuyenBay &other);
 };
 
 class NodeCB
 {
 private:
-  ChuyenBay chuyenBay;
-  NodeCB *next;
+	ChuyenBay chuyenBay;
+	NodeCB *next;
 
 public:
-  NodeCB();
-  NodeCB(ChuyenBay chuyenBay);
+	NodeCB();
+	NodeCB(ChuyenBay chuyenBay);
 
-  ChuyenBay getNode();
-  NodeCB *getNext();
-  NodeCB *getTail();
+	ChuyenBay getNode();
+	NodeCB *getNext();
+	NodeCB *getTail();
 
-  void setCb(ChuyenBay chuyenBay);
-  void setNext(NodeCB *next);
+	void setCb(ChuyenBay chuyenBay);
+	void setNext(NodeCB *next);
 
-  bool hasNext();
+	bool hasNext();
 };
 
 class DsChuyenBay
 {
 private:
-  NodeCB *head;
-  int size;
+	NodeCB *head;
+	int size;
 
 public:
-  DsChuyenBay();
-  DsChuyenBay(NodeCB *cb);
+	DsChuyenBay();
+	DsChuyenBay(NodeCB *cb);
 
-  void setHead(NodeCB *head);
-  void setSize();
+	void setHead(NodeCB *head);
+	void setSize();
 
-  NodeCB *getHead();
-  int getSize();
+	NodeCB *getHead();
+	int getSize();
 
-  void push(NodeCB *currNode, NodeCB *node);
-  void pushBack(NodeCB *node);
-  void pushFront(NodeCB *node);
-  void insertOrder(NodeCB *node);
-  //
-  /**
-   * @brief xoá chuyến bay hiện chọn
-   *
-   */
-  void pop(NodeCB *node);
-  void popFirst(); //
-  void popBack();
+	void push(NodeCB *currNode, NodeCB *node);
+	void pushBack(NodeCB *node);
+	void pushFront(NodeCB *node);
+	void insertOrder(NodeCB *node);
+	//
+	/**
+	 * @brief xoá chuyến bay hiện chọn
+	 *
+	 */
+	void pop(NodeCB *node);
+	void popFirst(); //
+	void popBack();
 
-  NodeCB *timCB(const char *maCB);
-  int duocDatKhong(string cmnd, ChuyenBay cb);
+	NodeCB *timCB(const char *maCB);
+	int duocDatKhong(string cmnd, ChuyenBay cb);
 
-  void readFromFile(DsMayBay &listMB);
-  void writetToFile();
+	void readFromFile(DsMayBay &listMB);
+	void writetToFile();
 
-  bool update(DsMayBay DsMB);
-  bool isAval(const char *soHieuMB, Date timeCb, const char *_maCB);
-  bool isExist(const char *maCB);
-  bool isUsing(const char *maMB);
-  void deleteDs();
+	bool update(DsMayBay DsMB);
+	bool isAval(const char *soHieuMB, Date timeCb, const char *_maCB);
+	bool isExist(const char *maCB);
+	bool isUsing(const char *maMB);
+	void deleteDs();
 };
 
 void getDataFromFile(DsChuyenBay &listCB, DsMayBay &listMB, DsHanhKhach &listHK); //

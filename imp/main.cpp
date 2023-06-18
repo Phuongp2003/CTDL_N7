@@ -2,13 +2,12 @@
 
 int main()
 {
-  system("chcp 65001"); // Bật UTF-8 show tiếng Việt trong terminal
+	system("chcp 65001"); // Bật UTF-8 show tiếng Việt trong terminal
 
-  InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "My PJ");
-  mainGraphics();
-  CloseWindow();
+	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quyết qua môn!");
+	mainGraphics();
+	CloseWindow();
 
-  cout << "CP" << endl;
-  system("pause");
-  return 0;
+	system("pause");
+	return 0;
 }
