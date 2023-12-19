@@ -93,9 +93,32 @@ const char idChu[26] = {
 };
 
 const char idSo[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+inline int pathBugLv = 0;
+
+const string fontPath[2] = {"src/font/arial.ttf",
+                            "../src/font/arial.ttf"},
+             logoPath[2] = {"src/img/Logo_PTIT_University.png",
+                            "../src/img/Logo_PTIT_University.png"},
+             homeIconPath[2] = {"src/img/house_icon.png",
+                                "../src/img/house_icon.png"},
+             arrowLeftPath[2] = {"src/img/arrow_left.png",
+                                 "../src/img/arrow_left.png"},
+             status_TickPath[2] = {"src/img/status_tick.png",
+                                   "../src/img/status_tick.png"},
+             status_GreenPath[2] = {"src/img/status_green.png",
+                                    "../src/img/status_green.png"},
+             status_GrayPath[2] = {"src/img/status_gray.png",
+                                   "../src/img/status_gray.png"},
+             status_YellowPath[2] = {"src/img/status_yellow.png",
+                                     "../src/img/status_yellow.png"},
+             dataCBPath[2] = {"data/dataCB.txt",
+                              "../data/dataCB.txt"},
+             dataMBPath[2] = {"data/dataMB.txt",
+                              "../data/dataMB.txt"},
+             dataHKPath[2] = {"data/dataHK.txt",
+                              "../data/dataHK.txt"};
 
 // class -----------------------------------------------------------------
-
 // ngày tháng
 class Date;
 
@@ -139,3 +162,6 @@ string trim(string str);
 void formatStr(string &str);
 
 bool laNamNhuan(int nInput);
+
+bool check_init(string path);
+void debug_path();

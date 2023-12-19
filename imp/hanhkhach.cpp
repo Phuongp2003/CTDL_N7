@@ -162,7 +162,7 @@ NodeHK *DsHanhKhach::search(string cmnd)
 void DsHanhKhach::writeToFileOneHK(NodeHK *node)
 {
 	ofstream file;
-	file.open("data/dataHK.txt", ios::out | ios::app);
+	file.open(dataHKPath[pathBugLv], ios::out | ios::app);
 	if (!file.is_open())
 	{
 		return;
@@ -178,7 +178,7 @@ void DsHanhKhach::writeToFileOneHK(NodeHK *node)
 void DsHanhKhach::writeToFileAllHK()
 {
 	ofstream file;
-	file.open("data/dataHK.txt", ios::out);
+	file.open(dataHKPath[pathBugLv], ios::out);
 
 	if (!file.is_open() || root == NULL)
 	{
@@ -214,7 +214,7 @@ void DsHanhKhach::writeToFileAllHK()
 void DsHanhKhach::readFromFile()
 {
 	ifstream file;
-	file.open("../data/dataHK.txt", ios::in);
+	file.open(dataHKPath[pathBugLv], ios::in);
 	if (!file.is_open())
 	{
 		return;

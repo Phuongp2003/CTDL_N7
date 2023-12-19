@@ -442,38 +442,40 @@ void LoadResources()
 	Image Status_Gray;
 
 	UnloadResources();
-	FontArial = LoadFontEx("../src/font/arial.ttf", 72, 0, 9812);
+
+	FontArial = LoadFontEx(strToChar(fontPath[pathBugLv]), 72, 0, 9812);
+	LogoPTIT = LoadImage(strToChar(logoPath[pathBugLv])); // load ảnh
+	HomeIcon = LoadImage(strToChar(homeIconPath[pathBugLv]));
+	ArrowLeft = LoadImage(strToChar(arrowLeftPath[pathBugLv]));
+	Status_Tick = LoadImage(strToChar(status_TickPath[pathBugLv]));
+	Status_Green = LoadImage(strToChar(status_GreenPath[pathBugLv]));
+	Status_Gray = LoadImage(strToChar(status_GrayPath[pathBugLv]));
+	Status_Yellow = LoadImage(strToChar(status_YellowPath[pathBugLv]));
+
 	GenTextureMipmaps(&FontArial.texture);
 	SetTextureFilter(FontArial.texture, TEXTURE_FILTER_TRILINEAR);
 
-	LogoPTIT = LoadImage("../src/img/Logo_PTIT_University.png"); // load ảnh
-	ImageResize(&LogoPTIT, 698, 690);							 // Chỉnh size ảnh
+	ImageResize(&LogoPTIT, 698, 690); // Chỉnh size ảnh
 	PNG_logo = LoadTextureFromImage(LogoPTIT);
 
-	HomeIcon = LoadImage("../src/img/house_icon.png");
 	ImageResize(&HomeIcon, 60, 50);
 	PNG_home = LoadTextureFromImage(HomeIcon);
 
-	ArrowLeft = LoadImage("../src/img/arrow_left.png");
 	ImageResize(&ArrowLeft, 30, 30);
 	PNG_arrowLeft = LoadTextureFromImage(ArrowLeft);
 	ImageRotateCW(&ArrowLeft);
 	ImageRotateCW(&ArrowLeft);
 	PNG_arrowRight = LoadTextureFromImage(ArrowLeft);
 
-	Status_Tick = LoadImage("../src/img/status_tick.png");
 	ImageResize(&Status_Tick, 34, 34);
 	PNG_tick = LoadTextureFromImage(Status_Tick);
 
-	Status_Green = LoadImage("../src/img/status_green.png");
 	ImageResize(&Status_Green, 34, 34);
 	PNG_circleGreen = LoadTextureFromImage(Status_Green);
 
-	Status_Gray = LoadImage("../src/img/status_gray.png");
 	ImageResize(&Status_Gray, 34, 34);
 	PNG_circleGray = LoadTextureFromImage(Status_Gray);
 
-	Status_Yellow = LoadImage("../src/img/status_yellow.png");
 	ImageResize(&Status_Yellow, 34, 34);
 	PNG_circleYellow = LoadTextureFromImage(Status_Yellow);
 
@@ -2833,7 +2835,7 @@ bool Popup_chonVe(UIcontroller &control)
 	if (sDong > 10)
 		r.x = CenterDataSetter(1200, StartPos.x, 10 * 100);
 	else
-		r.x = CenterDataSetter(1200, StartPos.x, (sDong)*100);
+		r.x = CenterDataSetter(1200, StartPos.x, (sDong) * 100);
 
 	DrawTextPro(FontArial,
 				"Dãy",
@@ -5122,6 +5124,18 @@ void mainGraphics()
 {
 	UIcontroller main;
 	InitUIData(main);
+
+	// Check path file
+	if (!check_init("data/checkinit"))
+	{
+		if (!check_init("../data/checkinit"))
+		{
+			cout << "Khong the khoi tao du lieu" << endl;
+			return;
+		}
+		else
+			debug_path();
+	}
 
 	// Settup data
 	main.listCB = DsChuyenBay();

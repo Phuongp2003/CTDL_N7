@@ -344,3 +344,27 @@ bool laNamNhuan(int nInput)
 	}
 	return false;
 }
+
+bool check_init(string path)
+{
+	ifstream file(path, ios::in);
+	if (!file.is_open())
+	{
+		return false;
+	}
+	string test;
+	getline(file, test);
+
+	if (test != "080603")
+	{
+		cout << test;
+		return false;
+	}
+
+	return true;
+}
+
+void debug_path()
+{
+	pathBugLv = 1;
+}

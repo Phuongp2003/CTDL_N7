@@ -425,7 +425,7 @@ int DsChuyenBay::duocDatKhong(string cmnd, ChuyenBay cb)
 void DsChuyenBay::readFromFile(DsMayBay &listMB)
 {
 	bool gotBug = false;
-	ifstream file("../data/dataCB.txt", ios::in);
+	ifstream file(dataCBPath[pathBugLv], ios::in);
 	if (file.is_open())
 	{
 		this->head = nullptr;
@@ -518,7 +518,7 @@ void DsChuyenBay::readFromFile(DsMayBay &listMB)
 }
 void DsChuyenBay::writetToFile()
 {
-	ofstream file("../data/dataCB.txt", ios::out | ios::trunc);
+	ofstream file(dataCBPath[pathBugLv], ios::out | ios::trunc);
 	if (file.is_open())
 	{
 		NodeCB *tmp = this->head;

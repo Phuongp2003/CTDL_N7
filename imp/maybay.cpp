@@ -141,7 +141,7 @@ MayBay *DsMayBay::getMB(int index) { return data[index]; }
 
 void DsMayBay::readFromFile()
 {
-	ifstream file("../data/dataMB.txt", ios::in);
+	ifstream file(dataMBPath[pathBugLv], ios::in);
 	if (file.is_open())
 	{
 		deleteDsMB();
@@ -198,7 +198,7 @@ int *DsMayBay::sapXepThongKe()
 
 void DsMayBay::writetoFile()
 {
-	ofstream file("../data/dataMB.txt", ios::out | ios::trunc);
+	ofstream file(dataMBPath[pathBugLv], ios::out | ios::trunc);
 	if (file.is_open())
 	{
 		for (int i = 0; i < size; i++)
@@ -219,7 +219,7 @@ void DsMayBay::writetoFile()
 
 void DsMayBay::writetoFileWhenAdd()
 {
-	ofstream file("../data/dataMB.txt", ios::out | ios::app);
+	ofstream file(dataMBPath[pathBugLv], ios::out | ios::app);
 	if (file.is_open())
 	{
 		file << data[size - 1]->getSoHieuMB() << "|" << data[size - 1]->getLoaiMB() << "|"
